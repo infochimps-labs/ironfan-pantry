@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: zookeeper
-# Recipe:: zookeeper_server
+# Recipe:: default
 #
 # Copyright 2010, Infochimps, Inc.
 #
@@ -19,24 +19,3 @@
 
 include_recipe "java"
 include_recipe "zookeeper"
-
-# register with cluster_service_discovery
-provide_service ("#{node[:cluster_name]}-zookeeper")
-
-# Install
-package "hadoop-zookeeper-server"
-
-directory node[:zookeeper][:data_dir] do
-  owner      "zookeeper"
-  group      "zookeeper"
-  mode       "0644"
-  action     :create
-  recursive  true
-end
-
-# launch service
-service "hadoop-zookeeper-server" do
-  action [ :enable, :start ]
-  running true
-  supports :status => true, :restart => true
-end
