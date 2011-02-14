@@ -1,0 +1,32 @@
+{
+  "recipes": {
+  },
+  "groupings": {
+  },
+  "recommendations": {
+  },
+  "description": "Installs/Configures pig",
+  "suggestions": {
+  },
+  "attributes": {
+  },
+  "conflicting": {
+  },
+  "dependencies": {
+    "hadoop_cluster": [
+
+    ]
+  },
+  "long_description": "= DESCRIPTION:\n\n= REQUIREMENTS:\n\n= ATTRIBUTES: \n\n= USAGE:\n\n",
+  "providing": {
+  },
+  "platforms": {
+  },
+  "version": "0.1.0",
+  "license": "Apache 2.0",
+  "maintainer": "Infochimps Org",
+  "name": "pig",
+  "replacing": {
+  },
+  "maintainer_email": "coders@infochimps.org"
+}
