@@ -17,30 +17,20 @@
 # limitations under the License.
 #
 
-group 'zookeeper' do gid 305 ; action [:create] ; end
-user 'zookeeper' do
-  comment    'Hadoop Zookeeper Daemon'
-  uid        305
-  group      node[:groups]['zookeeper' ][:gid]
-  home       "/var/zookeeper"
-  shell      "/bin/false"
-  password   nil
-  supports   :manage_home => true
-  action     [:create, :manage]
-end
-
-package "hadoop-zookeeper"
+include_recipe "java"
+include_recipe "zookeeper"
 
 #
 # Configuration files
-
-directory node[:zookeeper][:data_dir] do
-  owner      "zookeeper"
-  group      "zookeeper"
-  mode       "0755"
-  action     :create
-  recursive  true
-end
+#
+zookeeper_server_ips =  all_provider_private_ips("#{node[:zookeeper][:cluster_name]}-zookeeper").sort
+# FIXME: This doesn't seem stable. I think we're better off using the IP address or something(?)
+myid = zookeeper_server_ips.find_index( private_ip_of node )
+template_variables = {
+  :zookeeper_server_ips   => zookeeper_server_ips,
+  :myid                   => myid,
+  :zookeeper_data_dir     => node[:zookeeper][:data_dir],
+}
 
 directory node[:zookeeper][:log_dir] do
   owner      "zookeeper"
@@ -49,17 +39,9 @@ directory node[:zookeeper][:log_dir] do
   action     :create
   recursive  true
 end
-#
-zookeeper_server_ips =  all_provider_private_ips("#{node[:zookeeper][:cluster_name]}-zookeeper").sort
-myid = zookeeper_server_ips.find_index( private_ip_of node )
-template_variables = {
-  :zookeeper_server_ips   => zookeeper_server_ips,
-  :myid                   => myid,
-  :zookeeper_data_dir     => node[:zookeeper][:data_dir],
-  :zookeeper_max_client_connections => node[:zookeeper][:max_client_connections],
-}
+
 Chef::Log.debug template_variables.inspect
-%w[ zoo.cfg log4j.properties].each do |conf_file|
+%w[ zoo.cfg log4j.properties ].each do |conf_file|
   template "/etc/zookeeper/#{conf_file}" do
     owner "root"
     mode "0644"
@@ -67,11 +49,3 @@ Chef::Log.debug template_variables.inspect
     source "#{conf_file}.erb"
   end
 end
-
-template "/var/zookeeper/myid" do
- owner "zookeeper"
- mode "0644"
- variables(template_variables)
- source "myid.erb"
-end
-
