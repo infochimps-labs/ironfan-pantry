@@ -22,4 +22,4 @@
 include_recipe "zookeeper::default"
 
 # Stuff the Zookeeper jars into the classpath
-node[:hadoop][:extra_classpaths][:zookeeper] = "#{node[:zookeeper][:home_dir]/zookeeper.jar" if node[:hadoop] and node[:hadoop][:extra_classpaths]
+node[:hadoop][:extra_classpaths][:zookeeper] = "#{node[:zookeeper][:home_dir]}/zookeeper.jar" if node[:hadoop] and node[:hadoop][:extra_classpaths]
