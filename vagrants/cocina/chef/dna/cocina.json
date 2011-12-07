@@ -1,0 +1,49 @@
+{
+  "run_list": [
+    "role[base_role]",
+    "role[chef_client]",
+    "role[ssh]",
+    "recipe[motd]",
+    "recipe[cluster_chef::virtualbox_metadata]",
+    
+    "recipe[git]",
+    "recipe[big_package::default]",
+    "role[nfs_client]",
+    
+    "role[mountable_volumes]",
+    "recipe[cluster_chef]",
+    "recipe[cluster_chef::dedicated_server_tuning]",
+    
+    "recipe[cluster_chef::dashboard]" ],
+  "run_away":[
+    "recipe[apt::cacher-client]",
+    "recipe[chef-server::rubygems-install]",
+  "_"],
+  "node_name":          "el_ridiculoso-cocina-0",
+  "cluster_name":       "el_ridiculoso",
+  "facet_name":         "cocina",
+  "facet_index":        "0",
+
+  "nfs":  { "mounts":   [
+    ["/home/flip", { "owner": "flip", "remote_path": "/Users/flip" } ],
+    ["/cloud",     { "owner": "root", "remote_path": "/cloud"      } ]
+  ] },
+
+  "pkg_sets":           { "install": [ "base", "dev", "sysadmin", "text", "vagrant" ] },
+  
+  "server_tuning":      { "swappiness": "75", "overcommit_memory": "1", "overcommit_ratio": "100" },
+  "java":               { "install_flavor":"sun"},
+  "apt":                { "cloudera": { "force_distro": "maverick" } },
+  "mountable_volumes":  {
+    "volumes": {
+      "root": { "scratch":true,"device":"/dev/mapper/natty--base-root","mount_point":"/","mountable":false } } },
+
+  "chef_server":  {
+    "server_url":       "http://localhost:4000",
+    "init_style":       "runit",
+    "webui_enabled":    true
+  },
+  "validation_client_name": "chef-validator",
+  "validation_client_file": "/etc/chef/validation.pem",
+  
+"_":"_"}
