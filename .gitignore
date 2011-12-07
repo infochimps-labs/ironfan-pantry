@@ -49,3 +49,4 @@ metadata.json
 .chef
 *.pem
 .rvmrc
+vagrants/iso/*
