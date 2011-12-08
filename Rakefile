@@ -29,7 +29,6 @@ rescue Bundler::BundlerError => e
 end
 require 'chef'
 require 'json'
-require 'jeweler'
 require 'rspec/core'
 require 'rspec/core/rake_task'
 require 'yard'
@@ -68,15 +67,12 @@ task :bundle_cookbook, :cookbook do |t, args|
   FileUtils.mkdir_p(tarball_dir)
   FileUtils.mkdir(temp_dir)
   FileUtils.mkdir(temp_cookbook_dir)
-
   child_folders = Dir[ "cookbooks/#{args.cookbook}", "*-cookbooks/#{args.cookbook}" ]
   child_folders.each do |folder|
     file_path = File.join(TOPDIR, folder, ".")
     FileUtils.cp_r(file_path, temp_cookbook_dir) if File.directory?(file_path)
   end
-
   system("tar", "-C", temp_dir, "-cvzf", File.join(tarball_dir, tarball_name), "./#{args.cookbook}")
-
   FileUtils.rm_rf temp_dir
 end
 
@@ -110,36 +106,6 @@ exec chpst -u <%= @options[:user] %> /usr/sbin/#{template_name}
     puts "I bet you'll want to edit the run script, especially the path at the end of the last line"
   end
 end
-
-
-# ---------------------------------------------------------------------------
-#
-# Jeweler -- release cluster_chef as a gem
-#
-Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name        = "cluster_chef"
-  gem.homepage    = "http://infochimps.com/labs"
-  gem.license     = NEW_COOKBOOK_LICENSE.to_s
-  gem.summary     = %Q{cluster_chef allows you to orchestrate not just systems but clusters of machines. It includes a powerful layer on top of knife and a collection of cloud cookbooks.}
-  gem.description = %Q{cluster_chef allows you to orchestrate not just systems but clusters of machines. It includes a powerful layer on top of knife and a collection of cloud cookbooks.}
-  gem.email       = SSL_EMAIL_ADDRESS
-  gem.authors     = ["Infochimps"]
-
-  gem.add_development_dependency 'bundler', "~> 1.0.12"
-  gem.add_development_dependency 'jeweler', "~> 1.5.2"
-
-  ignores = File.readlines(".gitignore").grep(/^[^#]\S+/).map{|s| s.chomp }
-  dotfiles = [".gemtest", ".gitignore", ".rspec", ".yardopts"]
-  gem.files = dotfiles + Dir["**/*"].
-    reject{|f| f =~ %r{^(cookbooks|site-cookbooks|meta-cookbooks|integration-cookbooks)} }.
-    reject{|f| f =~ %r{^(certificates|clusters|config|data_bags|environments|roles|chefignore|deprecated|tasks)/} }.
-    reject{|f| File.directory?(f) }.
-    reject{|f| ignores.any?{|i| File.fnmatch(i, f) || File.fnmatch(i+'/**/*', f) } }
-  gem.test_files = gem.files.grep(/^spec\//)
-  gem.require_paths = ['lib']
-end
-Jeweler::RubygemsDotOrgTasks.new
 
 # ---------------------------------------------------------------------------
 #
