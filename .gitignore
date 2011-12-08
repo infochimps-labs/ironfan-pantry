@@ -51,7 +51,9 @@ metadata.json
 .chef
 *.pem
 .rvmrc
+
 vagrants/iso/*
+vagrants/boxes/*
 
 knife/cocina
 knife/infochimps_test
