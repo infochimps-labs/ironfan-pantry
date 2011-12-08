@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-organization = ENV['CHEF_ORGANIZATION']
-username     = ENV['CHEF_USER']
-homebase_dir = ENV['CHEF_HOMEBASE']
-knife_dir    = File.dirname(__FILE__)
+raise('please set the CHEF_ORGANIZATION, CHEF_USER environment variables to your chef server organization and username, and CHEF_HOMEBASE to the base directory for your cookbooks') unless ENV['CHEF_ORGANIZATION'] && ENV['CHEF_USER'] && ENV['CHEF_HOMEBASE']
 
-raise('please set the CHEF_ORGANIZATION, CHEF_USER environment variables to your chef server organization and username, and CHEF_HOMEBASE to the base directory for your cookbooks') unless organization && username && homebase_dir
+organization             ENV['CHEF_ORGANIZATION']
+username                 ENV['CHEF_USER']
+homebase_dir             ENV['CHEF_HOMEBASE']
+knife_dir                File.dirname(__FILE__)
 
-$LOAD_PATH.unshift "#{homebase_dir}/vendor/cluster_chef/lib"
-require 'cluster_chef'
-
-# Path to your clusters, cookbooks and roles
+# Clusters, cookbooks and roles
 cluster_path             [ "#{homebase_dir}/clusters"  ]
 cookbook_path            [ "#{homebase_dir}/cookbooks" ]
 role_path                [ "#{homebase_dir}/roles"     ]
@@ -17,6 +13,9 @@ role_path                [ "#{homebase_dir}/roles"     ]
 # Cloud keypairs -- be sure to `chmod og-rwx -R */*-keys/`
 client_key_dir          "#{knife_dir}/#{organization}/client_keys"
 ec2_key_dir             "#{knife_dir}/#{organization}/ec2_keys"
+
+$LOAD_PATH.unshift "#{homebase_dir}/vendor/cluster_chef/lib"
+require 'cluster_chef'
 
 log_level                :info
 log_location             STDOUT

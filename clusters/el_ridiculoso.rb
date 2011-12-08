@@ -21,36 +21,35 @@ ClusterChef.cluster 'el_ridiculoso' do
   role                  :package_set, :last
   role                  :dashboard,   :last
 
+  role                  :infochimps_base
+  role                  :infochimps_final, :last
+
   role                  :hadoop
   role                  :hadoop_s3_keys
   recipe                'hadoop_cluster::cluster_conf', :last
   role                  :tuning, :last
 
-  facet :vagrante do
+  facet :grande do
     instances           1
+
+    role                :zookeeper_server
 
     role                :cassandra_server
     role                :elasticsearch_data_esnode
     role                :elasticsearch_http_esnode
     role                :flume_master
     role                :flume_agent
-    role                :ganglia_agent
     role                :ganglia_master
-    role                :graphite_server
+    role                :ganglia_agent
+    role                :hadoop_namenode
     role                :hadoop_datanode
     role                :hadoop_jobtracker
-    role                :hadoop_namenode
     role                :hadoop_secondarynn
     role                :hadoop_tasktracker
     role                :hbase_master
     role                :hbase_regionserver
     role                :hbase_stargate
-    role                :mongodb_server
-    role                :mysql_server
     role                :redis_server
-    role                :resque_server
-    role                :statsd_server
-    role                :zookeeper_server
 
     role                :mysql_client
     role                :redis_client
@@ -86,32 +85,40 @@ ClusterChef.cluster 'el_ridiculoso' do
     recipe              'zlib'
 
     #
-    # These run shit
+    # These run stuff
     #
     recipe              'apache2'
     recipe              'nginx'
-    recipe              'zabbix::agent'
+
+    # role                :statsd_server
+    # role                :mongodb_server
+    # role                :mysql_server
+    # role                :graphite_server
+    # role                :resque_server
+
   end
 
   cluster_role.override_attributes({
       :apt => { :cloudera => {
           :force_distro => 'maverick', }, }, # no natty distro  yet
       :hadoop => {
-        :java_heap_size_max    => 128,,
+        :java_heap_size_max    => 128,
       },
     })
 
   facet(:grande).facet_role.override_attributes({
       :cassandra      => {
         :server       => { :run_state => :stop  }, },
+      :dashpot        => {
+        :dashboard    => { :run_state => :stop  }, },
       :elasticsearch  => {
         :server       => { :run_state => :stop  }, },
       :flume          => {
         :master       => { :run_state => :stop  },
         :node         => { :run_state => :stop  }, },
       :ganglia        => {
-        :server       => { :run_state => :start },
-        :monitor      => { :run_state => :start }, },
+        :server       => { :run_state => :stop },
+        :monitor      => { :run_state => :stop }, },
       :graphite       => {
         :carbon       => { :run_state => :stop  },
         :whisper      => { :run_state => :stop  },

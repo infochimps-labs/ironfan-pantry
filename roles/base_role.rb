@@ -9,3 +9,7 @@ run_list *%w[
   zsh
   ntp
   ]
+
+default_attributes({
+    :java => { :install_flavor => 'sun' }, # use sun java typically
+  })

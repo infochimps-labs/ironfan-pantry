@@ -8,5 +8,5 @@ run_list(*%w[
   elasticsearch::install_plugins
 
   elasticsearch::server
-  elasticsearch::http
+  elasticsearch::load_balancer
 ])
