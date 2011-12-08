@@ -6,13 +6,13 @@ Vagrant::Config.run do |config|
   cluster     = 'cocina'
   facet       = 'chef_server'
   facet_index = '0'
-  node_name   = "#{vm_cluster}-#{vm_facet}-#{vm_facet_index}"
+  node_name   = "#{cluster}-#{facet}-#{facet_index}"
 
   # Boot with a GUI so you can see the screen. (Default is headless)
   config.vm.boot_mode = :gui
 
   # Host only network IP lets you access it via the IP.
-  config.vm.network "33.33.33.11"
+  config.vm.network "33.33.33.20"
 
   # Mount this to see all our chefs and stuff
   config.vm.share_folder "cloud-base", "/cloud", "/cloud"
@@ -40,20 +40,16 @@ Vagrant::Config.run do |config|
     chef.add_role       :base_role
     chef.add_role       :chef_client
     chef.add_role       :ssh
-    chef.add_recipe     'motd'
-    chef.add_recipe     'cloud_utils::virtualbox_metadata'
-    chef.add_recipe     'git'
+    # chef.add_role     :nfs_client
     #
-    chef.add_recip      'volumes::mount'
-    chef.add_recipe     'cluster_chef'
-    chef.add_recipe     'tuning'
-    chef.add_recipe     'dashpot::dashboard'
+    chef.add_recipe     'cloud_utils::virtualbox_metadata'
     #
     chef.json = {
       "node_name"       => node_name,
       "cluster_name"    => cluster,
       "facet_name"      => facet,
       "facet_index"     => facet_index,
+
       "chef_server" => {
         "server_url"    => "http://localhost:4000",
         "init_style"    => "runit",

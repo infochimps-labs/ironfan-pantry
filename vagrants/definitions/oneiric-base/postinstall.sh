@@ -13,6 +13,7 @@ apt-get -y upgrade
 apt-get -y install linux-headers-$(uname -r) build-essential
 apt-get -y install zlib1g-dev libssl-dev libreadline5
 apt-get -y install libc6-dev libmysql++-dev libsqlite3-dev make libreadline5-dev zlib1g-dev
+apt-get -y install wget curl runit runit-services openssl libcurl4-openssl-dev libyaml-dev libxslt-dev
 apt-get clean
 
 # Setup sudo to allow no-password sudo for "admin"
@@ -59,7 +60,7 @@ fi
 echo -e "`date` \n\n**** \n**** Installing chef:\n****\n"
 gem install ohai --no-rdoc --no-ri
 gem install chef --no-rdoc --no-ri --version=0.10.04
-gem install      --no-rdoc --no-ri extlib json ruby-shadow right_aws
+gem install      --no-rdoc --no-ri bundler cluster_chef
 
 fi # end ruby+chef install
 

@@ -51,6 +51,7 @@ metadata.json
 .chef
 *.pem
 .rvmrc
+.vagrant
 
 vagrants/iso/*
 vagrants/boxes/*

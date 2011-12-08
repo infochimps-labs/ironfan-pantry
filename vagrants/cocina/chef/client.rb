@@ -24,11 +24,11 @@ end
 
 # Start with a set of defaults
 chef_config = Mash.new({
-    :node_name              => 'el_ridiculoso-cocina-0',
-    :cluster_name           => "el_ridiculoso",
-    :facet_name             => "cocina",
+    :node_name              => 'cocina-chef_server-0',
+    :cluster_name           => "cocina",
+    :facet_name             => "chef_server",
     :facet_index            => 0,
-    :chef_server            => 'http://33.33.33.11:4000' ,
+    :chef_server            => 'http://33.33.33.20:4000' ,
     :validation_client_name => 'chef-validator',
     :validation_client_file => '/etc/chef/validation.pem',
   })
