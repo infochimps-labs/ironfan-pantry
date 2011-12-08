@@ -28,6 +28,10 @@ ClusterChef.cluster 'sandbox' do
     instances           1
   end
 
+  facet :mrflip do
+    instances           1
+  end
+
   cluster_role.override_attributes({
     })
 end

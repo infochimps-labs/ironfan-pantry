@@ -44,9 +44,17 @@ Gemfile.lock
 
 ## PROJECT::SPECIFIC
 
+knife-user-*.rb
+
 .rake_test_cache
 metadata.json
 .chef
 *.pem
 .rvmrc
 vagrants/iso/*
+
+knife/cocina
+knife/infochimps_test
+knife/infochimps_v2
+knife/mrflip
+knife/worblehat
