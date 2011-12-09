@@ -32,11 +32,10 @@ ClusterChef.cluster 'el_ridiculoso' do
   facet :grande do
     instances           1
 
-    role                :zookeeper_server
-
     role                :cassandra_server
     role                :elasticsearch_data_esnode
     role                :elasticsearch_http_esnode
+    role                :zookeeper_server
     role                :flume_master
     role                :flume_agent
     role                :ganglia_master

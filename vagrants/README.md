@@ -3,7 +3,15 @@ You can use [VeeWee](https://raw.github.com/jedi4ever/veewee/),
 [Virtualbox](http://download.virtualbox.org/virtualbox/) to make chef
 development ridiculously funner.
 
-## Installing the Virtualbox image for the first time:
+### Install cluster_chef_homebase
+
+Clone our chef homebase:
+
+    $ git clone http://github.com/infochimps-labs/cluster_chef_homebase.git
+    
+Below, when we refer to `cluster_chef_homebase` the directory just created.
+
+## Installing the Vagrant box for the first time:
 
 ### Install Virtualbox
 
@@ -16,7 +24,7 @@ Run bundle install from your homebase directory
     $ cd cluster_chef_homebase
     $ bundle install
 
-If this worked so far, you should be able to list all templates:
+You should now be able to list all templates:
 
     $ vagrant basebox templates
     The following templates are available:
@@ -36,7 +44,7 @@ Now move into the vagrants/ subdirectory and run
 
 If you don't have the iso file it will download it for you. The ISO file is huge, and will probably take about 30 minutes to pull in.
 
-This will
+The `basebox build` command will
 
 * create a machine + disk according to the definition.rb
 * Note: :os_type_id = The internal Name Virtualbox uses for that Distribution
@@ -47,33 +55,29 @@ This will
 * Wait for ssh login to work with :ssh_user , :ssh_password
 * Sudo execute the :postinstall_files
 
-Next, export the vm to a .box file
+Next, export the vm to a .box file (producing `oneiric-base.box`)
 
-    $ vagrant basebox export 'oneiric-base'
-
-This will result in a oneiric-base.box -- it's simply calling `vagrant package --base 'oneiric-base' --output 'boxes/oneiric-base.box'`
+    $ vagrant basebox export oneiric-base
+    $ mv oneiric-base.box boxes/oneiric-base.box
 
 ### Add the box as one of your boxes
 
 Import the box into vagrant:
 
-    $ cd cluster_chef_homebase/vagrants
-    $ vagrant box add 'oneiric-base' 'oneiric-base.box'
-
+    $ vagrant box add 'oneiric-base' 'boxes/oneiric-base.box'
 __________________________________________________________________________
 
 ## Launch a VM with vagrant
 
 To use it:
 
-    $ vagrant init 'oneiric-base'
+    $ cd vagrants/cocina-chef_server
     $ vagrant up
     $ vagrant ssh
 
 * did the chef solo run by hand not vagrant
 * swap out the /chef directory
 * copy in the pems and the certificates directory
-
 
 __________________________________________________________________________
 

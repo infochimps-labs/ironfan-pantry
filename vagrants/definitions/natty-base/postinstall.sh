@@ -13,7 +13,7 @@ apt-get -y upgrade
 apt-get -y install linux-headers-$(uname -r) build-essential
 apt-get -y install zlib1g-dev libssl-dev libreadline5
 apt-get -y install libc6-dev libmysql++-dev libsqlite3-dev make libreadline5-dev zlib1g-dev
-apt-get -y install wget curl runit runit-services openssl libcurl4-openssl-dev libyaml-dev libxslt-dev
+apt-get -y install wget curl runit runit-services openssl libcurl4-openssl-dev libxml2-dev libyaml-dev libxslt-dev
 apt-get clean
 
 # Setup sudo to allow no-password sudo for "admin"
@@ -54,13 +54,14 @@ update-alternatives \
 if ruby -e "exit(%x{gem --version} < \"1.6.2\" ? 0 : -1 )" ; then
   echo -e "`date` \n\n**** \n**** Updating rubygems:\n****\n"
   gem update --system
+  # screw you rubygems
   for foo in /usr/lib/ruby/site_ruby/*/rubygems/deprecate.rb ; do sudo sed -i.bak 's!@skip ||= false!true!' "$foo" ; done
 fi
 
 echo -e "`date` \n\n**** \n**** Installing chef:\n****\n"
 gem install ohai --no-rdoc --no-ri
 gem install chef --no-rdoc --no-ri --version=0.10.04
-gem install      --no-rdoc --no-ri bundler cluster_chef
+gem install      --no-rdoc --no-ri bundler cheat pry
 
 fi # end ruby+chef install
 
@@ -101,6 +102,7 @@ apt-get -y remove linux-headers-$(uname -r) build-essential
 apt-get -y autoremove
 
 # Zero out the free space to save space in the final image:
+echo "Ignore the harmless 'no space left on device' error"
 dd if=/dev/zero of=/EMPTY bs=1M
 rm -f /EMPTY
 
