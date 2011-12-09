@@ -40,7 +40,7 @@ You should now be able to list all templates:
 Now move into the vagrants/ subdirectory and run
 
     $ cd cluster_chef_homebase/vagrants
-    $ vagrant basebox build 'oneiric-base'
+    $ vagrant basebox build 'natty-base'
 
 If you don't have the iso file it will download it for you. The ISO file is huge, and will probably take about 30 minutes to pull in.
 
@@ -55,16 +55,16 @@ The `basebox build` command will
 * Wait for ssh login to work with :ssh_user , :ssh_password
 * Sudo execute the :postinstall_files
 
-Next, export the vm to a .box file (producing `oneiric-base.box`)
+Next, export the vm to a .box file (producing `natty-base.box`)
 
-    $ vagrant basebox export oneiric-base
-    $ mv oneiric-base.box boxes/oneiric-base.box
+    $ vagrant basebox export natty-base
+    $ mv natty-base.box boxes/natty-base.box
 
 ### Add the box as one of your boxes
 
 Import the box into vagrant:
 
-    $ vagrant box add 'oneiric-base' 'boxes/oneiric-base.box'
+    $ vagrant box add 'natty-base' 'boxes/natty-base.box'
 __________________________________________________________________________
 
 ## Launch a VM with vagrant
