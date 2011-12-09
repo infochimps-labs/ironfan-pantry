@@ -81,7 +81,7 @@ Vagrant::Config.run do |config|
           ["/home/#{ENV['USER']}", { "owner" => ENV['USER'], "remote_path" => ENV['HOME'] } ],
         ] },
       "package_set" => {
-        "install"       => [ "base", "dev", "sysadmin", "text", "vagrant", "cluster_chef" ],
+        "install"       => [ "base", "dev", "sysadmin", "vagrant" ],
         "gems"          => { "cluster_chef" => %w[ cluster_chef ] }
       },
       "tuning"          => { "swappiness" => "60", "overcommit_memory" => "1", "overcommit_ratio" => "100" },

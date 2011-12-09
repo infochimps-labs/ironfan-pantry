@@ -75,6 +75,9 @@ To use it:
     $ cd vagrants/cocina-chef_server
     $ vagrant up
     $ vagrant ssh
+    
+FIXME: this will break; it's trying to look in cloud/cookbooks/cookbooks
+  for cookbooks. ssh in, edit the /etc/chef/solo.rb file, and run chef-client by hand
 
 __________________________________________________________________________
 
@@ -86,38 +89,56 @@ __________________________________________________________________________
 
 * [Create an admin=true client](http://33.33.33.20:4040/clients/new) for
   yourself. If you have an opscode platform user account, make life easy on
-  yourself and use the same name.
+  yourself and use the same name. Check the box 'yes' for admin
   
-* Copy the private key into `{homebase}/knife/cocina/{yourname}.pem`, and chmod
-  it 600. The first and last lines of the file should be the `-----BEGIN...` and
+* Copy-paste the private key into `{homebase}/knife/cocina/{yourname}.pem`
+  - Do so immediately -- it's your only chance to get the key!
+  - The first and last lines of the file should be the `-----BEGIN...` and
   `-----END..` blocks.
+  - do a `chmod 600 {homebase}/knife/cocina/{yourname}.pem`
   
 * [Create the 'vm_dev' environment](http://33.33.33.20:4040/environments/new)
-
+  - you don't 
 
 * go to cluster_chef_homebase/knife and make a copy of the credentials directory for the cocina world
-
 
     cd cluster_chef_homebase/knife 
     cp -rp example cocina
     cd cocina
     git init ; git add .
-    git commit -m "New credentials univers for local VM chef server"
+    git commit -m "New credentials univers for local VM chef server" .
+    
+  subdirectories of `cluster_chef_homebase/knife` are .gitignored; don't check this directory into git.
+
+* upload your cookbooks!
+
+    cd /cloud
+    bundle install
+    export CHEF_USER=yourchefusername CHEF_ORGANIZATION=cocina CHEF_HOMEBASE=/cloud
+    rake roles &    # NEVA GONNA GIVE YOU UP...
+    knife cookbook upload --all
+
+### Make the chef_server a client of itself
+
+* edit the file `cocina/cloud.rb`, and set
+
+    chef_server_url "http://33.33.33.20:4000/"
 
 * ssh to the chef_server vm, 
 
     $ vagrant ssh
     
-  rename the validator into place, and grab a copy for yourself
+  copy the server's copy of the validator so the machine can also be a client, 
+  and grab a copy for posterity
   
-    sudo cp    validation.pem  /cloud/knife/cocina/cocina-validator.pem
+    cd /etc/chef
     sudo ln -s validation.pem  cocina-validator.pem 
-    sudo ln -s /cloud/knife/cocina/dna /etc/chef/dna
+    sudo cp    validation.pem  /cloud/knife/cocina/cocina-validator.pem
+    sudo mv    dna.json        /cloud/knife/cocina/dna/cocina-chef_server-0.json
+    sudo ln -s /cloud/knife/cocina/dna/cocina-chef_server-0.json dna.json
+    sudo ln -s /cloud/knife/cocina/client_keys                   client_keys
 
-    cd /cloud
-    bundle install
-    rake roles &    # NEVA GONNA GIVE YOU UP...
-    knife cookbook upload --all
-    # when those finish
+    # when those finish,
     sudo chef-client
-    
+
+
