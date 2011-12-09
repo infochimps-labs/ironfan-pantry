@@ -29,7 +29,8 @@ Vagrant::Config.run do |config|
   config.vm.network  host_network_ip
 
   # Mount this to see all our chefs and stuff: [type, host_path, vm_path]
-  config.vm.share_folder "homebase", "/cloud",  "/cloud"
+  config.vm.share_folder "homebase", "../..",                   "/cloud"
+  config.vm.share_folder "chef",     "../../knife/#{cluster}",  "/etc/chef"
 
   config.vm.customize do |vm|
     # Name the VM
@@ -53,7 +54,7 @@ Vagrant::Config.run do |config|
   # to this Vagrantfile), and adding some recipes and/or roles.
   #
   config.vm.provision :chef_client do |chef|
-    chef.provisioning_path = '/cloud'
+    chef.provisioning_path = "/etc/chef"
     #
     chef.node_name         = node_name
     chef.chef_server_url   = chef_server_url

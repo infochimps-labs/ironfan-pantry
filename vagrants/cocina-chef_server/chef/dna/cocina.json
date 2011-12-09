@@ -10,8 +10,8 @@
     "server_url":       "http://localhost:4000",
     "init_style":       "runit",
     "webui_enabled":    true,
-    "validation_client_name": "#{cluster}-validator",
-    "validation_client_file": "/etc/chef/#{cluster}-validator.pem",
+    "validation_client_name": "cocina-validator",
+    "validation_client_file": "/etc/chef/cocina-validator.pem",
     "solr_heap_size":         "128M"
   },
 

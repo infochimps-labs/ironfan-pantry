@@ -53,12 +53,12 @@ Vagrant::Config.run do |config|
   # to this Vagrantfile), and adding some recipes and/or roles.
   #
   config.vm.provision :chef_solo do |chef|
-    chef.provisioning_path = '/cloud'
+    chef.provisioning_path = '/etc/chef'
     #
     chef.node_name         = node_name
-    chef.cookbooks_path    = {:vm => "cookbooks"}
-    chef.roles_path        = {:vm => "roles"}
-    chef.data_bags_path    = {:vm => "data_bags"}
+    chef.cookbooks_path    = ["../../cookbooks", [:vm, "/cloud/cookbooks"]]
+    chef.roles_path        = ["../../roles",     [:vm, "/cloud/roles"]]
+    chef.data_bags_path    = ["../../data_bags", [:vm, "/cloud/data_bags"]]
     #
     chef.add_role       :base_role
     chef.add_role       :chef_client
@@ -83,7 +83,7 @@ Vagrant::Config.run do |config|
       },
       #
       "nfs" => { "mounts" => [
-          ["/home/#{ENV['USER']}", { "owner" => ENV['USER'], "remote_path" => env['HOME'] } ],
+          ["/home/#{ENV['USER']}", { "owner" => ENV['USER'], "remote_path" => ENV['HOME'] } ],
         ] },
       "package_set" => {
         "install"       => [ "base", "dev", "sysadmin", "text", "vagrant", "cluster_chef" ],
