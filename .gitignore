@@ -64,3 +64,4 @@ knife/worblehat
 
 vendor/infochimps_v2
 knife/checksums/*
+.vagrant

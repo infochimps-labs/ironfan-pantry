@@ -3,14 +3,17 @@
   "cluster_name":       "cocina",
   "facet_name":         "chef_server",
   "facet_index":        "0",
+  "validation_client_name": "chef-validator",
+  "validation_client_file": "/etc/chef/validation.pem",
 
   "chef_server":  {
     "server_url":       "http://localhost:4000",
     "init_style":       "runit",
-    "webui_enabled":    true
+    "webui_enabled":    true,
+    "validation_client_name": "#{cluster}-validator",
+    "validation_client_file": "/etc/chef/#{cluster}-validator.pem",
+    "solr_heap_size":         "128M"
   },
-  "validation_client_name": "chef-validator",
-  "validation_client_file": "/etc/chef/validation.pem",
 
   "run_list": [
     "role[base_role]",
@@ -30,8 +33,11 @@
     ["/cloud",     { "owner": "root", "remote_path": "/cloud"      } ]
   ] },
 
-  "pkg_sets":           { "install": [ "base", "dev", "sysadmin", "text", "vagrant" ] },
-  "server_tuning":      { "swappiness": "75", "overcommit_memory": "1", "overcommit_ratio": "100" },
+  "package_set":        {
+    "install": [ "base", "dev", "sysadmin", "text", "vagrant", "cluster_chef" ],
+    "gems": { "cluster_chef": ["cluster_chef"] }
+  },
+  "tuning":             { "swappiness": "75", "overcommit_memory": "1", "overcommit_ratio": "100" },
   "java":               { "install_flavor":"sun"},
   "apt":                { "cloudera": { "force_distro": "maverick" } },
   "volumes": { "root":  { "scratch":true,"device":"/dev/mapper/natty--base-root","mount_point":"/","mountable":false } },

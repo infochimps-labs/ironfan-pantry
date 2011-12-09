@@ -14,8 +14,12 @@ role_path                [ "#{homebase_dir}/roles"     ]
 client_key_dir          "#{knife_dir}/#{organization}/client_keys"
 ec2_key_dir             "#{knife_dir}/#{organization}/ec2_keys"
 
-$LOAD_PATH.unshift "#{homebase_dir}/vendor/cluster_chef/lib"
-require 'cluster_chef'
+begin
+  $LOAD_PATH.unshift("#{homebase_dir}/vendor/cluster_chef/lib") if File.exists?("#{homebase_dir}/vendor/cluster_chef/lib")
+  require 'cluster_chef'
+rescue LoadError => e
+  Chef::Log.warn("Cannot load cluster_chef gem -- do 'gem install cluster_chef' or git clone it to #{homebase_dir}/vendor/cluster_chef")
+end
 
 log_level                :info
 log_location             STDOUT
