@@ -41,6 +41,25 @@ The following tasks duplicate functionality from knife and may be removed in a f
 * `upload_cookbooks` - replaced by `knife cookbook upload -a`.
 * `upload_cookbook[cookbook]` - replaced by `knife cookbook upload COOKBOOK`.
 
+Installation
+============
+
+Umm... infochimps specfic for the moment, sorry world
+
+1. Clone from https://github.com/infochimps-labs/cluster_chef_homebase
+2. rename it to /cloud (needs sudo probably) -- there should now be files /cloud/chefignore, Rakefile, etc
+3. rename your existing .chef file out of the way (rename to .chef-v1 or something)
+4. ln -s /cloud/knife ~/.chef
+5. get the directory of keys from flip, drop it in /cloud/knife (so there is now a folder /cloud/knife/infochimps_v2
+6. gem install cluster_chef
+   - and move any existing cluster_chef out of your RUBYLIB, etc
+7. cd /cloud ; git submodule update --init
+8. move your `infochimps_chef` directory to `/cloud/vendor/infochimps_v2`
+9. you should now be able to knife cluster list, knife cluster show sandbox and so forth
+10. set the environment variables:
+    
+    export CHEF_USER=yourchefusername CHEF_ORGANIZATION=infochimps_v2 CHEF_HOMEBASE=/cloud
+
 Configuration
 =============
 

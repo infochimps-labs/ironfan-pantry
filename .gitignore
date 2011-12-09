@@ -56,12 +56,7 @@ metadata.json
 vagrants/iso/*
 vagrants/boxes/*
 
-knife/cocina
-knife/infochimps_test
-knife/infochimps_v2
-knife/mrflip
-knife/worblehat
-
 vendor/infochimps_v2
+knife/*
 knife/checksums/*
 .vagrant

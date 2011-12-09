@@ -94,6 +94,16 @@ __________________________________________________________________________
   
 * [Create the 'vm_dev' environment](http://33.33.33.20:4040/environments/new)
 
+
+* go to cluster_chef_homebase/knife and make a copy of the credentials directory for the cocina world
+
+
+    cd cluster_chef_homebase/knife 
+    cp -rp example cocina
+    cd cocina
+    git init ; git add .
+    git commit -m "New credentials univers for local VM chef server"
+
 * ssh to the chef_server vm, 
 
     $ vagrant ssh
