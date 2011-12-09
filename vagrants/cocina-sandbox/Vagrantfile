@@ -11,7 +11,7 @@ Vagrant::Config.run do |config|
   facet_index      = '0'
   node_name        = "#{cluster}-#{facet}-#{facet_index}"
   host_network_ip  = "33.33.33.21"
-  chef_server_url = "http://#{host_network_ip}:4000"
+  chef_server_url = "http://33.33.33.20:4000"
   chef_environment = "vm_dev"
 
   # ===========================================================================
@@ -28,9 +28,9 @@ Vagrant::Config.run do |config|
   # Host only network IP lets you access it via the IP.
   config.vm.network  host_network_ip
 
-  # Mount this to see all our chefs and stuff: [type, host_path, vm_path]
-  config.vm.share_folder "homebase", "../..",                   "/cloud"
-  config.vm.share_folder "chef",     "../../knife/#{cluster}",  "/etc/chef"
+  # Mount this to see all our chefs and stuff: [type, vm_path, host_path]
+  config.vm.share_folder "homebase", "/cloud",    "../.."                   
+  config.vm.share_folder "chef",     "/etc/chef", "../../knife/#{cluster}"
 
   config.vm.customize do |vm|
     # Name the VM
@@ -54,9 +54,10 @@ Vagrant::Config.run do |config|
   # to this Vagrantfile), and adding some recipes and/or roles.
   #
   config.vm.provision :chef_client do |chef|
-    chef.provisioning_path = "/etc/chef"
     #
     chef.node_name         = node_name
+    #
+    chef.provisioning_path = '/etc/chef'
     chef.chef_server_url   = chef_server_url
     chef.validation_client_name = "#{cluster}-validator"
     chef.validation_key_path = "../../knife/#{cluster}/#{cluster}-validator.pem"
@@ -77,7 +78,7 @@ Vagrant::Config.run do |config|
       "facet_index"     => facet_index,
       #
       "nfs" => { "mounts" => [
-          ["/home/#{ENV['USER']}", { "owner" => ENV['USER'], "remote_path" => env['HOME'] } ],
+          ["/home/#{ENV['USER']}", { "owner" => ENV['USER'], "remote_path" => ENV['HOME'] } ],
         ] },
       "package_set" => {
         "install"       => [ "base", "dev", "sysadmin", "text", "vagrant", "cluster_chef" ],

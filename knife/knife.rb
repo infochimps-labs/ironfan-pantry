@@ -1,4 +1,6 @@
-raise('please set the CHEF_ORGANIZATION, CHEF_USER environment variables to your chef server organization and username, and CHEF_HOMEBASE to the base directory for your cookbooks') unless ENV['CHEF_ORGANIZATION'] && ENV['CHEF_USER'] && ENV['CHEF_HOMEBASE']
+unless ENV['CHEF_ORGANIZATION'] && ENV['CHEF_USER'] && ENV['CHEF_HOMEBASE']
+  raise("please set the environment variables CHEF_ORGANIZATION and CHEF_USER \n(to the organization name and user name on your chef server) \nand CHEF_HOMEBASE (to the directory that holds your cookbooks):\n    export CHEF_ORGANIZATION=cocina CHEF_USER=chimpy CHEF_HOMEBASE=/cloud")
+end
 
 organization             ENV['CHEF_ORGANIZATION']
 username                 ENV['CHEF_USER']
@@ -18,7 +20,7 @@ begin
   $LOAD_PATH.unshift("#{homebase_dir}/vendor/cluster_chef/lib") if File.exists?("#{homebase_dir}/vendor/cluster_chef/lib")
   require 'cluster_chef'
 rescue LoadError => e
-  Chef::Log.warn("Cannot load cluster_chef gem -- do 'gem install cluster_chef' or git clone it to #{homebase_dir}/vendor/cluster_chef")
+  Chef::Log.warn("Cannot load cluster_chef -- do 'gem install cluster_chef' or git clone it to #{homebase_dir}/vendor/cluster_chef")
 end
 
 log_level                :info

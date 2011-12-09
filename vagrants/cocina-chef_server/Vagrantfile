@@ -53,9 +53,10 @@ Vagrant::Config.run do |config|
   # to this Vagrantfile), and adding some recipes and/or roles.
   #
   config.vm.provision :chef_solo do |chef|
-    chef.provisioning_path = '/etc/chef'
     #
     chef.node_name         = node_name
+    #
+    chef.provisioning_path = '/etc/chef'
     chef.cookbooks_path    = ["../../cookbooks", [:vm, "/cloud/cookbooks"]]
     chef.roles_path        = ["../../roles",     [:vm, "/cloud/roles"]]
     chef.data_bags_path    = ["../../data_bags", [:vm, "/cloud/data_bags"]]
@@ -86,7 +87,7 @@ Vagrant::Config.run do |config|
           ["/home/#{ENV['USER']}", { "owner" => ENV['USER'], "remote_path" => ENV['HOME'] } ],
         ] },
       "package_set" => {
-        "install"       => [ "base", "dev", "sysadmin", "text", "vagrant", "cluster_chef" ],
+        "install"       => [ "base", "dev", "sysadmin", "text", "vagrant", "cluster_chef", "xml" ],
         "gems"          => { "cluster_chef" => %w[ cluster_chef ] }
       },
       "tuning"          => { "swappiness" => "60", "overcommit_memory" => "1", "overcommit_ratio" => "100" },

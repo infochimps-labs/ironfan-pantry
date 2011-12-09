@@ -53,8 +53,7 @@ update-alternatives \
 
 if ruby -e "exit(%x{gem --version} < \"1.6.2\" ? 0 : -1 )" ; then
   echo -e "`date` \n\n**** \n**** Updating rubygems:\n****\n"
-  gem install --no-rdoc --no-ri rubygems-update --version=1.6.2
-  update_rubygems --version=1.6.2
+  gem update --system
 fi
 
 echo -e "`date` \n\n**** \n**** Installing chef:\n****\n"
