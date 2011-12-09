@@ -65,6 +65,7 @@ Next, export the vm to a .box file (producing `natty-base.box`)
 Import the box into vagrant:
 
     $ vagrant box add 'natty-base' 'boxes/natty-base.box'
+
 __________________________________________________________________________
 
 ## Launch a VM with vagrant
@@ -74,10 +75,6 @@ To use it:
     $ cd vagrants/cocina-chef_server
     $ vagrant up
     $ vagrant ssh
-
-* did the chef solo run by hand not vagrant
-* swap out the /chef directory
-* copy in the pems and the certificates directory
 
 __________________________________________________________________________
 
