@@ -2,12 +2,10 @@
 # Configure chef run
 #
 
-cluster                "cocina"
-facet                  "chef_server"
+cluster                "example"
+facet                  "sandbox"
 facet_index            "0"
-chef_server_url        "http://localhost:4000"
-
-FileUtils.mkdir_p("/etc/chef/client_keys")
+chef_server_url        "http://33.33.33.20:4000"
 
 log_level              :info
 log_location           STDOUT

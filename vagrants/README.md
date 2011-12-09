@@ -70,7 +70,6 @@ To use it:
     $ vagrant up
     $ vagrant ssh
 
-
 * did the chef solo run by hand not vagrant
 * swap out the /chef directory
 * copy in the pems and the certificates directory
@@ -91,6 +90,8 @@ __________________________________________________________________________
 * Copy the private key into `{homebase}/knife/cocina/{yourname}.pem`, and chmod
   it 600. The first and last lines of the file should be the `-----BEGIN...` and
   `-----END..` blocks.
+  
+* [Create the 'vm_dev' environment](http://33.33.33.20:4040/environments/new)
 
 * ssh to the chef_server vm, 
 
@@ -98,7 +99,14 @@ __________________________________________________________________________
     
   rename the validator into place, and grab a copy for yourself
   
-    sudo mv validation.pem cocina-validator.pem
-    sudo cp cocina-validator.pem /cloud/knife/cocina/cocina-validator.pem
-    
+    sudo cp    validation.pem  /cloud/knife/cocina/cocina-validator.pem
+    sudo ln -s validation.pem  cocina-validator.pem 
+    sudo ln -s /cloud/knife/cocina/dna /etc/chef/dna
+
+    cd /cloud
+    bundle install
+    rake roles &    # NEVA GONNA GIVE YOU UP...
+    knife cookbook upload --all
+    # when those finish
+    sudo chef-client
     

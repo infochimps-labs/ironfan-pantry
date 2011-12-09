@@ -54,6 +54,7 @@ update-alternatives \
 if ruby -e "exit(%x{gem --version} < \"1.6.2\" ? 0 : -1 )" ; then
   echo -e "`date` \n\n**** \n**** Updating rubygems:\n****\n"
   gem update --system
+  for foo in /usr/lib/ruby/site_ruby/*/rubygems/deprecate.rb ; do sudo sed -i.bak 's!@skip ||= false!true!' "$foo" ; done
 fi
 
 echo -e "`date` \n\n**** \n**** Installing chef:\n****\n"
