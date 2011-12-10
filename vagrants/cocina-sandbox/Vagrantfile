@@ -11,13 +11,16 @@ Vagrant::Config.run do |config|
   facet_index      = '0'
   node_name        = "#{cluster}-#{facet}-#{facet_index}"
   host_network_ip  = "33.33.33.21"
-  chef_server_url = "http://33.33.33.20:4000"
+  chef_server_url  = "http://33.33.33.20:4000"
   chef_environment = "vm_dev"
 
   # ===========================================================================
   #
   # Configure VM
   #
+
+  # Home for credentials and machine-specific setup
+  cluster_privates_dir = File.expand_path("../../knife/#{cluster}/", File.dirname(__FILE__))
 
   # box to build off of.
   config.vm.box = "natty-base"
@@ -30,7 +33,7 @@ Vagrant::Config.run do |config|
 
   # Mount this to see all our chefs and stuff: [type, vm_path, host_path]
   config.vm.share_folder "homebase", "/cloud",    "../.."
-  config.vm.share_folder "chef",     "/etc/chef", "../../knife/#{cluster}"
+  config.vm.share_folder "chef",     "/etc/chef", cluster_privates_dir
 
   config.vm.customize do |vm|
     # Name the VM
@@ -57,11 +60,10 @@ Vagrant::Config.run do |config|
     #
     chef.node_name         = node_name
     #
-    # chef.provisioning_path = '/etc/chef'
     chef.chef_server_url   = chef_server_url
     chef.validation_client_name = "#{cluster}-validator"
-    chef.validation_key_path = File.expand_path("../../knife/#{cluster}/#{cluster}-validator.pem", File.dirname(__FILE__))
-    chef.client_key_path     = File.expand_path("../../knife/#{cluster}/client_keys/client-#{node_name}.pem", File.dirname(__FILE__))
+    chef.validation_key_path = File.join(cluster_privates_dir, "#{cluster}-validator.pem")
+    chef.client_key_path     = File.join(cluster_privates_dir, "client_keys", "client-#{node_name}.pem")
     chef.environment         = chef_environment
     #
     chef.add_role       :base_role
