@@ -1,5 +1,6 @@
 unless ENV['CHEF_ORGANIZATION'] && ENV['CHEF_USER'] && ENV['CHEF_HOMEBASE']
-  raise("please set the environment variables CHEF_ORGANIZATION and CHEF_USER \n(to the organization name and user name on your chef server) \nand CHEF_HOMEBASE (to the directory that holds your cookbooks):\n    export CHEF_ORGANIZATION=cocina CHEF_USER=chimpy CHEF_HOMEBASE=/cloud")
+  Chef::Log.warn("Please set the environment variables CHEF_ORGANIZATION and CHEF_USER \n(to the organization name and user name on your chef server) \nand CHEF_HOMEBASE (to the directory that holds your cookbooks):\n\n    export CHEF_ORGANIZATION=cocina CHEF_USER=chimpy CHEF_HOMEBASE=/cloud\n")
+  raise("One or more of $CHEF_ORGANIZATION $CHEF_USER $CHEF_HOMEBASE are unset. Add them to your ~/.bashrc or whatever")
 end
 
 organization             ENV['CHEF_ORGANIZATION']
@@ -15,13 +16,6 @@ role_path                [ "#{homebase_dir}/roles"     ]
 # Cloud keypairs -- be sure to `chmod og-rwx -R */*-keys/`
 client_key_dir          "#{knife_dir}/#{organization}/client_keys"
 ec2_key_dir             "#{knife_dir}/#{organization}/ec2_keys"
-
-begin
-  $LOAD_PATH.unshift("#{homebase_dir}/vendor/cluster_chef/lib") if File.exists?("#{homebase_dir}/vendor/cluster_chef/lib")
-  require 'cluster_chef'
-rescue LoadError => e
-  Chef::Log.warn("Cannot load cluster_chef -- do 'gem install cluster_chef' or git clone it to #{homebase_dir}/vendor/cluster_chef")
-end
 
 log_level                :info
 log_location             STDOUT
