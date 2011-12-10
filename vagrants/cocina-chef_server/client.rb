@@ -16,5 +16,6 @@ validation_client_name "#{cluster}-validator"
 validation_key         "/etc/chef/#{cluster}-validator.pem"
 client_key             "/etc/chef/client_keys/client-#{node_name}.pem"
 environment            "vm_dev"
+json_attribs           "/etc/chef/dna.json"
 
 Chef::Log.info("=> chef client #{node_name} on #{chef_server_url}")

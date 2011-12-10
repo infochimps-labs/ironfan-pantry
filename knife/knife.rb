@@ -25,7 +25,7 @@ validation_client_name   "#{organization}-validator"
 validation_key           "#{knife_dir}/#{organization}/#{organization}-validator.pem"
 client_key               "#{knife_dir}/#{organization}/#{username}.pem"
 cache_type               'BasicFile'
-cache_options            :path => "#{knife_dir}/checksums"
+cache_options            :path => "/tmp/chef-checksums-#{username}"
 
 # If you primarily use AWS cloud services:
 knife[:ssh_address_attribute] = 'cloud.public_hostname'

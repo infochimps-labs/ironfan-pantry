@@ -23,6 +23,6 @@ group :development do
 end
 
 group :vagrant do
-  gem 'vagrant'
-  gem 'veewee'
+  gem 'vagrant',    "~> 0.8.8"
+  gem 'veewee',     "~> 0.2.0"
 end

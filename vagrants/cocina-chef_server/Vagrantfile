@@ -8,7 +8,7 @@ Vagrant::Config.run do |config|
   # cloud we're targeting
   cluster          = 'cocina'
   facet            = 'chef_server'
-  facet_index      = '0'
+  facet_index      = '1'
   node_name        = "#{cluster}-#{facet}-#{facet_index}"
   host_network_ip  = "33.33.33.20"
   chef_server_url  = "http://localhost:4000"
@@ -19,6 +19,9 @@ Vagrant::Config.run do |config|
   # Configure VM
   #
 
+  # Home for credentials and machine-specific setup
+  cluster_privates_dir = File.expand_path("../../knife/#{cluster}/", File.dirname(__FILE__))
+
   # box to build off of.
   config.vm.box = "natty-base"
 
@@ -28,8 +31,9 @@ Vagrant::Config.run do |config|
   # Host only network IP lets you access it via the IP.
   config.vm.network  host_network_ip
 
-  # Mount this to see all our chefs and stuff: [type, host_path, vm_path]
-  config.vm.share_folder "homebase", "/cloud",  "/cloud"
+  # Mount this to see all our chefs and stuff: [type, vm_path, host_path]
+  config.vm.share_folder "homebase", "/cloud", "../.."
+
 
   config.vm.customize do |vm|
     # Name the VM
@@ -57,9 +61,9 @@ Vagrant::Config.run do |config|
     chef.node_name         = node_name
     #
     chef.provisioning_path = '/etc/chef'
-    chef.cookbooks_path    = ["../../cookbooks", [:vm, "/cloud/cookbooks"]]
-    chef.roles_path        = ["../../roles",     [:vm, "/cloud/roles"]]
-    chef.data_bags_path    = ["../../data_bags", [:vm, "/cloud/data_bags"]]
+    chef.cookbooks_path    = [:vm, "/cloud"]
+    chef.roles_path        = [:vm, "/cloud"]
+    chef.data_bags_path    = [:vm, "/cloud"]
     #
     chef.add_role       :base_role
     chef.add_role       :chef_client
@@ -73,6 +77,7 @@ Vagrant::Config.run do |config|
       "cluster_name"    => cluster,
       "facet_name"      => facet,
       "facet_index"     => facet_index,
+      "chef_server_url" => chef_server_url,
 
       "chef_server" => {
         "server_url"    => chef_server_url,

@@ -98,7 +98,7 @@ __________________________________________________________________________
   - do a `chmod 600 {homebase}/knife/cocina/{yourname}.pem`
   
 * [Create the 'vm_dev' environment](http://33.33.33.20:4040/environments/new)
-  - you don't 
+  - you don't need to set anything, just create it.
 
 * go to cluster_chef_homebase/knife and make a copy of the credentials directory for the cocina world
 
@@ -126,7 +126,7 @@ __________________________________________________________________________
 
 * ssh to the chef_server vm, 
 
-    $ vagrant ssh
+    vagrant ssh
     
   copy the server's copy of the validator so the machine can also be a client, 
   and grab a copy for posterity

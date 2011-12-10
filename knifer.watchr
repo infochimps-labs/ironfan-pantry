@@ -1,7 +1,7 @@
 # -*- ruby -*-
 
-COOKBOOK_PATHS = %w[cookbooks meta-cookbooks site-cookbooks] unless defined?(COOKBOOK_PATHS)
-ROLES_PATH     = 'roles'                                     unless defined?(ROLES_PATH)
+COOKBOOK_PATHS = %w[ cookbooks ] unless defined?(COOKBOOK_PATHS)
+ROLES_PATH     =     'roles'     unless defined?(ROLES_PATH)
 
 def upload_cookbook(cookbook)
   Watchr.debug "uploading cookbook #{cookbook}"
