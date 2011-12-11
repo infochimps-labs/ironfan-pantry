@@ -3,13 +3,32 @@ You can use [VeeWee](https://raw.github.com/jedi4ever/veewee/),
 [Virtualbox](http://download.virtualbox.org/virtualbox/) to make chef
 development ridiculously funner.
 
-### Install cluster_chef_homebase
+### Install cluster_chef-homebase
 
-Clone our chef homebase:
+Clone this repo, producing the directory we'll call `homebase` from now on. In fact, you may wish to rename it:
 
-    $ git clone http://github.com/infochimps-labs/cluster_chef_homebase.git
+        git clone https://github.com/infochimps-labs/cluster_chef-homebase
+        mv cluster_chef-homebase homebase
+        cd homebase
+        git submodule update --init
+
+Now follow the instructions
+
+* from [the main directory README.md](../README.md), for overall setup
+* from [the knife/ folder README.md](../knife/README.md), for chef config file setup
     
-Below, when we refer to `cluster_chef_homebase` the directory just created.
+you're ready to go when you can `knife cluster list` and get formatted output:
+
+        $ knife cluster list
+        +--------------------+---------------------------------------------------+
+        | cluster            | path                                              |
+        +--------------------+---------------------------------------------------+
+        | burninator         | /cloud/clusters/burninator.rb                     |
+        | hadoop_demo        | /cloud/clusters/hadoop_demo.rb                    |
+          ...                  ...
+        | sandbox            | /cloud/clusters/sandbox.rb                        |
+        +--------------------+---------------------------------------------------+
+
 
 ## Installing the Vagrant box for the first time:
 
@@ -21,17 +40,17 @@ Download and install Virtualbox 4.x -- visit http://download.virtualbox.org/virt
 
 Run bundle install from your homebase directory
 
-    $ cd cluster_chef_homebase
-    $ bundle install
+        $ cd cluster_chef_homebase
+        $ bundle install
 
 You should now be able to list all templates:
 
-    $ vagrant basebox templates
-    The following templates are available:
-    # ....
-    vagrant basebox define '<boxname>' 'ubuntu-10.10-server-amd64'-netboot'
-    # ...
-    vagrant basebox define '<boxname>' 'ubuntu-11.10-server-amd64-ruby192'
+        $ vagrant basebox templates
+        The following templates are available:
+        # ....
+        vagrant basebox define '<boxname>' 'ubuntu-10.10-server-amd64'-netboot'
+        # ...
+        vagrant basebox define '<boxname>' 'ubuntu-11.10-server-amd64-ruby192'
 
 ### Build the new box
 
@@ -39,8 +58,8 @@ You should now be able to list all templates:
 
 Now move into the vagrants/ subdirectory and run
 
-    $ cd cluster_chef_homebase/vagrants
-    $ vagrant basebox build 'natty-base'
+        $ cd cluster_chef_homebase/vagrants
+        $ vagrant basebox build 'natty-base'
 
 If you don't have the iso file it will download it for you. The ISO file is huge, and will probably take about 30 minutes to pull in.
 
@@ -57,14 +76,14 @@ The `basebox build` command will
 
 Next, export the vm to a .box file (producing `natty-base.box`)
 
-    $ vagrant basebox export natty-base
-    $ mv natty-base.box boxes/natty-base.box
+        $ vagrant basebox export natty-base
+        $ mv natty-base.box boxes/natty-base.box
 
 ### Add the box as one of your boxes
 
 Import the box into vagrant:
 
-    $ vagrant box add 'natty-base' 'boxes/natty-base.box'
+        $ vagrant box add 'natty-base' 'boxes/natty-base.box'
 
 __________________________________________________________________________
 
@@ -72,9 +91,9 @@ __________________________________________________________________________
 
 To use it:
 
-    $ cd vagrants/cocina-chef_server
-    $ vagrant up
-    $ vagrant ssh
+        $ cd vagrants/cocina-chef_server
+        $ vagrant up
+        $ vagrant ssh
     
 FIXME: this will break; it's trying to look in cloud/cookbooks/cookbooks
   for cookbooks. ssh in, edit the /etc/chef/solo.rb file, and run chef-client by hand
@@ -102,43 +121,41 @@ __________________________________________________________________________
 
 * go to cluster_chef_homebase/knife and make a copy of the credentials directory for the cocina world
 
-    cd cluster_chef_homebase/knife 
-    cp -rp example cocina
-    cd cocina
-    git init ; git add .
-    git commit -m "New credentials univers for local VM chef server" .
+        cd cluster_chef_homebase/knife 
+        cp -rp example cocina
+        cd cocina
+        git init ; git add .
+        git commit -m "New credentials univers for local VM chef server" .
     
   subdirectories of `cluster_chef_homebase/knife` are .gitignored; don't check this directory into git.
 
 * upload your cookbooks!
 
-    cd /cloud
-    bundle install
-    export CHEF_USER=yourchefusername CHEF_ORGANIZATION=cocina CHEF_HOMEBASE=/cloud
-    rake roles &    # NEVA GONNA GIVE YOU UP...
-    knife cookbook upload --all
+        cd /cloud
+        bundle install
+        export CHEF_USER=yourchefusername CHEF_ORGANIZATION=cocina CHEF_HOMEBASE=/cloud
+        rake roles &    # NEVA GONNA GIVE YOU UP...
+        knife cookbook upload --all
 
 ### Make the chef_server a client of itself
 
 * edit the file `cocina/cloud.rb`, and set
 
-    chef_server_url "http://33.33.33.20:4000/"
+        chef_server_url "http://33.33.33.20:4000/"
 
 * ssh to the chef_server vm, 
 
-    vagrant ssh
+        vagrant ssh
     
   copy the server's copy of the validator so the machine can also be a client, 
   and grab a copy for posterity
-  
-    cd /etc/chef
-    sudo ln -s validation.pem  cocina-validator.pem 
-    sudo cp    validation.pem  /cloud/knife/cocina/cocina-validator.pem
-    sudo mv    dna.json        /cloud/knife/cocina/dna/cocina-chef_server-0.json
-    sudo ln -s /cloud/knife/cocina/dna/cocina-chef_server-0.json dna.json
-    sudo ln -s /cloud/knife/cocina/client_keys                   client_keys
 
-    # when those finish,
-    sudo chef-client
+        cd /etc/chef
+        sudo ln -s validation.pem  cocina-validator.pem 
+        sudo cp    validation.pem  /cloud/knife/cocina/cocina-validator.pem
+        sudo mv    dna.json        /cloud/knife/cocina/dna/cocina-chef_server-0.json
+        sudo ln -s /cloud/knife/cocina/dna/cocina-chef_server-0.json dna.json
+        sudo ln -s /cloud/knife/cocina/client_keys                   client_keys
 
-
+        # when those finish,
+        sudo chef-client

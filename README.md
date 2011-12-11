@@ -27,10 +27,11 @@ In all of the below,
 Installation
 ============
 
-1. Clone this repo, producing the directory we'll call `homebase` from now on.
+1. Clone this repo, producing the directory we'll call `homebase` from now on. In fact, you may wish to rename it:
 
-        git clone https://github.com/infochimps-labs/cluster_chef_homebase
-        cd cluster_chef_homebase
+        git clone https://github.com/infochimps-labs/cluster_chef-homebase
+        mv cluster_chef-homebase homebase
+        cd homebase
         git submodule update --init
 
 2. Install the cluster_chef gem
@@ -39,14 +40,15 @@ Installation
 
 3. Set up your [knife.rb](http://help.opscode.com/faqs/chefbasics/knife) file.
 
-3. Optional: If you don't have an existing chef setup, follow steps in
+  - New to Chef: If you don't have an existing chef setup, follow steps in
    `knife/README.md` to set up your `~/.chef` and its credentials
    (`knife/{organization}`) folder. Make sure to set the environment variables
    in both your .bashrc and your current shell session:
    
         export CHEF_USER={username} CHEF_ORGANIZATION={organization} CHEF_HOMEBASE={homebase}
      
-4. If instead you're using your own knife.rb, add the path to your clusters folder
+  - Have a knife.rb: add one line to your knife.rb, telling chef where to find
+    your cluster definitions:
 
         cluster_path   [ "#{/path/to/your/homebase}/clusters"  ]
     
