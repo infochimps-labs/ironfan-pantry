@@ -29,13 +29,13 @@ Installation
 
 1. Clone this repo, producing the directory we'll call `homebase` from now on.
 
-    git clone https://github.com/infochimps-labs/cluster_chef_homebase
-    cd cluster_chef_homebase
-    git submodule update --init
+        git clone https://github.com/infochimps-labs/cluster_chef_homebase
+        cd cluster_chef_homebase
+        git submodule update --init
 
 2. Install the cluster_chef gem
 
-    gem install cluster_chef
+        gem install cluster_chef
 
 3. Set up your [knife.rb](http://help.opscode.com/faqs/chefbasics/knife) file.
 
@@ -44,27 +44,27 @@ Installation
    (`knife/{organization}`) folder. Make sure to set the environment variables
    in both your .bashrc and your current shell session:
    
-      export CHEF_USER={username} CHEF_ORGANIZATION={organization} CHEF_HOMEBASE={homebase}
+        export CHEF_USER={username} CHEF_ORGANIZATION={organization} CHEF_HOMEBASE={homebase}
      
 4. If instead you're using your own knife.rb, add the path to your clusters folder
 
-      cluster_path   [ "#{/path/to/your/homebase}/clusters"  ]
+        cluster_path   [ "#{/path/to/your/homebase}/clusters"  ]
     
 5. You should now be able to knife cluster list, knife cluster launch and so forth:
     
-    $ knife cluster list
-    +--------------------+---------------------------------------------------+
-    | cluster            | path                                              |
-    +--------------------+---------------------------------------------------+
-    | a_simple_cluster   | /cloud/clusters/a_simple_cluster.rb               |
-    | burninator         | /cloud/clusters/burninator.rb                     |
-    | el_ridiculoso      | /cloud/clusters/el_ridiculoso.rb                  |
-    | elasticsearch_demo | /cloud/clusters/elasticsearch_demo.rb             |
-    | hadoop_demo        | /cloud/clusters/hadoop_demo.rb                    |
-    +--------------------+---------------------------------------------------+
-
-    $ knife cluster launch a_simple_cluster --bootstrap 
-    # ...
+      $ knife cluster list
+      +--------------------+---------------------------------------------------+
+      | cluster            | path                                              |
+      +--------------------+---------------------------------------------------+
+      | a_simple_cluster   | /cloud/clusters/a_simple_cluster.rb               |
+      | burninator         | /cloud/clusters/burninator.rb                     |
+      | el_ridiculoso      | /cloud/clusters/el_ridiculoso.rb                  |
+      | elasticsearch_demo | /cloud/clusters/elasticsearch_demo.rb             |
+      | hadoop_demo        | /cloud/clusters/hadoop_demo.rb                    |
+      +--------------------+---------------------------------------------------+
+  
+      $ knife cluster launch a_simple_cluster --bootstrap 
+      # ...
     
 
 Next Steps
