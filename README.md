@@ -40,14 +40,14 @@ Installation
 
 3. Set up your [knife.rb](http://help.opscode.com/faqs/chefbasics/knife) file.
 
-  - New to Chef: If you don't have an existing chef setup, follow steps in
+  - _New to Chef_: If you don't have an existing chef setup, follow steps in
    `knife/README.md` to set up your `~/.chef` and its credentials
    (`knife/{organization}`) folder. Make sure to set the environment variables
    in both your .bashrc and your current shell session:
    
         export CHEF_USER={username} CHEF_ORGANIZATION={organization} CHEF_HOMEBASE={homebase}
      
-  - Have a knife.rb: add one line to your knife.rb, telling chef where to find
+  - _Have a knife.rb_: add one line to your knife.rb, telling chef where to find
     your cluster definitions:
 
         cluster_path   [ "#{/path/to/your/homebase}/clusters"  ]
