@@ -52,19 +52,19 @@ Installation
     
 5. You should now be able to knife cluster list, knife cluster launch and so forth:
     
-      $ knife cluster list
-      +--------------------+---------------------------------------------------+
-      | cluster            | path                                              |
-      +--------------------+---------------------------------------------------+
-      | a_simple_cluster   | /cloud/clusters/a_simple_cluster.rb               |
-      | burninator         | /cloud/clusters/burninator.rb                     |
-      | el_ridiculoso      | /cloud/clusters/el_ridiculoso.rb                  |
-      | elasticsearch_demo | /cloud/clusters/elasticsearch_demo.rb             |
-      | hadoop_demo        | /cloud/clusters/hadoop_demo.rb                    |
-      +--------------------+---------------------------------------------------+
-  
-      $ knife cluster launch a_simple_cluster --bootstrap 
-      # ...
+        $ knife cluster list
+        +--------------------+---------------------------------------------------+
+        | cluster            | path                                              |
+        +--------------------+---------------------------------------------------+
+        | a_simple_cluster   | /cloud/clusters/a_simple_cluster.rb               |
+        | burninator         | /cloud/clusters/burninator.rb                     |
+        | el_ridiculoso      | /cloud/clusters/el_ridiculoso.rb                  |
+        | elasticsearch_demo | /cloud/clusters/elasticsearch_demo.rb             |
+        | hadoop_demo        | /cloud/clusters/hadoop_demo.rb                    |
+        +--------------------+---------------------------------------------------+
+      
+        $ knife cluster launch a_simple_cluster --bootstrap 
+        # ...
     
 
 Next Steps
