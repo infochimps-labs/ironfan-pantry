@@ -14,8 +14,8 @@ Clone this repo, producing the directory we'll call `homebase` from now on. In f
 
 Now follow the instructions
 
-* from [the main directory README.md](../README.md), for overall setup
-* from [the knife/ folder README.md](../knife/README.md), for chef config file setup
+* from [the main directory README.md](README.md), for overall setup
+* from [the knife/ folder README.md](knife/README.md), for chef config file setup
     
 you're ready to go when you can `knife cluster list` and get formatted output:
 
