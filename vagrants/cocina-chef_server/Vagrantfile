@@ -10,7 +10,7 @@ Vagrant::Config.run do |config|
   facet            = 'chef_server'
   facet_index      = '1'
   node_name        = "#{cluster}-#{facet}-#{facet_index}"
-  host_network_ip  = "33.33.33.20"
+  host_network_ip  = "33.33.33.21"
   chef_server_url  = "http://localhost:4000"
   chef_environment = "vm_dev"
 

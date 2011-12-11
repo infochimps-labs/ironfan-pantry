@@ -16,70 +16,83 @@ This repository contains several directories, and each directory contains a READ
 * `data_bags/` - Store data bags and items in .json in the repository.
 * `roles/` - Store roles in .rb or .json in the repository.
 
+In all of the below, 
+
+* `{username}` identifies your personal chef client name: the thing you use to log into the chef webui.
+  
+* `{organization}`: identifies the credentials set and cloud settings to use.  If your chef server is on the Opscode platform (try it! it's super-easy), use your organization name (the last segment of your chef_server url). If not, just use any sensible identifier.
+  
+* `{homebase}`: the directory that holds your chef cookbooks, roles and so forth. For example, this file is in `{homebase}/knife/README.md`.
+
+Installation
+============
+
+1. Clone this repo, producing the directory we'll call `homebase` from now on.
+
+    git clone https://github.com/infochimps-labs/cluster_chef_homebase
+    cd cluster_chef_homebase
+    git submodule update --init
+
+2. Install the cluster_chef gem
+
+    gem install cluster_chef
+
+3. Set up your [knife.rb](http://help.opscode.com/faqs/chefbasics/knife) file.
+
+3. Optional: If you don't have an existing chef setup, follow steps in
+   `knife/README.md` to set up your `~/.chef` and its credentials
+   (`knife/{organization}`) folder. Make sure to set the environment variables
+   in both your .bashrc and your current shell session:
+   
+      export CHEF_USER={username} CHEF_ORGANIZATION={organization} CHEF_HOMEBASE={homebase}
+     
+4. If instead you're using your own knife.rb, add the path to your clusters folder
+
+      cluster_path   [ "#{/path/to/your/homebase}/clusters"  ]
+    
+5. You should now be able to knife cluster list, knife cluster launch and so forth:
+    
+    $ knife cluster list
+    +--------------------+---------------------------------------------------+
+    | cluster            | path                                              |
+    +--------------------+---------------------------------------------------+
+    | a_simple_cluster   | /cloud/clusters/a_simple_cluster.rb               |
+    | burninator         | /cloud/clusters/burninator.rb                     |
+    | el_ridiculoso      | /cloud/clusters/el_ridiculoso.rb                  |
+    | elasticsearch_demo | /cloud/clusters/elasticsearch_demo.rb             |
+    | hadoop_demo        | /cloud/clusters/hadoop_demo.rb                    |
+    +--------------------+---------------------------------------------------+
+
+    $ knife cluster launch a_simple_cluster --bootstrap 
+    # ...
+    
+
+Next Steps
+==========
+
+Read the README file in each of the subdirectories for more information about what goes in those directories.
+
 Rake Tasks
 ==========
 
 The repository contains a `Rakefile` that includes tasks that are installed with the Chef libraries. To view the tasks available with in the repository with a brief description, run `rake -T`.
 
-The default task (`default`) is run when executing `rake` with no arguments. It will call the task `test_cookbooks`.
-
-The following tasks are not directly replaced by knife sub-commands.
-
-* `bundle_cookbook[cookbook]` - Creates cookbook tarballs in the `pkgs/` dir.
-* `install` - Calls `update`, `roles` and `upload_cookbooks` Rake tasks.
-* `ssl_cert` - Create self-signed SSL certificates in `certificates/` dir.
-* `update` - Update the repository from source control server, understands git and svn.
-
-The following tasks duplicate functionality from knife and may be removed in a future version of Chef.
-
-* `metadata` - replaced by `knife cookbook metadata -a`.
-* `new_cookbook` - replaced by `knife cookbook create`.
-* `role[role_name]` - replaced by `knife role from file`.
-* `roles` - iterates over the roles and uploads with `knife role from file`.
-* `test_cookbooks` - replaced by `knife cookbook test -a`.
-* `test_cookbook[cookbook]` - replaced by `knife cookbook test COOKBOOK`.
-* `upload_cookbooks` - replaced by `knife cookbook upload -a`.
-* `upload_cookbook[cookbook]` - replaced by `knife cookbook upload COOKBOOK`.
-
-Installation
-============
-
-Umm... infochimps specfic for the moment, sorry world
-
-1. Clone from https://github.com/infochimps-labs/cluster_chef_homebase
-2. rename it to /cloud (needs sudo probably) -- there should now be files /cloud/chefignore, Rakefile, etc
-3. rename your existing .chef file out of the way (rename to .chef-v1 or something)
-4. ln -s /cloud/knife ~/.chef
-5. get the directory of keys from flip, drop it in /cloud/knife (so there is now a folder /cloud/knife/infochimps_v2
-6. gem install cluster_chef
-   - and move any existing cluster_chef out of your RUBYLIB, etc
-7. cd /cloud ; git submodule update --init
-8. move your `infochimps_chef` directory to `/cloud/vendor/infochimps_v2`
-9. you should now be able to knife cluster list, knife cluster show sandbox and so forth
-10. set the environment variables:
-    
-    export CHEF_USER=yourchefusername CHEF_ORGANIZATION=infochimps_v2 CHEF_HOMEBASE=/cloud
-
-Configuration
-=============
-
-The repository uses two configuration files.
-
-* config/rake.rb
-* .chef/knife.rb
-
-The first, `config/rake.rb` configures the Rakefile in two sections.
+Besides your `~/.chef/knife.rb` file, the Rakefile loads `config/rake.rb`, which sets:
 
 * Constants used in the `ssl_cert` task for creating the certificates.
 * Constants that set the directory locations used in various tasks.
 
 If you use the `ssl_cert` task, change the values in the `config/rake.rb` file appropriately. These values were also used in the `new_cookbook` task, but that task is replaced by the `knife cookbook create` command which can be configured below.
 
-The second config file, `.chef/knife.rb` is a repository specific configuration file for knife. If you're using the Opscode Platform, you can download one for your organization from the management console. If you're using the Open Source Chef Server, you can generate a new one with `knife configure`. For more information about configuring Knife, see the Knife documentation.
+The default task (`default`) is run when executing `rake` with no arguments. It will call the task `test_cookbooks`.
 
-http://help.opscode.com/faqs/chefbasics/knife
+The following standard chef tasks are typically accomplished using the rake file:
 
-Next Steps
-==========
+* `bundle_cookbook[cookbook]` - Creates cookbook tarballs in the `pkgs/` dir.
+* `install` - Calls `update`, `roles` and `upload_cookbooks` Rake tasks.
+* `ssl_cert` - Create self-signed SSL certificates in `certificates/` dir.
+* `update` - Update the repository from source control server, understands git and svn.
+* `roles` - iterates over the roles and uploads with `knife role from file`.
 
-Read the README file in each of the subdirectories for more information about what goes in those directories.
+Most other tasks use knife: run a bare `knife cluster`, `knife cookbook` (etc)
+to find out more.
