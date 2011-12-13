@@ -1,0 +1,35 @@
+{
+  "dependencies": {
+    "mysql": ">= 1.2.0",
+    "ufw": ">= 0.6.1",
+    "database": ">= 1.0.0",
+    "apache2": ">= 0.0.0"
+  },
+  "name": "zabbix",
+  "maintainer_email": "nacer.laradji@gmail.com",
+  "attributes": {
+  },
+  "license": "Apache 2.0",
+  "suggestions": {
+  },
+  "platforms": {
+    "debian": ">= 6.0",
+    "ubuntu": ">= 10.04"
+  },
+  "maintainer": "Nacer Laradji",
+  "long_description": "= DESCRIPTION:\nThis cookbook install zabbix-agent and zabbix-server.\n\nBy defaut the cookbook install zabbix-agent, check the attribute for enable/disable zabbix_server / web or disable zabbix_agent installation.\n\nDefault login password for zabbix frontend is admin / zabbix  CHANGE IT !\n\nThe mikoomi part is not standard , it has be tune for working on agent side, so include the zabbix::mikoomi recipe on agent side.\n\n= REQUIREMENTS:\n\n= ATTRIBUTES:\n\nDon't forget to set [:zabbix][:agent][:servers] = [\"Your_zabbix_server.com\",\"secondaryserver.com\"]\nDon't forget to set [:zabbix][:web][:fqdn] or you will not have the zabbix web interface\n\nIf you want to use beta release of zabbix you can change the branch attribute and the zabbix version\nexample : \n\nnode[:zabbix][:server][:branch] = \"ZABBIX%20Latest%20Development\"\nnode[:zabbix][:server][:version] = \"1.9.6\"\n\n\n= USAGE:\n\nBe carefull when you update your server version, you need to run the sql patch in /opt/zabbix-$VERSION.\n\n= TODO:\n\n- Support more platform on agent side centos, windows ?\n- Add support for ufw , this way search agent how need to have accces to zabbix_server:10051 <-> zabbix_agent:10050\n\n= CHANGELOG:\n\n0.0.18\n\t- Fix sysconfdir to point to /etc/zabbix on recipe server_source \n\t- Fix right for folder frontends/php on recipe web\n\t- Hardcode the PATH of conf file in initscript\n\t- Agent source need to build on a other folder\n\t- Add --prefix option to default attributes when using *-source recipe\n\t\n0.0.17\n\t- Don't mess with te PID, PID are now in /tmp\n\t\n0.0.16 \n\t- Add depencies for recipe agent_source\n\t- Add AlertScriptsPath folder and option for server.\n\t\n0.0.15\n\t- Add firewall magic for communication between client and server\n0.0.14\n\t- Correction on documentation\n0.0.13\n\t- Fix some issue on web receipe.\n\t\n0.0.12 \n\t- Change default value of zabbix.server.dbpassword to nil\n\n0.0.11\n\t- Remove mikoomo\n\t- Still refactoring\n\t\n0.0.10\n\t- Preparation for multiple type installation and some refactoring\n\t- Support the installation of a beta version when using the install_method == source and changing the attribute branch\n\n0.0.9\n\t- Tune of mikoomi for running on agent side.\n\n0.0.8 \n\t- Fix some major issu\n\t\n0.0.7 \n\t- Add some love to php value\n\t- Now recipe mysql_setup populate the database\n\t- Minor fix\n\t\n0.0.6 \n\t- Change the name of the web_app to fit the fqdn\n\n\n\t\n",
+  "version": "0.0.18",
+  "recommendations": {
+  },
+  "recipes": {
+  },
+  "groupings": {
+  },
+  "conflicting": {
+  },
+  "replacing": {
+  },
+  "description": "Installs/Configures zabbix Agent/Server",
+  "providing": {
+  }
+}
