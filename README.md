@@ -45,6 +45,7 @@ Installation
         mv cluster_chef-homebase homebase
         cd homebase
         git submodule update --init
+        # (you may want to go into the submodule checkout(s) and switch each to its master branch)
 
 2. Install the cluster_chef gem
 
