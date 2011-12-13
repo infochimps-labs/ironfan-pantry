@@ -1,0 +1,4 @@
+[submodule "vendor/opscode"]
+	path   = vendor/opscode
+	url    = git://github.com/infochimps-labs/opscode_cookbooks.git
+        update = merge
