@@ -14,7 +14,7 @@ done
 source ${CASSANDRA_HOME}/conf/cassandra-env.sh
 
 JMX_PORT=<%= @cassandra[:jmx_dash_port] %>
-JMX_ADDR=<%= ClusterChef::NodeUtils.public_ip_of(node) %>
+JMX_ADDR=<%= ClusterChef::NodeUtils.private_ip_of(node) %>
 
 # bump number of open files allowed way way up
 ulimit -n 65535
@@ -64,6 +64,7 @@ exec chpst -u${CASSANDRA_USER} -e /etc/sv/cassandra/env -o 65535       \
       -XX:+UseCompressedOops                                           \
 <%- end %>
       -Dlog4j.configuration=log4j-server.properties                    \
+      -Djava.net.preferIPv4Stack=true                                  \
       -cp ${CLASSPATH}                                                 \
 org.apache.cassandra.thrift.CassandraDaemon 2>&1
       

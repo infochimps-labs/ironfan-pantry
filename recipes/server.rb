@@ -29,15 +29,6 @@ end
 
 include_recipe("cassandra::authentication")
 
-template "#{node[:cassandra][:conf_dir]}/cassandra.yaml" do
-  source        "cassandra.yaml.erb"
-  owner         "root"
-  group         "root"
-  mode          "0644"
-  variables     :cassandra => node[:cassandra]
-  notifies      :restart, "service[cassandra]", :delayed if startable?(node[:cassandra])
-end
-
 template "#{node[:cassandra][:conf_dir]}/log4j-server.properties" do
   source        "log4j-server.properties.erb"
   owner         "root"
@@ -51,4 +42,25 @@ end
 if (node[:cassandra][:seed_node] || (node[:facet_index].to_i % 3 == 0) )
   announce(:cassandra, :seed)
 end
+
+# Variation from the infochimps recipe.
+# Theirs didn't work for me.
+seed_ips = []
+discover_all(:cassandra, :seed).each do |s| 
+  seed_ips << s.node.ipaddress
+end
+
+# Racy.  Proper fix involves proper orchestration.
+template "#{node[:cassandra][:conf_dir]}/cassandra.yaml" do
+  source        "cassandra.yaml.erb"
+  owner         "root"
+  group         "root"
+  mode          "0644"
+  variables     ( {
+                 :cassandra => node[:cassandra],
+                 :seeds => seed_ips
+                  } )
+  notifies      :restart, "service[cassandra]", :delayed if startable?(node[:cassandra])
+end
+
 announce(:cassandra, :server)

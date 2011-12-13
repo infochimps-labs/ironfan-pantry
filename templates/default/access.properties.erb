@@ -26,8 +26,7 @@
 
 # NOTE: This file contains potentially sensitive information, please keep
 # this in mind when setting its mode and ownership.
-
-<%- @acls.keys.each_pair do |keyspace, cfs| %>
+<%- @acls.each_pair do |keyspace, cfs| %>
 <%-   cfs.each_pair do |cf, perms| %>
 <%-      perms.each_pair do |perm, users| %>
 <%-        if cf == "_" %>
