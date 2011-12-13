@@ -24,7 +24,7 @@ role_path           [ "#{homebase}/roles"     ]
 # Keys and cloud-specific settings.
 # Be sure all your .pem files are non-readable (mode 0600)
 #
-credentials_path    File.join(File.dirname(__FILE__), organization)
+credentials_path    File.join(File.dirname(__FILE__), "#{organization}-credentials")
 client_key_dir      "#{credentials_path}/client_keys"
 ec2_key_dir         "#{credentials_path}/ec2_keys"
 
