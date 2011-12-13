@@ -44,8 +44,6 @@ Gemfile.lock
 
 ## PROJECT::SPECIFIC
 
-knife-user-*.rb
-
 .rake_test_cache
 metadata.json
 .chef
@@ -58,4 +56,5 @@ vagrants/boxes/*
 
 vendor/internal
 knife/*-credentials
+knife-user-*.rb
 knife/checksums/*
