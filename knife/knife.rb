@@ -62,4 +62,4 @@ load_if_exists "#{credentials_path}/credentials.rb"
 # Organization-sepecific settings -- Chef::Config[:ec2_image_info] and so forth
 load_if_exists "#{credentials_path}/cloud.rb"
 # User-specific knife info or credentials
-load_if_exists "#{File.dirname(__FILE__)}/knife-user-#{user}.rb"
+load_if_exists File.expand_path("knife-user-#{username}.rb", File.dirname(__FILE__))
