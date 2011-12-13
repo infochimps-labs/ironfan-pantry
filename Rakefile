@@ -29,12 +29,13 @@ rescue Bundler::BundlerError => e
 end
 require 'chef'
 require 'json'
-require 'rspec/core'
+require 'rspec'
 require 'rspec/core/rake_task'
 require 'yard'
 
 # Load constants from rake config file.
-require File.join(File.dirname(__FILE__), 'config', 'rake')
+$LOAD_PATH.unshift('tasks')
+Dir[File.join('tasks', '*.rake')].sort.each{|f| load(f) }
 
 # ---------------------------------------------------------------------------
 #
