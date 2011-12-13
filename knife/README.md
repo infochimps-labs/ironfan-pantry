@@ -34,22 +34,28 @@ To set up your credentials directory, visit `{homebase}/knife` and duplicate the
 
 ## User / Cloud config
 
-Organization-specific settings are in `knife/{organization}-credentials/knife-org.rb`
+Add your credentials in the following places:
 
-* **chef_server_url**: If you are an opscode platform user, your `chef_server_url` defaults to `https://api.opscode.com/organizations/#{organization}`. Otherwise, uncomment and edit the lines for your `chef_server_url` and `validator`. 
-* **cloud-specific settings**: if you are targeting a cloud provider, add account information and configuration here. 
+* Organization-specific settings are in `knife/{organization}-credentials/knife-org.rb`:
+  - _chef server url_: Uncomment and edit the lines for your `chef_server_url` and `validator`. If you are an opscode platform user, you can skip this step -- your `chef_server_url` defaults to `https://api.opscode.com/organizations/#{organization}` and your validator to `{organization}-validator.pem`.
+  - _cloud-specific settings_: if you are targeting a cloud provider, add account information and configuration here. 
 
-* User-specific settings are in `knife/{organization}-credentials/knife-org.rb`. Add any custom cookbook or cluster definition paths here -- for example, if you're using EC2 you should set your access keys
+* User-specific settings are in `knife/{organization}-credentials/knife-user-{username}.rb`. (You can duplicate and rename the one in `knife/example-credentials/knife-user-example.rb`)
+  - for example, if you're using EC2 you should set your access keys:
 
         Chef::Config.knife[:aws_access_key_id]      = "XXXX"
         Chef::Config.knife[:aws_secret_access_key]  = "XXXX"
         Chef::Config.knife[:aws_account_id]         = "XXXX"
+        
+* Chef user key in `{credentials_path}/{username}.pem`
 
+* Organization validator key in `{credentials_path}/{organization}-validator.pem`
 
+* If you have existing amazon machines, place their keypairs in `{credentials_path}/ec2_keys` 
 
 ## Try it out
 
-You should now be able to use knife:
+You should now be able to use knife.
 
         $ export CHEF_ORGANIZATION=cocina 
 
@@ -74,6 +80,7 @@ You should now be able to use knife:
 That example lists the contents of the chef server on my machine. To target myopscode chef server, I just toggle the environment variable:
 
         $ CHEF_ORGANIZATION=infochimps knife client list
+        
         bonobo-master-0
         bonobo-worker-0
         bonobo-worker-1
@@ -105,6 +112,3 @@ choice largely comes down to how you'd like to version your credentials.
 ## Standard
 
 Don't want our opinion? You can use cluster_chef with any generic knife.rb file. If you're using the Opscode Platform, you can download one for your organization from the management console. If you're using the Open Source Chef Server, you can generate a new one with `knife configure`. 
-
-
-
