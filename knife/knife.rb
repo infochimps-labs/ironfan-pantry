@@ -3,9 +3,12 @@
 # username     - selects your client key and user-specific overrides
 # homebase     - default location for clusters, cookbooks and so forth
 #
-organization        File.expand_path(ENV['CHEF_ORGANIZATION'])
-username            File.expand_path(ENV['CHEF_USER'])
+organization        ENV['CHEF_ORGANIZATION']
+username            ENV['CHEF_USER']
 homebase            File.expand_path(ENV['CHEF_HOMEBASE'])
+
+
+p [organization, username, homebase]
 
 unless organization && username && homebase
   Chef::Log.warn %Q{Please set these environment variables:\n\n* CHEF_ORGANIZATION (got '#{organization}') chef server organization name\n* CHEF_USER         (got '#{username}') chef server username\n* CHEF_HOMEBASE     (got '#{homebase}') folder holding cookbooks/, roles/, etc dirs\n\n}
@@ -27,6 +30,8 @@ role_path           [ "#{homebase}/roles"     ]
 credentials_path    File.expand_path("#{organization}-credentials", File.dirname(__FILE__))
 client_key_dir      "#{credentials_path}/client_keys"
 ec2_key_dir         "#{credentials_path}/ec2_keys"
+
+p [organization, username, homebase, credentials_path]
 
 #
 # Load the vendored cluster_chef lib if present
