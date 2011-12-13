@@ -22,21 +22,30 @@ The source your config file to set those environment variables.
 
 ## Credentials
 
-Go to `{homebase}/knife` and duplicate the credentials directory, naming it after your organization:
+All the keys and settings specific to your organization are held in a separate directory, versioned and distributed independently of the homebase. 
+
+To set up your credentials directory, visit `{homebase}/knife` and duplicate the example, naming it {organization}-credentials:
 
         cd $CHEF_HOMEBASE/knife 
-        cp -rp example $CHEF_ORGANIZATION
-        cd $CHEF_ORGANIZATION
+        cp -rp example-credentials $CHEF_ORGANIZATION-credentials
+        cd $CHEF_ORGANIZATION-credentials
         git init ; git add .
-        git commit -m "New credentials univers for $CHEF_ORGANIZATION" .
-    
-subdirectories of `{homebase}/knife` are .gitignored; we recommend you don't check this directory into the same git repo that holds your cookbooks.
+        git commit -m "New credentials universe for $CHEF_ORGANIZATION" .
 
 ## User / Cloud config
 
-If you are an opscode platform user, your `chef_server_url` defaults to `https://api.opscode.com/organizations/#{organization}` -- you don't need to change anything.
+Organization-specific settings are in `knife/{organization}-credentials/knife-org.rb`
 
-Otherwise, open `knife/$CHEF_ORGANIZATION/cloud.rb`. Uncomment and edit the lines for your `chef_server_url` and `validator`. Add any custom cookbook or cluster definition paths here.
+* **chef_server_url**: If you are an opscode platform user, your `chef_server_url` defaults to `https://api.opscode.com/organizations/#{organization}`. Otherwise, uncomment and edit the lines for your `chef_server_url` and `validator`. 
+* **cloud-specific settings**: if you are targeting a cloud provider, add account information and configuration here. 
+
+* User-specific settings are in `knife/{organization}-credentials/knife-org.rb`. Add any custom cookbook or cluster definition paths here -- for example, if you're using EC2 you should set your access keys
+
+        Chef::Config.knife[:aws_access_key_id]      = "XXXX"
+        Chef::Config.knife[:aws_secret_access_key]  = "XXXX"
+        Chef::Config.knife[:aws_account_id]         = "XXXX"
+
+
 
 ## Try it out
 
