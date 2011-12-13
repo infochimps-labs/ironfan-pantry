@@ -56,7 +56,6 @@ metadata.json
 vagrants/iso/*
 vagrants/boxes/*
 
-vendor/infochimps_v2
-knife/*
+vendor/internal
+knife/*-credentials
 knife/checksums/*
-.vagrant
