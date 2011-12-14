@@ -1,0 +1,9 @@
+GRAPHITE_ROOT = "<%= File.join(@web_dir, "/") %>"
+STORAGE_DIR = "<%= File.join(@data_dir, "/") %>"
+WHISPER_DIR = STORAGE_DIR + 'whisper/'
+RRD_DIR = STORAGE_DIR + 'rrd/'
+LISTS_DIR = STORAGE_DIR + 'lists/'
+INDEX_FILE = STORAGE_DIR + 'index'
+WHITELIST_FILE = LISTS_DIR + 'whitelist'
+LOG_DIR = "<%= File.join(@log_dir, "/webapp/") %>"
+DATABASE_NAME = STORAGE_DIR + 'graphite.db'     # Or path to database file if using sqlite3.

@@ -10,6 +10,7 @@ depends          "python"
 depends          "apache2"
 depends          "runit"
 depends          "ganglia"
+depends          "install_from"
 
 recipe           "graphite::carbon",                   "Carbon"
 recipe           "graphite::default",                  "Base configuration for graphite"
@@ -21,20 +22,30 @@ recipe           "graphite::whisper",                  "Whisper"
   supports os
 end
 
+attribute "graphite/conf_dir",
+  :display_name          => "",
+  :description           => "",
+  :default               => "/etc/graphite/"
+
 attribute "graphite/home_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/opt/graphite/"
+  :default               => "/usr/local/share/graphite/"
 
 attribute "graphite/data_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/opt/graphite/storage"
+  :default               => "/var/lib/graphite/storage/"
 
 attribute "graphite/log_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/opt/graphite/storage/log/webapp"
+  :default               => "/var/log/webapp"
+
+attribute "graphite/pid_dir",
+  :display_name          => "",
+  :description           => "",
+  :default               => "/var/run/webapp"
 
 attribute "graphite/carbon/line_rcvr_addr",
   :display_name          => "",
