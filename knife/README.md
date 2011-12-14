@@ -20,6 +20,10 @@ In your ~/.bashrc (or whatever), add lines
 
 The source your config file to set those environment variables.
 
+So that knife finds its configuration files, symlink the `{homebase}/knife` directory (the one holding this file) to be your `~/.chef` folder. (Or see the end of the readme for alternatives you may prefer)
+
+        ln -sni $CHEF_HOMEBASE/knife ~/.chef
+
 ## Credentials
 
 All the keys and settings specific to your organization are held in a separate directory, versioned and distributed independently of the homebase. 
@@ -43,9 +47,9 @@ Add your credentials in the following places:
 * User-specific settings are in `knife/{organization}-credentials/knife-user-{username}.rb`. (You can duplicate and rename the one in `knife/example-credentials/knife-user-example.rb`)
   - for example, if you're using EC2 you should set your access keys:
 
-        Chef::Config.knife[:aws_access_key_id]      = "XXXX"
-        Chef::Config.knife[:aws_secret_access_key]  = "XXXX"
-        Chef::Config.knife[:aws_account_id]         = "XXXX"
+          Chef::Config.knife[:aws_access_key_id]      = "XXXX"
+          Chef::Config.knife[:aws_secret_access_key]  = "XXXX"
+          Chef::Config.knife[:aws_account_id]         = "XXXX"
         
 * Chef user key in `{credentials_path}/{username}.pem`
 
