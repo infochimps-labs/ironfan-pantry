@@ -58,3 +58,5 @@ vendor/internal
 knife/*-credentials
 knife-user-*.rb
 knife/checksums/*
+vendor/cluster_chef
+knife/plugins
