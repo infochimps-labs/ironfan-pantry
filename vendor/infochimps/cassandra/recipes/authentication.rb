@@ -42,7 +42,38 @@
 #          }
 #       }}}
 #
-#
+# An example of the resulting json data looks like this:
+#     "TestCassandraStaging": {
+#       "authentication": {
+#         "use_md5": true,
+#         "users": {
+#           "pn": "pn",
+#           "test": "test"
+#         }
+#       },
+#       "authority": {
+#         "keyspace": {
+#           "abc": {
+#             "rw": [
+#               "pn"
+#             ],
+#             "ro": [
+#               "test"
+#             ]
+#           },
+#           "_": {
+#             "rw": [
+#               "pn"
+#             ],
+#             "ro": [
+#               "test"
+#             ]
+#           }
+#         }
+#       }
+#     },
+#     "Id": "clusters"
+#   },
 
 clusters = data_bag_item('cassandra', 'clusters') rescue nil
 return unless clusters
@@ -53,7 +84,7 @@ return unless cluster
 auth = cluster['authentication']
 if auth
   node[:cassandra][:authenticator] = "org.apache.cassandra.auth.SimpleAuthenticator"
-  if auth['use_md5']
+  if auth['use_md5'] 
     node[:cassandra][:passwd_use_md5] = true
   end
 

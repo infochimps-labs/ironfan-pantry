@@ -2,11 +2,12 @@ maintainer       "Benjamin Black"
 maintainer_email "b@b3k.us"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "0.2.2"
+version          "0.2.3"
 
 description      "Cassandra: a massively scalable high-performance distributed storage system"
 
 depends          "java"
+depends          "apt"
 depends          "runit"
 depends          "thrift"
 depends          "iptables"
@@ -67,8 +68,8 @@ attribute "cassandra/saved_caches_dir",
   :default               => "/var/lib/cassandra/saved_caches"
 
 attribute "cassandra/user",
-  :display_name          => "",
-  :description           => "",
+  :display_name          => "cassandra",
+  :description           => "The cassandra user",
   :default               => "cassandra"
 
 attribute "cassandra/listen_addr",
@@ -384,8 +385,8 @@ attribute "cassandra/pid_dir",
   :default               => "/var/run/cassandra"
 
 attribute "cassandra/group",
-  :display_name          => "",
-  :description           => "",
+  :display_name          => "nogroup",
+  :description           => "The group that cassandra belongs to",
   :default               => "nogroup"
 
 attribute "cassandra/version",

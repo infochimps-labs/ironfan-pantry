@@ -126,7 +126,7 @@ reduce_cache_capacity_to: <%= @cassandra[:reduce_cache_capacity_to] %> # 0.6
 # the topology of the ring.  You must change this if you are running
 # multiple nodes!
 seeds:
-<%- @cassandra[:seeds].each do |seed| -%>
+<%- @seeds.each do |seed| -%>
     - <%= seed %>
 <%- end -%>
 
