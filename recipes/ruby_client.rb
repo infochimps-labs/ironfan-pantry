@@ -1,6 +1,6 @@
 #
 # Cookbook Name::       cassandra
-# Description::         Base configuration for cassandra
+# Description::         support gems for cassandra (incl. fauna/cassandra and apache/avro)
 # Recipe::              ruby_client
 # Author::              Benjamin Black (<b@b3k.us>)
 #
@@ -21,8 +21,9 @@
 
 # == Recipes
 
+include_recipe 'cassandra'
+
 # == Packages
 
 gem_package 'cassandra'
 gem_package 'avro'
-
