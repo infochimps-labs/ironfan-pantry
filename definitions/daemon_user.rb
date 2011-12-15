@@ -27,9 +27,17 @@ define(:daemon_user,
   #
   user_val                = params[:user].to_s
   group_val               = params[:group].to_s
-  uid_val                 = node[:users ][user_val ] && node[:users ][user_val ][:uid]
-  gid_val                 = node[:groups][group_val] && node[:groups][group_val][:gid]
-  #
+  begin 
+    uid_val                 = node[:users ][user_val ] && node[:users ][user_val ][:uid]
+  rescue
+    uid_val = nil
+  end
+  begin
+    gid_val                 = node[:groups][group_val] && node[:groups][group_val][:gid] 
+  rescue
+    gid_val = nil
+  end
+
   params[:create_group]   = [:create] if (params[:create_group] == true)
   params[:create_group]   = false     if (group_val == 'nogroup')
 
