@@ -20,7 +20,6 @@
 #
 
 include_recipe "graphite"
-include_recipe "ganglia::gmetad"
 
 target = "#{node[:graphite][:data_dir]}/rrd/#{node[:ganglia][:cluster_name]}"
 

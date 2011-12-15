@@ -1,11 +1,12 @@
 
 default[:graphite][:conf_dir]                            = '/etc/graphite/'
-default[:graphite][:data_dir]                            = nil
+default[:graphite][:data_dir]                            = '/var/lib/graphite/storage/'
 default[:graphite][:home_dir]                            = '/usr/local/share/graphite/'
-default[:graphite][:log_dir]                             = '/var/log/graphite'
+default[:graphite][:log_dir]                             = '/var/log/graphite/'
 default[:graphite][:pid_dir]                             = '/var/run/graphite'
 
-default[:graphite][:user]                                = 'graphite'
+default[:graphite][:carbon      ][:user]                 = 'www-data'
+default[:graphite][:whisper     ][:user]                 = 'www-data'
 default[:graphite][:graphite_web][:user]                 = 'www-data'
 
 default[:users ]['graphite'][:uid] = 446

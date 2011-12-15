@@ -23,6 +23,8 @@ include_recipe "runit"
 
 package "python-twisted"
 
+carbon_dir = node[:graphite][:carbon][:home_dir] || "/usr/local/share/carbon"
+
 install_from_release('carbon') do
   version       node[:graphite][:carbon][:version]
   release_url   node[:graphite][:carbon][:release_url]
@@ -38,18 +40,20 @@ end
 #   cwd "/usr/src/carbon-#{node[:graphite][:carbon][:version]}"
 # end
 
-template "/opt/graphite/conf/carbon.conf" do
-  variables( :line_rcvr_addr   => node[:graphite][:carbon][:line_rcvr_addr],
+template "#{node[:graphite][:conf_dir]}/carbon.conf" do
+  variables( :storage_dir      => node[:graphite][:data_dir],
+             :line_rcvr_addr   => node[:graphite][:carbon][:line_rcvr_addr],
              :pickle_rcvr_addr => node[:graphite][:carbon][:pickle_rcvr_addr],
              :cache_query_addr => node[:graphite][:carbon][:cache_query_addr] )
   notifies :restart, "service[carbon-cache]", :delayed if startable?(node[:graphite][:carbon])
 end
 
-template "/opt/graphite/conf/storage-schemas.conf"
+template "#{node[:graphite][:conf_dir]}/storage-schemas.conf"
 
-cookbook_file "/etc/init.d/carbon-cache" do
-  source "init.d_carbon-cache"
+template "/etc/init.d/carbon-cache" do
+  source "init.d_carbon-cache.erb"
   mode 0755
+  variables :carbon_dir => carbon_dir
 end
 
 # # execute "setup carbon sysvinit script" do
