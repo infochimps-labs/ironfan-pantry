@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       cassandra
 # Description::         Base configuration for cassandra
-# Recipe::              default
+# Recipe::              ruby_client
 # Author::              Benjamin Black (<b@b3k.us>)
 #
 # Copyright 2010, Benjamin Black
@@ -21,26 +21,8 @@
 
 # == Recipes
 
-include_recipe "metachef"
-include_recipe "volumes"
-include_recipe "java" ; complain_if_not_sun_java(:cassandra)
-include_recipe "thrift"
-
 # == Packages
 
-# Defer the ruby cassandra stuff to another recipe.
-# gem_package 'cassandra'
-# gem_package 'avro'
+gem_package 'cassandra'
+gem_package 'avro'
 
-# == Users
-
-daemon_user(:cassandra) do
-  create_group  false
-end
-
-# == Directories
-
-standard_dirs('cassandra') do
-  directories   [:conf_dir, :log_dir, :lib_dir, :pid_dir, :data_dirs, :commitlog_dir, :saved_caches_dir]
-  group         'root'
-end
