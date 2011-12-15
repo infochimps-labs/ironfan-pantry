@@ -88,6 +88,22 @@ Next Steps
 
 Read the README file in each of the subdirectories for more information about what goes in those directories.
 
+
+Cookbook Versioning and Tracking
+================================
+
+This homebase groups all the repos we use, and is most 
+
+* every cookbook has its own repo on [infochimps-cookbooks' github](http://github.com/infochimps-cookbooks) 
+* They are all git-subtree'd into [this repo](http://github.com/infochimps-labs/cluster_chef-homebase): 
+  - infochimps-maintained cookbooks: git-subtree from the infochimps-cookbooks home, placed in `vendor/infochimps`.
+  - Other cookbooks: git-subtree from the infochimps-cookbooks fork, placed in `vendor/{original_author}`
+  - Opscode community cookboks: *git submodule* of the [infochimps-labs](http://github.com/infochimps-labs/opscode_cookbooks) fork of opscode/cookbooks is into `vendor/opscode`. This holds *all* their cookbooks.
+* The actual collection we use is defined by symlinks in `cookbooks/foo` to `../vendor/whatever/foo`. This is everything in vendor/infochimps, vendor/{other}, and the curated subset of things in vendor/opscode.
+* Each cookbook's history is present in its solo repo as far back as the may 2011 re-org. However, that history shows up weird in the homebase -- this is a limitation in git that we can't work around.
+
+We welcome pull requests against either homebase or the individual repo. Please only file issues at the [cluster_chef](https://github.com/infochimps/cluster_chef/issues) bug tracker though.
+
 Rake Tasks
 ==========
 
