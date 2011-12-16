@@ -76,7 +76,7 @@ module ClusterChef
       def in_main_tree
         raise "Repo dirty. Too terrified to move.\n#{filth}" unless clean?
         cd main_dir do
-          sh("git", "checkout", "master")
+          sh("git", "checkout", "public")
           yield
         end
       end
