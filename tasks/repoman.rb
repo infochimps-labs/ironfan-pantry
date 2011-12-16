@@ -234,11 +234,11 @@ module ClusterChef
 
       def pull_to_main_from_solo
         create_solo
-        task "repo:solo:pull_to_main_from#{name}" => "repo:solo:create_#{name}" do
+        task "repo:solo:pull_to_main_from_#{name}" => "repo:solo:create_#{name}" do
           cd main_dir do
             sh('git', 'pull', "#{solo_dir}/.git", "master:#{branch_name}")
             Log.debug("Pulling subtree for #{name} from #{solo_dir} into #{main_dir}")
-            sh( "git-subtree", "pull", "-P", path, "#{solo_dir}/.git", "master" ){|ok, status| Log.debug("status #{status}") }
+            sh( "git-subtree", "merge", "-P", path, branch_name ){|ok, status| Log.debug("status #{status}") }
           end
         end
       end
