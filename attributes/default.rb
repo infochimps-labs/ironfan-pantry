@@ -5,6 +5,7 @@ default[:graphite][:home_dir]                            = '/usr/local/share/gra
 default[:graphite][:log_dir]                             = '/var/log/graphite/'
 default[:graphite][:pid_dir]                             = '/var/run/graphite'
 
+default[:graphite][:user]                                = 'graphite'
 default[:graphite][:carbon      ][:user]                 = 'www-data'
 default[:graphite][:whisper     ][:user]                 = 'www-data'
 default[:graphite][:graphite_web][:user]                 = 'www-data'
