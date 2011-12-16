@@ -34,7 +34,7 @@
 #     end
 #
 define(:volume_dirs,
-  :aspect    => nil,         # eg 'log', 'data', etc.
+  :aspect    => nil,         # eg 'log', 'data', etc. NOTE: 'log', not 'log_dir'.
   :selects   => nil,         # :all creates ??_log_dirs, an array of one or more for the matching volume set; :single creates ??_log_dir, from the first in the matching volume set
   :type      => :persistent, # one of `:persistent` or `:local`
   :path      => nil,         # default: "#{sys}/#{subsys}/#{aspect}" -- eg "mysql/log" or "redis/data". NOTE: if the node attribute is already present, it is used as the full path and this is ignored.
