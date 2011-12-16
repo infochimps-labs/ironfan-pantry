@@ -4,6 +4,7 @@
 # Nothing special -- one master that does everything; debug your job, then
 # launch the workers to run it for real.
 #
+#
 # You will need the role definitions from
 # [cluster_chef-homebase](https://github.com/infochimps-labs/cluster_chef-homebase)
 # to use this cluster
