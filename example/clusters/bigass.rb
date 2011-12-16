@@ -6,7 +6,7 @@
 # into S3.
 #
 # Note the presence of the shell script
-#     `/etc/hadoop/conf/nuke_hdfs_from_orbit_its_the_only_way_to_be_sure.sh.erb` 
+#     `/etc/hadoop/conf/nuke_hdfs_from_orbit_its_the_only_way_to_be_sure.sh.erb`
 # This lets you do stupid, dangerous, awesome things like:
 # * spin up a few dozen c1.xlarge CPU-intensive machines, parse a ton of data,
 #   store it back into S3.
@@ -14,6 +14,10 @@
 # * spin up a cluster of m2.2xlarge memory-intensive machines to group and
 #   filter it; store the final results into S3.
 # * shut the entire cluster down.
+#
+# You will need the role definitions from
+# [cluster_chef-homebase](https://github.com/infochimps-labs/cluster_chef-homebase)
+# to use this cluster
 #
 ClusterChef.cluster 'bigass' do
   cloud(:ec2) do
