@@ -23,6 +23,12 @@ end
 
 args = ARGV.clone
 
+version_idx = args.index('-v')
+if version_idx && args[version_idx + 1].to_s.empty?
+  args.delete_at(version_idx + 1)
+  args.delete_at(version_idx)
+end   
+
 begin
   Gem::GemRunner.new.run args
 rescue Gem::SystemExitException => e
