@@ -29,4 +29,8 @@
 <property> <name>fs.s3n.block.size</name>            <value><%= @hadoop[:s3_block_size] %></value></property>
 <%- end %>
 
+<%- if @hadoop[:define_topology] %>
+<property><name>topology.script.file.name</name>     <value><%= @hadoop[:conf_dir] %>/hadoop-topologizer.rb</value></property>
+<%- end %>
+
 </configuration>

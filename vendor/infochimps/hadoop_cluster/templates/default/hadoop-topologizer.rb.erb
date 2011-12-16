@@ -1,0 +1,50 @@
+#!/usr/bin/env ruby
+
+# Given an IP address, returns a dummy topology path synthesized from the
+# cluster, facet, and index.
+#
+# For example, with RACK_SIZE = 5, node
+#     'gibbon-worker-16'
+# will be in rack
+#     'gibbon/worker/3/1'
+#
+# A reckless cheapskate can terminate all the nodes in one rack and let the namenode sort itself out.
+
+# Size of each rack
+RACK_SIZE = 5
+
+# calculate the lookup table while we're in chef means the script is stupid and
+# doesn't need access to chef
+NODE_TO_RACK_MAPPING = {
+<%- @hadoop_datanodes.sort_by{|c| c.node.name.to_s }.each do |comp| %>
+  <%= "%-36s" % comp.private_ip.inspect      %> => <%= [comp.cluster, comp.facet, comp.facet_index.to_i, comp.node.name].inspect %>,
+  <%= "%-36s" % comp.public_ip.inspect       %> => <%= [comp.cluster, comp.facet, comp.facet_index.to_i, comp.node.name].inspect %>,
+  <%= "%-36s" % comp.node[:hostname].inspect %> => <%= [comp.cluster, comp.facet, comp.facet_index.to_i, comp.node.name].inspect %>,
+  <%= "%-36s" % comp.node[:fqdn].inspect     %> => <%= [comp.cluster, comp.facet, comp.facet_index.to_i, comp.node.name].inspect %>,
+<%- end %>
+}
+
+if ARGV.first == '--debug'
+  ARGV.shift
+  $debug = true
+else
+  $debug = false
+end
+
+ARGV.each do |req_ip|
+  req_ip = req_ip.strip
+  cluster, facet, facet_index, name = node_info = NODE_TO_RACK_MAPPING[req_ip]
+
+  # default rack if we have nothing
+  if node_info.nil? || node_info.any?{|x| x.nil? }
+    $stderr.puts "No rack known for #{req_ip}" if $debug
+    puts "/<%= node[:cluster_name] %>/DEFAULT"
+    next
+  end
+
+  topology_path = ['', cluster, facet, (facet_index.to_i / RACK_SIZE), (facet_index.to_i % RACK_SIZE) ].join('/')
+
+  $stderr.puts "Returning topology path #{topology_path} for #{req_ip} (#{node_info.join(', ')})" if $debug
+
+  puts  topology_path
+end

@@ -38,6 +38,9 @@ default[:hadoop][:balancer][:max_bandwidth]          = 1048576
 # how long to keep jobtracker logs around
 default[:hadoop][:log_retention_hours ]              = 24
 
+# define a rack topology? if false (default), all nodes are in the same 'rack'.
+default[:hadoop][:define_topology]                   = false
+
 #
 # Tune cluster settings for size of instance
 #
