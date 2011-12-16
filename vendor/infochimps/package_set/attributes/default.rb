@@ -3,7 +3,7 @@
 # packages -- git, htop, libxml, etc -- be present. Creating a stupid one-line
 # cookbook for each is overkill and clutters your runlist. Having a fixed
 # 'big_dumping_ground_for_packages' is a proven disaster -- one coder's
-# convenience gems is anothers' bundler hell.
+d# convenience gems is anothers' bundler hell.
 #
 # Package sets provide
 # * visibility: I know *exactly* which miscellaneous packages are installed
@@ -54,6 +54,7 @@ default[:package_set][:pkgs][:dev]       = %w[ emacs23-nox elinks colordiff ack 
 default[:package_set][:gems][:dev]       = %w[
   activesupport activemodel extlib json yajl-ruby awesome_print addressable cheat
   yard jeweler rspec  watchr pry configliere gorillib highline formatador choice rest-client wirble hirb
+  wukong swineherd hackboxen
   ]
 
 default[:package_set][:pkgs][:sysadmin]  = %w[ ifstat htop tree chkconfig sysstat nmap python-software-properties ]
