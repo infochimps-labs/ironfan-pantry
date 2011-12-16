@@ -16,7 +16,7 @@ require 'grit'
 
 def Log.dump(*args) self.debug([args.map(&:inspect), caller.first ].join("\t")) ;end
 Log.level = :info
-Log.level = :debug ; RestClient.log = Log
+# Log.level = :debug ; RestClient.log = Log
 
 module ClusterChef
   module Repoman
@@ -26,8 +26,8 @@ module ClusterChef
       include ::Rake::DSL
       attr_reader :repos
       has_keys(
-        :container_dir,      # holds the bare/ and single/ versions of the repo
-        :main_dir,         # the local checkout to mine
+        :container_dir,      # holds the solo/ versions of the repo
+        :main_dir,           # the local checkout to mine
         :push_urlbase,       # base url for target repo names, eg git@github.com:infochimps-cookbooks
         :vendor,             # direectory within vendor/ to target inside homebase
         :github_api_urlbase, # github API url base
@@ -76,7 +76,7 @@ module ClusterChef
       def in_main_tree
         raise "Repo dirty. Too terrified to move.\n#{filth}" unless clean?
         cd main_dir do
-          sh("git", "checkout", "main")
+          sh("git", "checkout", "master")
           yield
         end
       end
@@ -133,14 +133,15 @@ module ClusterChef
 
       def clean?
         st = main_repo.status
-        st.changed.empty? && st.added.empty? && st.deleted.empty? && st.untracked.empty?
+        st.changed.empty? && st.added.empty? && st.deleted.empty?
       end
       def filth
         st = main_repo.status
-        [   "  changed   #{  st.changed.values.map(&:path).join(', ')}",
-            "  added     #{    st.added.values.map(&:path).join(', ')}",
-            "  deleted   #{  st.deleted.values.map(&:path).join(', ')}",
-            "  untracked #{st.untracked.values.map(&:path).join(', ')}", ].join("\n")
+        [ "  changed   #{  st.changed.values.map(&:path).join(', ')}",
+          "  added     #{    st.added.values.map(&:path).join(', ')}",
+          "  deleted   #{  st.deleted.values.map(&:path).join(', ')}",
+          # "  untracked #{st.untracked.values.map(&:path).join(', ')}",
+        ].join("\n")
       end
     end
 
@@ -228,6 +229,26 @@ module ClusterChef
       def git_clone_solo
         cd File.dirname(solo_dir) do
           sh('git', 'clone', github_repo_url)
+        end
+      end
+
+      def pull_to_main_from_solo
+        create_solo
+        task "repo:solo:pull_to_main_from#{name}" => "repo:solo:create_#{name}" do
+          cd main_dir do
+            sh('git', 'pull', "#{solo_dir}/.git", "master:#{branch_name}")
+            Log.debug("Pulling subtree for #{name} from #{solo_dir} into #{main_dir}")
+            sh( "git-subtree", "pull", "-P", path, "#{solo_dir}/.git", "master" ){|ok, status| Log.debug("status #{status}") }
+          end
+        end
+      end
+
+      def pull_to_solo_from_github
+        create_solo
+        task "repo:solo:pull_to_#{name}_from_github" => "repo:solo:create_#{name}" do
+          cd solo_dir do
+            sh('git', 'pull', github_repo_url, "master:master")
+          end
         end
       end
 

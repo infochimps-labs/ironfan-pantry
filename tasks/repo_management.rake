@@ -24,27 +24,28 @@ require 'pry'
 # Github API
 # * http://develop.github.com/p/repo.html
 
-REPOMAN_ROOT_DIR = '/tmp/repoman'
-GITHUB_ORG       = 'infochimps-cookbooks'
-GITHUB_TEAM      = '117089'
+REPOMAN_ROOT_DIR  = File.expand_path('~/ics/sysadmin/repoman')
+HOMEBASE_MAIN_DIR = File.expand_path('..', File.dirname(__FILE__))
+GITHUB_ORG        = 'infochimps-cookbooks'
+GITHUB_TEAM       = '117089'
 
 #
 # Gee this part here could serve to be a bit cleaner.
 # yes, I am in fact commenting the various collections in and out and re-running.
 #
 
-# def get_repoman
-#   cookbooks = FileList['site-cookbooks/*', 'meta-cookbooks/*'].select{|d| File.directory?(d) }.sort_by{|d| File.basename(d) }.reverse
-#   #  cookbooks = cookbooks[18..-1] # .select{|c| c.to_s =~ /hadoop|cassandra/ }
-#   clxn = ClusterChef::Repoman::Collection.new(
-#     cookbooks,
-#     :vendor   => 'infochimps',
-#     :main_dir  => '/tmp/cluster_chef',
-#     :github_org  => GITHUB_ORG,
-#     :github_team => GITHUB_TEAM,
-#     )
-#   clxn
-# end
+def get_repoman
+  cookbooks = FileList['vendor/infochimps/*'].select{|d| File.directory?(d) }.sort_by{|d| File.basename(d) }.reverse
+  p cookbooks
+  clxn = ClusterChef::Repoman::Collection.new(
+    cookbooks,
+    :vendor      => 'infochimps',
+    :main_dir    => HOMEBASE_MAIN_DIR,
+    :github_org  => GITHUB_ORG,
+    :github_team => GITHUB_TEAM,
+    )
+  clxn
+end
 
 # def get_repoman
 #   cookbooks = %w[
@@ -104,7 +105,10 @@ namespace :repo do
     repoman = get_repoman
     repoman.each_repo do |repo|
       banner(rt, args, repo)
-      repo.github_create
+
+      # FIXME: restore
+      # repo.github_create
+
     end
   end
 
@@ -130,7 +134,9 @@ namespace :repo do
     end
   end
 
-  task :push => [:gh, :solo, :subtree ] do |rt, args|
+  task :push => [
+    # :gh, :solo, :subtree
+  ] do |rt, args|
     check_args(rt, args)
     repoman = get_repoman
     repoman.in_main_tree do
@@ -138,6 +144,21 @@ namespace :repo do
         banner(rt, args, repo)
         repo.pull_to_solo_from_main.invoke
         repo.push_from_solo_to_github.invoke
+      end
+    end
+  end
+
+  task :pull => [
+    # :gh, :solo, :subtree
+  ] do |rt, args|
+    check_args(rt, args)
+    repoman = get_repoman
+    repoman.in_main_tree do
+      repoman.each_repo do |repo|
+        banner(rt, args, repo)
+        repo.pull_to_solo_from_main.invoke
+        repo.pull_to_solo_from_github.invoke
+        repo.pull_to_main_from_solo.invoke
       end
     end
   end
