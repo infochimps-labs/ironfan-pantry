@@ -50,7 +50,7 @@ module ClusterChef
     # Node's facet name
     def facet()       node[:facet_name] ;  end
     # Node's facet index
-    def facet_index() node[:facet_index] ; end
+    def facet_index() node[:facet_index].to_i ; end
 
     def public_ip
       public_ip_of(node)
