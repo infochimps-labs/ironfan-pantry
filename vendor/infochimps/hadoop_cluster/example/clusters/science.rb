@@ -11,6 +11,10 @@
 # their jobs will run slower-than-optimal, but we'd rather have sub-optimal
 # robots than sub-optimal data scientists.
 #
+# You will need the role definitions from
+# [cluster_chef-homebase](https://github.com/infochimps-labs/cluster_chef-homebase)
+# to use this cluster.
+#
 # To use this, please update the snapshot_id (and volume size) in the volume
 # stanza at the end.
 #

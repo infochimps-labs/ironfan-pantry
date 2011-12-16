@@ -4,6 +4,10 @@
 # Nothing special -- one master that does everything; debug your job, then
 # launch the workers to run it for real.
 #
+# You will need the role definitions from
+# [cluster_chef-homebase](https://github.com/infochimps-labs/cluster_chef-homebase)
+# to use this cluster
+#
 ClusterChef.cluster 'pygmy' do
   cloud(:ec2) do
     defaults
@@ -18,20 +22,9 @@ ClusterChef.cluster 'pygmy' do
     mount_ephemerals(:tags => { :hadoop_scratch => true })
   end
 
-  environment           :prod
-
-  role                  :base_role
-  role                  :chef_client
-  role                  :ssh
-  role                  :nfs_client
   role                  :volumes
-  role                  :dashboard
-
   role                  :hadoop
   role                  :hadoop_s3_keys
-  role                  :tuning
-  role                  :jruby
-  role                  :pig
   recipe                'hadoop_cluster::cluster_conf', :last
 
   # We don't hold much data on our HDFS -- most of it goes in S3 -- so we can
