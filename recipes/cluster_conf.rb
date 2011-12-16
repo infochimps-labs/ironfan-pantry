@@ -29,7 +29,9 @@ node[:hadoop][:namenode   ][:addr] = discover(:hadoop, :namenode   ).private_ip 
 node[:hadoop][:jobtracker ][:addr] = discover(:hadoop, :jobtracker ).private_ip rescue nil
 node[:hadoop][:secondarynn][:addr] = discover(:hadoop, :secondarynn).private_ip rescue nil
 
-%w[core-site.xml hdfs-site.xml mapred-site.xml hadoop-env.sh fairscheduler.xml hadoop-metrics.properties].each do |conf_file|
+%w[ core-site.xml     hdfs-site.xml     mapred-site.xml
+    hadoop-env.sh     fairscheduler.xml hadoop-metrics.properties
+].each do |conf_file|
   template "#{node[:hadoop][:conf_dir]}/#{conf_file}" do
     owner "root"
     mode "0644"
