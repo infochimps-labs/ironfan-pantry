@@ -26,7 +26,6 @@ You can't (as far as I know) alter the delete-on-termination flag of a running v
 
 curl http://169.254.169.254/latest/user-data
 
-
 ### EBS Volumes for a persistent HDFS
 
 * Make one volume and format for XFS:
@@ -52,10 +51,6 @@ for srcdir in /ebs*/hadoop/hdfs/ /home/hadoop/gibbon/hdfs/  ; do
   sudo mkdir -p $destdir ;
 done
 
-
-### Hadoop: namenode bootstrap
-
-Once the master runs to completion with all daemons started, remove the hadoop_initial_bootstrap recipe from its run_list. (Note that you may have to edit the runlist on the machine itself depending on how you bootstrapped the node).
 
 ### NFS: Halp I am using an NFS-mounted /home and now I can't log in as ubuntu
 
@@ -86,33 +81,3 @@ Your service is probably installed but removed from runit's purview; check the `
 * directory `/etc/sv/foo`, containing file `run` and dirs `log` and `supervise`
 * `/etc/init.d/foo`  is symlinked to `/usr/bin/sv`
 * `/etc/servics/foo` is symlinked tp `/etc/sv/foo`
-
-
-### Nuke it from orbit, it's the only way to be sure
-
-These are likely to clobber way more than their base services.
-
-    sudo service cassandra      stop ;
-    sudo service redis_server   stop ;
-    sudo service ganglia_server stop ; sudo service ganglia_monitor stop
-    for foo in hadoop-0.20-{namenode,secondarynamenode,jobtracker,tasktracker,datanode} ; do sudo service $foo stop ; done
-    for foo in hadoop-{zookeeper-server,hbase-master,hbase-regionserver} ; do sudo service $foo stop ; done
-    for foo in statsd graphite_web graphite_whisper graphite_carbon resque_dashboard ; do sudo service $foo stop ; done
-    sudo killall nginx
-
-    sudo apt-get -y remove --purge redis-server
-    sudo apt-get -y remove --purge hadoop-0.20 hadoop-0.20-{namenode,secondarynamenode,jobtracker,tasktracker,datanode,doc,native}
-    sudo apt-get -y remove --purge hadoop-zookeeper-server hadoop-pig
-    sudo apt-get -y remove --purge gmetad ganglia-monitor
-
-    svc=cassandra    ; sudo rm -f /etc/service/$svc          ; sudo rm -rf /var/*/$svc /etc/$svc     /etc/sv/${svc}*  /etc/init.d/${svc}* /usr/local/{share,src}/${svc}* ; sudo userdel $svc ; sudo groupdel $svc
-    svc=redis        ; sudo rm -f /etc/service/${svc}_server ; sudo rm -rf /var/*/$svc /etc/$svc     /etc/sv/${svc}_* /etc/init.d/${svc}* /usr/local/{share,src}/${svc}* ; sudo userdel $svc ; sudo groupdel $svc ;
-    svc=ganglia      ; sudo rm -f /etc/service/${svc}_*      ; sudo rm -rf /var/*/$svc /etc/$svc     /etc/sv/${svc}_* /etc/init.d/${svc}* ; sudo userdel $svc ; sudo groupdel $svc ;
-    svc=hadoop       ; sudo rm -f /etc/service/${svc}*       ; sudo rm -rf /var/*/$svc /etc/${svc}*  /etc/sv/${svc}*  /etc/init.d/${svc}* ; sudo userdel hdfs ; sudo userdel mapred ; sudo groupdel hdfs ; sudo groupdel mapred ; sudo groupdel hadoop ;
-
-    svc=elasticsearch; sudo rm -f /etc/service/${svc}        ; sudo rm -rf /var/*/$svc /etc/$svc     /etc/sv/${svc}   /etc/init.d/${svc}* /usr/local/{share,src}/${svc}* ; sudo userdel $svc ; sudo groupdel $svc
-
-    svc=statsd       ; sudo rm -f /etc/service/${svc}        ; sudo rm -rf /var/*/$svc /etc/$svc     /etc/sv/${svc}   /etc/init.d/${svc}* /usr/local/{share,src}/${svc}* ; sudo userdel $svc ; sudo groupdel $svc
-    svc=resque       ; sudo rm -f /etc/service/${svc}_*      ; sudo rm -rf /var/*/$svc /etc/$svc     /etc/sv/${svc}_* /etc/init.d/${svc}* /usr/local/{share,src}/${svc}* ; sudo userdel $svc ; sudo groupdel $svc
-
-    svc=jruby         ; sudo rm -rf /etc/$svc /usr/local/{share,src}/${svc}*
