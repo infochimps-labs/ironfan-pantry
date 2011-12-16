@@ -1,24 +1,54 @@
 # hadoop_cluster chef cookbook
 
-Installs hadoop and sets up a high-performance cluster. Inspired by Tom White / Cloudera's hadoop-ec2 command line utilities.
+Installs hadoop on anything from a single-node to a high-performance cluster. 
 
 ## Overview
 
-Installs Apache hadoop using the [Cloudera hadoop distribution (CDH)](http://archive.cloudera.com/docs/)
+The hadoop_cluster cookbook lets you spin up hadoop clusters of arbitrary size, makes it easy to configure and tune them, and opens up powerful new ways to reduce your compute bill. 
 
-It comes with hooks for the Amazon cloud using EBS-backed instances.
+This cookbook installs Apache hadoop using the [Cloudera hadoop distribution (CDH)](http://archive.cloudera.com/docs/), and it plays well with the infochimps cookbooks for HBase, Flume, ElasticSearch, Zookeeper, Ganglia and Zabbix.
+
+### Cluster instantiation
+
+Instantiating a cluster from thin air requires
+* start the master, with all the `:run_state`s set to 'stop'
+* running `/etc/hadoop/conf/bootstrap_hadoop_namenode.sh`, which is now fairly robust and re-runnable. It should start the namenode on its own.
+* set `run_state`s to 'start', run `knife cluster sync` and then `knife cluster kick` the master.
+* launch the jobbtracker, workers, etc.
+
+### Tunables
 
 For more details on the so, so many config variables, see
 
-* [Core Hadoop params](http://archive.cloudera.com/cdh/3/hadoop/hdfs-default.html) (which often actually has things you'd think were in one of the following)
+* [Core Hadoop params](http://archive.cloudera.com/cdh/3/hadoop/hdfs-default.html) 
 * [HDFS params](http://archive.cloudera.com/cdh/3/hadoop/hdfs-default.html) 
 * [Map-Reduce params](http://archive.cloudera.com/cdh/3/hadoop/hdfs-default.html) 
 
-### A couple helpful notes
+### Advanced Cluster-Fu for the impatient cheapskate
 
-Inspired by Tom White / Cloudera's hadoop-ec2 command line utilities.
+#### Stop-start clusters
 
-Note that the secondarynamenode is NOT a redundant namenode. All it does is make periodic backups of the HDFS metadata.
+If you have a persistent HDFS, you can shut down the cluster with `knife cluster stop` at the end of your workday, and restart it in less time than it takes to get your morning coffee.  Typical time from typing "knife cluster launch science-worker" until the node reports in the jobtracker is <= 6 minutes on launch -- faster than that on start.
+
+Stopped nodes don't cost you anything in compute, though you do continue to pay for the storage on their attached drives. See [the example science cluster](example/clusters/science.rb) for the setup we use. 
+
+#### Reshapable clusters
+
+The hadoop cluster definition we use at infochimps for production runs uses its HDFS ONLY a scratch pad - anything we want to keep goes into S3.
+
+This lets us do stupid, dangerous, awesome things like:
+
+* spin up a few dozen c1.xlarge CPU-intensive machines, parse a ton of data,
+  store it back into S3.
+* blow all the workers away and reformat the namenode with the `/etc/hadoop/conf/nuke_hdfs_from_orbit_its_the_only_way_to_be_sure.sh.erb` shell script.
+* spin up a cluster of m2.2xlarge memory-intensive machines to group and filter it, storing final results into S3.
+* shut the entire cluster down before anyone in accounting notices.
+
+#### Tasktracker-only workers
+
+Who says your workers should also be datanodes? Sure, "bring the compute to the data" is the way the *robots* want you to do it, but a tasktracker-only node on an idle cluster is one you can kill with no repercussions.
+
+This lets you blow up the size of your cluster and not have to wait later for nodes to decommission. Non-local map tasks obviously run slower-than-optimal, but we'd rather have sub-optimal robots than sub-optimal data scientists.
 
 ### Author:
       
