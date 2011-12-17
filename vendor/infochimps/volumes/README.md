@@ -6,7 +6,7 @@ Assign components to volumes based on characteristics (fast, bulk, persistent, e
 
 This is a set of simple helpers for assigning components their locations on disk according to these common use cases:
 
-* standard directories: configuration, logs, lib files, etc.
+* standard directories: configuration, logs, lib files, etc. These are all the same, or should be.
 * directory is not a standard pattern, but follows conventions that let us configure it from node metadata.
 * directory prefers to be on the fastest-available drive, or a dedicated drive, or one that is persisted over the network.
 
@@ -23,7 +23,7 @@ Most directories are **standard and boring**: `conf_dir`s go in `/etc/foo` and a
   Standard directories don't have to be _completely_ devoid of individual character:
 
         standard_dirs('lolcat.generator') do
-          directories   [:conf_dir, :html_cache_dir, :rendered_cache_dir, :log_dir, :pid_dir]
+          directories   [:conf_dir, :html_cache_dir, :img_cache_dir, :log_dir, :pid_dir]
         end
         
   Both the `html_cache` and `rendered_cache` directories will follow cache directory conventions.         
@@ -116,6 +116,15 @@ We will look as follows:
 Write your recipes to request volumes
 
 
+Not doing this:
+        
+        standard_dirs('lolcat.generator') do
+          conf_dir
+          log_dir       :mode => '0775'
+          pid_dir      
+          cache_dir     :for => :img
+          cache_dir     :for => :html
+        end
 
 
 
