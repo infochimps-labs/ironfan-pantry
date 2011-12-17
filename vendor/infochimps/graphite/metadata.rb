@@ -47,6 +47,11 @@ attribute "graphite/pid_dir",
   :description           => "",
   :default               => "/var/run/webapp"
 
+attribute "graphite/user",
+  :display_name          => "",
+  :description           => "",
+  :default               => "graphite"
+
 attribute "graphite/carbon/line_rcvr_addr",
   :display_name          => "",
   :description           => "",
