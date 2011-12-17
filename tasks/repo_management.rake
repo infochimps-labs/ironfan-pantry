@@ -7,23 +7,6 @@ require 'fileutils'
 require 'repoman'
 require 'pry'
 
-#
-#
-# * bare    a bare git repo, in /tmp/repoman/bare/foo.git
-# * solo    a full git checkout, in /tmp/repoman/solo/foo
-# * github
-# * main holds two kinds of branches:
-#   - mainline
-#   - per-component branch for that component's subtree.
-
-# Bibliography:
-#
-# Rake
-# * https://sites.google.com/site/spontaneousderivation/rake-quick-reference
-# * http://rubydoc.info/stdlib/rake/frames
-# Github API
-# * http://develop.github.com/p/repo.html
-
 REPOMAN_ROOT_DIR  = File.expand_path('~/ics/sysadmin/repoman')
 HOMEBASE_MAIN_DIR = File.expand_path('..', File.dirname(__FILE__))
 GITHUB_ORG        = 'infochimps-cookbooks'
