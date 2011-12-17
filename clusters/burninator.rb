@@ -23,7 +23,6 @@ ClusterChef.cluster 'burninator' do
   role                  :base_role
   role                  :chef_client
   role                  :ssh
-  role                  :nfs_client
 
   #
   # A throwaway facet for AMI generation
@@ -34,8 +33,6 @@ ClusterChef.cluster 'burninator' do
     recipe              'cloud_utils::burn_ami_prep'
 
     role                :package_set, :last
-    role                :hadoop
-    role                :pig
 
     recipe              'ant'
     recipe              'boost'
@@ -47,17 +44,31 @@ ClusterChef.cluster 'burninator' do
     recipe              'nodejs'
     recipe              'ntp'
     recipe              'openssl'
+    recipe              'pig::install_from_release'
+    recipe              'hadoop_cluster::add_cloudera_repo'
     recipe              'runit'
     recipe              'thrift'
     recipe              'xfs'
     recipe              'xml'
     recipe              'zabbix'
     recipe              'zlib'
+
+    facet_role.override_attributes({
+        :package_set => { :install => %w[ base dev sysadmin text python emacs ] },
+      })
   end
 
+  #
+  # Used to test the generated AMI.
+  #
   facet :village do
-    instances        1
-    cloud.image_name 'infochimps-natty'
+
+    # Once the AMI is burned, add a new entry in your knife configuration -- see
+    # knife/example-credentials/knife-org.rb. Fill in its name here:
+    cloud.image_name    'FILL_IN_IMAGE_NAME_PLEASE'
+
+    # You can instead comment out the above and just enter its ID directly here:
+    # cloud.image_id   'FILL_IN_NEW_IMAGE_ID_PLEASE'
   end
 
 end

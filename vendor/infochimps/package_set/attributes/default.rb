@@ -76,5 +76,5 @@ default[:package_set][:pkgs][:datatools] = %w[
   ghostscript latex libfreetype6 python-gtk2 python-gtk2-dev python-wxgtk2.8
 ]
 
-ruby_mode = (node[:languages][:ruby][:version] =~ /^1.9/ ? "ruby1.9.1-elisp" : "ruby") # rescue nil
+ruby_mode = (node[:languages][:ruby][:version] =~ /^1.9/ ? "ruby1.9.1-elisp" : "ruby") rescue nil
 default[:package_set][:pkgs][:emacs]     = [ "emacs23-nox", "emacs23-el", "python-mode", ruby_mode, "org-mode" ].compact
