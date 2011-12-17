@@ -1,26 +1,104 @@
 # volumes chef cookbook
 
-Mounts volumes  as directed by node metadata. Can attach external cloud drives, such as ebs volumes.
+Assign components to volumes based on characteristics (fast, bulk, persistent, etc), not by fixed path
 
 ## Overview
 
+This is a set of simple helpers for assigning components their locations on disk. It handles these three patterns, which together cover all common use cases:
+* standard directories: configuration, logs, lib files, etc.
+* directory is not a standard pattern, but follows conventions that let us configure it from node metadata.
+* directory prefers to be on the fastest-available drive, or a dedicated drive, or one that is persisted over the network.
+
+### standard_dir
+
+Most directories are **standard and boring**: `conf_dir`s go in `/etc/foo` and are `root:root 755`; `log_dir`s go in `/var/log/foo` and are `{user}:{group} 755`, and so forth. These DRY right up using the `standard_dirs` helper:
+
+        standard_dirs('lolcat.generator') do
+          directories   [:conf_dir, :log_dir, :pid_dir]
+        end
+
+  This doesn't just save keystrokes, it saves pager calls: the recipe is simpler to read (and thus maintain); it ensures the node metadata completely documents the state of the machine; and it wards off common pitfalls like "configuration dirs owned by the daemon user".
+
+  Standard directories don't have to be _completely_ devoid of individual character:
+
+        standard_dirs('lolcat.generator') do
+          directories   [:conf_dir, :html_cache_dir, :rendered_cache_dir, :log_dir, :pid_dir]
+        end
+        
+  Both the `html_cache` and `rendered_cache` directories will follow cache directory conventions.         
+
+### extra_dir
+
+If you can't be boring, you should at least be **tastefully decorated**. Suppose your lolcat cookbook needs a 'caturday' directory (owned by the lolcat process, mode 0770) and a 'bukkit' directory (permissions `root:root 755`):
+
+        extra_dir(lolcat.generator.caturday_dir') do
+          user          :user
+          group         :group
+        end
+
+        extra_dir(lolcat.generator.bukkit_dir')
+
+  The `extra_dir` helper pulls its settings from the conventional node metadata (`node[:lolcat][:user]` `node[:lolcat][:generator][:caturday_dir]` and so forth), and falls back to conservative defaults.
+
+### volume_dirs
+
+Lastly, some directory assignments -- typically the ones that relate to the machine's core purpose -- are **opinionated guests**. 
+
+When my grandmother comes to visit, she quite reasonably asks for a room with a comfortable bed and a short climb. At my apartment, this means the main bedroom while I use the couch; at my brother's house it means the downstairs guest room.  If grandmom instead demanded 'the master bedroom on the first floor', she'd find herself in the parking garage at my apartment, and uninvited from returning to visit my brother's house.
+
+Similarly, the well-mannered cookbook does not hard-code a large data directory onto the root partition. Typically that's the private domain of the operating system, and there's a large and comfortably-appointed volume just for it to use. On the other hand, declaring a location of `/mnt/external2` will end in tears if I'm testing the cookbook on my laptop, where no such drive exists.
+
+The solution is to request for volumes by their characteristics, and defer to the node's best effort in meeting that request. For example:
+
+* **fast**:       the 'fastest' volume available: on one machine this might be a dedicated SD drive or even a RAM drive; on another it might be the hey-its-the-only-drive-I-got drive.
+* **bulk**:       large storage area, preferably one that does not compete with the OS for space or access.
+* **local**:      low-latency / direct access.
+* **persistent**: storage that survives independently of its host machine
+* **fallback**:   states it's safe to use a general-purpose volume if no better match is present.
+
+All of the above are positive rules: a volume is only `:fast` if it is labeled `:fast`. They are also passive rules: the cookbook makes no attempt to decide that say flash drives are `:fast` (it might be the SD card from my camera) or that a large drive is `:bulk` (it might be full, or read-only).
+
+The `fallback` tag has additional rules:
+* if any volumes are tagged `fallback`, return the full set of `fallback`s; 
+* otherwise, raise an error.
+
+#### Examples:
+
+* Web server: in production, database lives on one volume, logs are written to another. On a cheaper test server, just
+  put them whereever.
+
+* Isolate different apps, each on their own volume
+
+* Hadoop has the following mountable volume concerns:
+
+  - Namenode metadata -- *must* be persistent. Physical clusters typically mirror to one NFS and two local volumes.
+  - Datanode blocks   -- typically persistent. In a cloud environment, one strategy would be:
+    - where available, permanent attachable drives (EBS volumes)
+    - where available, local volumes (ephemeral drives)
+    - as a last resort, whatever's present.
+  - Scratch space for jobs -- should be fast, no need for it to be persistent.  On an EC2 instance, ephemeral drives
+    would be preferred.
+
+* Similarly, a Cassandra installation will place the commitlog the fastest available volume, the data store on the most
+  persistent available volume. A Mongo or MySQL admin may allocate high-demand tables on an SSD, the rest on normal disks.
+
+You ask for volume_dirs with
+* a system
+* a component (optional)
+* a tag
+
+We will look as follows:
+
+* volumes tagged 'foo-
+* volumes tagged 'foo-scratch'
+* volumes tagged 'foo'
+* volumes tagged 'scratch'
+
 Write your recipes to request volumes
 
-* **system-specific**: eg `mysql.data` or `nginx.log`.
 
-* **persistent**: offer the best reliability.
-* **local**:      low-latency bulk storage
-* **fast**:       
-* **bulk**:       largest pool of
-* **reserved**:   
 
-All of the above are positive rules: a volume is only `:fast` if it is labelled
-`:fast`, and a volume is only `[:bulk, :persistent]` if it is 
 
-The `fallback` tag has additional rules
-* if any volumes are tagged `fallback`, return the full set of `fallback`s; otherwise,
-* if any are *not* tagged `reserved`, return the full set of *non*-`reserved` volumes;
-* raise an error if there are no un-reserved and no fallback 
 
 ### assigning labels
 
@@ -56,41 +134,6 @@ You can explicitly override any of the above.
   - `:fallback`
 
 
-This meta-cookbook coordinates the machine's aspect of having various volumes and various systems cookbooks' concern of allocating storage on them.
-
-Cookbooks want to know not just what volumes are available, but their logical purpose: 'scratch space', 'persistent', 'super-fast flash-drive storage'. The details of that mapping shouldn't be their concern, only to request those resources and use them responsibly.
-
-Examples:
-
-* Web server: in production, database lives on one volume, logs are written to another. On a cheaper test server, just
-  put them whereever.
-
-* Isolate different apps, each on their own volume
-
-* Hadoop has the following mountable volume concerns:
-
-  - Namenode metadata -- *must* be persistent. Physical clusters typically mirror to one NFS and two local volumes.
-  - Datanode blocks   -- typically persistent. In a cloud environment, one strategy would be:
-    - where available, permanent attachable drives (EBS volumes)
-    - where available, local volumes (ephemeral drives)
-    - as a last resort, whatever's present.
-  - Scratch space for jobs -- should be fast, no need for it to be persistent.  On an EC2 instance, ephemeral drives
-    would be preferred.
-
-* Similarly, a Cassandra installation will place the commitlog the fastest available volume, the data store on the most
-  persistent available volume. A Mongo or MySQL admin may allocate high-demand tables on an SSD, the rest on normal disks.
-
-You ask for volume_dirs with
-* a system
-* a component (optional)
-* a tag
-
-We will look as follows:
-
-* volumes tagged 'foo-
-* volumes tagged 'foo-scratch'
-* volumes tagged 'foo'
-* volumes tagged 'scratch'
 
     System       	Component      	Type	Path           	Owner         	Mode 	Index 	attrs                          	Description
     ------       	---------      	----	----           	-----         	---- 	----- 	-----                          	-----------
