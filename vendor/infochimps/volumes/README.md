@@ -4,7 +4,8 @@ Assign components to volumes based on characteristics (fast, bulk, persistent, e
 
 ## Overview
 
-This is a set of simple helpers for assigning components their locations on disk. It handles these three patterns, which together cover all common use cases:
+This is a set of simple helpers for assigning components their locations on disk according to these common use cases:
+
 * standard directories: configuration, logs, lib files, etc.
 * directory is not a standard pattern, but follows conventions that let us configure it from node metadata.
 * directory prefers to be on the fastest-available drive, or a dedicated drive, or one that is persisted over the network.
@@ -44,11 +45,29 @@ If you can't be boring, you should at least be **tastefully decorated**. Suppose
 
 Lastly, some directory assignments -- typically the ones that relate to the machine's core purpose -- are **opinionated guests**. 
 
-When my grandmother comes to visit, she quite reasonably asks for a room with a comfortable bed and a short climb. At my apartment, this means the main bedroom while I use the couch; at my brother's house it means the downstairs guest room.  If grandmom instead demanded 'the master bedroom on the first floor', she'd find herself in the parking garage at my apartment, and uninvited from returning to visit my brother's house.
+When my grandmother comes to visit, she quite reasonably asks for a room with a comfortable bed and a short climb. At my apartment, she stays in the main bedroom and I use the couch. At my brother's house, she enjoys the downstairs guest room.  If Ggrandmom instead demanded 'the master bedroom on the first floor', she'd find herself in the parking garage at my apartment, and uninvited from returning to visit my brother's house.
 
 Similarly, the well-mannered cookbook does not hard-code a large data directory onto the root partition. Typically that's the private domain of the operating system, and there's a large and comfortably-appointed volume just for it to use. On the other hand, declaring a location of `/mnt/external2` will end in tears if I'm testing the cookbook on my laptop, where no such drive exists.
 
-The solution is to request for volumes by their characteristics, and defer to the node's best effort in meeting that request. For example:
+The solution is to request for volumes by their characteristics, and defer to the node's best effort in meeting that request. 
+
+
+        # Data striped across all persistent dirs
+        volume_dirs('foo.datanode.data') do
+          type          :persistent, :bulk, :fallback
+          selects       :all
+          mode          "0700"
+        end
+
+        # Scratch space for indexing, striped across all scratch dirs
+        volume_dirs('foo.indexer.scratch') do
+          type          :local, :bulk, :fallback
+          selects       :all
+          mode          "0755"
+        end
+
+
+These are commonly-used volume characteristic tags:
 
 * **fast**:       the 'fastest' volume available: on one machine this might be a dedicated SD drive or even a RAM drive; on another it might be the hey-its-the-only-drive-I-got drive.
 * **bulk**:       large storage area, preferably one that does not compete with the OS for space or access.
