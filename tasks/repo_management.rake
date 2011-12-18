@@ -12,7 +12,7 @@ require 'repoman'
 require 'pry'
 
 REPOMAN_ROOT_DIR  = File.expand_path('~/ics/sysadmin/repoman')
-HOMEBASE_MAIN_DIR = File.expand_path('~/ics/sysadmin/homebase-fiddle') # File.expand_path('.')
+HOMEBASE_MAIN_DIR = File.expand_path('.')
 GITHUB_ORG        = 'infochimps-cookbooks'
 GITHUB_TEAM       = '117089'
 
