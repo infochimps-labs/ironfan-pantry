@@ -14,6 +14,8 @@ require 'cluster_chef/dsl_object'
 require 'rest-client'
 require 'grit'
 
+require 'repoman/github'
+
 def Log.dump(*args) self.debug([args.map(&:inspect), caller.first ].join("\t")) ;end
 Log.level = :info
 # Log.level = :debug ; RestClient.log = Log
@@ -26,15 +28,9 @@ module ClusterChef
       include ::Rake::DSL
       attr_reader :repos
       has_keys(
-        :container_dir,      # holds the solo/ versions of the repo
+        :solo_root,          # holds the solo/ versions of the repo
         :main_dir,           # the local checkout to mine
-        :push_urlbase,       # base url for target repo names, eg git@github.com:infochimps-cookbooks
-        :vendor,             # direectory within vendor/ to target inside homebase
-        :github_api_urlbase, # github API url base
-        :github_org,         # github organization, eg 'infochimps-cookbooks'
-        :github_team,        # github team to authorize for the repo
-        :github_username,    # github username
-        :github_token        # github token
+        :vendor              # direectory within vendor/ to target inside homebase
         )
 
       def initialize(paths, hsh={}, &block)
@@ -42,15 +38,12 @@ module ClusterChef
         defaults
         @repos = Mash.new
         paths.each do |path|
-          repo = ClusterChef::Repoman::Repo.new(self, path)
+          repo = ClusterChef::Repoman::Repo.new(self, path, hsh)
           @repos[repo.name] = repo
         end
       end
 
       def defaults
-        @settings[:github_api_urlbase] ||= 'https://github.com/api/v2/json'
-        @settings[:push_urlbase]  ||= "git@github.com:"
-        set_github_credentials
       end
 
       #
@@ -69,18 +62,6 @@ module ClusterChef
         @repos.values.each{|repo| yield(repo) }
       end
 
-      def main_repo
-        @main_repo ||= Grit::Repo.new(main_dir)
-      end
-
-      def in_main_tree
-        raise "Repo dirty. Too terrified to move.\n#{filth}" unless clean?
-        cd main_dir do
-          sh("git", "checkout", "public")
-          yield
-        end
-      end
-
       def subtree_add_all
         cd File.expand_path('~/ics/sysadmin/homebase') do
           each_repo do |repo|
@@ -93,42 +74,169 @@ module ClusterChef
           end
         end
       end
+      
+      # convert to string, but mask the token
+      def to_s()
+        "#{super[0..-3]} repos=#{@repos.values.map(&:name).inspect} >"
+      end
+    end
+
+
+    class Repo < ClusterChef::DslObject
+      include ::Rake::Cloneable
+      include ::Rake::DSL
+
+      include ClusterChef::Repoman::GithubRepo
+
+      attr_reader :collection  # collection this belongs to
+      attr_reader :path        # path within main repo
+      attr_reader :shas        # shas for various incarnations
+      has_keys(
+        :name,
+        :push_urlbase,       # base url for target repo names, eg git@github.com:infochimps-cookbooks
+        :main_dir,           # the local checkout to mine
+        :github_api_urlbase, # github API url base
+        :github_org,         # github organization, eg 'infochimps-cookbooks'
+        :github_team,        # github team to authorize for the repo
+        :github_username,    # github username
+        :github_token,       # github token
+        :github_public       # is the repo public or private?
+        )
+
+      def initialize(collection, path, hsh={}, &block)
+        super(hsh)
+        @collection = collection
+        @path       = path
+        @shas       = {}
+        name(File.basename(path))
+        defaults
+
+        yield self if block_given?
+        arg_names = [:name]
+        missing = arg_names.select{|arg| self.send(arg).blank? }
+        raise ArgumentError, "Please supply #{missing.join(', ')} in #{self}" unless missing.empty?
+      end
+
+      def defaults
+        @settings[:github_api_urlbase] ||= 'https://github.com/api/v2/json'
+        @settings[:push_urlbase]       ||= "git@github.com:"
+        find_github_credentials
+      end
+
+      def define_tasks
+        # task "repo:solo:pull_from_github" => pull_to_solo_from_github
+        # task "repo:solo:push_to_github"   => push_from_solo_to_github
+        # task "repo:solo:pull_from_main"   => pull_to_solo_from_main
+        # task "repo:main:pull_from_solo"   => pull_to_main_from_solo
+        # task "repo:main:subtree_split"    => subtree_split
+        task("repo:pull:all" => sync_and_pull)
+        task("repo:push:all" => sync_and_push)
+      end
+
+      # Directory holding the solo repo
+      def solo_dir()   File.join(collection.solo_root, name)  end
+      # if this file is present the repo is assumed to exist
+      def solo_repo_presence() File.join(solo_dir, '.git', 'HEAD') end
+
+      def branch_name
+        "br-#{name}"
+      end
+
+      def main_branch
+        main_repo.branches.detect{|branch| branch.name == branch_name }
+      end
+
+      def main_repo
+        @main_repo ||= Grit::Repo.new(main_dir)
+      end
 
       #
-      # Github
+      # Solo repo (non-bare local checkout of the repo)
       #
 
-      def set_github_credentials
-        return if github_username.present? && github_token.present?
-        self.github_username( ENV['GITHUB_USERNAME'] || `git config --get github.user` )
-        self.github_username.strip!
-        self.github_token( ENV['GITHUB_TOKEN']    || `git config --get github.token` )
-        self.github_token.strip!
-        if github_username.blank? || github_token.blank?
-          raise ("Please set your github username (got #{github_username}) and token (got #{github_token}): either as environment variables GITHUB_USERNAME and GITHUB_TOKEN, OR in your ~/.gitconfig like so:\n\n[github]\n    user  = mrflip\n    token = 8675309beefcafe123456abcadaba123\n")
+      def sync_and_pull
+        return @sync_and_pull if @sync_and_pull
+        desc "Safely sync the #{name} repo and pull the results into #{main_dir}"
+        @sync_and_pull ||= task("repo:pull:#{name}" =>
+          [create_solo, pull_to_solo_from_main, pull_to_solo_from_github, pull_to_main_from_solo])
+      end
+
+      def sync_and_push
+        return @sync_and_push if @sync_and_push
+        desc "Safely sync the #{name} repo and push the results into #{github_repo_url}"
+        @sync_and_push ||= task("repo:push:#{name}" =>
+          [create_solo, pull_to_solo_from_github, pull_to_solo_from_main, push_from_solo_to_github])
+      end
+
+      def create_solo
+        return @create_solo_task if @create_solo_task
+        directory(File.dirname(solo_dir))
+        file(solo_repo_presence) do
+          cd(File.dirname(solo_dir)){ sh('git', 'clone', github_repo_url) }
+        end
+        desc "Clone the #{name} repo from github"
+        @create_solo_task = task("repo:solo:create:#{name}" => [File.dirname(solo_dir), solo_repo_presence])
+      end
+
+      def pull_to_solo_from_github
+        @pull_to_solo_from_github ||= task("repo:solo:pull_from_github:#{name}" => create_solo) do
+          cd(solo_dir){ sh('git', 'pull', "origin", "master:master") }
         end
       end
 
-      def github_api_post(url_path, hsh={}, &block)
-        url_path = "#{github_api_urlbase}/#{url_path}"
-        hsh      = hsh.merge(:login => github_username, :token => github_token)
-        response = RestClient.post(url_path, hsh, &block)
-        return JSON.parse(response.to_str)
+      def push_from_solo_to_github
+        @push_from_solo_to_github ||= task("repo:solo:push_to_github:#{name}" => create_solo) do
+          cd(solo_dir){ sh('git', 'push', "origin", "master:master") }
+        end
       end
 
-      def github_api_get(url_path, hsh={})
-        url_path = "#{github_api_urlbase}/#{url_path}"
-        Log.dump(url_path, hsh)
-        hsh = hsh.merge(:login => github_username, :token => github_token)
-        response = RestClient.get(url_path, hsh)
-        return JSON.parse(response.to_str)
+      def pull_to_solo_from_main
+        @pull_to_solo_from_main ||= task("repo:solo:pull_from_main:#{name}" => [create_solo, subtree_split]) do
+          cd(solo_dir){ sh('git', 'pull', "#{main_dir}/.git", "#{branch_name}:master") }
+        end
       end
 
-      # convert to string, but mask the token
-      def to_s()
-        [ super.gsub(/(github_token"=>"....)[^"]+"/,'\1....."' )[0..-3],
-          " repos=#{@repos.values.map(&:name).inspect}", "}>"
-        ].join
+      def pull_to_main_from_solo
+        @pull_to_main_from_solo ||= task("repo:main:pull_from_solo:#{name}" => [create_solo, subtree_split]) do
+          in_main_tree do
+            # sh('git', 'pull', "#{solo_dir}/.git", "master:#{branch_name}")
+            Log.debug("Pulling subtree for #{name} from #{solo_dir} into #{main_dir}")
+            sh( "git-subtree", "pull",
+              "-P", path,
+              "#{solo_dir}/.git", "master:#{branch_name}",
+              "-m", "Merge branch 'master' of #{github_repo_name} into #{path}"
+              ){|ok, status| Log.debug("status #{status}") }
+          end
+        end
+      end
+
+      # Extract git history from component's local path into its own branch in
+      # this repo. For example, Repo.new(clxn, 'hadoop_cluster').git_split
+      # creates a branch 'hadoop_cluster' with only the commits in the
+      # cookbooks/hadoop_cluster file tree. If you +git checkout
+      # hadoop_cluster+, you'll have only subdirectories named 'recipes',
+      # 'templates', etc. -- it'the contents of the single target repo.
+      def subtree_split
+        @subtree_split ||= task("repo:main:subtree_split:#{name}") do
+          in_main_tree do
+            shas[:sr_before] = main_branch.commit.to_s rescue nil
+            Log.debug("Extracting subtree for #{name} from #{path} in #{main_dir}; was at #{shas[:sr_before] || '()'}")
+            sh( "git-subtree", "split", "-P", path, "-b", branch_name ){|ok, status| Log.debug("status #{status}") }
+            shas[:sr_after] = main_branch.commit.to_s rescue nil
+          end
+        end
+      end
+      
+      #
+      # other
+      #
+
+      def in_main_tree
+        raise "Repo dirty. Too terrified to move.\n#{filth}" unless clean?
+        cd main_dir do
+          sh("git", "checkout", "public")
+          yield
+        end
       end
 
       def clean?
@@ -143,221 +251,10 @@ module ClusterChef
           # "  untracked #{st.untracked.values.map(&:path).join(', ')}",
         ].join("\n")
       end
-    end
 
-
-    class Repo < ClusterChef::DslObject
-      include ::Rake::Cloneable
-      include ::Rake::DSL
-
-      attr_reader :collection  # collection this belongs to
-      attr_reader :path        # path within main repo
-      attr_reader :shas        # shas for various incarnations
-      has_keys(
-        :name,
-        :github_public   # is the repo public or private?
-        )
-
-      def initialize(collection, path, hsh={}, &block)
-        super(hsh)
-        @collection = collection
-        @path       = path
-        @shas       = {}
-        name(File.basename(path))
-
-        yield self if block_given?
-        arg_names = [:name]
-        missing = arg_names.select{|arg| self.send(arg).blank? }
-        raise ArgumentError, "Please supply #{missing.join(', ')} in #{self}" unless missing.empty?
-      end
-
-      def container
-        REPOMAN_ROOT_DIR
-      end
-
-      # Directory holding the main repo
-      def main_dir()   collection.main_dir  end
-
-      # Directory holding the solo repo
-      def solo_dir()   File.join(container, 'solo', name)  end
-
-      # if this file is present the repo is assumed to exist
-      def solo_repo_presence() File.join(solo_dir, '.git', 'HEAD') end
-
-      #
-      # Repo splitting
-      #
-
-      # Extract git history from component's local path into its own branch in
-      # this repo. For example, Repo.new(clxn, 'hadoop_cluster').git_split
-      # creates a branch 'hadoop_cluster' with only the commits in the
-      # cookbooks/hadoop_cluster file tree. If you +git checkout
-      # hadoop_cluster+, you'll have only subdirectories named 'recipes',
-      # 'templates', etc. -- it'the contents of the single target repo.
-      def git_subtree_split
-        shas[:sr_before] = git_main_branch.commit.to_s rescue nil
-        Log.debug("Extracting subtree for #{name} from #{path} in #{main_dir}; was at #{shas[:sr_before] || '()'}")
-        sh( "git-subtree", "split", "-P", path, "-b", branch_name ){|ok, status| Log.debug("status #{status}") }
-        shas[:sr_after] = git_main_branch.commit.to_s rescue nil
-        shas
-      end
-
-      def branch_name
-        "br-#{name}"
-      end
-
-      def git_main_branch
-        collection.main_repo.branches.detect{|branch| branch.name == branch_name }
-      end
-
-      #
-      # Solo repo (non-bare local checkout of the repo)
-      #
-
-      def create_solo
-        namespace('repo:solo') do
-          task "create_#{name}" => File.dirname(solo_dir)
-          task "create_#{name}" => solo_repo_presence
-          #
-          directory(File.dirname(solo_dir))
-          file(solo_repo_presence){ git_clone_solo }
-        end
-        task 'repo:solo' => "repo:solo:create_#{name}"
-        task("repo:solo:create_#{name}")
-      end
-
-      def git_clone_solo
-        cd File.dirname(solo_dir) do
-          sh('git', 'clone', github_repo_url)
-        end
-      end
-
-      def pull_to_main_from_solo
-        create_solo
-        task "repo:solo:pull_to_main_from_#{name}" => "repo:solo:create_#{name}" do
-          cd main_dir do
-            sh('git', 'pull', "#{solo_dir}/.git", "master:#{branch_name}")
-            Log.debug("Pulling subtree for #{name} from #{solo_dir} into #{main_dir}")
-            sh( "git-subtree", "merge", "-P", path, branch_name ){|ok, status| Log.debug("status #{status}") }
-          end
-        end
-      end
-
-      def pull_to_solo_from_github
-        create_solo
-        task "repo:solo:pull_to_#{name}_from_github" => "repo:solo:create_#{name}" do
-          cd solo_dir do
-            sh('git', 'pull', github_repo_url, "master:master")
-          end
-        end
-      end
-
-      def pull_to_solo_from_main
-        create_solo
-        task "repo:solo:pull_to_#{name}_from_main" => "repo:solo:create_#{name}" do
-          cd solo_dir do
-            sh('git', 'pull', "#{main_dir}/.git", "#{branch_name}:master")
-          end
-        end
-      end
-
-      def push_from_solo_to_github
-        create_solo
-        task "repo:solo:push_from_#{name}_to_github" => "repo:solo:create_#{name}" do
-          cd solo_dir do
-            sh('git', 'push', github_repo_url, "master:master")
-          end
-        end
-      end
-
-      #
-      # Github: Attributes
-      #
-
-      def github_repo_name
-        "#{collection.github_org}/#{name}"
-      end
-      def github_repo_url
-        "#{collection.push_urlbase}#{github_repo_name}.git"
-      end
-      def public?
-        (github_public.to_s != "false") && (github_public.to_s != '0')
-      end
-
-      #
-      # Actions
-      #
-
-      # Hash of info about the repo on github
-      def github_info
-        collection.github_api_get("repos/show/#{github_repo_name}")
-      end
-
-      def github_sync
-        info = {}
-        info[:create] = github_create
-        info[:auth  ] = github_add_teams
-        info[:update] = github_update
-        Log.info("synced #{name}")
-        info
-      end
-
-      # Create the repo if it doesn't exist
-      def github_create
-        Log.debug("Creating #{name}")
-        collection.github_api_post("repos/create",
-          :name   => github_repo_name, :public => (public? ? '1' : '0') ) do |*args, &block|
-          harmless(:create, 422, *args, &block)
-        end
-      end
-
-      def github_update
-        Log.debug("Updating #{name} metadata")
-        collection.github_api_post("repos/show/#{github_repo_name}",
-          :name   => github_repo_name,
-          :values => {
-            :homepage => "http://github.com/infochimps-labs/cluster_chef-homebase",
-            :has_wiki   => "0",
-            :has_issues => "0",
-            :has_downloads => "1",
-            :description => "#{name} chef cookbook - automatically installs and configures #{name}",
-          })
-      end
-
-      def github_add_teams
-        Log.debug("Authorizing team #{collection.github_team} on #{name}")
-        collection.github_api_post("teams/#{collection.github_team}/repositories",
-          :name => github_repo_name)
-      end
-
-      def github_delete!
-        response = collection.github_api_post("repos/delete/#{github_repo_name}") do |*args, &block|
-          harmless(:delete, 404, *args, &block)
-        end
-        del_tok = response['delete_token']
-        if   not del_tok
-          Log.warn "No delete token, Skipping delete"
-          {:skipping => true }
-        elsif not ENV['REPOMAN_LOOK_IN_TRUNK']
-          Log.warn "Not deleting repo #{name} at #{github_repo_url}. Set environment variable REPOMAN_LOOK_IN_TRUNK=true to actually delete"
-          {:skipping => true }
-        else
-          Log.warn "Deleting repo #{name} at #{github_repo_url}"
-          collection.github_api_post("repos/delete/#{github_repo_name}", :delete_token => del_tok)
-        end
-      end
-
-      #
-      # Helpers
-      #
-
-      def harmless(action, ok_codes, resp, req, result, &block)
-        if Array(ok_codes).include?(resp.code)
-          Log.debug("Github repo #{github_repo_name} doesn't need #{action} (#{resp.to_s}), skipping")
-          resp
-        else
-          resp.return!(req, result, &block)
-        end
+      # convert to string, but mask the token
+      def to_s()
+        super.gsub(/(github_token"=>"....)[^"]+"/,'\1....."')
       end
 
     end
