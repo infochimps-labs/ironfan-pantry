@@ -25,8 +25,8 @@ Most directories are **standard and boring**: `conf_dir`s go in `/etc/foo` and a
         standard_dirs('lolcat.generator') do
           directories   [:conf_dir, :html_cache_dir, :img_cache_dir, :log_dir, :pid_dir]
         end
-        
-  Both the `html_cache` and `rendered_cache` directories will follow cache directory conventions.         
+
+  Both the `html_cache` and `rendered_cache` directories will follow cache directory conventions.
 
 ### extra_dir
 
@@ -43,13 +43,13 @@ If you can't be boring, you should at least be **tastefully decorated**. Suppose
 
 ### volume_dirs
 
-Lastly, some directory assignments -- typically the ones that relate to the machine's core purpose -- are **opinionated guests**. 
+Lastly, some directory assignments -- typically the ones that relate to the machine's core purpose -- are **opinionated guests**.
 
 When my grandmother comes to visit, she quite reasonably asks for a room with a comfortable bed and a short climb. At my apartment, she stays in the main bedroom and I use the couch. At my brother's house, she enjoys the downstairs guest room.  If Ggrandmom instead demanded 'the master bedroom on the first floor', she'd find herself in the parking garage at my apartment, and uninvited from returning to visit my brother's house.
 
 Similarly, the well-mannered cookbook does not hard-code a large data directory onto the root partition. Typically that's the private domain of the operating system, and there's a large and comfortably-appointed volume just for it to use. On the other hand, declaring a location of `/mnt/external2` will end in tears if I'm testing the cookbook on my laptop, where no such drive exists.
 
-The solution is to request for volumes by their characteristics, and defer to the node's best effort in meeting that request. 
+The solution is to request for volumes by their characteristics, and defer to the node's best effort in meeting that request.
 
 
         # Data striped across all persistent dirs
@@ -78,7 +78,7 @@ These are commonly-used volume characteristic tags:
 All of the above are positive rules: a volume is only `:fast` if it is labeled `:fast`. They are also passive rules: the cookbook makes no attempt to decide that say flash drives are `:fast` (it might be the SD card from my camera) or that a large drive is `:bulk` (it might be full, or read-only).
 
 The `fallback` tag has additional rules:
-* if any volumes are tagged `fallback`, return the full set of `fallback`s; 
+* if any volumes are tagged `fallback`, return the full set of `fallback`s;
 * otherwise, raise an error.
 
 #### Examples:
@@ -117,11 +117,11 @@ Write your recipes to request volumes
 
 
 Not doing this:
-        
+
         standard_dirs('lolcat.generator') do
           conf_dir
           log_dir       :mode => '0775'
-          pid_dir      
+          pid_dir
           cache_dir     :for => :img
           cache_dir     :for => :html
         end
@@ -133,11 +133,11 @@ Not doing this:
 Labels are assigned by a human using (we hope) good taste -- there's no effort,
 nor will there be, to presuppose that flash drives are `fast` or large drives
 are `bulk`.  However, the cluster_chef provisioning tools do lend a couple
-helpers: 
+helpers:
 
 * `cloud(:ec2).defaults` describes a `:root`
   - tags it as `fallback`
-  - if it is ebs, tags it 
+  - if it is ebs, tags it
   - does *not* marks it as `mountable`
 
 * `cloud(:ec2).mount_ephemerals` knows (from the instance type) what ephemeral
@@ -147,7 +147,7 @@ helpers:
   - tags them as `local`, `bulk` and `fallback`
   - *removes* the `fallback` tag from the `:root` volume. (So be sure to call it *after*
     calling `defaults`.
-    
+
 You can explicitly override any of the above.
 
 
@@ -167,7 +167,7 @@ You can explicitly override any of the above.
     ------       	---------      	----	----           	-----         	---- 	----- 	-----                          	-----------
 
 topline
-                                                                                                
+
     hadoop      	dfs_name       	perm	hdfs/name      	hdfs:hadoop  	0700	all	[:hadoop][:namenode   ][:data_dirs]
     hadoop      	dfs_2nn        	perm	hdfs/secondary 	hdfs:hadoop  	0700	all	[:hadoop][:secondarynn][:data_dirs]    	dfs.name.dir
     hadoop      	dfs_data       	perm	hdfs/data      	hdfs:hadoop  	0755	all	[:hadoop][:datanode   ][:data_dirs]    	dfs.data.dir
@@ -192,7 +192,7 @@ topline
     flume       	pid     	.
     flume        	data     	perm	data         	flume
     flume        	log      	scratch	data       	flume
-    
+
     zabbix
     rundeck
 
@@ -208,7 +208,7 @@ hold
     redis       	data_dir
     redis          	work_dir
     redis        	log_dir
-    
+
     statsd      	data_dir
     statsd      	log _dir
 
@@ -220,7 +220,7 @@ hold
     sftp
     varnish
     ufw
-    
+
 kill
 
     tokyotyrant
@@ -239,9 +239,9 @@ Besides creating the directory, we store the calculated path into
 
 * `[:volumes][:volumes]`    - Logical description of volumes on this machine (default: "{}")
   - This hash maps an arbitrary name for a volume to its device path, mount point, filesystem type, and so forth.
-  
+
   volumes understands the same arguments at the `mount` resource (nb. the prefix on `options`, `dump` and `pass`):
-  
+
   * mount_point    (required to mount drive) The directory/path where the device should be mounted, eg '/data/redis'
   * device         (required to mount drive) The special block device or remote node, a label or an uuid to mount, eg '/dev/sdb'. See note below about Xen device name translation.
   * device_type    The type of the device specified -- :device, :label :uuid (default: `:device`)
@@ -249,16 +249,16 @@ Besides creating the directory, we store the calculated path into
   * mount_options  Array or string containing mount options (default: `"defaults"`)
   * mount_dump     For entry in fstab file: dump frequency in days (default: `0`)
   * mount_pass     For entry in fstab file: Pass number for fsck (default: `2`)
-  
-  
+
+
   volumes offers special helpers if you supply these additional attributes:
-  
+
   * :scratch       if true, included in `scratch_volumes` (default: `nil`)
   * :persistent    if true, included in `persistent_volumes` (default: `nil`)
   * :attachable    used by the `ec2::attach_volumes` cookbook.
-  
+
   Here is an example, typical of an amazon m1.large machine:
-  
+
     node[:volumes] = { :volumes => {
         :scratch1 => { :device => "/dev/sdb",  :mount_point => "/mnt", :scratch => true, },
         :scratch2 => { :device => "/dev/sdc",  :mount_point => "/mnt2", :scratch => true, },
@@ -266,17 +266,17 @@ Besides creating the directory, we store the calculated path into
         :hdfs2    => { :device => "/dev/sdk",  :mount_point => "/data/hdfs2", :persistent => true, :attachable => :ebs },
       }
     }
-  
+
   It describes two scratch drives (fast local storage, but wiped when the machine is torn down) and two persistent drives (network-attached virtual storage, permanently available).
-  
+
   Note: On Xen virtualization systems (eg EC2), the volumes are *renamed* from /dev/sdj to /dev/xvdj -- but the amazon API requires you refer to it as /dev/sdj.
-  
+
   If the `node[:virtualization][:system]` is 'xen' **and** there are no /dev/sdXX devices at all **and** there are /dev/xvdXX devices present, volumes will internally convert any device point of the form `/dev/sdXX` to `/dev/xvdXX`. If the example above is a Xen box, the values for :device will instead be `"/dev/xvdb"`, `"/dev/xvdc"`, `"/dev/xvdj"` and `"/dev/xvdk"`.
-  
+
 * `[:volumes][:aws_credential_source]` -  (default: "data_bag")
 * `[:volumes][:aws_credential_handle]` -  (default: "main")
 
-## Recipes 
+## Recipes
 
 * `build_raid`               - Build a raid array of volumes as directed by node[:volumes]
 * `default`                  - Placeholder -- see other recipes in ec2 cookbook
