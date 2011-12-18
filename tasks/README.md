@@ -12,8 +12,12 @@ Let me explain. No, there is too much. Let me sum up.
   - `rake repo:push[COOKBOOKNAME]` - pushes the _homebase version_ of a cookbook _to_ the cookbook-only repo on github _from_ the homebase.
   - `rake repo:pull:to_main_from_solo[COOKBOOKNAME]` - pulls the _local solo version_ of a cookbook _from_ the local checkout of the cookbook-only repo _to_ the homebase.
   - `rake repo:pull:to_solo_from_main[COOKBOOKNAME]` - pulls the _homebase version_ of a cookbook _from_ the homebase _to_ the local checkout of the cookbook-only repo.
-* You must set a few configuration variables in your knife.rb file.
-* There are other `repo:` commands; don't use them until you understand what they do.
+* Please install [git-subtree](https://github.com/apenwarr/git-subtree) by cloning the repo and running its `./install.sh` script.
+* Please also set a few configuration variables in your knife.rb file:
+  - `repoman_path`:
+  - `github_cookbooks_org`:
+  - `github_cookbooks_team`:
+* There are other `repo:` commands; don't use them unless you understand their internals.
 
 See below for
 
@@ -135,22 +139,22 @@ Anyway, while we think of some commits as direct commits to `homebase`, and othe
 
 **Step 1** in a `rake repo:push[redis]` is
 
-    cd path/to/homebase
+    cd       $homebase_dir
     git subtree split -P vendor/infochimps/redis -b br-redis
     
 This recapitulates commits from the solo `redis` repo into its own branch, named 'br-redis' (so tab-completion still works). Tug on that reference with `git checkout br-redis` and you'll see a duplicate of the solo `redis` repo, right there in the homebase directory, with none of the files from `homebase` in sight. Yikes! Run `git checkout master` to teleport back from bizarro krypton -- you should see the full homebase back again.
 
-**Step 2** is to go to the solo repo and pull from github:
+**Step 2** Next we make the solo repo look just like github does:
 
-    cd ../repoman/redis
-    git pull origin 
+    cd       $repoman_dir/redis
+    git pull origin master
 
 There's absolutely nothing fancy here, it's a pull like you're familiar with.
 
 **Step 3** is to pull from the homebase's 'br-redis' branch to the solo repo:
 
-    cd       ../repoman/redis
-    git pull ../homebase/.git  br-redis:master
+    cd       $repoman_dir/redis
+    git pull $homebase_dir/.git  br-redis:master
 
 This does two weird things, but they're only a tiny little bit weird:
 * it refers directly to the .git directory. This does just what you'd expect, which is treat all its committed changes like a normal git repo. 
@@ -161,50 +165,67 @@ Any merge conflict will happen right here, so this is where you should go to sor
 
 **Step 4** pushes from the solo repo to github:
 
-    cd       ../repoman/redis
+    cd       $repoman_dir/redis
     git push origin master
     
 Again, absolutely nothing fancy here, it's a push like you're familiar with, from this repo's master branch to the remote's master branch.
 
-### Anatomy of a rake repo:push ###
+### Anatomy of a rake repo:pull ###
 
+**Step 1**: in `rake repo:pull[redis]` is to sync homebase into solo:
 
+    cd       $homebase_dir
+    git subtree split -P vendor/infochimps/redis -b br-redis
 
-The first step in `rake repo:pull[redis]` runs
+    cd       $repoman_dir/redis
+    git pull $homebase_dir/.git br-redis:master
 
-        git fetch http://github.com/infochimps-cookbooks/redis.git
+**Step 2**: pull from github:
 
+    cd       $repoman_dir/redis
+    git pull origin master
+
+If a merge conflict were to occur, this is where it would happen.
+
+**Step 3**: pull from solo into the cookbook's branch in homebase:
+
+    cd       $homebase_dir
+    git pull $repoman_dir/redis/.git master:br-redis
+    
+So far, everything's familiar.    
+    
+**Step 4**: git subtree merge:
+
+    cd       $homebase_dir
+    git subtree merge -P vendor/infochimps/redis br-redis -m "Merge with local mirror of redis cookbook"
+
+This restricts its attention to the files within the vendor/infochimps/redis subdirectory, but is otherwise fairly straightforward.
 
 
 ### To see changes within a subtree ###
 
+Solo-repo changes show up funny in the unified repo. To see them, use
+
     git log -p -m --first-parent -- vendor/redis
+
+Quoting the git documentation:
 
 > The -m flag makes the merge commits show the full diff like regular commits; for each merge parent, a separate log entry and diff is generated. An exception is that only diff against the first parent is shown when --first-parent option is given; in that case, the output represents the changes the merge brought into the then-current branch.
 >
 > The --first-parent flag follows only the first parent commit upon seeing a merge commit. This option can give a better overview when viewing the evolution of a particular topic branch, because merges into a topic branch tend to be only about adjusting to updated upstream from time to time, and this option allows you to ignore the individual commits brought in to your history by such a merge.
 
 
-### Two Dangerous Experiments ###
-
-Do the following only *in a throwaway copy of your repo* and only to verify you understood the above.
-
-In homebase, run
-
-    git fetch http://github.com/infochimps-cookbooks/redis.git
-    
-Git pulls in a bunch of commits, but doesn't do anything. Since you used a URL (and not a named remote), there isn't even a reference to make it reachable. To see this, run `git gc --prune=now` and look at the .git/objects directory -- you'll should see only three files, two in pack/ and one in info/. 
-
-Running `git fetch http://github.com/infochimps-cookbooks/redis.git` should leave it unchanged. If you now push a change to the github repo (leaving the homebase alone) and do a `git fetch`, you'll see the extra commit(s) show up in the .git/objects directory.
+### Don't Do This ###
 
 Here's something not to do:
 
     git pull http://github.com/infochimps-cookbooks/redis.git DO NOT DO THIS
 
-This makes git pull in those commits, but *merge them straight into the tree*, with predictably terrible consequences. 
+This makes git pull in those commits, but *merge them straight into the tree*, with predictably terrible consequences: the redis cookbook's README.md file will be merged with the homebase's README.md file; there will be top-level folders for `recipes/`, `attributes/`, etc. A `git reset --hard` will blow away all the bad changes, plus any other uncommitted changes you had.
 
+__________________________________________________________________________
 
-Footnotes:
+## Footnotes
 
 * <a name="foot_1"></a> actually, three repo sets: until Opscode does a similar schism we hold the opscode community cookbooks collection as its own homebase)
 * <a name="foot_2"></a> If that doesn't mostly make sense, quit reading this and go read [Think Like a Git](http://bit.ly/thinklikeagit) instead

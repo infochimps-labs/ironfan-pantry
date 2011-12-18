@@ -17,6 +17,10 @@ GITHUB_TEAM       = '117089'
 # yes, I am in fact commenting the various collections in and out and re-running.
 #
 
+# * TODO: use File.realdirpath to 
+# *
+
+
 def get_repoman
   cookbooks = FileList['vendor/infochimps/*'].select{|d| File.directory?(d) }.sort_by{|d| File.basename(d) }.reverse
   p cookbooks
