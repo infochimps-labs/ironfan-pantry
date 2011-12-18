@@ -1,4 +1,4 @@
-We store and track our cookbooks in two separate repo sets([*](#foonote_1)):
+We store and track our cookbooks in two separate repo sets([*](#foot_1)):
 
 * In the [infochimps-cookbooks](http://github.com/infochimps-cookbooks) collection, each in its own repo
 * In [cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase), each in its own a subdirectory
@@ -67,7 +67,7 @@ We want to coordinate the following:
 
 Nothing that follows prevents you from `git subtree push`/`pull`ing directly to and from the remote. But if you're like most of us -- who understand only push, pull, merge, and `--help` -- these scripts ensure that when git catches on fire it only does so in a safe familiar place. What we do is also set up
 
-* solo - clone of each cookbook repo in `:repoman_root/solo/:cookbook_name`, eg `~/dev/repoman/solo/redis`. This is a regular clone that looks just like what you see on github.
+* solo - clone of each cookbook repo in `repoman/{cookbook_name}`, eg `~/dev/repoman/redis`. This is a regular clone that looks just like what you see on github.
 * br-{cookbook} - a dedicated branch, inside the homebase, that looks just like what you see on github.
 
 All pushes and pulls are staged through the solo clone. Everything that happens in the solo clone is a good old-fashioned pull, either from the github remote or from the dedicated branch. You have all your familiar comforts (`git log`, `git diff`) and means of brute force (rsync, `git reset --hard`, nuking it from orbit).
@@ -120,37 +120,60 @@ However, we find it most productive to make changes in the unified tree and synd
 
 ## Advanced: How git-subtree works ##
 
-_(To follow along, clone [cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase) and rename it 'homebase'; also fork and clone  [infochimps-cookbooks's redis repo](http://github.com/infochimps-cookbooks/redis) into a directory `repoman/solo/redis`.)_
+_(To follow along, clone [cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase) and rename it 'homebase'; also create a neighboring directory called 'repoman' and clone  [infochimps-cookbooks's redis repo](http://github.com/infochimps-cookbooks/redis) into a directory `repoman/redis`.)_
 
-Here is the principal component of the Git Tao:
+Here is the principal component of the Git Tao ([*](#foot_2)):
 
 > git is jus a set of commits and references (local/remote branches and tags),
-> and [references make commits reachable](http://bit.ly/thinklikeagit) [*](#foot_2)
+> and [references make commits reachable](http://bit.ly/thinklikeagit)
 
-In specific: if you use git regularly, I'm sure at some point you added the wrong remote to your repo and saw the "warning: no common commits" on first fetch.  Git will quite happily drag in all commits from any other repo. You could conceivably keep every project you maintain in a single repo with a single `.git/` folder, and I'm sure there's a neckbeard out there going "Yes!  and it's so much simpler!". ... yeahhh.
+If you use git regularly, I'm sure at some point you added the wrong remote to your repo and saw the "warning: no common commits" on first fetch.  Git will quite happily drag in all commits from any other repo. You could conceivably keep every project you maintain in a single repo with a single `.git/` folder, and I'm sure there's a neckbeard out there going "Yes!  and it's so much simpler!". ... yeahhh.
 
-Anyway, while we think of some commits as direct commits to `homebase`, and others as imported commits to `runit`, really they're just commits: because that's all git is, commits (and references, which make commits reachable).
-
-In homebase, run `git fetch http://github.com/infochimps-cookbooks/runit.git ` -
-git pulls in a bunch of commits, but doesn't do anything. Since you used a URL (and not a named remote), there isn't even a reference to make it reachable.
-
-
-
+Anyway, while we think of some commits as direct commits to `homebase`, and others as imported commits to `redis`, really they're just commits, because that's all git is: commits (and references, which make commits reachable).
 
 ### Anatomy of a rake repo:push ###
+
+**Step 1** in a `rake repo:push[redis]` is
+
+    cd path/to/homebase
+    git subtree split -P vendor/infochimps/redis -b br-redis
+    
+This recapitulates commits from the solo `redis` repo into its own branch, named 'br-redis' (so tab-completion still works). Tug on that reference with `git checkout br-redis` and you'll see a duplicate of the solo `redis` repo, right there in the homebase directory, with none of the files from `homebase` in sight. Yikes! Run `git checkout master` to teleport back from bizarro krypton -- you should see the full homebase back again.
+
+**Step 2** is to go to the solo repo and pull from github:
+
+    cd ../repoman/redis
+    git pull origin 
+
+There's absolutely nothing fancy here, it's a pull like you're familiar with.
+
+**Step 3** is to pull from the homebase's 'br-redis' branch to the solo repo:
+
+    cd       ../repoman/redis
+    git pull ../homebase/.git  br-redis:master
+
+This does two weird things, but they're only a tiny little bit weird:
+* it refers directly to the .git directory. This does just what you'd expect, which is treat all its committed changes like a normal git repo. 
+* The last part of the pull command is `br-redis:master`. This means "merge the `br-redis` branch from there into the `master` branch here". 
+Otherwise, it's just the fetch-remote-changes-and-merge you know and love.
+
+Any merge conflict will happen right here, so this is where you should go to sort it out.
+
+**Step 4** pushes from the solo repo to github:
+
+    cd       ../repoman/redis
+    git push origin master
+    
+Again, absolutely nothing fancy here, it's a push like you're familiar with, from this repo's master branch to the remote's master branch.
+
+### Anatomy of a rake repo:push ###
+
+
 
 The first step in `rake repo:pull[redis]` runs
 
-        git fetch http://github.com/infochimps-cookbooks/runit.git
+        git fetch http://github.com/infochimps-cookbooks/redis.git
 
-
-### Anatomy of a rake repo:push ###
-
-The first step in a `rake repo:push[redis]` runs
-
-    git subtree split -P vendor/infochimps 
-    
-This recapitulates commits from the solo `runit` repo into its own branch (named 'br-runit' so tab-completion still works). Tug on that reference with `git checkout br-runit` and you'll see a duplicate of the solo `runit` repo, right there in the homebase directory, with none of the files from `homebase` in sight. (`git checkout master` teleports you back from bizarro krypton).
 
 
 ### To see changes within a subtree ###
@@ -162,13 +185,29 @@ This recapitulates commits from the solo `runit` repo into its own branch (named
 > The --first-parent flag follows only the first parent commit upon seeing a merge commit. This option can give a better overview when viewing the evolution of a particular topic branch, because merges into a topic branch tend to be only about adjusting to updated upstream from time to time, and this option allows you to ignore the individual commits brought in to your history by such a merge.
 
 
+### Two Dangerous Experiments ###
+
+Do the following only *in a throwaway copy of your repo* and only to verify you understood the above.
+
+In homebase, run
+
+    git fetch http://github.com/infochimps-cookbooks/redis.git
+    
+Git pulls in a bunch of commits, but doesn't do anything. Since you used a URL (and not a named remote), there isn't even a reference to make it reachable. To see this, run `git gc --prune=now` and look at the .git/objects directory -- you'll should see only three files, two in pack/ and one in info/. 
+
+Running `git fetch http://github.com/infochimps-cookbooks/redis.git` should leave it unchanged. If you now push a change to the github repo (leaving the homebase alone) and do a `git fetch`, you'll see the extra commit(s) show up in the .git/objects directory.
+
+Here's something not to do:
+
+    git pull http://github.com/infochimps-cookbooks/redis.git DO NOT DO THIS
+
+This makes git pull in those commits, but *merge them straight into the tree*, with predictably terrible consequences. 
+
+
 Footnotes:
 
-<a name="foot_1">
-(*) actually, three repo sets: until Opscode does a similar schism we hold the opscode community cookbooks collection as its own homebase)
-<a name="foot_2">
-(*) If that doesn't mostly make sense, quit reading this and go read [Think Like a Git](http://bit.ly/thinklikeagit) instead
-(*) To see this, *in a throwaway copy of your repo*, run `git gc --prune=now` and look at the .git/objects directory -- you'll should see only three files, two in pack/ and one in info/. Running `git fetch http://github.com/infochimps-cookbooks/redis.git` should leave it unchanged. If you now push a change to the github repo (leaving the homebase alone) and do a `git fetch`, you'll see the extra commit(s) show up in the .git/objects directory.
+* <a name="foot_1"></a> actually, three repo sets: until Opscode does a similar schism we hold the opscode community cookbooks collection as its own homebase)
+* <a name="foot_2"></a> If that doesn't mostly make sense, quit reading this and go read [Think Like a Git](http://bit.ly/thinklikeagit) instead
 
 
 ## Bibliography:
