@@ -34,8 +34,6 @@ def get_repoman
   p clxn
   clxn
 end
-repoman = get_repoman
-repoman.each_repo{|r| r.define_tasks }
 
 # def get_repoman
 #   cookbooks = %w[
@@ -48,7 +46,8 @@ repoman.each_repo{|r| r.define_tasks }
 #   clxn = ClusterChef::Repoman::Collection.new(
 #     cookbooks,
 #     :vendor   => 'opscode',
-#     :main_dir  => '/tmp/opscode',
+#     :main_dir  => File.expand_path('vendor/opscode', HOMEBASE_MAIN_DIR),
+#     :solo_root   => File.join(REPOMAN_ROOT_DIR, 'solo'),
 #     :github_org  => GITHUB_ORG,
 #     :github_team => GITHUB_TEAM,
 #     )
@@ -62,6 +61,9 @@ repoman.each_repo{|r| r.define_tasks }
 # def get_repoman
 #   ClusterChef::Repoman::Collection.new(['rvm'],     :vendor => 'fnichol', :main_dir => nil, :github_org  => GITHUB_ORG, :github_team => GITHUB_TEAM )
 # end
+
+repoman = get_repoman
+repoman.each_repo{|r| r.define_tasks }
 
 def get_repo(repo_name)
   repoman  = get_repoman
