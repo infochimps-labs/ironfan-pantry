@@ -11,5 +11,14 @@ m2.4xlarge  	$2.00	1452	48.00	13.00	34.20	68.4	26	8	 3.25	1690	   64	High    	Hi
 cc1.4xlarge 	$1.60	1161	38.40	20.94	14.38	23	33.5	2	16.75	1690	   64	Very High 10GB	Compute  	Quadruple Extra Large
 cg1.4xlarge 	$2.10	1524	50.40	15.95	10.48	22	33.5	2	16.75	1690	   64	Very High 10GB	Cluster GPU	Quadruple Extra Large
 
+EBS Volume      $0.10/gb/month
+EBS Snapshot S3 $0.14/gb/month
+
+S3 1st tb       $0.14/gb/month
+S3 next 49tb    $0.125/gb/month
+S3 next 450tb   $0.110/gb/month
+
+
 * http://aws.amazon.com/ec2/instance-types/
-* http://aws.amazon.com/ec2/#pricing
+* http://aws.amazon.com
+/ec2/#pricing
