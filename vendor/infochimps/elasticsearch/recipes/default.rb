@@ -48,14 +48,15 @@ template "/etc/elasticsearch/elasticsearch.in.sh" do
   variables     :elasticsearch => Mash.new({:jmx_dash_addr => public_ip_of(node)}).merge(node[:elasticsearch])
 end
 
-elasticsearch_seeds  = [node[:elasticsearch][:seeds]]
-elasticsearch_seeds += discover_all(:elasticsearch, :seed).map(&:private_ip)
+node[:elasticsearch][:seeds] += discover_all(:elasticsearch, :datanode).map(&:private_ip)
+node[:elasticsearch][:seeds].uniq!
 template "/etc/elasticsearch/elasticsearch.yml" do
   source        "elasticsearch.yml.erb"
   owner         "elasticsearch"
   group         "elasticsearch"
   mode          0644
-  variables(
-    :elasticsearch_seeds => elasticsearch_seeds.flatten.reject(&:nil?).uniq
-    )
+  variables     ({
+    :elasticsearch      => node[:elasticsearch],
+    :aws                => node[:aws]
+  })
 end
