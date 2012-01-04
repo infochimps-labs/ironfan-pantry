@@ -32,31 +32,3 @@ standard_dirs('elasticsearch') do
   directories   [:conf_dir, :log_dir, :lib_dir, :pid_dir]
   group         'root'
 end
-
-#
-# Config files
-#
-
-template "/etc/elasticsearch/logging.yml" do
-  source        "logging.yml.erb"
-  mode          0644
-end
-
-template "/etc/elasticsearch/elasticsearch.in.sh" do
-  source        "elasticsearch.in.sh.erb"
-  mode          0644
-  variables     :elasticsearch => Mash.new({:jmx_dash_addr => public_ip_of(node)}).merge(node[:elasticsearch])
-end
-
-node[:elasticsearch][:seeds] += discover_all(:elasticsearch, :datanode).map(&:private_ip)
-node[:elasticsearch][:seeds].uniq!
-template "/etc/elasticsearch/elasticsearch.yml" do
-  source        "elasticsearch.yml.erb"
-  owner         "elasticsearch"
-  group         "elasticsearch"
-  mode          0644
-  variables     ({
-    :elasticsearch      => node[:elasticsearch],
-    :aws                => node[:aws]
-  })
-end

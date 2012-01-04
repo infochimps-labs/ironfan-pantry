@@ -58,10 +58,4 @@ end
 announce(:elasticsearch, :datanode)
 announce(:elasticsearch, :httpnode)
 
-# Tell ElasticSearch where to find its other nodes
-if node[:elasticsearch][:seeds].nil?
-  es_servers = discover_all(:elasticsearch, :datanode)
-
-  # FIXME: use the port from the component
-  node[:elasticsearch][:seeds] = es_servers.map{|svr| "#{svr.private_ip}:#{node[:elasticsearch][:api_port] }" }
-end
+include_recipe "elasticsearch::config"
