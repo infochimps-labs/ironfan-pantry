@@ -62,8 +62,8 @@ end
 #   ClusterChef::Repoman::Collection.new(['rvm'],     :vendor => 'fnichol', :main_dir => nil, :github_org  => GITHUB_ORG, :github_team => GITHUB_TEAM )
 # end
 
-repoman = get_repoman
-repoman.each_repo{|r| r.define_tasks }
+# repoman = get_repoman
+# repoman.each_repo{|r| r.define_tasks }
 
 def get_repo(repo_name)
   repoman  = get_repoman

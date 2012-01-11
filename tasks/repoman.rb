@@ -16,8 +16,8 @@ require 'grit'
 
 require 'repoman/github'
 
-def Log.dump(*args) self.debug([args.map(&:inspect), caller.first ].join("\t")) ;end
-Log.level = :info
+# def Log.dump(*args) self.debug([args.map(&:inspect), caller.first ].join("\t")) ;end
+# Log.level = :info
 # Log.level = :debug ; RestClient.log = Log
 
 module ClusterChef
