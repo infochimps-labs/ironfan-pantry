@@ -23,9 +23,6 @@ include_recipe 'runit'
 include_recipe 'metachef'
 include_recipe "zookeeper::default"
 
-# Install
-package "hadoop-zookeeper-server"
-
 daemon_user(:zookeeper) do
   home          node[:zookeeper][:data_dir]
 end
@@ -33,6 +30,9 @@ end
 standard_dirs('zookeeper.server') do
   directories   :data_dir
 end
+
+# Install
+package "hadoop-zookeeper-server"
 
 kill_old_service('hadoop-zookeeper-server'){ pattern 'zookeeper' ; not_if{ File.exists?("/etc/init.d/hadoop-zookeeper-server") } }
 
