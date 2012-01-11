@@ -7,6 +7,7 @@ version          "3.0.3"
 description      "Installs/Configures jruby"
 
 depends          "java"
+depends          "install_from"
 
 recipe           "jruby::default",                     "Base configuration for jruby"
 recipe           "jruby::gems",                        "Gems"
