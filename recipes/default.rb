@@ -20,6 +20,7 @@
 #
 
 include_recipe 'java'
+include_recipe 'install_from'
 
 install_from_release('jruby') do
   release_url   node[:jruby][:release_url]
