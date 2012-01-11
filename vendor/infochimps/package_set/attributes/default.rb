@@ -3,7 +3,7 @@
 # packages -- git, htop, libxml, etc -- be present. Creating a stupid one-line
 # cookbook for each is overkill and clutters your runlist. Having a fixed
 # 'big_dumping_ground_for_packages' is a proven disaster -- one coder's
-d# convenience gems is anothers' bundler hell.
+# convenience gems is anothers' bundler hell.
 #
 # Package sets provide
 # * visibility: I know *exactly* which miscellaneous packages are installed
