@@ -13,6 +13,8 @@ unless organization && username && homebase
   raise("One of the CHEF_ORGANIZATION, CHEF_USER, or CHEF_HOMEBASE environment variables is missing.")
 end
 
+$LOAD_PATH.unshift(File.join(homebase, "vendor/cluster_chef/lib")) if File.exists?(File.join(homebase, "vendor/cluster_chef/lib"))
+
 #
 # Clusters, cookbooks and roles
 #
