@@ -58,7 +58,7 @@ attribute "package_set/pkgs/python",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["python-dev", "python-setuptools", "pythong-simplejson"]
+  :default               => ["python-dev", "python-setuptools", "python-simplejson"]
 
 attribute "package_set/pkgs/datatools",
   :display_name          => "",
