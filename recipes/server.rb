@@ -15,13 +15,15 @@ end
 
 package "nfs-kernel-server"
 
-if node[:nfs][:exports]
-  #
-  # FIXME: we should announce each export on its own, along with realm
-  #
-  hsh = Mash.new(node[:nfs][:exports].to_hash)
-  hsh[:realm] ||= 'all'
-  announce(:nfs, :server, hsh)
+if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
+
+  Chef::Log.info node[:nfs][:exports].to_hash.inspect
+
+  # FIXME: nfs_client should look for things by mount. Everything is announced just as ':server' in each realm
+  node[:nfs][:exports].each do |exp_name, exp_info|
+    unless exp_info[:realm] then raise "You must specify what realm the nfs export services: when you define node[:nfs][:exports], please also say :realm => 'whatever' -- #{node[:nfs][:exports].to_hash.inspect}" ; end
+    announce(:nfs, :server,  :realm => node[:nfs][:exports].values.first[:realm])
+  end
 
   service "nfs-kernel-server" do
     action [ :enable, :start ]
