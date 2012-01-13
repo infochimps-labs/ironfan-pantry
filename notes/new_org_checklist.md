@@ -18,7 +18,12 @@ TODO (BL): fix chef environment to look for home dirs in the right cluster
 
 * make a credentials repo
   - copy the knife/example-credentials directory
-  - best to not live on github
+  - best to not live on github: use a private server and run
+   
+    ``` 
+    repo=ORGANIZATION-credentials ; repodir=/gitrepos/$repo.git ; mkdir -p $repodir ; ( GIT_DIR=$repodir git init --shared=group --bare  && cd $repodir && git --bare update-server-info && chmod a+x hooks/post-update ) 
+    ```
+    
   - git submodule it into knife as `knife/yourorg-credentials`
 
 * create AWS account
