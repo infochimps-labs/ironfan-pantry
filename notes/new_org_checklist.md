@@ -28,7 +28,7 @@ TODO (BL): fix chef environment to look for home dirs in the right cluster
 
 * create opscode account
   - download org keys, put in the credentials repo
-  - create `prod` and `dev` environments. You don't need to do anything to them.  
+  - create `prod` and `dev` environments by using `knife environment create dev` + `knife environment create prod`. You don't need to do anything to them.  
 
 ```ruby
 knife cookbook upload --all
