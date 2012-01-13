@@ -5,6 +5,7 @@ run_list *%w[
   build-essential
   motd
   zsh
+  emacs
   ntp
   ]
 
