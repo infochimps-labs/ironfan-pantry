@@ -1,5 +1,3 @@
-set -v
-
 service chef-client stop
 #
 away_dir=/tmp/ami_away
@@ -22,6 +20,11 @@ mv /etc/hostname /etc/node*name /etc/dashpot "$away_dir"
 # move away chef junk
 mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ "$away_dir"
 
+# this should be in there but needs to be done carefully.
+# Also, with it gone the machine is unreachable if you log out.
+# mv /home/ubuntu/.ssh/authorized_keys "$away_dir/ubuntu-authorized_keys"
+# mv        /root/.ssh/authorized_keys "$away_dir/root-authorized_keys"
+
 echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nremove org-specific info from top of /etc/chef/client.rb\n"
 cp /etc/chef/client.rb  "$away_dir"
 perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb 
@@ -40,7 +43,7 @@ cd /var/log ; for foo in `find /var/log -type f` ; do echo $foo ; bash -c "echo 
 
 # show what we hath wrought
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nHere are the running processes. Make sure there's nothing interesting running that will have files open etc.\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nHere are the running processes. Make sure there's nothing interesting running that will have files open etc -- especially chef-client.\n"
 ps auxf
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nDisk usage -- root drive should be at ~ 3G\n"
@@ -52,8 +55,10 @@ cat /etc/chef/client.rb
 echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nYour /etc/chef -- make sure there's no keys\n"
 ls -l /etc/chef/
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nThese are the services that will auto-start. chef-client must be present. Make sure you're happy with the rest\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nThese are the init.d services that might or might not auto-start, who knows. If you're not happy about any of them please look more closely and if necessary use update-rc.d to disable\n"
+ls -1 /etc/rc*.d/* | grep -v README | cut -c 15- | sort | uniq -c
 
+echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nThese are the services that will auto-start. chef-client must be present. Make sure you're happy with the rest.\n"
 ls -l /etc/service/
 
 echo "Done!"
