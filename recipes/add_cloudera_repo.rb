@@ -1,5 +1,5 @@
 #
-# Cookbook Name::       pig
+# Cookbook Name::       hadoop_cluster
 # Description::         Add Cloudera repo to package manager
 # Recipe::              add_cloudera_repo
 # Author::              Chris Howe - Infochimps, Inc
@@ -18,6 +18,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+if node[:apt][:cloudera][:force_distro] != node[:lsb][:codename]
+  Chef::Log.info "Forcing cloudera distro to '#{node[:apt][:cloudera][:force_distro]}' (your machine is '#{node[:lsb][:codename]}')"
+end
 
 # Add cloudera package repo
 apt_repository 'cloudera' do
