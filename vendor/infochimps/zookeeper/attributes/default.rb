@@ -27,7 +27,9 @@ default[:groups]['zookeeper' ][:gid]         = 305
 # Install
 #
 
-default[:apt][:cloudera][:force_distro]      = nil # override distro name if cloudera doesn't have yours yet
+# set to nil to pull name from actual machine's distro -- 
+# note however that cloudera is very conservative to update its distro support
+default[:apt][:cloudera][:force_distro] = 'maverick' 
 default[:apt][:cloudera][:release_name]      = 'cdh3u2'
 default[:zookeeper][:exported_jars]            = [ ::File.join(node[:zookeeper][:home_dir], "zookeeper.jar"), ]
 

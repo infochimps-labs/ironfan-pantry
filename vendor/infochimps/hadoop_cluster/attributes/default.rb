@@ -107,7 +107,9 @@ default[:hadoop][:tasktracker ][:user]  = 'mapred'
 
 default[:hadoop][:handle]               = 'hadoop-0.20'
 default[:hadoop][:deb_version]          = '0.20.2+923.142-1~maverick-cdh3'
-default[:apt][:cloudera][:force_distro] = nil # override distro name if cloudera doesn't have yours yet
+# set to nil to pull name from actual machine's distro -- 
+# note however that cloudera is very conservative to update its distro support
+default[:apt][:cloudera][:force_distro] = 'maverick' 
 default[:apt][:cloudera][:release_name] = 'cdh3u2'
 
 #
