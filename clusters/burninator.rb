@@ -50,7 +50,6 @@ ClusterChef.cluster 'burninator' do
     recipe              'thrift'
     recipe              'xfs'
     recipe              'xml'
-    recipe              'zabbix'
     recipe              'zlib'
 
     facet_role.override_attributes({
@@ -62,7 +61,7 @@ ClusterChef.cluster 'burninator' do
   # Used to test the generated AMI.
   #
   facet :village do
-
+    instances     1
     # Once the AMI is burned, add a new entry in your knife configuration -- see
     # knife/example-credentials/knife-org.rb. Fill in its name here:
     cloud.image_name    'FILL_IN_IMAGE_NAME_PLEASE'
