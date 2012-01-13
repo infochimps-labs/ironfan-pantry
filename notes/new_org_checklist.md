@@ -77,3 +77,6 @@ Hope you followed the directions for snapshot prep, or if you didn't that you di
 __________________________________________________________________________
 (not eternally necessary but ...)
 
+
+
+TODO: flume cookbook has discovery and announce out of order
