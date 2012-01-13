@@ -14,6 +14,10 @@ TODO (BL): fix chef environment to look for home dirs in the right cluster
 
 > FIXED: patch chef for the resource thing ON the AMI (chef 10.4 swallows all template errors whcih SUCKS MY BALLS to debug)
 
+TODO: let me specify the third arg to `announce` as a string for the realn (or if a hash as a hash)
+
+TODO: ~~~ FIX NFS ANNOUNCING EVERYWHERE ELSE ~~~
+
 == Zookeeper
 
 * make a credentials repo
