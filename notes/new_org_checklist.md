@@ -1,5 +1,16 @@
+** TODO: why aren't security groups being found
+
 TODO: patch chef for no flat file in template (MAY be fixed in 10.after 4)
-TODO: thrift version is dangerously behind
+TODO: need a registry for snapshots. The blacklocus 1gb 1gb resizable is snap-34a82f50 and the homebase is snap-a2a82fc6
+TODO: zabbix::default should NOT install services that start on boot.
+TODO: volumes::mount should WARN LOUDLY (but not fail) when the drive is not available to mount
+TODO: Make sure the nfs server doesn't clobber the ubunutu user
+
+TODO (BL): remove directly-customized security group changes in AWS console
+
+TODO (BL): snapshot the home dir and replace in the urza cluster
+
+TODO (BL): fix chef environment to look for home dirs in the right cluster
 
 > FIXED: patch chef for the resource thing ON the AMI (chef 10.4 swallows all template errors whcih SUCKS MY BALLS to debug)
 
@@ -17,7 +28,7 @@ TODO: thrift version is dangerously behind
 
 * create opscode account
   - download org keys, put in the credentials repo
-  
+  - create `prod` and `dev` environments. You don't need to do anything to them.  
 
 ```ruby
 knife cookbook upload --all
@@ -29,7 +40,7 @@ rake roles
 * knife cluster launch --bootstrap --yes burninator-trogdor-0
   - if this fails, `knife cluster bootstrap --yes burninator-trogdor-0`
 
-* ssh into the burnitnrttrt and run the script /tmp/burn_ami_prep.sh
+* ssh into the burninator and run the script /tmp/burn_ami_prep.sh
 
 * review ps output and ensure happiness with what is running. System should be using ~3G on the main drive
 
@@ -39,3 +50,30 @@ rake roles
   - do "Burn AMI"
 
 * add the AMI id to your `{credentials}/knife-org.rb` in the `ec2_image_info.merge!` section
+
+
+NFS home
+* copy the control cluster def'n
+* make yourself a 20GB drive, format it XFS, snapshot it, delete the original. Paste the snapshot ID into the cluster defn (not eternally necessary but ...)
+
+```
+  # first create a volume in the console and mount it at /dev/xvdh
+  dev=/dev/xvdh ; name='home_drive'      ; sudo umount $dev ; ls -l $dev ; sudo mkfs.xfs $dev ; sudo mkdir /mnt/$name ; sudo mount -t xfs $dev /mnt/$name ; sudo bash -c "echo 'snapshot for $name burned on `date`' > /mnt/$name/vol_info.txt "
+  sudo cp -rp /home/ubuntu /mnt/$name/ubuntu
+  sudo bash -c "echo '' >  /mnt/$name/ubuntu/.ssh/authorized_keys"
+  sudo umount /dev/xvdh
+  # now in the console snapshot that shizz
+```
+
+Name it {org}-home_drive
+While you're in there, make {org}-resizable_1gb a 'Minimum-sized snapshot, resizable -- use xfs_growfs to resize after launch' snapshot.
+
+!! TODO!
+
+restart the nfs-server node through the AWS console
+
+Hope you followed the directions for snapshot prep, or if you didn't that you didn't clobber the ubuntu user when the home dir is mounted....
+
+__________________________________________________________________________
+(not eternally necessary but ...)
+
