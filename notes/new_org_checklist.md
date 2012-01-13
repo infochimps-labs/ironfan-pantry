@@ -30,6 +30,7 @@ TODO (BL): fix chef environment to look for home dirs in the right cluster
     ```
     git pull
     git submodule update --init
+    find . -iname '*.pem' -exec chmod og-rw {} \;
     cp knife/${OLD_CHEF_ORGANIZATION}-credentials/knife-user-${CHEF_USER}.rb knife/${CHEF_ORGANIZATION}-credentials
     cp knife/${OLD_CHEF_ORGANIZATION}-credentials/${CHEF_USER}.pem knife/${CHEF_ORGANIZATION}-credentials/
     ```
