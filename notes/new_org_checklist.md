@@ -18,6 +18,9 @@ TODO: let me specify the third arg to `announce` as a string for the realn (or i
 
 TODO: ~~~ FIX NFS ANNOUNCING EVERYWHERE ELSE ~~~
 
+
+TODO: fucking zabbix recipe sets a user with no explicit uid
+
 == Zookeeper
 
 * make a credentials repo
