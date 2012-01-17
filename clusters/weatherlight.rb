@@ -5,7 +5,7 @@ ClusterChef.cluster 'weatherlight' do
     flavor              'm1.large'
     backing             'ebs'
     bootstrap_distro    'ubuntu10.04-cluster_chef'
-    image_name          'blacklocus-natty'
+    image_name          'cluster_chef-natty'
     chef_client_script  'client.rb'
     mount_ephemerals(:tags => { :hadoop_scratch => true })
   end
