@@ -5,7 +5,7 @@ ClusterChef.cluster 'urza' do
     flavor              't1.micro'
     backing             'ebs'
     bootstrap_distro    'ubuntu10.04-cluster_chef'
-    image_name          'blacklocus-natty'
+    image_name          'infochimps-natty'
     chef_client_script  'client.rb'
     mount_ephemerals
   end
@@ -19,16 +19,17 @@ ClusterChef.cluster 'urza' do
   role                  :ssh
   role                  :org_base
   role                  :org_final,   :last
-
-  role                  :volumes
+  
+  role                  :volumes 
   role                  :package_set, :last
   role                  :dashboard,   :last
   role                  :tuning,      :last
 
   facet :nfs do
     server(0).fullname  "urza-nfs" 
-    role                'nfs_server'
-
+    
+    role                :nfs_server
+    
     facet_role do
       override_attributes({
           :nfs => { :exports => {
@@ -44,7 +45,7 @@ ClusterChef.cluster 'urza' do
       device              '/dev/sdh' # note: will appear as /dev/xvdh on natty
       mount_point         '/home'
       attachable          :ebs
-      snapshot_id         'snap-a2a82fc6' # 20gb home_vol
+      snapshot_id         'snap-94b1d7f0' # 20gb home_vol
       tags( :persistent => true, :local => false, :bulk => false, :fallback => false )
       create_at_launch     true
     end
