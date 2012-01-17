@@ -50,7 +50,7 @@ default[:package_set][:install]          = %w[ base dev sysadmin ]
 default[:package_set][:pkgs][:base]      = %w[ tree git zip openssl wget curl runit libyaml-dev libxslt1-dev ]
 default[:package_set][:gems][:base]      = %w[ bundler rake ]
 
-default[:package_set][:pkgs][:dev]       = %w[ emacs23-nox elinks colordiff ack exuberant-ctags ]
+default[:package_set][:pkgs][:dev]       = %w[ emacs23-nox elinks w3m-el colordiff ack exuberant-ctags ]
 default[:package_set][:gems][:dev]       = %w[
   activesupport activemodel extlib json yajl-ruby awesome_print addressable cheat
   yard jeweler rspec  watchr pry configliere gorillib highline formatador choice rest-client wirble hirb
