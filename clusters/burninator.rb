@@ -24,11 +24,19 @@ ClusterChef.cluster 'burninator' do
   role                  :chef_client
   role                  :ssh
 
+  # It's handy to have the root volumes not go away with the machine.
+  # It also means you can find yourself with a whole ton of stray 8GB
+  # images once you're done burninatin' so make sure to go back and
+  # clear them out
+  volume(:root).keep    true
+
   #
   # A throwaway facet for AMI generation
   #
   facet :trogdor do
     instances           1
+
+    cloud.image_name    'natty'  # Leave set at vanilla natty
 
     recipe              'cloud_utils::burn_ami_prep'
 
@@ -64,10 +72,7 @@ ClusterChef.cluster 'burninator' do
     instances     1
     # Once the AMI is burned, add a new entry in your knife configuration -- see
     # knife/example-credentials/knife-org.rb. Fill in its name here:
-    cloud.image_name    'FILL_IN_IMAGE_NAME_PLEASE'
-
-    # You can instead comment out the above and just enter its ID directly here:
-    # cloud.image_id   'FILL_IN_NEW_IMAGE_ID_PLEASE'
+    cloud.image_name    'cluster_chef-natty'
   end
 
 end

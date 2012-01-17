@@ -54,30 +54,30 @@ TODO: flume cookbook has discovery and announce out of order
 
 * create opscode account
   - download org keys, put in the credentials repo
-  - create `prod` and `dev` environments by using `knife environment create dev` + `knife environment create prod`. You don't need to do anything to them.  
 
 ## Populate Chef Server
 
 * create `prod` and `dev` environments by using 
-
-```
+  ```
   knife environment create dev
   knife environment create prod
   knife environment from file environments/dev.json
   knife environment from file environments/prod.json
+  ```
 
-  knife cookbook upload --all
-  rake roles
-    # if you have data bags, do that too
+```ruby
+knife cookbook upload --all
+rake roles
+# if you have data bags, do that too
 ```
 
-##  Create Your Initial Machine Boot-Image (AMI)
-    
-*   Start by launching the burninator cluster: `knife cluster launch --bootstrap --yes burninator-trogdor-0`
-    - You may have to specify the template by adding this an anargument: `--template-file ${CHEF_HOMEBASE}/vendor/cluster_chef/lib/chef/knife/bootstrap/ubuntu10.04-cluster_chef.erb`
-    - This template makes the machine auto-connect to the server upon launch and teleports the client-key into the machine.
-    - If this fails, bootstrap separately: `knife cluster bootstrap --yes burninator-trogdor-0`
-    
+## Create Your Initial Machine Boot-Image (AMI)
+
+* Start by launching the burninator cluster: `knife cluster launch --bootstrap --yes burninator-trogdor-0`
+  - You may have to specify the template by adding this an anargument: `--template-file ${CHEF_HOMEBASE}/vendor/cluster_chef/lib/chef/knife/bootstrap/ubuntu10.04-cluster_chef.erb`
+  - This template makes the machine auto-connect to the server upon launch and teleports the client-key into the machine.
+  - If this fails, bootstrap separately: `knife cluster bootstrap --yes burninator-trogdor-0`
+
 * Log into the burninator-trogdor and run the script /tmp/burn_ami_prep.sh: `sudo bash /tmp/burn_ami_prep.sh`
   - You will have to ssh as the ubuntu user and pass in the burninator.pem identity file.
   - Review the output of this script and ensure the world we have created is sane.
