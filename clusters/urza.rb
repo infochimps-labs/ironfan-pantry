@@ -5,7 +5,7 @@ ClusterChef.cluster 'urza' do
     flavor              't1.micro'
     backing             'ebs'
     bootstrap_distro    'ubuntu10.04-cluster_chef'
-    image_name          'infochimps-natty'
+    image_name          'cluster_chef-natty'
     chef_client_script  'client.rb'
     mount_ephemerals
   end

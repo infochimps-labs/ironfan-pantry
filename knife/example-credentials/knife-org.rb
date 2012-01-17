@@ -41,19 +41,19 @@ Chef::Config.instance_eval do
   # Add your own AMIs to the hash below
   #
   # Change `NAME_FOR_AMI` to a helpful identifier. For example, our standard
-  # Ubuntu 11.04 AMI is `infochimps-natty`: it has lines for each permutation of
+  # Ubuntu 11.04 AMI is `cluster_chef-natty`: it has lines for each permutation of
   # bit and backing we use:
   #
-  #    %w[us-east-1  64-bit  ebs       infochimps-natty ] => { :image_id => 'ami-12345678', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.04-cluster_chef", },
-  #    %w[us-east-1  32-bit  ebs       infochimps-natty ] => { :image_id => 'ami-acbdef01', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.04-cluster_chef", },
-  #    %w[us-east-1  64-bit  instance  infochimps-natty ] => { :image_id => 'ami-98765432', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.04-cluster_chef", },
+  #    %w[us-east-1  64-bit  ebs       cluster_chef-natty ] => { :image_id => 'ami-12345678', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.04-cluster_chef", },
+  #    %w[us-east-1  32-bit  ebs       cluster_chef-natty ] => { :image_id => 'ami-acbdef01', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.04-cluster_chef", },
+  #    %w[us-east-1  64-bit  instance  cluster_chef-natty ] => { :image_id => 'ami-98765432', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.04-cluster_chef", },
   #    # ...
-  #    %w[us-west-1  64-bit  instance  infochimps-natty ] => { :image_id => 'ami-ab12ab12', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.04-cluster_chef", },
+  #    %w[us-west-1  64-bit  instance  cluster_chef-natty ] => { :image_id => 'ami-ab12ab12', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu11.04-cluster_chef", },
   #
   # Then a typical cluster definition file might specify
   #
   #   cloud do
-  #     image              'infochimps-natty'
+  #     image              'cluster_chef-natty'
   #     flavor             'c1.xlarge'
   #     backing            'ebs'
   #     image_name         'natty'
@@ -64,11 +64,11 @@ Chef::Config.instance_eval do
   # Cluster_chef knows that a c1.xlarge is 64-bit, and that the us-east-1d AZ
   # is in the us-east-1 region, and so chooses the correct AMI.
   #
-  # Chef::Config[:ec2_image_info] ||= {}
-  # ec2_image_info.merge!({
-  #     %w[us-east-1  64-bit  ebs  NAME_FOR_AMI ] => { :image_id => 'ami-12345678', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu10.04-cluster_chef", },
-  #   })
-  # Chef::Log.debug("Loaded #{__FILE__}, now have #{ec2_image_info.size} ec2 images")
+  Chef::Config[:ec2_image_info] ||= {}
+  ec2_image_info.merge!({
+      %w[us-east-1  64-bit  ebs  cluster_chef-natty ] => { :image_id => 'FIXME_IN_KNIFE-ORG.rb', :ssh_user => 'ubuntu', :bootstrap_distro => "ubuntu10.04-cluster_chef", },
+    })
+  Chef::Log.debug("Loaded #{__FILE__}, now have #{ec2_image_info.size} ec2 images")
 
   # Each user should duplicate the following into {credentials_path}/knife-user-{username}.rb
   # and edit them to suit:

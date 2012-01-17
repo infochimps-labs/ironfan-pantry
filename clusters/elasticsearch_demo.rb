@@ -4,7 +4,7 @@ ClusterChef.cluster 'elasticsearch_demo' do
     availability_zones ['us-east-1d']
     flavor              'm1.xlarge'
     backing             'ebs'
-    image_name          'infochimps-natty'
+    image_name          'cluster_chef-natty'
     bootstrap_distro    'ubuntu10.04-cluster_chef'
     chef_client_script  'client.rb'
     mount_ephemerals(:tags => { :elasticsearch_scratch => true })
