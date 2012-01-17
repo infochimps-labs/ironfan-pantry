@@ -6,11 +6,11 @@ TODO: zabbix::default should NOT install services that start on boot.
 TODO: volumes::mount should WARN LOUDLY (but not fail) when the drive is not available to mount
 TODO: Make sure the nfs server doesn't clobber the ubunutu user
 
-TODO (BL): remove directly-customized security group changes in AWS console
+TODO: (BL) remove directly-customized security group changes in AWS console
 
-TODO (BL): snapshot the home dir and replace in the urza cluster
+TODO: (BL) snapshot the home dir and replace in the urza cluster
 
-TODO (BL): fix chef environment to look for home dirs in the right cluster
+TODO: (BL): fix chef environment to look for home dirs in the right cluster
 
 > FIXED: patch chef for the resource thing ON the AMI (chef 10.4 swallows all template errors whcih SUCKS MY BALLS to debug)
 
@@ -18,10 +18,15 @@ TODO: let me specify the third arg to `announce` as a string for the realn (or i
 
 TODO: ~~~ FIX NFS ANNOUNCING EVERYWHERE ELSE ~~~
 
-
 TODO: fucking zabbix recipe sets a user with no explicit uid
 
-== Zookeeper
+TODO: 
+* make machines be in the 'systemwide' sec. group
+* check that they are not in the default group, and consider changing the "open to all in default" on default
+
+TODO: flume cookbook has discovery and announce out of order
+
+## Credentials
 
 * make a credentials repo
   - copy the knife/example-credentials directory
@@ -42,7 +47,6 @@ TODO: fucking zabbix recipe sets a user with no explicit uid
     cp knife/${OLD_CHEF_ORGANIZATION}-credentials/${CHEF_USER}.pem knife/${CHEF_ORGANIZATION}-credentials/
     ```
     
-
 * create AWS account
   - [sign up for AWS + credit card + password]
   - make IAM users for admins
@@ -52,53 +56,78 @@ TODO: fucking zabbix recipe sets a user with no explicit uid
   - download org keys, put in the credentials repo
   - create `prod` and `dev` environments by using `knife environment create dev` + `knife environment create prod`. You don't need to do anything to them.  
 
-```ruby
-knife cookbook upload --all
-rake roles
-# if you have data bags, do that too
-```
+## Populate Chef Server
 
-* start with the burninator cluster
-* knife cluster launch --bootstrap --yes burninator-trogdor-0
-  - if this fails, `knife cluster bootstrap --yes burninator-trogdor-0`
-
-* ssh into the burninator and run the script /tmp/burn_ami_prep.sh
-
-* review ps output and ensure happiness with what is running. System should be using ~3G on the main drive
-
-* once that works,
-  - go to AWS console
-  - stop the machine
-  - do "Burn AMI"
-
-* add the AMI id to your `{credentials}/knife-org.rb` in the `ec2_image_info.merge!` section
-
-
-NFS home
-* copy the control cluster def'n
-* make yourself a 20GB drive, format it XFS, snapshot it, delete the original. Paste the snapshot ID into the cluster defn (not eternally necessary but ...)
+* create `prod` and `dev` environments by using 
 
 ```
-  # first create a volume in the console and mount it at /dev/xvdh
-  dev=/dev/xvdh ; name='home_drive'      ; sudo umount $dev ; ls -l $dev ; sudo mkfs.xfs $dev ; sudo mkdir /mnt/$name ; sudo mount -t xfs $dev /mnt/$name ; sudo bash -c "echo 'snapshot for $name burned on `date`' > /mnt/$name/vol_info.txt "
+  knife environment create dev
+  knife environment create prod
+  knife environment from file environments/dev.json
+  knife environment from file environments/prod.json
+
+  knife cookbook upload --all
+  rake roles
+    # if you have data bags, do that too
+```
+
+##  Create Your Initial Machine Boot-Image (AMI)
+    
+*   Start by launching the burninator cluster: `knife cluster launch --bootstrap --yes burninator-trogdor-0`
+    - You may have to specify the template by adding this an anargument: `--template-file ${CHEF_HOMEBASE}/vendor/cluster_chef/lib/chef/knife/bootstrap/ubuntu10.04-cluster_chef.erb`
+    - This template makes the machine auto-connect to the server upon launch and teleports the client-key into the machine.
+    - If this fails, bootstrap separately: `knife cluster bootstrap --yes burninator-trogdor-0`
+    
+* Log into the burninator-trogdor and run the script /tmp/burn_ami_prep.sh: `sudo bash /tmp/burn_ami_prep.sh`
+  - You will have to ssh as the ubuntu user and pass in the burninator.pem identity file.
+  - Review the output of this script and ensure the world we have created is sane.
+
+* Once the script has been run:
+  - Exit the machine.
+  - Go to AWS console.
+  - DO NOT stop the machine.
+  - Do "Create Image (EBS AMI)" from the burninator-trogdor instance (may take a while).
+
+* Add the AMI id to your `{credentials}/knife-org.rb` in the `ec2_image_info.merge!` section and create a reference name for the image (e.g cluster_chef-natty).
+  - Add that reference name to the burninator-village facet in the burninator.rb cluster definition: `cloud.image_name 'cluster_chef_natty'`
+
+* Launch the burninator-village in order to test your newly created AMI.
+  - The village should launch with no problems, have the correct permissions and be able to complete a chef run: `sudo chef-client`.
+  
+* If all has gone well so far, you may now stop the original burninator: `knife cluster kill burninator-trogdor`
+  - Leave the burninator-village up and stay ssh'ed to assist with the next step.
+
+## Create an NFS
+
+* Make a command/control cluster definition file with an nfs facet (see clusters/demo_cnc.rb).
+  - Make sure specify the `image_name` to be the AMI you've created.
+
+* In the AWS console make yourself a 20GB drive. 
+  - Make sure the availability zone matches the one specified in your cnc_cluster definition file. 
+  - Don't choose a snapshot. 
+  - Set the device name to `/dev/sdh`.
+  - Attach to the burninator-village instance.
+
+* ssh in to burninator-village to format the nfs drive:
+```
+  dev=/dev/xvdh ; name='home_drive' ; sudo umount $dev ; ls -l $dev ; sudo mkfs.xfs $dev ; sudo mkdir /mnt/$name ; sudo mount -t xfs $dev /mnt/$name ; sudo bash -c "echo 'snapshot for $name burned on `date`' > /mnt/$name/vol_info.txt "
   sudo cp -rp /home/ubuntu /mnt/$name/ubuntu
-  sudo bash -c "echo '' >  /mnt/$name/ubuntu/.ssh/authorized_keys"
   sudo umount /dev/xvdh
-  # now in the console snapshot that shizz
+  exit
 ```
+* Back in the AWS console, snapshot the volume and name it {org}-home_drive. Delete the original volume as it is not needed anymore.
+  # While you're in there, make {org}-resizable_1gb a 'Minimum-sized snapshot, resizable -- use xfs_growfs to resize after launch' snapshot.
+  
+* Paste the snapshot id into your cnc_cluster definition file. 
+  - ssh into the newly launched cnc_cluster-nfs.
+  - You should restart the machine via the AWS console (may or may not be necessary, do anyway).
 
-Name it {org}-home_drive
-While you're in there, make {org}-resizable_1gb a 'Minimum-sized snapshot, resizable -- use xfs_growfs to resize after launch' snapshot.
+* Manipulate security groups
+  - nfs_server group should open all UDP ports and all TCP ports to nfs_client group
 
-!! TODO!
+* Change /etc/ssh/sshd_config to be passwordful and restart the ssh service
 
-restart the nfs-server node through the AWS console
-
-Hope you followed the directions for snapshot prep, or if you didn't that you didn't clobber the ubuntu user when the home dir is mounted....
-
-__________________________________________________________________________
-(not eternally necessary but ...)
+  
 
 
 
-TODO: flume cookbook has discovery and announce out of order
