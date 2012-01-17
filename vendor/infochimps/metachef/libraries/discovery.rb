@@ -93,7 +93,7 @@ module ClusterChef
     #   components_with(:log)
     #
     def components_with(aspect)
-      node_components(self.node).select{|comp| not comp.log.empty? }
+      node_components(self.node).select{|comp| not comp.send(aspect).empty? }
     end
 
   protected
