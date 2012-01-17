@@ -9,7 +9,7 @@
 #
 # Chef::Config.knife[:aws_access_key_id]      = "XXX"
 # Chef::Config.knife[:aws_secret_access_key]  = "XXX"
-# Chef::Config.knife[:aws_account_id]         = "XXX"
+# Chef::Config.knife[:aws_account_id]         = "XXX" # no dashes or spaces
 
 #
 # Cookbook templating -- only 
