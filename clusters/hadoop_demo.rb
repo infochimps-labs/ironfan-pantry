@@ -10,7 +10,8 @@ ClusterChef.cluster 'hadoop_demo' do
     availability_zones ['us-east-1d']
     flavor              'm1.large'
     backing             'ebs'
-    image_name          'natty'
+    image_name          'cluster_chef-natty'
+    bootstrap_distro    'ubuntu10.04-cluster_chef'
     mount_ephemerals(:tags => {
         :hadoop_scratch => true,
         :hadoop_data    => true,  # remove this if you use the volume at bottom
@@ -28,7 +29,10 @@ ClusterChef.cluster 'hadoop_demo' do
   role                  :volumes
   role                  :package_set, :last
   role                  :dashboard,   :last
-  role                  :dashboard
+
+  role                  :org_base
+  role                  :org_final, :last
+  role                  :org_users
 
   role                  :hadoop
   role                  :hadoop_s3_keys

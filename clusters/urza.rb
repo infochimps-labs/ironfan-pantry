@@ -1,11 +1,11 @@
 ClusterChef.cluster 'urza' do
-  cloud :ec2 do
+  cloud(:ec2) do
     defaults
     availability_zones ['us-east-1d']
     flavor              't1.micro'
     backing             'ebs'
-    bootstrap_distro    'ubuntu10.04-cluster_chef'
     image_name          'cluster_chef-natty'
+    bootstrap_distro    'ubuntu10.04-cluster_chef'
     chef_client_script  'client.rb'
     mount_ephemerals
   end
@@ -17,13 +17,14 @@ ClusterChef.cluster 'urza' do
   role                  :base_role
   role                  :chef_client
   role                  :ssh
-  role                  :org_base
-  role                  :org_final,   :last
   
   role                  :volumes 
   role                  :package_set, :last
   role                  :dashboard,   :last
   role                  :tuning,      :last
+  
+  role                  :org_base
+  role                  :org_final,   :last
 
   facet :nfs do
     server(0).fullname  "urza-nfs" 

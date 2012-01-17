@@ -4,8 +4,8 @@ ClusterChef.cluster 'weatherlight' do
     availability_zones ['us-east-1d']
     flavor              'm1.large'
     backing             'ebs'
-    bootstrap_distro    'ubuntu10.04-cluster_chef'
     image_name          'cluster_chef-natty'
+    bootstrap_distro    'ubuntu10.04-cluster_chef'
     chef_client_script  'client.rb'
     mount_ephemerals(:tags => { :hadoop_scratch => true })
   end
@@ -45,11 +45,6 @@ ClusterChef.cluster 'weatherlight' do
   end
 
   cluster_role.override_attributes({
-      :apt => { :cloudera => {
-          :force_distro => 'maverick', }, }, # no natty distro  yet
-      :hadoop => {
-        :java_heap_size_max    => 128,
-      },
     })
 
   facet(:master).facet_role.override_attributes({

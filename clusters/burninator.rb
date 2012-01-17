@@ -5,17 +5,16 @@
 # The script /tmp/burn_ami_prep.sh will help finalize the machine -- then, just
 # stop it and invoke 'Create Image (EBS AMI)'.
 #
-
 ClusterChef.cluster 'burninator' do
   cloud(:ec2) do
     defaults
     availability_zones ['us-east-1d']
     flavor              'c1.xlarge'
     backing             'ebs'
-    image_name          'natty'
+    # image_name is per-facet here
     bootstrap_distro    'ubuntu10.04-cluster_chef'
     chef_client_script  'client.rb'
-    mount_ephemerals(:tags => { :hadoop_scratch => true })
+    mount_ephemerals
   end
 
   environment           :dev

@@ -1,5 +1,12 @@
+# -*- coding: utf-8 -*-
+#
+# El Ridiculoso Grande -- esto es un clúster gordo que tiene todo lo que en él
+#
+# Maybe you're wondering what would happen if you installed everything in sight
+# on the same node. Here's your chance to find out.
+#
 ClusterChef.cluster 'el_ridiculoso' do
-  cloud :ec2 do
+  cloud(:ec2) do
     defaults
     availability_zones ['us-east-1d']
     flavor              'c1.xlarge'
@@ -21,8 +28,9 @@ ClusterChef.cluster 'el_ridiculoso' do
   role                  :package_set, :last
   role                  :dashboard,   :last
 
-  role                  :infochimps_base
-  role                  :infochimps_final, :last
+  role                  :org_base
+  role                  :org_final, :last
+  role                  :org_users
 
   role                  :hadoop
   role                  :hadoop_s3_keys
@@ -98,8 +106,6 @@ ClusterChef.cluster 'el_ridiculoso' do
   end
 
   cluster_role.override_attributes({
-      :apt => { :cloudera => {
-          :force_distro => 'maverick', }, }, # no natty distro  yet
       :hadoop => {
         :java_heap_size_max    => 128,
       },

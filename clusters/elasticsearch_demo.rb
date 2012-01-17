@@ -1,5 +1,5 @@
 ClusterChef.cluster 'elasticsearch_demo' do
-  cloud :ec2 do
+  cloud(:ec2) do
     defaults
     availability_zones ['us-east-1d']
     flavor              'm1.xlarge'
@@ -16,11 +16,14 @@ ClusterChef.cluster 'elasticsearch_demo' do
   role                  :chef_client
   role                  :ssh
   role                  :nfs_client
-  role                  :volumes
-  role                  :dashboard, :last
 
-  # role                  :infochimps_base
-  # role                  :infochimps_final, :last
+  role                  :volumes
+  role                  :package_set, :last
+  role                  :dashboard,   :last
+
+  role                  :org_base
+  role                  :org_final, :last
+  role                  :org_users
 
   facet :elasticsearch do
     instances           1
