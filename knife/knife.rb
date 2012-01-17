@@ -19,7 +19,7 @@ $LOAD_PATH.unshift(File.join(homebase, "vendor/cluster_chef/lib")) if File.exist
 # Clusters, cookbooks and roles
 #
 cluster_path        [ "#{homebase}/clusters"  ]
-cookbook_path       [ "#{homebase}/cookbooks" ]
+cookbook_path       [ "#{homebase}/cookbooks", "#{homebase}/site-cookbooks" ]
 role_path           [ "#{homebase}/roles"     ]
 
 #
