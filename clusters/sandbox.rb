@@ -34,6 +34,8 @@ ClusterChef.cluster 'sandbox' do
 
   facet :mrflip do
     instances           1
+    role                :web_server
+    role                :redis_server
   end
 
   cluster_role.override_attributes({

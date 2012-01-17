@@ -25,6 +25,27 @@ mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ "$away_dir"
 # mv /home/ubuntu/.ssh/authorized_keys "$away_dir/ubuntu-authorized_keys"
 # mv        /root/.ssh/authorized_keys "$away_dir/root-authorized_keys"
 
+# mkdir $away_dir/sshd_keys
+# mv /etc/ssh/ssh_{host_dsa,host_rsa,host}_{key,key.pub} "$away_dir/sshd_keys"
+
+
+# See
+# * [How To Share and Use Public AMIs in A Secure Manner](https://aws.amazon.com/articles/0155828273219400)
+# # [Public AMI Publishing: Hardening and Clean-up Requirements](https://aws.amazon.com/articles/9001172542712674)
+# * [Sharing AMIs Safely](http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/AESDG-chapter-sharingamis.html)
+
+echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nCommandline history files:"
+find /root/.*history /home/*/.*history 
+
+echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nSSH authorized_keys:"
+find / -name "authorized_keys*" -print -exec cat {} \;
+
+echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nNon-system Users:"
+cat /etc/passwd /etc/shadow | grep -E '^[^:]*:[^:]{3,}' | cut -d: -f1
+
+echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nImportant sshd configs. PermitRootLogin *should* be 'without-password'"
+egrep 'PasswordAuthentication|PubkeyAuthentication|PermitRootLogin' /etc/ssh/sshd_config
+
 echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nremove org-specific info from top of /etc/chef/client.rb\n"
 cp /etc/chef/client.rb  "$away_dir"
 perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb 
@@ -73,4 +94,5 @@ echo ""
 echo "  $img_info"
 echo ""
 echo "Five to dammit forty minutes later your AMI will be ready. Enjoy the rolling-chair swordfighting in the duration"
-echo "\nLastly, launch burninator-village-0"
+echo ""
+echo "Lastly, launch burninator-village-0"
