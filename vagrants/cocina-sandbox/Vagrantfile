@@ -23,7 +23,7 @@ Vagrant::Config.run do |config|
   cluster_privates_dir = File.expand_path("../../knife/#{cluster}/", File.dirname(__FILE__))
 
   # box to build off of.
-  config.vm.box = "natty-base"
+  config.vm.box = "cluster-chef-natty"
 
   # Boot with a GUI so you can see the screen. (Default is headless)
   config.vm.boot_mode = :gui
