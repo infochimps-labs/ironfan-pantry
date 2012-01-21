@@ -26,7 +26,7 @@ include_recipe "hadoop_cluster"
 include_recipe "zookeeper::client"
 include_recipe "ganglia"
 
-include_recipe "hbase::add_cloudera_repo"
+include_recipe "hadoop_cluster::add_cloudera_repo"
 
 #
 # Users
@@ -74,8 +74,8 @@ end
     owner "root"
     mode "0644"
     variables({
-        :namenode_fqdn   => (discover(:hadoop, :namenode) && discover(:hadoop, :namenode).private_hostname),
-        :jobtracker_addr => discover(:hadoop, :jobtracker).private_ip,
+        :namenode_fqdn   => (discover(:hadoop, :namenode)   && discover(:hadoop, :namenode).private_hostname),
+        :jobtracker_addr => (discover(:hadoop, :jobtracker) && discover(:hadoop, :jobtracker).private_ip),
         :zookeeper_addr  => discover_all(:zookeeper, :server).map(&:private_ip).sort,
         :private_ip      => private_ip_of(node),
         :jmx_hostname    => public_ip_of(node),
