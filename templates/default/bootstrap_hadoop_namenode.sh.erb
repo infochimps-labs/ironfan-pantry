@@ -65,7 +65,7 @@ make_hadoop_dir_if_not_exists() {
 }
 
 #
-echo "Ensuring hadoop directories exist"
+echo "1/6 Ensuring hadoop directories exist"
 #
 for dir in $dfs_data_dirs $dfs_name_dirs $dfs_2nn_dirs ; do
   make_hadoop_dir_if_not_exists "$dir"
@@ -74,7 +74,7 @@ make_hadoop_dir_if_not_exists "$hadoop_tmp_dir" 777
 make_hadoop_dir_if_not_exists "$hadoop_log_dir" 777
 
 #
-echo "Stopping the $namenode_daemon daemon" ; echo -n "  "
+echo "2/6: Stopping the $namenode_daemon daemon" ; echo -n "  "
 #
 sudo service $namenode_daemon stop || sleep 3 ; true
 
@@ -91,17 +91,17 @@ fi
 echo
 
 #
-echo "Restarting the namenode" ; echo -n "  "
+echo "3/6: Restarting the namenode" ; echo -n "  "
 #
 sudo service $namenode_daemon start
 
 #
-echo "Waiting for the namenode to come out of safemode" ; echo -n "  "
+echo "4/6: Waiting for the namenode to come out of safemode" ; echo -n "  "
 #
 hadoop dfsadmin -safemode wait
 
 #
-echo "Preparing filesystem"
+echo "5/6: Preparing filesystem"
 #
 if [ -f "$sentinel" ] ; then
   echo "Looks like we already made the hdfs dirs -- try 'hadoop fs -lsr /' to see. if not, remove '$sentinel' and re-run."
@@ -127,7 +127,7 @@ else
 fi
 
 echo
-echo "Success! you can start the rest of the daemons now by running:"
+echo "6/6: Success! you can start the rest of the daemons now by running:"
 echo
 echo '  for foo in datanode secondarynamenode tasktracker jobtracker ; do echo $foo ; sudo service hadoop_$foo start ; done'
 echo
