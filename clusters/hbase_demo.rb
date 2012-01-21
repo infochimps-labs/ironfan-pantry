@@ -1,10 +1,46 @@
+# Manually set all of the service states (see cluster_role below) to 'stop'.
+#
+# Launch the namenode machine, allow it to converge, and then on that machine
+# run `/etc/hadoop/boostrap_hadoop_namenode.sh`.
+#
+# After initial bootstrap,
+# * set the run_state to 'start' in the lines below
+# * run `knife cluster sync bonobo-master` to push those values up to chef
+# * run `knife cluster kick bonobo-master` to re-converge
+#
+# Once you see 'nodes=1' on jobtracker (host:50030) & namenode (host:50070)
+# control panels, you're good to launch the rest of the cluster.
+#
+ClusterChef::ComputeBuilder.class_eval do
+  HADOOP_COMPONENTS = Mash.new({
+    :nn => :hadoop_namenode, :jt => :hadoop_jobtracker, :nn2 => :hadoop_secondarynn, :tt => :hadoop_tasktracker, :dn => :hadoop_datanode,
+    :hm => :hbase_master, :hm2 => :hbase_master, :rs => :hbase_regionserver, :hbsg => :hbase_stargate, :hbth => :hbase_thrift,
+    :zk => :zookeeper_server,
+    }) unless defined?(HADOOP_COMPONENTS)
+
+  def hbase_facet(*components, &block)
+    if components.first.is_a?(String)
+      name = components.shift
+    else
+      name = components.map(&:to_s).sort.join('_')
+    end
+    facet(name) do
+      components.each do |component|
+        role(HADOOP_COMPONENTS[component])
+      end
+    end
+    facet(name, &block) if block
+  end
+end
+
+
 #
 #
 # * persistent HDFS --
 #
 # if you're testing, these recipes *will* work on a t1.micro. just don't use it for anything.
 #
-ClusterChef.cluster 'hadoop_demo' do
+ClusterChef.cluster 'hbase_demo' do
   cloud(:ec2) do
     defaults
     availability_zones ['us-east-1d']
@@ -12,14 +48,11 @@ ClusterChef.cluster 'hadoop_demo' do
     backing             'ebs'
     image_name          'cluster_chef-natty'
     bootstrap_distro    'ubuntu10.04-cluster_chef'
-    mount_ephemerals(:tags => {
-        :hadoop_scratch => true,
-        :hadoop_data    => true,  # remove this if you use the volume at bottom
-      })
+    mount_ephemerals(:tags => { :hadoop_scratch => true, })
   end
 
-  # # uncomment if you want to set your environment.
-  # environment           :prod
+  # uncomment if you want to set your environment.
+  environment           'prod'
 
   role                  :base_role
   role                  :chef_client
@@ -41,23 +74,19 @@ ClusterChef.cluster 'hadoop_demo' do
   role                  :pig
   recipe                'hadoop_cluster::cluster_conf', :last
 
-  facet :master do
-    instances           1
-    role                :hadoop_namenode
-    role                :hadoop_jobtracker
-    role                :hadoop_secondarynn
-    role                :hadoop_tasktracker
-    role                :hadoop_datanode
-  end
+  [:nn, :jt, :nn2, :tt, :dn, :hm, :hm2, :rs, :hbth, :hbsg, :zk ]
 
-  facet :worker do
-    instances           4
-    role                :hadoop_datanode
-    role                :hadoop_tasktracker
-  end
+  hbase_facet('master', :nn,  :hm,  :zk, :dn  ){ instances 1 }
+  hbase_facet('beta',   :nn2, :hm2, :jt, :dn  ){ instances 1 }
+  hbase_facet('worker', :rs,  :tt,       :dn  ){ instances 3; role :hbase_stargate }
 
   cluster_role.override_attributes({
       :hadoop => {
+        :namenode    => { :run_state => :start,  },
+        :secondarynn => { :run_state => :start,  },
+        :jobtracker  => { :run_state => :start,  },
+        :datanode    => { :run_state => :start,  },
+        :tasktracker => { :run_state => :start,  },
         # # adjust these
         # :java_heap_size_max  => 1400,
         # :namenode            => { :java_heap_size_max => 1000, },
@@ -69,27 +98,13 @@ ClusterChef.cluster 'hadoop_demo' do
         # :balancer            => { :max_bandwidth => (50 * 1024 * 1024) },
         # # make mid-flight data much smaller -- useful esp. with ec2 network constraints
         :compress_mapout_codec => 'org.apache.hadoop.io.compress.SnappyCodec',
-      }
-    })
-
-  # Launch the cluster with all of the below set to 'stop'.
-  #
-  # After initial bootstrap,
-  # * set the run_state to 'start' in the lines below
-  # * run `knife cluster sync bonobo-master` to push those values up to chef
-  # * run `knife cluster kick bonobo-master` to re-converge
-  #
-  # Once you see 'nodes=1' on jobtracker (host:50030) & namenode (host:50070)
-  # control panels, you're good to launch the rest of the cluster.
-  #
-  facet(:master).facet_role.override_attributes({
-      :hadoop => {
-        :namenode    => { :run_state => :stop, },
-        :secondarynn => { :run_state => :stop,  },
-        :jobtracker  => { :run_state => :stop,  },
-        :datanode    => { :run_state => :stop,  },
-        :tasktracker => { :run_state => :stop,  },
       },
+      :hbase          => {
+        :master       => { :run_state => :start  },
+        :regionserver => { :run_state => :start  },
+        :stargate     => { :run_state => :start  }, },
+      :zookeeper      => {
+        :server       => { :run_state => :start  }, },
     })
 
   # #

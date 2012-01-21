@@ -43,13 +43,13 @@ end
 #
 # Config files
 #
-zookeeper_server_ips = discover_all(:zookeeper, :server).map(&:private_ip).sort
+zookeeper_hosts = discover_all(:zookeeper, :server).map(&:private_ip).sort
 
-myid = zookeeper_server_ips.find_index( private_ip_of node )
+myid = zookeeper_hosts.find_index( private_ip_of(node) )
 template_variables = {
-  :zookeeper              => node[:zookeeper],
-  :zookeeper_server_ips   => zookeeper_server_ips,
-  :myid                   => myid,
+  :zookeeper         => node[:zookeeper],
+  :zookeeper_hosts   => zookeeper_hosts,
+  :myid              => myid,
 }
 
 %w[ zoo.cfg log4j.properties].each do |conf_file|
