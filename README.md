@@ -8,9 +8,6 @@ Installs/Configures HBase
 
 ## Attributes
 
-* `[:apt][:cloudera][:force_distro]`  - Override the distro name apt uses to look up repos
-  - Typically, leave this blank. However if (as is the case in Nov 2011) you are on natty but Cloudera's repo only has packages up to maverick, use this to override.
-* `[:apt][:cloudera][:release_name]`  - Release identifier (eg cdh3u2) of the cloudera repo to use. See also hadoop/deb_version (default: "cdh3u2")
 * `[:groups][:hbase][:gid]`           -  (default: "304")
 * `[:hbase][:tmp_dir]`                -  (default: "/mnt/hbase/tmp")
 * `[:hbase][:cluster_name]`           -  (default: "cluster_name")
@@ -36,12 +33,12 @@ Installs/Configures HBase
 
 ## Recipes 
 
-* `add_cloudera_repo`        - Add Cloudera repo to package manager
 * `backup_tables`            - Cron job to backup tables to S3
 * `default`                  - Base configuration for hbase
 * `master`                   - HBase Master
 * `regionserver`             - HBase Regionserver
 * `stargate`                 - HBase Stargate: HTTP frontend to HBase
+
 ## Integration
 
 Supports platforms: debian and ubuntu

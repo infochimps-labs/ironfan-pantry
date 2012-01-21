@@ -14,9 +14,6 @@ default[:hbase][:pid_dir]               = "/var/run/hbase" ## FIXME: was "/var/r
 # Install
 #
 
-default[:apt][:cloudera][:force_distro] = nil # override distro name if cloudera doesn't have yours yet
-default[:apt][:cloudera][:release_name] = 'cdh3u2'
-
 # GID to use for the hbase user
 default[:groups]['hbase'     ][:gid]    = 304
 
