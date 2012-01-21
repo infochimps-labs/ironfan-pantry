@@ -1,4 +1,4 @@
-#!<%= @jruby[:home_dir] %>/bin/jruby -S
+#!<%= @jruby[:home_dir] %>/bin/jruby19 -S
 
 # This is basicaly the same as the stock version of jgem, except that it runs
 # jruby with the -S option.  The overall effect is that this version of the
@@ -15,7 +15,7 @@ require 'rubygems'
 require 'rubygems/gem_runner'
 require 'rubygems/exceptions'
 
-required_version = Gem::Requirement.new ">= 1.8.6"
+required_version = Gem::Requirement.new ">= 1.9.2"
 
 unless required_version.satisfied_by? Gem.ruby_version then
   abort "Expected Ruby Version #{required_version}, is #{Gem.ruby_version}"

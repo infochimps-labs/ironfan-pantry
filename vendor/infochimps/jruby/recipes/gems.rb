@@ -24,8 +24,7 @@
     activesupport activemodel extlib
     json addressable cheat
     configliere gorillib
-    pry watchr jeweler
-    erubis i18n wukong chimps net-http-persistent
+    pry erubis i18n wukong
 ].each do |rubygem|
   gem_package rubygem do
     gem_binary File.join(node[:jruby][:home_dir], 'bin/chef-jgem')
