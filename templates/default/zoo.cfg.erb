@@ -15,8 +15,8 @@ dataDir=<%= @zookeeper[:data_dir] %>
 # the port at which the clients will connect
 clientPort=<%= @zookeeper[:client_port] %>
 
-<%- if @zookeeper_server_ips %>
-<%- @zookeeper_server_ips.each_with_index do |zk_addr, idx| %>
+<%- if @zookeeper_hosts %>
+<%- @zookeeper_hosts.each_with_index do |zk_addr, idx| %>
 server.<%= idx %>=<%= zk_addr %>:<%= @zookeeper[:leader_port] %>:<%= @zookeeper[:election_port] %>
 <%- end %>
 <%- end %>
