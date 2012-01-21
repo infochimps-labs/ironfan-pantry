@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+export JRUBY_OPTS="--1.9 $JRUBY_OPTS"
+exec <%= @jruby[:home_dir] %>/bin/jruby "$@"
