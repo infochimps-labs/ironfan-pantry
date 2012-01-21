@@ -12,9 +12,6 @@ This cookbook
 
 ## Attributes
 
-* `[:apt][:cloudera][:force_distro]`  - Override the distro name apt uses to look up repos
-  - Typically, leave this blank. However if (as is the case in Nov 2011) you are on natty but Cloudera's repo only has packages up to maverick, use this to override.
-* `[:apt][:cloudera][:release_name]`  - Release identifier (eg cdh3u2) of the cloudera repo to use. See also hadoop/deb_version (default: "cdh3u2")
 * `[:pig][:home_dir]`                 - Location of pig code (default: "/usr/lib/pig")
 * `[:pig][:release_url]`              - URL of pig release tarball (default: ":apache_mirror:/pig/pig-:version:/pig-:version:.tar.gz")
 * `[:pig][:combine_splits]`           - tunable: combine small files to reduce the number of map tasks (default: "true")
@@ -25,12 +22,12 @@ This cookbook
 
 ## Recipes 
 
-* `add_cloudera_repo`        - Add Cloudera repo to package manager
 * `default`                  - Base configuration for pig
 * `install_from_package`     - Installs pig from the cloudera package -- verified compatible, but on a slow update schedule.
 * `install_from_release`     - Install From the release tarball.
 * `integration`              - Link in jars from hbase and zookeeper
 * `piggybank`                - Compiles the Piggybank, a library of useful functions for pig
+
 ## Integration
 
 Supports platforms: debian and ubuntu
