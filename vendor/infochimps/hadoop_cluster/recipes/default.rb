@@ -37,6 +37,7 @@ group 'hadoop' do
   group_name 'hadoop'
   gid         node[:groups]['hadoop'][:gid]
   action      [:create, :manage]
+  append     true
   members     ['hdfs', 'mapred']
 end
 
@@ -44,8 +45,8 @@ end
 group 'supergroup' do
   group_name 'supergroup'
   gid        node[:groups]['supergroup'][:gid]
-  action     [:create]
-  not_if     "grep -q supergroup /etc/group"
+  action     [:create, :manage]
+  append     true
 end
 
 #
