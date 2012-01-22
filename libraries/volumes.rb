@@ -1,3 +1,4 @@
+require File.expand_path('simple_volume.rb', File.dirname(__FILE__))
 module MountableVolumes
 
   # mountable volume mapping for this node
@@ -12,13 +13,17 @@ module MountableVolumes
   #     :hdfs2    => { :device => "/dev/sdk",  :mount_point => "/data/hdfs2", :persistent => true, :attachable => :ebs },
   #     }
   def volumes
-    vols = node[:volumes].to_hash || {}
-    fix_for_xen!(vols)
+    return {} unless node[:volumes]
+    vols = Mash.new
+    node[:volumes].each do |vol_name, vol_hsh|
+      vols[vol_name] = Metachef::SimpleVolume.new(vol_name, node, vol_hsh.to_hash)
+      vols[vol_name].fix_for_xen!
+    end
     vols
   end
 
   def mounted_volumes
-    volumes.select{|vol_name, vol| vol['device'] && File.exists?(vol['device']) }
+    volumes.select{|vol_name, vol| vol.mounted? }
   end
 
   #
@@ -28,40 +33,10 @@ module MountableVolumes
   def volumes_tagged(*tags)
     vols = volumes
     tags.each do |tag|
-      result = vols.select{|vol_name, vol| vol['tags'] && vol['tags'][tag] }
+      result = vols.select{|vol_name, vol| vol.tagged?(tag) }
       return result unless result.empty?
     end
     vols
-  end
-
-  # Use `file -s` to identify volume type: ohai doesn't seem to want to do so.
-  def volume_fstype(vol)
-    return vol['fstype'] if vol['fstype']
-    return 'ext3' unless File.exists?(vol['device'])
-    dev_type_str = `file -s '#{vol['device']}'`.chomp
-    case
-    when dev_type_str =~ /SGI XFS/           then 'xfs'
-    when dev_type_str =~ /Linux.*(ext[2-4])/ then $1
-    else
-      raise "Can't determine filesystem type of #{vol['device']} -- set it explicitly in node[:volumes]"
-    end
-  end
-
-  # On Xen virtualization systems (eg EC2), the volumes are *renamed* from
-  # /dev/sdj to /dev/xvdj -- but the amazon API requires you refer to it as
-  # /dev/sdj.
-  #
-  # If the virtualization is 'xen' **and** there are no /dev/sdXX devices
-  # **and** there are /dev/xvdXX devices, we relabel all the /dev/sdXX device
-  # points to be /dev/xvdXX.
-  def fix_for_xen!(vols)
-    Chef::Log.info( [vols].inspect )
-    return unless node[:virtualization] && (node[:virtualization][:system] == 'xen')
-    return unless (Dir['/dev/sd*'].empty?) && (not Dir['/dev/xvd*'].empty?)
-    vols.each do |vol_name, vol|
-      next unless vol.has_key?('device')
-      vol['device'].gsub!(%r{^/dev/sd}, '/dev/xvd')
-    end
   end
 
 end
