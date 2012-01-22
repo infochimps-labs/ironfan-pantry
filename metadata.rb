@@ -3,7 +3,7 @@ maintainer_email  "dhruv@infochimps.com"
 license           "Apache 2.0"
 description       "Installs/Configures Zabbix server, client, & web frontend."
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version           "0.0.18"
+version           "0.0.19"
 
 supports "ubuntu",   ">= 10.04"
 supports "debian",   ">= 6.0"
