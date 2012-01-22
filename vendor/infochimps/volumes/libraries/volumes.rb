@@ -27,20 +27,20 @@ module Metachef
     volumes(node).select{|vol_name, vol| vol['sub_volumes'] && (not vol['sub_volumes'].empty?) }
   end
 
-  def sub_volumes(raid_group, node)
+  def sub_volumes(node, raid_group)
     volumes(node).select{|vol_name, vol| vol['in_raid'] == raid_group.name }
   end
 
-  def mounted_volumes
-    volumes.select{|vol_name, vol| vol.mounted? }
+  def mounted_volumes(node)
+    volumes(node).select{|vol_name, vol| vol.mounted? }
   end
 
   #
   # Try each tag in order to find thus-tagged volumes.
   # The first set to have a match is returned.
   #
-  def volumes_tagged(*tags)
-    vols = volumes
+  def volumes_tagged(node, *tags)
+    vols = volumes(node)
     tags.each do |tag|
       result = vols.select{|vol_name, vol| vol.tagged?(tag) }
       return result unless result.empty?

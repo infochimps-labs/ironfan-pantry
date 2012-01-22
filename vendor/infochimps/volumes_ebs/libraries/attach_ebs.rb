@@ -1,7 +1,6 @@
-module MountableVolumes
+module Metachef
 
-
-# Heavily inspired by [Robert Berger's HOWTO](http://blog.ibd.com/scalable-deployment/using-the-opscode-aws-cookbook-to-attach-an-ec2-ebs-volume/)
+  # Heavily inspired by [Robert Berger's HOWTO](http://blog.ibd.com/scalable-deployment/using-the-opscode-aws-cookbook-to-attach-an-ec2-ebs-volume/)
 
   # attachable volume mapping for this node -- selects any volume with an
   # :attachable value matching the given type
@@ -16,9 +15,9 @@ module MountableVolumes
   #       :mnt2  => { "device": "/dev/sdc",  "volume_id": "ephemeral1",   "mount_point": "/mnt2", },
   #     }
   #   }
-  def attachable_volumes(type)
+  def attachable_volumes(node, type)
     return({}) unless volumes
-    volumes.select{|vol_name, vol| vol['attachable'].to_s == type.to_s && (! vol['volume_id'].to_s.empty?) }
+    volumes(node).select{|vol_name, vol| vol['attachable'].to_s == type.to_s && (! vol['volume_id'].to_s.empty?) }
   end
 
   # Loads AWS credentials, from either databag or node metadata.
