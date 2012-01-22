@@ -5,7 +5,9 @@ module Metachef
     # Accessor methods for the common keys
     # sample:
     #   def device() self['device'] ; end
-    %w[ device mount_options mount_dump mount_fsck device_type mount_point tags name ].each do |attr|
+    %w[ device mount_options mount_dump mount_fsck device_type mount_point tags name in_raid_group
+        sub_volumes level chunk read_ahead
+      ].each do |attr|
       define_method(attr){ self[attr] if not self[attr].to_s.empty? }
     end
 
@@ -37,22 +39,26 @@ module Metachef
 
     # true if the volume is meant to be mounted
     def mountable?
-      !!( mount_point && (self['mountable'].to_s != 'false') )
+      !!( mount_point && (self['mountable'].to_s != 'false') && (not in_raid?) )
     end
 
     # true if the volume is meant to be resized
     def resizable?
-      !!( attached? && mount_point &&
+      !!( attached? && mount_point && (not in_raid?) &&
         (self['resizable'].to_s == 'true') && (self['resized'].to_s != 'true') )
     end
 
     def formattable?
-      !!( self['fstype'] && self['device'] && (device_type == 'device') &&
+      !!( self['fstype'] && self['device'] && (device_type == 'device') && (not in_raid?) &&
         (self['formattable'].to_s == 'true') && (self['formatted'].to_s != 'true') )
     end
 
     def ready_to_format?
       !!( formattable? && attached? && (not mounted?) && (`file -s #{device}`.chomp =~ /: data/) )
+    end
+
+    def in_raid?
+      !! self['in_raid_group']
     end
 
     # true if tag is present and its value is truthy (non-nil non-false)

@@ -23,7 +23,7 @@
 # This tries to have interlocks out the wazoo. Still: caveat coquus
 #
 
-volumes.each do |vol_name, vol|
+volumes(node).each do |vol_name, vol|
   Chef::Log.info(vol.inspect)
   next unless vol.formattable?
 

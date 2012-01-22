@@ -1,5 +1,6 @@
 require File.expand_path('simple_volume.rb', File.dirname(__FILE__))
-module MountableVolumes
+module Metachef
+  module_function
 
   # mountable volume mapping for this node
   #
@@ -12,7 +13,7 @@ module MountableVolumes
   #     :hdfs1    => { :device => "/dev/sdj",  :mount_point => "/data/hdfs1", :persistent => true, :attachable => :ebs },
   #     :hdfs2    => { :device => "/dev/sdk",  :mount_point => "/data/hdfs2", :persistent => true, :attachable => :ebs },
   #     }
-  def volumes
+  def volumes(node)
     return {} unless node[:volumes]
     vols = Mash.new
     node[:volumes].each do |vol_name, vol_hsh|
@@ -20,6 +21,14 @@ module MountableVolumes
       vols[vol_name].fix_for_xen!
     end
     vols
+  end
+
+  def raid_groups(node)
+    volumes(node).select{|vol_name, vol| vol['sub_volumes'] && (not vol['sub_volumes'].empty?) }
+  end
+
+  def sub_volumes(raid_group, node)
+    volumes(node).select{|vol_name, vol| vol['in_raid'] == raid_group.name }
   end
 
   def mounted_volumes
@@ -41,6 +50,6 @@ module MountableVolumes
 
 end
 
-class Chef::Recipe              ; include MountableVolumes ; end
-class Chef::Resource::Directory ; include MountableVolumes ; end
-class Chef::Resource            ; include MountableVolumes ; end
+class Chef::Recipe              ; include Metachef ; end
+class Chef::Resource::Directory ; include Metachef ; end
+class Chef::Resource            ; include Metachef ; end
