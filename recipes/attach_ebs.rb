@@ -20,11 +20,12 @@
 #
 
 include_recipe "aws"
+include Metachef
 
 aws  = mntvol_aws_credentials
 
 if aws
-  attachable_volumes(:ebs).each do |vol_name, vol|
+  attachable_volumes(node, :ebs).each do |vol_name, vol|
 
     aws_ebs_volume "attach ebs volume #{vol.inspect}" do
       provider              "aws_ebs_volume"
