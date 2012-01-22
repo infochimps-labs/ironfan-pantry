@@ -25,7 +25,7 @@ package        'mdadm'
 
 Metachef.raid_groups(node).each do |rg_name, rg|
 
-  sub_vols = sub_volumes(rg, node)
+  sub_vols = sub_volumes(node, rg)
 
   Chef::Log.info(rg.inspect)
   Chef::Log.info( sub_vols.values.inspect )
