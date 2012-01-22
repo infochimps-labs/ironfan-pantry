@@ -39,16 +39,13 @@ directory File.join(node[:jruby][:home_dir], 'bin') do
   action    :create
 end
 
-template File.join(node[:jruby][:home_dir], 'bin/jruby19') do
-  source        "jruby19.erb"
-  variables     :jruby => node[:jruby]
-  owner         "root"
-  mode          "0755"
-end
-
-template File.join(node[:jruby][:home_dir], 'bin/chef-jgem') do
-  source        "chef-jgem.erb"
-  variables     :jruby => node[:jruby]
-  owner         "root"
-  mode          "0755"
+%w[ jruby19 jruby18 chef-jgem ].each do |filename|
+  target = File.join(node[:jruby][:home_dir], "bin/#{filename}")
+  template target do
+    source        "#{filename}.erb"
+    variables     :jruby => node[:jruby]
+    owner         "root"
+    mode          "0755"
+  end
+  link("/usr/local/bin/#{filename}"){ to target }
 end

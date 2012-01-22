@@ -19,12 +19,14 @@
 # limitations under the License.
 #
 
-# hbase-stargate
-%w[ bundler
+%w[
+
+    bundler jruby-openssl erubis i18n
     activesupport activemodel extlib
-    json addressable cheat
-    configliere gorillib
-    pry erubis i18n wukong
+    json addressable cheat crack
+    configliere gorillib wukong
+    pry hirb ap
+
 ].each do |rubygem|
   gem_package rubygem do
     gem_binary File.join(node[:jruby][:home_dir], 'bin/chef-jgem')
