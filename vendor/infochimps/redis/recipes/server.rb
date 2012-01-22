@@ -31,7 +31,7 @@ standard_dirs('redis.server') do
   directories   :conf_dir, :log_dir, :data_dir
 end
 
-kill_old_service('redis-server'){ pattern 'gmond' ; not_if{ File.exists?("/etc/init.d/redis-server") } }
+kill_old_service('redis-server'){ only_if{ File.exists?("/etc/init.d/redis-server") } }
 
 runit_service "redis_server" do
   run_state     node[:redis][:server][:run_state]

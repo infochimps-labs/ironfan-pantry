@@ -34,9 +34,11 @@ end
 # Install
 package "hadoop-zookeeper-server"
 
-kill_old_service('hadoop-zookeeper-server'){ pattern 'zookeeper' ; not_if{ File.exists?("/etc/init.d/hadoop-zookeeper-server") } }
+kill_old_service('hadoop-zookeeper-server'){ pattern 'zookeeper' ; only_if{ File.exists?("/etc/init.d/hadoop-zookeeper-server") } }
 
 announce(:zookeeper, :server)
+
+include_recipe 'zookeeper::config_files'
 
 runit_service "zookeeper" do
   run_state     node[:zookeeper][:server][:run_state]
