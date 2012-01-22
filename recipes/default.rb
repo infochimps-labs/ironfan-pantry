@@ -67,25 +67,32 @@ end
 #
 # Configuration files
 #
-# Find these variables in ../hadoop_cluster/libraries/hadoop_cluster.rb
-#
+hbase_config = {
+  :namenode_fqdn   => (discover(:hadoop, :namenode)   && discover(:hadoop, :namenode  ).private_hostname),
+  :jobtracker_addr => (discover(:hadoop, :jobtracker) && discover(:hadoop, :jobtracker).private_ip),
+  :zookeeper_addrs => discover_all(:zookeeper, :server).map(&:private_ip).sort,
+  :ganglia         => discover(:ganglia, :server),
+  :ganglia_addr    => (discover(:ganglia, :server) && discover(:ganglia, :server).private_hostname),
+  :private_ip      => private_ip_of(node),
+  :jmx_hostname    => public_ip_of(node),
+  :ganglia_port    => 8649,
+  :period          => 10
+}
+
 %w[ hbase-env.sh hbase-site.xml hadoop-metrics.properties ].each do |conf_file|
-  template "/etc/hbase/conf/#{conf_file}" do
-    owner "root"
-    mode "0644"
-    variables({
-        :namenode_fqdn   => (discover(:hadoop, :namenode)   && discover(:hadoop, :namenode).private_hostname),
-        :jobtracker_addr => (discover(:hadoop, :jobtracker) && discover(:hadoop, :jobtracker).private_ip),
-        :zookeeper_addrs => discover_all(:zookeeper, :server).map(&:private_ip).sort,
-        :private_ip      => private_ip_of(node),
-        :jmx_hostname    => public_ip_of(node),
-        :ganglia         => discover(:ganglia, :server),
-        :ganglia_addr    => (discover(:ganglia, :server) && discover(:ganglia, :server).private_hostname),
-        :ganglia_port    => 8649,
-        :period          => 10
-      })
-    source "#{conf_file}.erb"
+  template "#{node[:hbase][:conf_dir]}/#{conf_file}" do
+    owner       "root"
+    mode        "0644"
+    source      "#{conf_file}.erb"
+    variables(hbase_config)
   end
+end
+
+template "#{node[:hbase][:home_dir]}/bin/hbase" do
+  owner         "root"
+  mode          "0755"
+  source        "bin-hbase.erb"
+  variables(hbase_config)
 end
 
 
