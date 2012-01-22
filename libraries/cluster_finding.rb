@@ -10,7 +10,12 @@ class Chef
         require 'rubix'
       end
       Rubix.logger = Chef::Log.logger
-      Rubix.connect(File.join(node[:zabbix][:agent][:servers][0], 'api_jsonrpc.php'), node[:zabbix][:api][:username], node[:zabbix][:api][:password])
+      master = all_zabbix_server_ips.first
+      Rubix.connect(File.join(master, node.zabbix.api.path), node[:zabbix][:api][:username], node[:zabbix][:api][:password])
+    end
+
+    def all_zabbix_server_ips
+      discover_all(:zabbix, :master).map(&:private_ip) + node.zabbix.agent.servers
     end
 
     def all_nodes_clusters_and_facets

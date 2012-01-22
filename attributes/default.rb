@@ -37,6 +37,11 @@ default[:zabbix][:web][:log_dir]   = '/var/log/zabbix_web'
 default[:zabbix][:web][:webserver] = 'apache'
 default[:zabbix][:web][:timezone]  = 'America/Chicago'
 
+# API
+default[:zabbix][:api][:path]     = 'api_jsonrpc.php'
+default[:zabbix][:api][:username] = ''
+default[:zabbix][:web][:password] = ''
+
 # SMTP
 default[:zabbix][:smtp][:from]     = 'fixme@example.com' 
 default[:zabbix][:smtp][:server]   = 'smtp.example.com'
@@ -48,5 +53,3 @@ default[:zabbix][:smtp][:password] = ''
 default[:zabbix][:twilio][:id]    = ''
 default[:zabbix][:twilio][:token] = ''
 default[:zabbix][:twilio][:phone] = ''
-
-

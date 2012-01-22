@@ -153,6 +153,21 @@ attribute "zabbix/web/webserver",
   :description           => "The webserver to use in front of PHP: 'apache' or 'nginx'.",
   :default               => "apache"
 
+attribute "zabbix/api/path",
+  :display_name          => "",
+  :description           => "The path on the Zabbix web frontend from which the Zabbix API is served.",
+  :default               => "api_jsonrpc.php"
+
+attribute "zabbix/api/username",
+  :display_name          => "",
+  :description           => "The Zabbix user for talking to Zabbix's API.",
+  :default               => ""
+
+attribute "zabbix/api/password",
+  :display_name          => "",
+  :description           => "The Zabbix user's password for talking to Zabbix's API.",
+  :default               => ""
+
 attribute "zabbix/smtp/from",
   :display_name          => "",
   :description           => "The From: address used by Zabbix to send email."
