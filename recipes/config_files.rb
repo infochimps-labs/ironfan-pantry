@@ -1,6 +1,6 @@
 #
 # Cookbook Name::       zookeeper
-# Description::         Base configuration for zookeeper
+# Description::         Config files -- include this last after discovery
 # Recipe::              default
 # Author::              Chris Howe - Infochimps, Inc
 #
@@ -19,23 +19,30 @@
 # limitations under the License.
 #
 
-include_recipe "apt"
-include_recipe "volumes"
-include_recipe "metachef"
-include_recipe "java" ; complain_if_not_sun_java(:cassandra)
-
-include_recipe "hadoop_cluster::add_cloudera_repo"
-
 #
-# Install package
+# Config files
 #
+zookeeper_hosts = discover_all(:zookeeper, :server).map(&:private_ip).sort
 
-package "hadoop-zookeeper"
+myid = zookeeper_hosts.find_index( private_ip_of(node) )
+template_variables = {
+  :zookeeper         => node[:zookeeper],
+  :zookeeper_hosts   => zookeeper_hosts,
+  :myid              => myid,
+}
 
-#
-# Configuration files
-#
+%w[ zoo.cfg log4j.properties].each do |conf_file|
+  template "/etc/zookeeper/#{conf_file}" do
+    variables(template_variables)
+    owner    "root"
+    mode     "0644"
+    source   "#{conf_file}.erb"
+  end
+end
 
-standard_dirs('zookeeper.server') do
-  directories   :conf_dir, :log_dir
+template "/var/zookeeper/myid" do
+ owner "zookeeper"
+ mode "0644"
+ variables(template_variables)
+ source "myid.erb"
 end
