@@ -19,14 +19,18 @@ default[:zabbix][:agent][:log_dir]           = '/var/log/zabbix_agent'
 default[:zabbix][:server][:install]           = false
 default[:zabbix][:server][:version]           = "1.8.8"
 default[:zabbix][:server][:branch]            = "ZABBIX%20Latest%20Stable"
-default[:zabbix][:server][:dbhost]            = "localhost"
-default[:zabbix][:server][:dbname]            = "zabbix"
-default[:zabbix][:server][:dbuser]            = "zabbix"
-default[:zabbix][:server][:dbpassword]        = nil
-default[:zabbix][:server][:dbport]            = "3306"
 default[:zabbix][:server][:install_method]    = "source"
 default[:zabbix][:server][:configure_options] = [ "--prefix=#{zabbix_home_dir}","--with-libcurl","--with-net-snmp","--with-mysql " ]
 default[:zabbix][:server][:log_dir]           = '/var/log/zabbix_server'
+
+# Database
+default[:zabbix][:database][:host]            = "localhost"
+default[:zabbix][:database][:port]            = "3306"
+default[:zabbix][:database][:root_user]       = ""
+default[:zabbix][:database][:root_password]   = nil
+default[:zabbix][:database][:user]            = "zabbix"
+default[:zabbix][:database][:password]        = nil
+default[:zabbix][:database][:name]            = "zabbix"
 
 # Web frontend
 default[:zabbix][:web][:install]   = false

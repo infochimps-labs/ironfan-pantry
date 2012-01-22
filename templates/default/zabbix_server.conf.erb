@@ -3,11 +3,11 @@
 ############ GENERAL PARAMETERS #################
 
 LogFile=<% node.zabbix.server.log_dir %>/zabbix_server.log
-DBHost=<%= node.zabbix.server.dbhost %>
-DBName=<%= node.zabbix.server.dbname %>
-DBUser=<%= node.zabbix.server.dbuser %>
-DBPassword=<%= node.zabbix.server.dbpassword %>
-DBPort=<%= node.zabbix.server.dbport %>
+DBHost=<%= node.zabbix.database.host %>
+DBName=<%= node.zabbix.database.name %>
+DBUser=<%= node.zabbix.database.user %>
+DBPassword=<%= node.zabbix.database.password %>
+DBPort=<%= node.zabbix.database.port %>
 
 Include=/etc/zabbix/include
 AlertScriptsPath=/opt/zabbix/AlertScriptsPath

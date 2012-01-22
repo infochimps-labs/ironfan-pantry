@@ -88,25 +88,40 @@ attribute "zabbix/server/branch",
   :description           => "Name of the Zabbix branch to use.",
   :default               => "1.8.8"
 
-attribute "zabbix/server/dbhost",
+attribute "zabbix/database/host",
   :display_name          => "",
-  :description           => "Host for the Zabbix database.",
+  :description           => "Host for the Zabbix database server.",
   :default               => "localhost"
 
-attribute "zabbix/server/name",
+attribute "zabbix/database/port",
   :display_name          => "",
-  :description           => "Name of the Zabbix database.",
-  :default               => "zabbix"
+  :description           => "Port for the  Zabbix database server.",
+  :default               => "3306"
 
-attribute "zabbix/server/dbuser",
+attribute "zabbix/database/root_user",
+  :display_name          => "",
+  :description           => "Root user for the Zabbix database server.",
+  :default               => ""
+
+attribute "zabbix/database/root_password",
+  :display_name          => "",
+  :description           => "Root password for the Zabbix database server.",
+  :default               => nil
+
+attribute "zabbix/database/user",
   :display_name          => "",
   :description           => "User for the Zabbix database.",
   :default               => "zabbix"
 
-attribute "zabbix/server/dbpassword",
+attribute "zabbix/database/password",
   :display_name          => "",
   :description           => "Password for the Zabbix database user.",
   :default               => nil
+
+attribute "zabbix/database/name",
+  :display_name          => "",
+  :description           => "Name of the Zabbix database.",
+  :default               => "zabbix"
 
 attribute "zabbix/server/install_method",
   :display_name          => "",
