@@ -1,16 +1,26 @@
-# Author:: Nacer Laradji (<nacer.laradji@gmail.com>)
+# Author:: Dhruv Bansal (<dhruv.bansal@infochimps.com>)
 # Cookbook Name:: zabbix
 # Recipe:: server
 #
-# Copyright 2011, Efactures
+# Copyright 2011, Infochimps
 #
 # Apache 2.0
 #
-
-if node[:zabbix][:server][:install] == true
+if node.zabbix.server.install
   include_recipe "zabbix::server_#{node.zabbix.server.install_method}"
-end
+  include_recipe "zabbix::server_sends_email"
+  include_recipe "zabbix::server_sends_texts"
 
-if node[:zabbix][:web][:install] == true
-  include_recipe "zabbix::web"
+
+  announce(:zabbix, :server,
+           :logs =>  { :server => node.zabbix.server.log_dir },
+           :ports => {
+             :server => {
+               :port   => 10050,
+               :ignore => true
+             }
+           },
+           :daemons => { :server => 'zabbix_server' }
+           )
+  
 end

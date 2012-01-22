@@ -1,63 +1,56 @@
-# Author:: Nacer Laradji (<nacer.laradji@gmail.com>)
+# Author:: Dhruv Bansal (dhruv@infochimps.com)
 # Cookbook Name:: zabbix
-# Recipe:: mysql_setup
+# Recipe:: web
 #
-# Copyright 2011, Efactures
+# Copyright 2012, Infochimps
 #
 # Apache 2.0
 #
 
-# Execute apache2 receipe + mod_php5 receipe
-include_recipe "apache2"
-include_recipe "apache2::mod_php5"
+if node.zabbix.web.install
 
-case node[:platform]
-when "ubuntu","debian"
-  # Dependencie installation
-  package "php5-mysql" do
-    action :install
-    notifies :restart, "service[apache2]"
+  case node[:platform]
+  when "ubuntu","debian"
+    %w[traceroute php5-cgi php5-mysql php5-gd].each { |name| package(name) }
+  when "centos"
+    log "No centos Support yet"
   end
 
-  package "php5-gd" do
-    action :install
-    notifies :restart, "service[apache2]"
+  # Link to the web interface version
+  link "/opt/zabbix/web" do
+    to "/opt/zabbix-#{node.zabbix.server.version}/frontends/php"
   end
-when "centos"
-  log "No centos Support yet"
-end
 
-# Link to the web interface version
-link "/opt/zabbix/web" do
-  to "/opt/zabbix-#{node.zabbix.server.version}/frontends/php"
-end
-
-# fix web folder right
-script "zabbix_fix_web_right" do
-  interpreter "bash"
-  user "root"
-  cwd "/opt"
-  action :nothing
-  code <<-EOH
+  # fix web folder right
+  script "zabbix_fix_web_right" do
+    interpreter "bash"
+    user "root"
+    cwd "/opt"
+    action :nothing
+    code <<-EOH
   chown www-data -R /opt/zabbix-#{node.zabbix.server.version}/frontends/php
   EOH
+  end
+
+  # Give access to www-data to zabbix frontend config folder
+  directory "/opt/zabbix-#{node.zabbix.server.version}/frontends/php" do
+    owner "www-data"
+    group "www-data"
+    mode "0755"
+    recursive true
+    action :create
+    notifies :run, resources(:script => "zabbix_fix_web_right")
+  end
+
+  directory node.zabbix.web.log_dir do
+    owner 'www-data'
+    group 'www-data'
+    mode '0755'
+    action :create
+    recursive true
+  end
+
+  # Configure upstream webserver.
+  include_recipe "zabbix::web_#{node.zabbix.web.install_method}"
 end
 
-# Give access to www-data to zabbix frontend config folder
-directory "/opt/zabbix-#{node.zabbix.server.version}/frontends/php" do
-  owner "www-data"
-  group "www-data"
-  mode "0755"
-  recursive true
-  action :create
-  notifies :run, resources(:script => "zabbix_fix_web_right")
-end
-
-if node[:zabbix][:web][:fqdn] != nil
-  #install vhost for zabbix frontend
-  web_app "#{node.zabbix.web.fqdn}" do
-    server_name node.zabbix.web.fqdn
-    server_aliases "zabbix"
-    docroot "/opt/zabbix/web"
-  end  
-end

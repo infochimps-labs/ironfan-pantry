@@ -2,7 +2,7 @@
 
 ############ GENERAL PARAMETERS #################
 
-LogFile=/var/log/zabbix/zabbix_server.log
+LogFile=<% node.zabbix.server.log_dir %>/zabbix_server.log
 DBHost=<%= node.zabbix.server.dbhost %>
 DBName=<%= node.zabbix.server.dbname %>
 DBUser=<%= node.zabbix.server.dbuser %>

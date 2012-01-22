@@ -1,0 +1,4 @@
+#!/bin/bash
+export PATH=$PATH:/opt/zabbix/bin
+exec 2>&1
+exec chpst -u zabbix zabbix_pipe --pipe=/dev/zabbix --fast --server=<%= @node[:zabbix][:agent][:servers][0] %> --host=<%= @node[:node_name] %>
