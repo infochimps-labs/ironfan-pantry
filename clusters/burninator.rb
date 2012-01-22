@@ -62,6 +62,7 @@ ClusterChef.cluster 'burninator' do
 
     facet_role.override_attributes({
         :package_set => { :install => %w[ base dev sysadmin text python emacs ] },
+        :apt    => { :cloudera => { :force_distro => 'maverick',  }, },
       })
   end
 

@@ -4,18 +4,18 @@ away_dir=/tmp/ami_away
 mkdir -p "$away_dir"
 cd /tmp
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nTidy up the joint for the next occupants:\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nTidy up the joint for the next occupants:\n"
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\napt-get update/upgrade/cleanup:\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\napt-get update/upgrade/cleanup:\n"
 apt-get -y update  ;
 apt-get -y upgrade ;
 apt-get -f install ;
 apt-get clean ;
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nupdatedb so you can find files:\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nupdatedb so you can find files:\n"
 updatedb ;
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nmove away anything tied to the identity of this machine. Don't sweat it if some are missing\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nmove away anything tied to the identity of this machine. Don't sweat it if some are missing\n"
 mv /etc/hostname /etc/node*name /etc/dashpot "$away_dir"
 # move away chef junk
 mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ "$away_dir"
@@ -34,52 +34,52 @@ mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ "$away_dir"
 # # [Public AMI Publishing: Hardening and Clean-up Requirements](https://aws.amazon.com/articles/9001172542712674)
 # * [Sharing AMIs Safely](http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/AESDG-chapter-sharingamis.html)
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nCommandline history files:"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nCommandline history files:"
 find /root/.*history /home/*/.*history 
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nSSH authorized_keys:"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nSSH authorized_keys:"
 find / -name "authorized_keys*" -print -exec cat {} \;
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nNon-system Users:"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nNon-system Users:"
 cat /etc/passwd /etc/shadow | grep -E '^[^:]*:[^:]{3,}' | cut -d: -f1
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nImportant sshd configs. PermitRootLogin *should* be 'without-password'"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nImportant sshd configs. PermitRootLogin *should* be 'without-password'"
 egrep 'PasswordAuthentication|PubkeyAuthentication|PermitRootLogin' /etc/ssh/sshd_config
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nremove org-specific info from top of /etc/chef/client.rb\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nremove org-specific info from top of /etc/chef/client.rb\n"
 cp /etc/chef/client.rb  "$away_dir"
 perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb 
  
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nmake a nice bland motd\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nmake a nice bland motd\n"
 . /etc/lsb-release 
-img_info="  infochimps-$DISTRIB_CODENAME-`uname -i`-`ruby --version | cut -d' '  -f2`-`date +"%Y%m%d-%H"`"
+img_info="  cluster_chef-$DISTRIB_CODENAME-`uname -i`-`ruby --version | cut -d' '  -f2`-`date +"%Y%m%d-%H"`"
 rm /etc/motd ;
 echo "CHIMP CHIMP CHIMP CRUNCH CRUNCH CRUNCH (image burned at `date`): $img_info" > /etc/motd;
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nunmount your mountables\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nunmount your mountables\n"
 cd / ; for foo in /home /ebs* /data/ebs* /data ; do umount $foo 2>/dev/null ; done
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nzero out all files in /var/log. This is a little irresponsible.\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nzero out all files in /var/log. This is a little irresponsible.\n"
 cd /var/log ; for foo in `find /var/log -type f` ; do echo $foo ; bash -c "echo -n > $foo"  ; done
 
 # show what we hath wrought
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nHere are the running processes. Make sure there's nothing interesting running that will have files open etc -- especially chef-client.\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nHere are the running processes. Make sure there's nothing interesting running that will have files open etc -- especially chef-client.\n"
 ps auxf
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nDisk usage -- root drive should be at ~ 3G\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nDisk usage -- root drive should be at ~ 3G\n"
 df -BG
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nYour client.rb -- make sure there's nothing machine-specific remaining\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nYour client.rb -- make sure there's nothing machine-specific remaining\n"
 cat /etc/chef/client.rb
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nYour /etc/chef -- make sure there's no keys\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nYour /etc/chef -- make sure there's no keys\n"
 ls -l /etc/chef/
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nThese are the init.d services that might or might not auto-start, who knows. If you're not happy about any of them please look more closely and if necessary use update-rc.d to disable\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nThese are the init.d services that might or might not auto-start, who knows. If you're not happy about any of them please look more closely and if necessary use update-rc.d to disable\n"
 ls -1 /etc/rc*.d/* | grep -v README | cut -c 15- | sort | uniq -c
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n****\nThese are the services that will auto-start. chef-client must be present. Make sure you're happy with the rest.\n"
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nThese are the services that will auto-start. chef-client must be present. Make sure you're happy with the rest.\n"
 ls -l /etc/service/
 
 echo "Done!"
@@ -91,6 +91,6 @@ echo "- hit 'Create Image (EBS AMI)'. Name the AMI something like"
 echo ""
 echo "  $img_info"
 echo ""
-echo "Five to dammit forty minutes later your AMI will be ready. Enjoy the rolling-chair swordfighting in the duration"
+echo "Five to dammit forty minutes later your AMI will be ready. Enjoy the rolling-chair swordfighting in the duration."
 echo ""
 echo "Lastly, launch burninator-village-0"
