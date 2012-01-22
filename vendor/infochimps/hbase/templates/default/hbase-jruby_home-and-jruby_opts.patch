@@ -1,0 +1,29 @@
+--- bin/hbase	2012-01-21 23:26:30.228765999 +0000
++++ bin/hbase-new	2012-01-21 23:40:55.486375684 +0000
+@@ -42,6 +42,12 @@
+ #
+ #   MAVEN_HOME       Where mvn is installed.
+ #
++#   JRUBY_HOME       JRuby path: $JRUBY_HOME/lib/jruby.jar should exist.
++#                    Defaults to the jar packaged with HBase.
++#
++#   JRUBY_OPTS       Extra options (eg '--1.9') passed to the hbase shell.
++#                    Empty by default.
++#
+ bin=`dirname "$0"`
+ bin=`cd "$bin">/dev/null; pwd`
+ 
+@@ -237,7 +243,12 @@
+ 
+ # figure out which class to run
+ if [ "$COMMAND" = "shell" ] ; then
+-  CLASS="org.jruby.Main ${HBASE_HOME}/bin/hirb.rb"
++  # eg export JRUBY_HOME=/usr/local/share/jruby
++  if [ "$JRUBY_HOME" != "" ] ; then
++    CLASSPATH="$JRUBY_HOME/lib/jruby.jar:$CLASSPATH"
++    HBASE_OPTS="$HBASE_OPTS -Djruby.home=$JRUBY_HOME -Djruby.lib=$JRUBY_HOME/lib"
++  fi
++  CLASS="org.jruby.Main ${JRUBY_OPTS} ${HBASE_HOME}/bin/hirb.rb"
+ elif [ "$COMMAND" = "master" ] ; then
+   CLASS='org.apache.hadoop.hbase.master.HMaster'
+   if [ "$1" != "stop" ] ; then
