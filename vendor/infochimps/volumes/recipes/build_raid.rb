@@ -23,54 +23,55 @@ include_recipe 'xfs'
 
 package        'mdadm'
 
-if node[:volumes][:raid_groups]
+Metachef.raid_groups(node).each do |rg_name, rg|
 
-  # FIXME: Not hard coded
-  node[:volumes][:raid_groups] = {
-    'md0' => {
-      :device => '/dev/md0', :mount_point => '/mnt',
-      :from_volumes => %w[ ephemeral0 ]
-    }
-  }
+  sub_vols = sub_volumes(rg, node)
 
-  node[:volumes][:raid_groups].each do |raid_group, raid_info|
+  Chef::Log.info(rg.inspect)
+  Chef::Log.info( sub_vols.values.inspect )
 
-    # FIXME: pull from mountable volumes
-    lone_volumes = { :ephemeral0 => { :device => "/dev/sdb", :mount_point => "/mnt" }}
-
-    #
-    # unmount all devices tagged for that raid group
-    #
-    lone_volumes.each do |lone_vol, vol_info|
-      mount vol_info[:mount_point] do
-        device vol_info[:device]
-        action [:umount, :disable]
-      end
+  #
+  # unmount all devices tagged for that raid group
+  #
+  sub_vols.each do |_, sub_vol|
+    mount sub_vol.mount_point do
+      device sub_vol.device
+      action [:umount, :disable]
     end
-
-    # FIXME: "create a raid of all devices tagged for that raid group
-
-    mdadm(raid_info[:device]) do
-      devices
-      level 0
-      action [:create, :assemble]
-    end
-
-    script "format #{raid_group}" do
-      interpreter "bash"
-      user      "root"
-      # Returns success iff the drive is formatted XFS
-      code      %Q{ mkfs.xfs -f /dev/md0 ; file -s /dev/md0 | grep XFS }
-      not_if("file -s /dev/md0 | grep XFS")
-    end
-
-    mount raid_info[:mount_point] do
-      device     raid_info[:device]
-      fstype     raid_info[:fstype]
-      options    "nobootwait,comment=cloudconfig"
-      action     [:mount, :enable]
-    end
-
   end
+
+  #
+  # Create the raid array
+  #
+  mdadm(rg.device) do
+    devices   sub_vols.values.map(&:device)
+    level     0
+    action    [:create, :assemble]
+  end
+
+  # # Scan
+  # File.open("/etc/mdadm/mdadm.conf", "a") do |f|
+  #   f << "DEVICE #{parts.join(' ')}\n"
+  #   f << `mdadm --examine --scan`
+  # end
+  #
+  # bash "set read-ahead" do
+  #   code      "blockdev --setra #{raid_group.read_ahead} #{raid_group.device}"
+  # end
+
+  if rg.formattable?
+    if rg.ready_to_format?
+      bash "format #{rg.name} (#{rg.sub_volumes})" do
+        user      "root"
+        # Returns success iff the drive is formatted XFS
+        code      %Q{ mkfs.xfs -f #{rg.device} ; file -s #{rg.device} | grep XFS }
+        not_if("file -s #{rg.device} | grep XFS")
+      end
+      rg.formatted!
+    else
+      Chef::Log.warn("Not formatting #{rg.name}. Volume is unready: (#{rg.inspect})")
+    end
+  end
+
 
 end

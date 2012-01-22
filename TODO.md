@@ -5,6 +5,9 @@
 * vagrants
 * launch machine with blank snapshot
 
+
+* volumes don't deep merge -- eg you have to mount_ephemerals in the facet if you modify htem
+
 ### reorg
 
 * symlinks in cookbooks

@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-volumes.each do |vol_name, vol|
+volumes(node).each do |vol_name, vol|
   next unless vol.resizable?
 
   if not vol.attached?

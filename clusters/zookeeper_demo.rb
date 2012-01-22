@@ -80,20 +80,5 @@ ClusterChef.cluster 'zookeeper_demo' do
     tags( :zookeeper_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
     create_at_launch    true # if no volume is tagged for that node, it will be created
   end
-
-  volume(:ebs2) do
-    defaults
-    size                10
-    keep                true
-    device              '/dev/sdl' # note: will appear as /dev/xvdi on natty
-    mount_point         '/data/ebs2'
-    attachable          :ebs
-    resizable           true
-    formattable         true
-    snapshot_name       :blank_xfs   # 1 GB xfs -- will growfs on launch
-    volume_id           'vol-8dcac8e0'
-    tags()
-    create_at_launch    false
-  end
   
 end

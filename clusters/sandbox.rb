@@ -38,6 +38,21 @@ ClusterChef.cluster 'sandbox' do
     role                :redis_server
   end
 
+  facet :raid_demo do
+    instances           1
+    cloud.flavor        'c1.xlarge'
+    recipe              'volumes::build_raid', :first
+    recipe              'volumes::mount'
+
+    cloud.mount_ephemerals
+    raid_group(:md0) do
+      device            '/dev/md0'
+      mount_point       '/raid0'
+      level             0
+      sub_volumes       [:ephemeral0, :ephemeral1, :ephemeral2, :ephemeral3]
+    end
+  end
+
   cluster_role.override_attributes({
     })
 end

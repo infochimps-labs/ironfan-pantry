@@ -8,6 +8,13 @@ pre-testing -- converge machine
 
   http://wiki.opscode.com/display/chef/Knife#Knife-test
 
+benchmarks
+
+  bonnie++ 
+  hdparm -t
+  iozone
+
+
 in-machine
 
 * x ports on x interfaces open
@@ -25,6 +32,8 @@ in-chef
 meta
 
 * chef run was idempotent
+
+
 
 
 

@@ -20,7 +20,7 @@
 #
 
 # defined in volumes/libraries/volumes.rb
-volumes.each do |vol_name, vol|
+volumes(node).each do |vol_name, vol|
   next unless vol.mountable?
 
   if not vol.attached?
