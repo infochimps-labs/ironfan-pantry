@@ -21,17 +21,17 @@
 
 # defined in volumes/libraries/volumes.rb
 volumes.each do |vol_name, vol|
-  next if vol['mount_point'].to_s.empty? || (vol['mountable'].to_s == 'false')
+  next unless vol.mountable?
 
-  if not File.exists?(vol['device'])
-    Chef::Log.info "Before mounting, you must attach the #{vol_name} volume at #{vol['device']}"
+  if not vol.attached?
+    Chef::Log.info "Before mounting, you must attach the #{vol_name} volume at #{vol.device}"
     next
   end
 
-  directory vol['mount_point'] do
+  directory vol.mount_point do
     recursive   true
-    owner( vol['owner'] || 'root' )
-    group( vol['owner'] || 'root' )
+    owner       vol.owner
+    group       vol.owner
   end
 
   #
@@ -43,13 +43,13 @@ volumes.each do |vol_name, vol|
   #
 
   mount vol['mount_point'] do
-    device      vol['device']
-    fstype      volume_fstype(vol)
-    options     vol['mount_options'] if vol['mount_options']
-    dump        vol['mount_dump']    if vol['mount_dump']
-    fsck        vol['mount_fsck']    if vol['mount_fsck']
-    device_type vol['device_type']   if vol['device_type']
-    only_if{ File.exists?(vol['device']) || (device_type.to_s != 'device') }
+    device      vol.device
+    fstype      vol.fstype
+    options     vol.mount_options if vol.mount_options
+    dump        vol.mount_dump    if vol.mount_dump
+    fsck        vol.mount_fsck    if vol.mount_fsck
+    device_type vol.device_type   if vol.device_type
+    only_if{ vol.attached? }
     action      [:mount]
   end
 

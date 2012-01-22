@@ -1,10 +1,10 @@
 #
 # Cookbook Name::       volumes
-# Description::         Placeholder -- see other recipes in ec2 cookbook
-# Recipe::              default
+# Description::         Format the volumes listed in node[:volumes]
+# Recipe::              format
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
-# Copyright 2011, Philip (flip) Kromer, infochimps.com
+# Copyright 2011, Philip (flip) Kromer - Infochimps, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,21 @@
 # limitations under the License.
 #
 
-include_recipe 'metachef'
+#
+# This tries to have interlocks out the wazoo. Still: caveat coquus
+#
 
-dashpot_dashboard('volumes') if defined?(dashpot_dashboard)
+volumes.each do |vol_name, vol|
+  Chef::Log.info(vol.inspect)
+  next unless vol.formattable?
+
+  if not vol.ready_to_format? then Chef::Log.info("Skipping format of volume #{vol_name}: not formattable (#{vol.inspect})") ; next ; end
+
+  bash "Format #{vol_name} as #{vol.fstype}" do
+    code        "mkfs -t #{vol.fstype} #{vol.device}"
+  end
+
+  # don't resize again
+  vol.formatted!
+
+end
