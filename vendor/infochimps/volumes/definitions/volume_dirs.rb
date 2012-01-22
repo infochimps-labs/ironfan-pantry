@@ -60,8 +60,6 @@ define(:volume_dirs,
   params[:owner]      ||= component.node_attr(:user, :required)
   params[:group]      ||= component.node_attr(:group) || params[:owner]
 
-  Log.info( [params[:name], params, component.to_hash] )
-
   #
   # Once we've chosen a path, we need to use it forever.
   #

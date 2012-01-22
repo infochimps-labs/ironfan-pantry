@@ -76,7 +76,16 @@ ClusterChef.cluster 'hbase_demo' do
 
   [:nn, :jt, :nn2, :tt, :dn, :hm, :hm2, :rs, :hbth, :hbsg, :zk ]
 
-  hbase_facet('master', :nn,  :hm,  :zk, :dn  ){ instances 1 }
+  hbase_facet('master', :nn,  :hm,  :zk ) do
+    instances 1
+    # # The datanode and regionserver are only present for ease of bootstrapping
+    # # the machine
+    # role :hadoop_datanode
+    # role :hbase_regionserver
+    # facet_role.override_attributes({
+    #     :hadoop => { :datanode     => { :run_state => :stop,  }, },
+    #     :hbase  => { :regionserver => { :run_state => :stop,  }, }, })
+  end
   hbase_facet('beta',   :nn2, :hm2, :jt, :dn  ){ instances 1 }
   hbase_facet('worker', :rs,  :tt,       :dn  ){ instances 3; role :hbase_stargate }
 

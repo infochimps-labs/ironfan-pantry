@@ -1,3 +1,10 @@
+* aws key databag + helper
+* cucumber
+* hbase
+* domain names
+* vagrants
+* launch machine with blank snapshot
+
 ### reorg
 
 * symlinks in cookbooks

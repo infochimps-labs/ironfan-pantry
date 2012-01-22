@@ -90,7 +90,7 @@ hadoop_performance_settings =
     if node[:memory][:swap] && node[:memory][:swap][:total]
       ram -= node[:memory][:swap][:total].to_i
     end
-    Chef::Log.info("Couldn't set performance parameters from instance type, estimating from #{cores} cores and #{ram} ram")
+    Chef::Log.warn("Couldn't set performance parameters from instance type, estimating from #{cores} cores and #{ram} ram")
     n_mappers      = (cores >= 6 ? (cores * 1.25) : (cores * 2)).to_i
     n_reducers     = cores
     heap_size      = 0.75 * (ram.to_f / 1000) / (n_mappers + n_reducers)
@@ -101,7 +101,7 @@ hadoop_performance_settings =
     { :max_map_tasks => n_mappers, :max_reduce_tasks => n_reducers, :java_child_opts => "-Xmx#{heap_size}m", :java_child_ulimit => child_ulimit, :io_sort_factor => io_sort_factor, :io_sort_mb => io_sort_mb, }
   end
 
-Chef::Log.info("Hadoop tunables: #{hadoop_performance_settings.inspect}")
+Chef::Log.debug("Hadoop tunables: #{hadoop_performance_settings.inspect}")
 
 # (Mappers+Reducers)*ChildTaskHeap + DNheap + TTheap + 3GB + RSheap + OtherServices'
 

@@ -38,4 +38,4 @@ a.out
 .rspec
 spec/*
 spec/fixtures/*
-
+features/*
