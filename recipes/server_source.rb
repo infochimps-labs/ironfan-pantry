@@ -64,7 +64,3 @@ service "zabbix_server" do
   supports :status => true, :start => true, :stop => true
   action [ :start, :enable ]
 end
-
-if node.attribute[:mysql][:server_root_password]
-  include_recipe "zabbix::mysql_setup"
-end
