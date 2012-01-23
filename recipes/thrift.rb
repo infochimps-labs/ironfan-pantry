@@ -1,10 +1,10 @@
 #
 # Cookbook Name::       hbase
-# Description::         HBase Stargate: HTTP frontend to HBase
-# Recipe::              stargate
-# Author::              Chris Howe - Infochimps, Inc
+# Description::         HBase Thrift Listener
+# Recipe::              thrift
+# Author::              Philip (flip) Kromer - Infochimps, Inc
 #
-# Copyright 2011, Chris Howe - Infochimps, Inc
+# Copyright 2011, Philip (flip) Kromer - Infochimps, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,15 +22,15 @@
 include_recipe "hbase"
 include_recipe "runit"
 
-
-
+# Install
+package "hadoop-hbase-thrift"
 
 # Set up service
-runit_service "hbase_stargate" do
-  run_state     node[:hbase][:stargate][:run_state]
-  options       Mash.new(:service_name => 'stargate', :command_name => 'rest').merge(node[:hbase]).merge(node[:hbase][:stargate])
+runit_service "hbase_thrift" do
+  run_state     node[:hbase][:thrift][:run_state]
+  options       Mash.new(:service_name => 'thrift').merge(node[:hbase]).merge(node[:hbase][:thrift])
 end
 
-kill_old_service("hadoop-hbase-stargate"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-stargate") } }
+kill_old_service("hadoop-hbase-thrift"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-thrift") } }
 
-announce(:hbase, :stargate)
+announce(:hbase, :thrift)

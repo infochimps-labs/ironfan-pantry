@@ -1,0 +1,25 @@
+<html>
+<head>
+  <title><%= node.name %> HBase Cluster</title>
+</head>
+  
+<body>
+  <div class="nav"><a href="/">home</a></div>
+  <h2>HBase Cluster for <%= node.name %></h2>
+
+  <h3>Service Dashboards:</h3>
+  <ul>
+  <%- %w[ master regionserver stargate ].each do |component| %>
+    <%- next unless node[:dashpot][:links]["hbase.#{component}"] %>
+    <li><a href="<%= node[:dashpot][:links]["hbase.#{component}"] %>">hbase-<%= component %></a></li>
+  <%- end %>
+  </ul>
+
+  <hr/>
+  <h3>Interesting facts about my hbase installation:</h3>
+
+  <table class="interesting_facts">
+    <%= summary_rows(node, @summary_keys) %>
+  </table>
+  
+</body></html>

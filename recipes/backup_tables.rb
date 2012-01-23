@@ -21,14 +21,9 @@
 
 include_recipe "hbase"
 
-template_variables = {
-    :backup_tables   => node[:hbase][:weekly_backup_tables],
-    :backup_location => node[:hbase][:backup_location]
-}
-
 template "/etc/cron.weekly/backup_hbase_tables" do
-  source "export_hbase_tables.rb.erb"
-  mode "0744"
-  variables( template_variables )
+  source        "export_hbase_tables.rb.erb"
+  mode          "0744"
+  variables(    :hbase  => node[:hbase] )
 end
 
