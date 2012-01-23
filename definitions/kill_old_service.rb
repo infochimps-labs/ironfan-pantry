@@ -1,6 +1,7 @@
 
 define(:kill_old_service,
-  :script       => nil
+  :script       => nil,
+  :hard         => false,
   ) do
   params[:script] ||= "/etc/init.d/#{params[:name]}"
 
@@ -14,10 +15,17 @@ define(:kill_old_service,
     end
 
     ruby_block("stop #{params[:name]}") do
-      block{ }
+      block{   }
       action      :create
       notifies    :stop, "service[#{params[:name]}]", :immediately
       only_if{ File.exists?(params[:script]) }
+    end
+
+    if params[:hard] # sometimes these shitty little things gotta be told thrice
+      bash "stop again" do
+        code "service #{params[:name]} stop ; sleep 1 ; service #{params[:name]} stop ; true"
+        only_if{ File.exists?(params[:script]) }
+      end
     end
 
     file(params[:script]) do
