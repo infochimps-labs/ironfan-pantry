@@ -81,8 +81,8 @@ ClusterChef.cluster 'hbase_demo' do
   hbase_facet('alpha', :nn,  :hm ) do
     instances 1
   end
-  hbase_facet('beta',   :nn2, :hm2, :jt  ){ instances 1 }
-  hbase_facet('worker', :rs,  :dn,  :tt  ){ instances 4; role :hbase_stargate }
+  hbase_facet('beta',   :nn2, :hm2, :jt                ){ instances 1 }
+  hbase_facet('worker', :rs,  :dn,  :tt, :hbsg, :hbth  ){ instances 4 }
 
   # This line, and the 'discovers' setting in the cluster_role,
   # enable the hbase to use an external zookeeper cluster
