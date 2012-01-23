@@ -19,67 +19,53 @@
 
 include_recipe 'route53'
 
-aws = data_bag_item("aws", "route53")
+# aws = data_bag_item("aws", "route53")
+aws = node[:aws]
 
-# "i-17734b7c.example.com" => ec2.public_hostname
-route53_rr node[:ec2][:instance_id] do
-  zone node[:route53][:zone]
-  aws_access_key_id aws["aws_access_key_id"]
+new_hostname    =  node.name
+new_fqdn        = [new_hostname, node[:organization], node[:route53][:zone]].compact.join(".")
+
+# point "datanode-3.gordo.awesomeco.myzone.com" => the ec2.public_hostname
+route53_rr(new_hostname) do
+  zone          node[:route53][:zone]
+
+  fqdn          new_fqdn
+  type          "CNAME"
+  values        ["#{node[:ec2][:public_hostname]}."]
+
+  action        :create
+  aws_access_key_id     aws["aws_access_key_id"]
   aws_secret_access_key aws["aws_secret_access_key"]
-
-  fqdn "#{node[:ec2][:instance_id]}.#{node[:route53][:zone]}"
-  type "CNAME"
-  values(["#{node[:ec2][:public_hostname]}."])
-
-  action :create
 end
 
-t = node["route53"]["ec2"]["type"]
-e = node["route53"]["ec2"]["env"]
-new_hostname = "#{t}-#{e}-#{node["ec2"]["instance_id"]}"
-new_fqdn = "#{new_hostname}.#{node[:route53][:zone]}"
+# node.automatic_attrs["hostname"] = new_hostname
+# node.automatic_attrs["fqdn"]     = new_fqdn
+#
+# ruby_block "edit etc hosts" do
+#   block do
+#     rc = Chef::Util::FileEdit.new("/etc/hosts")
+#     rc.search_file_replace_line(
+#       /^127\.0\.0\.1(.*)localhost.localdomain localhost$/,
+#        "127.0.0.1 #{new_hostname} #{new_fqdn} \\1 localhost")
+#     rc.write_file
+#   end
+# end
+#
+# execute("hostname --file /etc/hostname"){ action(:nothing) }
+# file "/etc/hostname" do
+#   content       new_fqdn
+#   notifies      :run, resources(:execute => "hostname --file /etc/hostname"), :immediately
+# end
 
-route53_rr new_hostname do
-  zone node[:route53][:zone]
-  aws_access_key_id aws["aws_access_key_id"]
-  aws_secret_access_key aws["aws_secret_access_key"]
-
-  fqdn new_fqdn
-  type "CNAME"
-  values(["#{node[:ec2][:public_hostname]}."])
-  action :update
-end
-
-ruby_block "edit etc hosts" do
-  block do
-    rc = Chef::Util::FileEdit.new("/etc/hosts")
-    rc.search_file_replace_line(/^127\.0\.0\.1(.*)localhost.localdomain localhost$/, "127.0.0.1 #{new_fqdn} #{new_hostname} localhost")
-    rc.write_file
-  end
-end
-
-execute "hostname --file /etc/hostname" do
-  action :nothing
-end
-
-file "/etc/hostname" do
-  content "#{new_hostname}"
-  notifies :run, resources(:execute => "hostname --file /etc/hostname"), :immediately
-end
-
-service "network" do
-  supports :status => true, :restart => true, :reload => true
-  action :nothing
-end
-
-node.automatic_attrs["hostname"] = new_hostname
-node.automatic_attrs["fqdn"] = new_fqdn
-
-template "/etc/dhcp/dhclient.conf" do
-  source "dhclient.conf.erb"
-  owner "root"
-  group "root"
-  mode 0644
-  notifies :restart, resources(:service => "network"), :immediately
-end
-
+# service "network" do
+#   supports      :status => true, :restart => true, :reload => true
+#   action        :nothing
+# end
+#
+# template "/etc/dhcp/dhclient.conf" do
+#   source        "dhclient.conf.erb"
+#   owner         "root"
+#   group         "root"
+#   mode          0644
+#   notifies      :restart, resources(:service => "network"), :immediately
+# end

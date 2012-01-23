@@ -16,26 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-r = package "libxml2-devel"  do
-  action :nothing
-end
-r.run_action(:install)
 
-r = package "libxslt-devel" do
-  action :nothing
-end
-r.run_action(:install)
+# Force immediate install of these packages
 
-r = gem_package "fog" do
-  action :nothing
-end
-r.run_action(:install)
+package("libxml2-dev"      ){ action :nothing }.run_action(:install)
+package("libxslt-dev"      ){ action :nothing }.run_action(:install)
+gem_package("fog"          ){ action :nothing }.run_action(:install)
+gem_package("net-ssh-multi"){ action :nothing }.run_action(:install)
 
-r = gem_package "net-ssh-multi" do
-  action :nothing
-end
-r.run_action(:install)
+# Source the fog gem, forcing Gem to recognize new version if any
 
-require 'rubygems'
+require 'rubygems' unless defined?(Gem)
 Gem.clear_paths
 require 'fog'

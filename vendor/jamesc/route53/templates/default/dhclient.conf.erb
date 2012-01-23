@@ -1,5 +1,4 @@
 interface "eth0" {
-        supersede host-name "<%= @node[:hostname] %>";
+        supersede host-name   "<%= @node[:hostname] %>";
         supersede domain-name "<%= @node[:route53][:zone] %> ec2.internal";
-
 }

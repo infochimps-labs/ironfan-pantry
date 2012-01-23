@@ -18,14 +18,16 @@
 # limitations under the License.
 #
 
-actions :create, :update #, :delete, :replace
+actions   :create, :update
 
-attribute :fqdn, :kind_of => String
-attribute :type, :kind_of => String
-attribute :values, :kind_of => Array
-attribute :ttl, :kind_of => String
+attribute :zone,                  :kind_of => String  # base domain name to work with: 'foo.com'
+attribute :fqdn,                  :kind_of => String  # new domain name to list: 'my.spoon.foo.com'
 
-attribute :aws_access_key_id, :kind_of => String
-attribute :aws_secret_access_key, :kind_of => String
+attribute :values,                :kind_of => Array   # point to (ip, domain, etc)
+attribute :type,                  :kind_of => String  # type (CNAME, A, etc)
 
-attribute :zone, :kind_of => String
+attribute :ttl,                   :kind_of => String  # time-to-live of records. dial it back when testing
+
+attribute :aws_access_key_id,     :kind_of => String  # AWS credentials
+attribute :aws_secret_access_key, :kind_of => String  # AWS credentials
+

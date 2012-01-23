@@ -20,38 +20,28 @@ include Opscode::Route53::Route53
 
 action :create do
   # Bail if the zone doesn't exist
-  zone_id = find_zone_id(new_resource.zone)
-  if zone_id.nil?
-    raise "Route53 Zone #{new_resource.zone} does not exist"
-  end
+  zone_id = find_zone_id(new_resource.zone) or raise "Route53 Zone #{new_resource.zone} does not exist"
 
   rr = resource_record(zone_id, new_resource.fqdn, new_resource.type)
   if rr.nil?
-    Chef::Log.debug("Route53 Record #{new_resource.fqdn} does not exist, creating.")
-    create_resource_record(zone_id, new_resource.fqdn,
-        new_resource.type, new_resource.ttl, new_resource.values)
+    Chef::Log.info("Route53 Record #{new_resource.fqdn} does not exist, creating. (#{[zone_id, new_resource.fqdn, new_resource.type].inspect})")
+    create_resource_record(zone_id, new_resource.fqdn, new_resource.type, new_resource.ttl, new_resource.values)
   else
-    Chef::Log.debug("Already have #{new_resource.type} Record for #{new_resource.fqdn}, skipping.")
+    Chef::Log.info("Already have #{new_resource.type} Record for #{new_resource.fqdn}, skipping. (#{[zone_id, new_resource.fqdn, new_resource.type].inspect})")
   end
 end
 
 action :update do
   # Bail if the zone doesn't exist
-  zone_id = find_zone_id(new_resource.zone)
-  if zone_id.nil?
-    raise "Route53 Zone #{new_resource.zone} does not exist"
-  end
+  zone_id = find_zone_id(new_resource.zone) or raise "Route53 Zone #{new_resource.zone} does not exist"
 
   rr = resource_record(zone_id, new_resource.fqdn, new_resource.type)
   if rr.nil?
-    Chef::Log.debug("Route53 Record #{new_resource.fqdn} does not exist, creating.")
-    create_resource_record(zone_id, new_resource.fqdn,
-        new_resource.type, new_resource.ttl, new_resource.values)
+    Chef::Log.info("Route53 Record #{new_resource.fqdn} does not exist, creating.")
+    create_resource_record(zone_id, new_resource.fqdn, new_resource.type, new_resource.ttl, new_resource.values)
   else
-    Chef::Log.debug("Already have #{new_resource.type} Record for #{new_resource.fqdn}, updating.")
-    update_resource_record(zone_id, new_resource.fqdn,
-        new_resource.type, new_resource.ttl, new_resource.values, rr)
-
+    Chef::Log.info("Already have #{new_resource.type} Record for #{new_resource.fqdn}, updating.")
+    update_resource_record(zone_id, new_resource.fqdn, new_resource.type, new_resource.ttl, new_resource.values, rr)
   end
 
 end

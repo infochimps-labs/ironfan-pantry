@@ -34,6 +34,9 @@ ClusterChef.cluster 'sandbox' do
 
   facet :mrflip do
     instances           1
+    role                :hadoop_s3_keys
+    recipe 'route53::default'
+    recipe 'route53::ec2'
   end
 
   facet :raid_demo do
