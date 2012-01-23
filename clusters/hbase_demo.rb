@@ -131,11 +131,12 @@ ClusterChef.cluster 'hbase_demo' do
     defaults
     size                200
     keep                true
-    device              '/dev/sdj' # note: will appear as /dev/xvdi on natty
+    device              '/dev/sdj' # note: will appear as /dev/xvdj on natty
     mount_point         '/data/ebs1'
     attachable          :ebs
+    resizable           true
     snapshot_name       :blank_xfs
-    tags( :hadoop_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
+    tags( :hadoop_data => true, :zookeeper_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
     create_at_launch    true # if no volume is tagged for that node, it will be created
   end
 

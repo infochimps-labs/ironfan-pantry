@@ -24,11 +24,7 @@ ClusterChef.cluster 'zookeeper_demo' do
   role                  :ssh
   role                  :nfs_client
 
-  # role                  :volumes
-  recipe 'xfs'
-  recipe 'volumes::format'
-  recipe 'volumes::mount'
-  recipe 'volumes::resize'
+  role                  :volumes
   role                  :package_set, :last
   role                  :dashboard,   :last
 
@@ -71,11 +67,10 @@ ClusterChef.cluster 'zookeeper_demo' do
     defaults
     size                10
     keep                true
-    device              '/dev/sdk' # note: will appear as /dev/xvdi on natty
+    device              '/dev/sdk' # note: will appear as /dev/xvdk on natty
     mount_point         '/data/ebs1'
     attachable          :ebs
     resizable           true
-    formattable         true
     snapshot_name       :blank_xfs   # 1 GB xfs -- will growfs on launch
     tags( :zookeeper_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
     create_at_launch    true # if no volume is tagged for that node, it will be created

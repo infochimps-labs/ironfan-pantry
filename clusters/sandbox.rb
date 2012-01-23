@@ -34,8 +34,6 @@ ClusterChef.cluster 'sandbox' do
 
   facet :mrflip do
     instances           1
-    role                :web_server
-    role                :redis_server
   end
 
   facet :raid_demo do
