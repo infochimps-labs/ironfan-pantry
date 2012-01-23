@@ -1,6 +1,6 @@
-class Chef
-  class Recipe
-
+module Chef
+  module Zabbix
+    
     def connect_to_zabbix_api!
       begin
         require 'rubix'
@@ -13,11 +13,11 @@ class Chef
       master = all_zabbix_server_ips.first
       Rubix.connect(File.join(master, node.zabbix.api.path), node[:zabbix][:api][:username], node[:zabbix][:api][:password])
     end
-
+    
     def all_zabbix_server_ips
       discover_all(:zabbix, :master).map(&:private_ip) + node.zabbix.agent.servers
     end
-
+    
     def all_nodes_clusters_and_facets
       # Do we want to do 'all nodes that are zabbix agents' or plain
       # just 'all nodes'?
@@ -38,5 +38,34 @@ class Chef
         :cluster_facet_names => all_cluster_facet_names
       }
     end
+
+    def zabbix_database_hostname
+      case
+      when node.zabbix.database.install_method == 'mysql'
+        node.zabbix.database.host
+      when node.zabbix.database.install_method == 'rds'
+        zabbix_rds_instance_hostname
+      end
+    end
+
+    def zabbix_rds_instance_name
+      [discovery_realm(:zabbix, :database), 'zabbix'].join('-')
+    end
+
+    def zabbix_rds_instance_hostname
+      begin
+        rds_instance = rds.describe_db_instances(zabbix_rds_database_instance_name)
+      rescue RightAws::AwsError => e
+        if e.message =~ /not found/i
+          Chef::Log.info("Waiting for RDS instance '#{zabbix_rds_instance_name}' to be assigned a hostname...")
+          sleep 5.0
+          zabbix_rds_instance_hostname
+        else
+          raise e
+        end
+      end
+    end
+    rds_instance.first[:endpoint_address] rescue nil
   end
+  
 end

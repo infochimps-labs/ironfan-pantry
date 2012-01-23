@@ -1,6 +1,6 @@
 # Author:: Nacer Laradji (<nacer.laradji@gmail.com>)
 # Cookbook Name:: zabbix
-# Recipe:: mysql_setup
+# Recipe:: database_mysql
 #
 # Copyright 2011, Efactures
 #
@@ -10,6 +10,9 @@
 include_recipe "mysql::client"
 
 # Establish root MySQL connection
+
+zabbix_database_hostname = zabbix_database_hostname
+
 root_mysql_conn = {:host => node.zabbix.database.host, :username => node.zabbix.database.root_user, :password => node.zabbix.database.root_password}
 
 begin

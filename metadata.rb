@@ -123,6 +123,11 @@ attribute "zabbix/database/name",
   :description           => "Name of the Zabbix database.",
   :default               => "zabbix"
 
+attribute "zabbix/database/install_method",
+  :display_name          => "",
+  :description           => "Method of installing the database: 'mysql' or 'rds'.",
+  :default               => "mysql"
+
 attribute "zabbix/server/install_method",
   :display_name          => "",
   :description           => "How to install the zabbix server: source.",

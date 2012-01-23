@@ -31,6 +31,7 @@ default[:zabbix][:database][:root_password]   = nil
 default[:zabbix][:database][:user]            = "zabbix"
 default[:zabbix][:database][:password]        = nil
 default[:zabbix][:database][:name]            = "zabbix"
+default[:zabbix][:database][:install_method]  = 'mysql'
 
 # Web frontend
 default[:zabbix][:web][:install]   = false
