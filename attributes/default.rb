@@ -16,6 +16,10 @@ default[:flume][:conf_dir]              = '/etc/flume/conf'
 default[:flume][:log_dir]               = "/var/log/flume"
 default[:flume][:pid_dir]               = "/var/run/flume"
 
+# these are set by the recipes
+node[:flume][:exported_jars ] = []
+node[:flume][:exported_confs] = []
+
 #
 # Services
 #

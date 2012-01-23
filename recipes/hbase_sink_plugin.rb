@@ -37,4 +37,8 @@ node[:flume][:plugins][:hbase_sink][:classpath]  =  [ "/usr/lib/flume/plugins/hb
 
 node[:flume][:plugins][:hbase_sink][:java_opts] =  []
 
+node[:flume][:exported_jars] += [
+  "#{node[:flume][:home_dir]}/plugins/hbase-sink.jar",
+]
+
 node_changed!
