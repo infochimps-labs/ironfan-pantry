@@ -1,16 +1,12 @@
-#!/usr/bin/ruby
+#!/usr/bin/env ruby
 
-tables_to_backup = %w[ 
-<%=
- @backup_tables.join(" ")
-%>
-]
+tables_to_backup = <%= @hbase[:weekly_backup_tables].to_a.inspect %>
 
-date=`date -u +%Y%m%d`.chomp
+date             = Time.now.strftime("+%Y%m%d")
 
-export_dir = "#{@backup_location}/#{date}"
-hadoop_classpath="HADOOP_CLASSPATH=/usr/lib/hbase/hbase.jar:/usr/lib/zookeeper/zookeeper.jar:/usr/lib/hbase/lib/guava-r05.jar:/usr/lib/hbase/conf"
+export_dir       = "<%= @hbase[:backup_location] %>/#{date}"
+hadoop_classpath = "HADOOP_CLASSPATH=/usr/lib/hbase/hbase.jar:/usr/lib/zookeeper/zookeeper.jar:/usr/lib/hbase/lib/guava-r05.jar:/usr/lib/hbase/conf"
 
 tables_to_backup.each do |table|
-  system("sudo -u hbase #{hadoop_classpath} hadoop jar /usr/lib/hbase/hbase.jar export #{table} #{export_dir}/#{table} &")
+  system("sudo -u hbase #{hadoop_classpath} hadoop jar <%= @hbase[:home_dir] %>/hbase.jar export #{table} #{export_dir}/#{table} &")
 end

@@ -28,7 +28,7 @@ ClusterChef.cluster 'zookeeper_demo' do
   recipe 'xfs'
   recipe 'volumes::format'
   recipe 'volumes::mount'
-  recipe 'volumes::rightsize'
+  recipe 'volumes::resize'
   role                  :package_set, :last
   role                  :dashboard,   :last
 
@@ -80,5 +80,5 @@ ClusterChef.cluster 'zookeeper_demo' do
     tags( :zookeeper_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
     create_at_launch    true # if no volume is tagged for that node, it will be created
   end
-  
+
 end

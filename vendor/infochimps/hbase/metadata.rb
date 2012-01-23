@@ -84,7 +84,7 @@ attribute "hbase/master/java_heap_size_max",
   :description           => "",
   :default               => "1000m"
 
-attribute "hbase/master/gc_new_size",
+attribute "hbase/master/java_heap_size_new",
   :display_name          => "",
   :description           => "",
   :default               => "256m"
@@ -110,7 +110,7 @@ attribute "hbase/regionserver/java_heap_size_max",
   :description           => "",
   :default               => "2000m"
 
-attribute "hbase/regionserver/gc_new_size",
+attribute "hbase/regionserver/java_heap_size_new",
   :display_name          => "",
   :description           => "",
   :default               => "256m"

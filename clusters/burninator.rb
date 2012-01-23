@@ -49,6 +49,7 @@ ClusterChef.cluster 'burninator' do
     recipe              'java::sun'
     recipe              'jpackage'
     recipe              'jruby'
+    recipe              'jruby::gems'
     recipe              'nodejs'
     recipe              'ntp'
     recipe              'openssl'

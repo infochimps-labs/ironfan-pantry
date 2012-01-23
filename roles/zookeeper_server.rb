@@ -3,4 +3,5 @@ description 'runs a zookeeper and hbase-master in fully-distributed mode. There 
 
 run_list %w[
   zookeeper::server
+  zookeeper::config
 ]

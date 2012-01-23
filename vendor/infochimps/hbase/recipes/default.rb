@@ -32,78 +32,20 @@ include_recipe "hadoop_cluster::add_cloudera_repo"
 # Users
 #
 
-group 'hbase' do
-  group_name    'hbase'
-  gid           node[:groups]['hbase'][:gid]
-  action        [:create, :manage]
-end
-
-group 'hbase' do gid 304 ; action [:create] ; end
-user 'hbase' do
-  comment       'Hadoop HBase Daemon'
-  uid           304
-  group         'hbase'
-  home          node[:hbase][:pid_dir]
-  shell         "/bin/false"
-  password      nil
-  supports      :manage_home => false
-  action        [:create, :manage]
-end
+daemon_user(:hbase)
 
 # Install
 package "hadoop-hbase"
-package "hadoop-hbase-thrift"
 
-[:tmp_dir, :log_dir, :pid_dir].each do |dir|
-  directory node[:hbase][dir] do
-    owner    'hbase'
-    group    "hbase"
-    mode     '0755'
-    action   :create
-    recursive true
-  end
+standard_dirs('hbase') do
+  directories   :conf_dir, :pid_dir, :tmp_dir, :log_dir
 end
 
-#
-# Configuration files
-#
-hbase_config = {
-  :namenode_fqdn   => (discover(:hadoop, :namenode)   && discover(:hadoop, :namenode  ).private_hostname),
-  :jobtracker_addr => (discover(:hadoop, :jobtracker) && discover(:hadoop, :jobtracker).private_ip),
-  :zookeeper_addrs => discover_all(:zookeeper, :server).map(&:private_ip).sort,
-  :ganglia         => discover(:ganglia, :server),
-  :ganglia_addr    => (discover(:ganglia, :server) && discover(:ganglia, :server).private_hostname),
-  :private_ip      => private_ip_of(node),
-  :jmx_hostname    => public_ip_of(node),
-  :ganglia_port    => 8649,
-  :period          => 10
-}
-
-%w[ hbase-env.sh hbase-site.xml hadoop-metrics.properties ].each do |conf_file|
-  template "#{node[:hbase][:conf_dir]}/#{conf_file}" do
-    owner       "root"
-    mode        "0644"
-    source      "#{conf_file}.erb"
-    variables(hbase_config)
-  end
-end
-
-template "#{node[:hbase][:home_dir]}/bin/hbase" do
-  owner         "root"
-  mode          "0755"
-  source        "bin-hbase.erb"
-  variables(hbase_config)
-end
-
-
-if node[:hadoop] && node[:hadoop][:conf_dir]
-  link "#{node[:hadoop][:conf_dir]}/hbase-site.xml" do
-    to "#{node[:hbase][:conf_dir]}/hbase-site.xml"
-    only_if{ File.directory?(node[:hadoop][:conf_dir]) }
-  end
+node[:hbase][:services].each do |svc|
+  directory("#{node[:hbase][:log_dir]}/#{svc}"){ action(:create) ; owner 'hbase' ; group 'hbase'; mode "0755" }
 end
 
 # Stuff the HBase jars into the classpath
 node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/conf'
-node[:hbase][:exported_confs]  = [ "#{node[:hbase][:conf_dir]}/hbase-default.xml", "#{node[:hbase][:conf_dir]}/hbase-site.xml",]
 node[:hbase][:exported_jars]   = [ "#{node[:hbase][:home_dir]}/hbase-0.90.1-cdh3u0.jar", "#{node[:hbase][:home_dir]}/hbase-0.90.1-cdh3u0-tests.jar", ]
+node[:hbase][:exported_confs]  = [ "#{node[:hbase][:conf_dir]}/hbase-default.xml", "#{node[:hbase][:conf_dir]}/hbase-site.xml",]

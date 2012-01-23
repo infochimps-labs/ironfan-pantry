@@ -14,7 +14,7 @@
 ClusterChef::ComputeBuilder.class_eval do
   HADOOP_COMPONENTS = Mash.new({
     :nn => :hadoop_namenode, :jt => :hadoop_jobtracker, :nn2 => :hadoop_secondarynn, :tt => :hadoop_tasktracker, :dn => :hadoop_datanode,
-    :hm => :hbase_master, :hm2 => :hbase_master, :rs => :hbase_regionserver, :hbsg => :hbase_stargate, :hbth => :hbase_thrift,
+    :hm => :hbase_master,    :hm2 => :hbase_master,     :rs => :hbase_regionserver,  :hbsg => :hbase_stargate,   :hbth => :hbase_thrift,
     :zk => :zookeeper_server,
     }) unless defined?(HADOOP_COMPONENTS)
 
@@ -48,7 +48,7 @@ ClusterChef.cluster 'hbase_demo' do
     backing             'ebs'
     image_name          'cluster_chef-natty'
     bootstrap_distro    'ubuntu10.04-cluster_chef'
-    mount_ephemerals(:tags => { :hadoop_scratch => true, })
+    mount_ephemerals(:tags => { :hadoop_scratch => true })
   end
 
   # uncomment if you want to set your environment.
@@ -60,6 +60,7 @@ ClusterChef.cluster 'hbase_demo' do
   role                  :nfs_client
 
   role                  :volumes
+  recipe                'volumes::resize'
   role                  :package_set, :last
   role                  :dashboard,   :last
 
@@ -73,29 +74,31 @@ ClusterChef.cluster 'hbase_demo' do
   role                  :jruby
   role                  :pig
   recipe                'hadoop_cluster::cluster_conf', :last
+  recipe                'hbase::config',                :last
 
   [:nn, :jt, :nn2, :tt, :dn, :hm, :hm2, :rs, :hbth, :hbsg, :zk ]
 
-  hbase_facet('master', :nn,  :hm,  :zk ) do
+  hbase_facet('alpha', :nn,  :hm ) do
     instances 1
-    # # The datanode and regionserver are only present for ease of bootstrapping
-    # # the machine
-    # role :hadoop_datanode
-    # role :hbase_regionserver
-    # facet_role.override_attributes({
-    #     :hadoop => { :datanode     => { :run_state => :stop,  }, },
-    #     :hbase  => { :regionserver => { :run_state => :stop,  }, }, })
   end
-  hbase_facet('beta',   :nn2, :hm2, :jt, :dn  ){ instances 1 }
-  hbase_facet('worker', :rs,  :tt,       :dn  ){ instances 3; role :hbase_stargate }
+  hbase_facet('beta',   :nn2, :hm2, :jt  ){ instances 1 }
+  hbase_facet('worker', :rs,  :dn,  :tt  ){ instances 4; role :hbase_stargate }
+
+  # This line, and the 'discovers' setting in the cluster_role,
+  # enable the hbase to use an external zookeeper cluster
+  self.cloud.security_group(self.name).authorized_by_group("zookeeper_demo")
 
   cluster_role.override_attributes({
+      # Look for the zookeeper nodes in the dedicated zookeeper cluster
+      :discovers => {
+        :zookeeper =>   { :server    => :zookeeper_demo } },
+      #
       :hadoop => {
         :namenode    => { :run_state => :start,  },
         :secondarynn => { :run_state => :start,  },
-        :jobtracker  => { :run_state => :start,  },
         :datanode    => { :run_state => :start,  },
-        :tasktracker => { :run_state => :start,  },
+        :jobtracker  => { :run_state => :stop,   },
+        :tasktracker => { :run_state => :stop,   },
         # # adjust these
         # :java_heap_size_max  => 1400,
         # :namenode            => { :java_heap_size_max => 1000, },
@@ -110,27 +113,30 @@ ClusterChef.cluster 'hbase_demo' do
       },
       :hbase          => {
         :master       => { :run_state => :start  },
-        :regionserver => { :run_state => :start  },
+        :regionserver => { :run_state => :start },
         :stargate     => { :run_state => :start  }, },
       :zookeeper      => {
-        :server       => { :run_state => :start  }, },
+        :server       => { :run_state => :stop  }, },
     })
 
-  # #
-  # # Attach 600GB persistent storage to each node, and use it for all hadoop data_dirs.
-  # #
-  # # Modify the snapshot ID and attached volume size to suit
-  # #
-  # volume(:ebs1) do
-  #   defaults
-  #   size                200
-  #   keep                true
-  #   device              '/dev/sdj' # note: will appear as /dev/xvdi on natty
-  #   mount_point         '/data/ebs1'
-  #   attachable          :ebs
-  #   snapshot_id         'REPLACE_THIS_PLEASE'
-  #   tags( :hadoop_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
-  #   create_at_launch    true # if no volume is tagged for that node, it will be created
-  # end
+  #
+  # Attach persistent storage to each node, and use it for all hadoop data_dirs.
+  #
+  # Modify the snapshot ID and attached volume size to suit.
+  # If you use the blank_xfs generic snapshot, make sure to include above
+  #     recipe 'volumes::resize'
+  #
+  #
+  volume(:ebs1) do
+    defaults
+    size                200
+    keep                true
+    device              '/dev/sdj' # note: will appear as /dev/xvdi on natty
+    mount_point         '/data/ebs1'
+    attachable          :ebs
+    snapshot_name       :blank_xfs
+    tags( :hadoop_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
+    create_at_launch    true # if no volume is tagged for that node, it will be created
+  end
 
 end

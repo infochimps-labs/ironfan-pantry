@@ -18,13 +18,13 @@ Installs/Configures HBase
 * `[:hbase][:pid_dir]`                -  (default: "/var/run/hbase")
 * `[:hbase][:exported_confs]`         - 
 * `[:hbase][:exported_jars]`            - 
-* `[:hbase][:master][:java_heap_size_max]` -  (default: "1000m")
-* `[:hbase][:master][:gc_new_size]`   -  (default: "256m")
+* `[:hbase][:master][:new_java_heap_size_max]` -  (default: "1000m")
+* `[:hbase][:master][:java_heap_size_new]`   -  (default: "256m")
 * `[:hbase][:master][:gc_tuning_opts]` -  (default: "-XX:+UseConcMarkSweepGC -XX:+AggressiveOpts")
 * `[:hbase][:master][:gc_log_opts]`   -  (default: "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/var/log/hbase/hbase-master-gc.log")
 * `[:hbase][:master][:run_state]`     -  (default: "start")
 * `[:hbase][:regionserver][:java_heap_size_max]` -  (default: "2000m")
-* `[:hbase][:regionserver][:gc_new_size]` -  (default: "256m")
+* `[:hbase][:regionserver][:java_heap_size_new]` -  (default: "256m")
 * `[:hbase][:regionserver][:gc_tuning_opts]` -  (default: "-XX:+UseConcMarkSweepGC -XX:+AggressiveOpts -XX:CMSInitiatingOccupancyFraction=88")
 * `[:hbase][:regionserver][:gc_log_opts]` -  (default: "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/var/log/hbase/hbase-regionserver-gc.log")
 * `[:hbase][:regionserver][:run_state]` -  (default: "start")

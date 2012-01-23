@@ -1,0 +1,13 @@
+# Written by chef (hbase/recipes/config)
+
+#
+# Environment Variables
+#
+
+export HBASE_HOME=<%=     @hbase[:home_dir] %>
+export HBASE_CONF_DIR=<%= @hbase[:conf_dir] %>
+export HBASE_LOG_DIR=<%=  @hbase[:log_dir] %>
+export HBASE_PID_DIR=<%=  @hbase[:pid_dir] %>
+
+export HBASE_IDENT_STRING=hbase
+export HBASE_NODENAME="<%= node.name.gsub(/[^\w\-]+/, '') %>"

@@ -25,10 +25,12 @@ include_recipe "runit"
 # Install
 package "hadoop-hbase-master"
 
-# launch service
-service "hadoop-hbase-master" do
-  action        node[:hbase][:master][:run_state]
-  supports      :status => true, :restart => true
+# Set up service
+runit_service "hbase_master" do
+  run_state     node[:hbase][:master][:run_state]
+  options       Mash.new(:service_name => 'master').merge(node[:hbase]).merge(node[:hbase][:master])
 end
+
+kill_old_service("hadoop-hbase-master"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-master") } }
 
 announce(:hbase, :master)

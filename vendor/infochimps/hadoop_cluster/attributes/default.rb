@@ -54,11 +54,11 @@ default[:hadoop][:tasktracker][:scratch_dirs]    = []
 default[:hadoop][:home_dir] = "/usr/lib/hadoop"
 default[:hadoop][:conf_dir] = "/etc/hadoop/conf"
 default[:hadoop][:pid_dir]  = "/var/run/hadoop"
-default[:hadoop][:log_dir]  = nil
-default[:hadoop][:tmp_dir]  = nil
+default[:hadoop][:log_dir]  = nil          # set in recipe using volume_dirs
+default[:hadoop][:tmp_dir]  = nil          # set in recipe using volume_dirs
 
-default[:hadoop][:exported_confs] ||= nil # set in recipe
-default[:hadoop][:exported_jars]  ||= nil # set in recipe
+default[:hadoop][:exported_confs] ||= nil  # set in recipe
+default[:hadoop][:exported_jars]  ||= nil  # set in recipe
 
 default[:hadoop][:namenode   ][:port]              =  8020
 default[:hadoop][:jobtracker ][:port]              =  8021
@@ -94,7 +94,7 @@ default[:groups]['hdfs'       ][:gid]   = 302
 default[:users ]['mapred'     ][:uid]   = 303
 default[:groups]['mapred'     ][:gid]   = 303
 
-default[:hadoop][:user]  = 'hdfs'
+default[:hadoop][:user]                 = 'hdfs'
 default[:hadoop][:namenode    ][:user]  = 'hdfs'
 default[:hadoop][:secondarynn ][:user]  = 'hdfs'
 default[:hadoop][:jobtracker  ][:user]  = 'mapred'
@@ -107,9 +107,9 @@ default[:hadoop][:tasktracker ][:user]  = 'mapred'
 
 default[:hadoop][:handle]               = 'hadoop-0.20'
 default[:hadoop][:deb_version]          = '0.20.2+923.142-1~maverick-cdh3'
-# set to nil to pull name from actual machine's distro -- 
+# set to nil to pull name from actual machine's distro --
 # note however that cloudera is very conservative to update its distro support
-default[:apt][:cloudera][:force_distro] = 'maverick' 
+default[:apt][:cloudera][:force_distro] = 'maverick'
 default[:apt][:cloudera][:release_name] = 'cdh3u2'
 
 #
@@ -117,7 +117,6 @@ default[:apt][:cloudera][:release_name] = 'cdh3u2'
 #
 
 default[:tuning][:ulimit]['hdfs']   = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
-default[:tuning][:ulimit]['hbase']  = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
 default[:tuning][:ulimit]['mapred'] = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
 
 #

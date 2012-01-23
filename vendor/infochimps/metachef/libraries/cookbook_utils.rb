@@ -14,6 +14,20 @@ module ClusterChef
       run_state_includes?(hsh, :start)
     end
 
+    # among the given components services, the ones this machine actually provides
+    def announced_services(component_name, service_names)
+      service_names.
+        select{|svc| node[:announces]["#{node[:cluster_name]}-#{component_name}-#{svc}"] }
+    end
+
+    def notify_startable_services(component_name, service_names)
+      announced_services(component_name, service_names).each do |svc|
+        if startable?(node[component_name][svc])
+          notifies :restart, "service[#{component_name}_#{svc}]", :delayed
+        end
+      end
+    end
+
     #
     # Assert node state
     #
