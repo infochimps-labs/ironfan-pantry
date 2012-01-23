@@ -41,8 +41,8 @@ template_variables = {
 end
 
 template "/var/zookeeper/myid" do
- owner "zookeeper"
- mode "0644"
- variables(template_variables)
- source "myid.erb"
+  owner         "zookeeper"
+  mode          "0644"
+  variables     template_variables
+  source        "myid.erb"
 end
