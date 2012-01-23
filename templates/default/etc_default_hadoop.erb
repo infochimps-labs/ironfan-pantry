@@ -14,3 +14,5 @@ export HADOOP_HOME=<%=     @hadoop[:home_dir] %>
 export HADOOP_CONF_DIR=<%= @hadoop[:conf_dir] %>
 export HADOOP_LOG_DIR=<%=  @hadoop[:log_dir] %>
 export HADOOP_PID_DIR=<%=  @hadoop[:pid_dir] %>
+
+export HADOOP_NODENAME="<%= node.name.gsub(/[^\w\-]+/, '') %>"

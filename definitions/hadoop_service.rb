@@ -1,6 +1,6 @@
 
 define(:hadoop_service, :service_name => nil, :package_name => nil) do
-  name = params[:name].to_s
+  name         = params[:name].to_s
   service_name = params[:service_name] || name
   package_name = params[:package_name] || name
 
