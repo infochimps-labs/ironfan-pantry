@@ -97,8 +97,8 @@ ClusterChef.cluster 'hbase_demo' do
         :namenode    => { :run_state => :start,  },
         :secondarynn => { :run_state => :start,  },
         :datanode    => { :run_state => :start,  },
-        :jobtracker  => { :run_state => :stop,   },
-        :tasktracker => { :run_state => :stop,   },
+        :jobtracker  => { :run_state => :start,   },
+        :tasktracker => { :run_state => :start,   },
         # # adjust these
         # :java_heap_size_max  => 1400,
         # :namenode            => { :java_heap_size_max => 1000, },

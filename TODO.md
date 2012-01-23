@@ -5,6 +5,9 @@
 * vagrants
 * launch machine with blank snapshot
 
+* flume, others should use a components_with helper for adding confs
+
+* mount home drive immediately
 
 * volumes don't deep merge -- eg you have to mount_ephemerals in the facet if you modify htem
 

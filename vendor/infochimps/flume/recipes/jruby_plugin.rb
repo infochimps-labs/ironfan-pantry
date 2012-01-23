@@ -43,4 +43,8 @@ node[:flume][:plugins][:jruby_flume][:java_opts]  = [ "-Djruby.home=/usr/lib/jru
                                                       "-Djruby.lib=/usr/lib/jruby/lib",
                                                       "-Djruby.script=jruby", ]
 
-node.save
+node[:flume][:exported_jars] += [
+  "#{node[:flume][:home_dir]}/plugins/jruby-flume.jar",
+]
+
+node_changed!
