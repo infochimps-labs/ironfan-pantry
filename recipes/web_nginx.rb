@@ -24,6 +24,11 @@ nginx_site 'zabbix.conf' do
   action :enable
 end
 
+nginx_site 'default' do
+  action :disable
+end
+
+
 runit_service "zabbix_web"
 
 announce(:zabbix, :web,

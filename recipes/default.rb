@@ -25,8 +25,6 @@ zabbix_dirs = [
   "/etc/zabbix/externalscripts",
   "/opt/zabbix/AlertScriptsPath"
 ]
-zabbix_dirs << node.zabbix.agent.log_dir  if node.zabbix.agent.install
-zabbix_dirs << node.zabbix.server.log_dir if node.zabbix.server.install
 
 # Create zabbix folder
 zabbix_dirs.each do |dir|
@@ -35,18 +33,4 @@ zabbix_dirs.each do |dir|
     group "zabbix"
     mode "755"
   end
-end
-
-if node[:zabbix][:agent][:install] == true
-  include_recipe "zabbix::agent_#{node.zabbix.agent.install_method}"
-
-  announce(:zabbix, :agent,
-           :logs  => { :agent => node.zabbix.agent.log_dir },
-           :ports => { :agent => {
-               :port   => 10051,
-               :ignore => true
-             }
-           },
-           :daemons => { :agent => 'zabbix_agentd' }
-           )
 end

@@ -7,6 +7,7 @@
 # Apache 2.0
 #
 
+server_ips = all_zabbix_server_ips()
 # Install configuration
 template "/etc/zabbix/zabbix_agentd.conf" do
   source "zabbix_agentd.conf.erb"
@@ -14,7 +15,7 @@ template "/etc/zabbix/zabbix_agentd.conf" do
   group "root"
   mode "644"
   notifies :restart, "service[zabbix_agentd]"
-  variables :server_ips => all_zabbix_server_ips
+  variables :server_ips => server_ips
 end
 
 # Install Init script

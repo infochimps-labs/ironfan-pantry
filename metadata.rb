@@ -15,11 +15,13 @@ depends "mysql",    ">= 1.2.0"
 depends "ufw",      ">= 0.6.1"
 depends "metachef"
 
-recipe "zabbix::default",            "Sets up Zabbix directory structure, basic configuration, and agent."
+recipe "zabbix::default",            "Sets up Zabbix directory structure & user."
 recipe "zabbix::agent_prebuild",     "Downloads, configures, & launches pre-built Zabbix agent"
 recipe "zabbix::agent_source",       "Downloads, builds, configures, & launches Zabbix agent from source."
+recipe "zabbix::agent",              "Installs and launches Zabbix agent."
 recipe "zabbix::firewall",           "Configures firewall access between Zabbix server & agents."
-recipe "zabbix::mysql_setup",        "Configures Zabbix MySQL database."
+recipe "zabbix::database_mysql",     "Configures Zabbix MySQL database."
+recipe "zabbix::database",           "Configures Zabbix database."
 recipe "zabbix::server",             "Installs and launches Zabbix server."
 recipe "zabbix::server_source",      "Downloads, builds, configures, & launches Zabbix server from source."
 recipe "zabbix::server_sends_texts", "Configures Zabbix server to be able to send texts using Twilio."
@@ -33,10 +35,9 @@ attribute "zabbix/home_dir",
   :description           => "The base installation directory for Zabbix.",
   :default               => "/opt/zabbix"
 
-attribute "zabbix/agent/servers",
-  :display_name          => "",
-  :description           => "",
-  :default               => ""
+#
+# Agent
+#
 
 attribute "zabbix/agent/servers",
   :display_name          => "",
@@ -50,13 +51,8 @@ attribute "zabbix/agent/configure_options",
 
 attribute "zabbix/agent/branch",
   :display_name          => "",
-  :description           => "Name of the Zabbix branch to use."
+  :description           => "Name of the Zabbix branch to use.",
   :default               => "ZABBIX%20Latest%20Stable"
-
-attribute "zabbix/agent/install",
-  :display_name          => "",
-  :description           => "Whether or not to install the Zabbix agent.",
-  :default               => "true"
 
 attribute "zabbix/agent/version",
   :display_name          => "",
@@ -73,10 +69,9 @@ attribute "zabbix/agent/log_dir",
   :description           => "The log directory for the Zabbix agent.",
   :default               => "/var/log/zabbix_agent"
 
-attribute "zabbix/server/install",
-  :display_name          => "",
-  :description           => "Whether to install the Zabbix server.",
-  :default               => "false"
+#
+# Server
+#
 
 attribute "zabbix/server/version",
   :display_name          => "",
@@ -87,6 +82,33 @@ attribute "zabbix/server/branch",
   :display_name          => "",
   :description           => "Name of the Zabbix branch to use.",
   :default               => "1.8.8"
+
+attribute "zabbix/server/install_method",
+  :display_name          => "",
+  :description           => "How to install the zabbix server: source.",
+  :default               => "source"
+
+attribute "zabbix/server/configure_options",
+  :display_name          => "",
+  :description           => "Options passed to the ./configure script when building the Zabbix server.",
+  :default               => "--prefix=/opt/zabbix --with-libcurl --with-net-snmp --with-mysql "
+
+attribute "zabbix/server/log_dir",
+  :display_name          => "",
+  :description           => "The log directory for the Zabbix server.",
+  :default               => "/var/log/zabbix_server"
+
+
+#
+# Database
+#
+
+
+attribute "zabbix/database/install_method",
+  :display_name          => "",
+  :description           => "Method of installing the database: only 'mysql'.",
+  :default               => "mysql"
+
 
 attribute "zabbix/database/host",
   :display_name          => "",
@@ -123,55 +145,43 @@ attribute "zabbix/database/name",
   :description           => "Name of the Zabbix database.",
   :default               => "zabbix"
 
-attribute "zabbix/database/install_method",
-  :display_name          => "",
-  :description           => "Method of installing the database: 'mysql' or 'rds'.",
-  :default               => "mysql"
-
-attribute "zabbix/server/install_method",
-  :display_name          => "",
-  :description           => "How to install the zabbix server: source.",
-  :default               => "source"
-
-attribute "zabbix/server/configure_options",
-  :display_name          => "",
-  :description           => "Options passed to the ./configure script when building the Zabbix server.",
-  :default               => "--prefix=/opt/zabbix --with-libcurl --with-net-snmp --with-mysql "
-
-attribute "zabbix/server/log_dir",
-  :display_name          => "",
-  :description           => "The log directory for the Zabbix server.",
-  :default               => "/var/log/zabbix_server"
-
-attribute "zabbix/web/install",
-  :display_name          => "",
-  :description           => "Whether or not to install the Zabbix web frontend."
-  :default               => "false"
+#
+# Web
+#
 
 attribute "zabbix/web/fqdn",
   :display_name          => "",
-  :description           => "The FQDN for the web application when using Apache to serve the Zabbix web frontend."
-  :default               => "false"
+  :description           => "The FQDN for the web application when using Apache to serve the Zabbix web frontend.",
+  :default               => ""
 
 attribute "zabbix/web/bind_ip",
   :display_name          => "",
-  :description           => "The local IP to bind PHP at when using nginx to serve the Zabbix web frontend."
+  :description           => "The local IP to bind PHP at when using nginx to serve the Zabbix web frontend.",
   :default               => "127.0.0.1"
 
 attribute "zabbix/web/port",
   :display_name          => "",
-  :description           => "The local port to bind PHP at when using nginx to serve the Zabbix web frontend."
+  :description           => "The local port to bind PHP at when using nginx to serve the Zabbix web frontend.",
   :default               => "9101"
 
 attribute "zabbix/web/log_dir",
   :display_name          => "",
-  :description           => "The directory for the Zabbix web frontend's logs."
+  :description           => "The directory for the Zabbix web frontend's logs.",
   :default               => "/var/log/zabbix_web"
 
-attribute "zabbix/web/webserver",
+attribute "zabbix/web/install_method",
   :display_name          => "",
   :description           => "The webserver to use in front of PHP: 'apache' or 'nginx'.",
   :default               => "apache"
+
+attribute "zabbix/web/timezone",
+  :display_name          => "",
+  :description           => "The timezone to display date information in.",
+  :default               => "Europe/London"
+
+#
+# API
+#
 
 attribute "zabbix/api/path",
   :display_name          => "",
@@ -188,43 +198,51 @@ attribute "zabbix/api/password",
   :description           => "The Zabbix user's password for talking to Zabbix's API.",
   :default               => ""
 
+#
+# SMTP
+#
+
 attribute "zabbix/smtp/from",
   :display_name          => "",
-  :description           => "The From: address used by Zabbix to send email."
+  :description           => "The From: address used by Zabbix to send email.",
   :default               => "fixme@example.com"
 
 attribute "zabbix/smtp/server",
   :display_name          => "",
-  :description           => "The SMTP server used by Zabbix to send email."
+  :description           => "The SMTP server used by Zabbix to send email.",
   :default               => "smtp.example.com"
 
 attribute "zabbix/smtp/port",
   :display_name          => "",
-  :description           => "The SMTP server's port used by Zabbix to send email."
+  :description           => "The SMTP server's port used by Zabbix to send email.",
   :default               => "25"
 
 attribute "zabbix/smtp/username",
   :display_name          => "",
-  :description           => "The username used by Zabbix to send email."
+  :description           => "The username used by Zabbix to send email.",
   :default               => "zabbix"
 
 attribute "zabbix/smtp/password",
   :display_name          => "",
-  :description           => "The password used by Zabbix to send email."
+  :description           => "The password used by Zabbix to send email.",
   :default               => "fixme"
+
+#
+# SMS -- Twilio
+#
 
 attribute "zabbix/twilio/id",
   :display_name          => "",
-  :description           => "The Twilio ID used by Zabbix to send SMS."
+  :description           => "The Twilio ID used by Zabbix to send SMS.",
   :default               => "fixme"
 
 attribute "zabbix/twilio/token",
   :display_name          => "",
-  :description           => "The Twilio token used by Zabbix to send SMS."
+  :description           => "The Twilio token used by Zabbix to send SMS.",
   :default               => "fixme"
 
 attribute "zabbix/twilio/phone",
   :display_name          => "",
-  :description           => "The Twilio phone number used by Zabbix to send SMS."
+  :description           => "The Twilio phone number used by Zabbix to send SMS.",
   :default               => "fixme"
 
