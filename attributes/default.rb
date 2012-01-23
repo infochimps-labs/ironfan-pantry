@@ -39,4 +39,6 @@ default[:zookeeper][:server][:run_state] = :stop
 # Tunables
 #
 
-default[:zookeeper][:max_client_connections] = 30
+# increased from 30 to 300, but you will want to turn this up even more on a
+# production machine.
+default[:zookeeper][:max_client_connections] = 300
