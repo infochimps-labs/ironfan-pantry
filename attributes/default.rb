@@ -3,8 +3,10 @@
 # Attributes:: default
 
 # Global
-zabbix_home_dir             = '/opt/zabbix'
-default[:zabbix][:home_dir] = zabbix_home_dir
+zabbix_home_dir                = '/opt/zabbix'
+default[:zabbix][:home_dir]    = zabbix_home_dir
+default[:zabbix][:templates]   = nil
+default[:zabbix][:host_groups] = nil
 
 # Agent
 default[:zabbix][:agent][:servers]           = []
@@ -13,6 +15,7 @@ default[:zabbix][:agent][:branch]            = "ZABBIX%20Latest%20Stable"
 default[:zabbix][:agent][:version]           = "1.8.5"
 default[:zabbix][:agent][:install_method]    = "prebuild"
 default[:zabbix][:agent][:log_dir]           = '/var/log/zabbix_agent'
+default[:zabbix][:agent][:create_host]       = true
 
 # Server
 default[:zabbix][:server][:version]           = "1.8.8"

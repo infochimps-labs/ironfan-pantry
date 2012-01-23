@@ -48,5 +48,13 @@ directory node.zabbix.web.log_dir do
   recursive true
 end
 
+template "/opt/zabbix-#{node.zabbix.server.version}/frontends/php/conf/zabbix.conf.php" do
+  source "zabbix.conf.php.erb"
+  owner 'www-data'
+  group 'www-data'
+  mode '0600'
+  action :create
+end
+
 # Configure upstream webserver.
 include_recipe "zabbix::web_#{node.zabbix.web.install_method}"

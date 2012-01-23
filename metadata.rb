@@ -30,10 +30,24 @@ recipe "zabbix::web",                "Configures PHP-driven, reverse-proxied Zab
 recipe "zabbix::web_apache",         "Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache."
 recipe "zabbix::web_nginx",          "Configures PHP-driven, reverse-proxied Zabbix web frontend using nginx."
 
+#
+# Global
+#
+
 attribute "zabbix/home_dir",
   :display_name          => "",
   :description           => "The base installation directory for Zabbix.",
-  :default               => "/opt/zabbix"
+  :default               => nil
+
+attribute "zabbix/host_groups",
+  :display_name          => "",
+  :description           => "Host groups for this node in Zabbix.",
+  :default               => nil
+
+attribute "zabbix/templates",
+  :display_name          => "",
+  :description           => "Templates for this node in Zabbix.",
+  :default               => nil
 
 #
 # Agent
@@ -68,6 +82,12 @@ attribute "zabbix/agent/log_dir",
   :display_name          => "",
   :description           => "The log directory for the Zabbix agent.",
   :default               => "/var/log/zabbix_agent"
+
+attribute "zabbix/agent/create_host",
+  :display_name          => "",
+  :description           => "Whether to create a Zabbix host for this node.",
+  :default               => "true"
+
 
 #
 # Server

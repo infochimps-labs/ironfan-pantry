@@ -25,9 +25,8 @@ nginx_site 'zabbix.conf' do
 end
 
 nginx_site 'default' do
-  action :disable
+  enable false
 end
-
 
 runit_service "zabbix_web"
 

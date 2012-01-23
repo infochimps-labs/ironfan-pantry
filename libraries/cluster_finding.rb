@@ -1,6 +1,6 @@
 class Chef
   class Recipe
-    
+
     def connect_to_zabbix_api!
       begin
         require 'rubix'
