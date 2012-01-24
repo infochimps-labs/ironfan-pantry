@@ -119,6 +119,9 @@ end
 %w[namenode secondarynn datanode].each{|svc| directory("#{node[:hadoop][:log_dir]}/#{svc}"){ action(:create) ; owner 'hdfs'   ; group "hadoop"; mode "0775" } }
 %w[jobtracker tasktracker       ].each{|svc| directory("#{node[:hadoop][:log_dir]}/#{svc}"){ action(:create) ; owner 'mapred' ; group "hadoop"; mode "0775" } }
 
+# JMX should listen on the public interface
+node[:hadoop][:jmx_dash_addr] = public_ip_of(node)
+
 # Make /var/log/hadoop point to the logs (which is on the first scratch dir),
 # and /var/run/hadoop point to the actual pid dir
 force_link("/var/log/hadoop",                    node[:hadoop][:log_dir] )
