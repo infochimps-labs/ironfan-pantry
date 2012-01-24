@@ -23,7 +23,7 @@ def load_current_resource
   load_user_macros
 
   return if virtual?
-  
+
   self.chef_node = search(:node, "name:#{zabbix_host.name}").first
   if self.chef_node
     self.zabbix_host.profile = chef_node_profile
@@ -80,18 +80,18 @@ def load_user_macros
       current_user_macros[macro_name] = Rubix::UserMacro.new(:name => macro_name, :value => macro_value)
     end
   end
-  
+
   self.zabbix_host.user_macros = current_user_macros.values
 end
-  
+
 def chef_node_profile
   case
   when (!virtual? && chef_node)
     {
-      'devicetype' => chef_node[:ec2][:instance_type],
+      'devicetype' => (chef_node[:ec2] && chef_node[:ec2][:instance_type]),
       'name'       => zabbix_host.name,
       'os'         => [chef_node[:platform], chef_node[:platform_version]].join(' '),
-      'serialno'   => chef_node[:ec2][:instance_id],
+      'serialno'   => (chef_node[:ec2] && chef_node[:ec2][:instance_id]),
       'tag'        => tag,
       'macaddress' => chef_node[:macaddress],
       'hardware'   => hardware,

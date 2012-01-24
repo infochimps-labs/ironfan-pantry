@@ -12,7 +12,7 @@ directory node.zabbix.agent.log_dir do
   group 'zabbix'
   mode '0755'
 end
-  
+
 include_recipe "zabbix::agent_#{node.zabbix.agent.install_method}"
 
 # We can create a host in Zabbix corresponding to this agent.
