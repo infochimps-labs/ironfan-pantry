@@ -23,6 +23,7 @@ ClusterChef.cluster 'zookeeper_demo' do
   role                  :chef_client
   role                  :ssh
   role                  :nfs_client
+  role                  :zabbix_agent
 
   role                  :volumes
   role                  :package_set, :last
@@ -40,6 +41,11 @@ ClusterChef.cluster 'zookeeper_demo' do
   end
 
   cluster_role.override_attributes({
+                                     'discovers' => {
+                                       'zabbix' => {
+                                         'server' => 'urza'
+                                       }
+                                     }
     })
 
   # Launch the cluster with all of the below set to 'stop'.
