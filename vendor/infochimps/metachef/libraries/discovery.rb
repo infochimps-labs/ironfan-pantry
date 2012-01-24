@@ -79,7 +79,7 @@ module ClusterChef
     end
 
     def discovery_realm(sys, subsys=nil)
-      node[:discovers][sys][subsys] rescue node[:cluster_name]
+      node[:discovers][sys][subsys] || node[:cluster_name] rescue node[:cluster_name]
     end
 
     def node_components(server)
