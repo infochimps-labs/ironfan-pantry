@@ -17,6 +17,10 @@ default[:zabbix][:agent][:install_method]    = "prebuild"
 default[:zabbix][:agent][:log_dir]           = '/var/log/zabbix_agent'
 default[:zabbix][:agent][:create_host]       = true
 
+default[:zabbix][:user]  = "zabbix"
+default[:users ]['zabbix'][:uid]    = 447
+default[:groups]['zabbix'][:gid]    = 447
+
 # Server
 default[:zabbix][:server][:version]           = "1.8.8"
 default[:zabbix][:server][:branch]            = "ZABBIX%20Latest%20Stable"
@@ -48,7 +52,7 @@ default[:zabbix][:api][:username] = ''
 default[:zabbix][:web][:password] = ''
 
 # SMTP
-default[:zabbix][:smtp][:from]     = 'fixme@example.com' 
+default[:zabbix][:smtp][:from]     = 'fixme@example.com'
 default[:zabbix][:smtp][:server]   = 'smtp.example.com'
 default[:zabbix][:smtp][:port]     = '25'
 default[:zabbix][:smtp][:username] = ''

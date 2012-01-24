@@ -8,10 +8,10 @@
 #
 
 # Create zabbix User
-user "zabbix" do
-  comment "zabbix User"
-  home "/opt/zabbix"
-  shell "/bin/bash"
+daemon_user(:zabbix) do
+  comment       "zabbix runner"
+  home          "/opt/zabbix"
+  shell         "/bin/bash"
 end
 
 # Define zabbix Agent folder
