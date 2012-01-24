@@ -62,7 +62,7 @@ node[:zookeeper][:jmx_dash_addr] = public_ip_of(node)
 
 announce(:zookeeper, :server)
 
-runit_service "zookeeper" do
+runit_service "zookeeper_server" do
   run_state     node[:zookeeper][:server][:run_state]
   options       node[:zookeeper]
 end

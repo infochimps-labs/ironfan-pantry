@@ -1,5 +1,13 @@
 # Produced by Chef -- changes will be overwritten
 
+# I am server # <%= @myid %>
+
+<%- if @zookeeper_hosts %>
+<%- @zookeeper_hosts.each_with_index do |zk_addr, idx| %>
+server.<%= idx %>=<%= zk_addr %>:<%= @zookeeper[:leader_port] %>:<%= @zookeeper[:election_port] %>
+<%- end %>
+<%- end %>
+
 # The number of milliseconds of each tick (default 2000)
 tickTime=<%=       @zookeeper[:tick_time] %>
 
@@ -27,9 +35,3 @@ dataLogDir=<%=     @zookeeper[:journal_dir] %>
 
 # the port at which the clients will connect
 clientPort=<%=     @zookeeper[:client_port] %>
-
-<%- if @zookeeper_hosts %>
-<%- @zookeeper_hosts.each_with_index do |zk_addr, idx| %>
-server.<%= idx %>=<%= zk_addr %>:<%= @zookeeper[:leader_port] %>:<%= @zookeeper[:election_port] %>
-<%- end %>
-<%- end %>
