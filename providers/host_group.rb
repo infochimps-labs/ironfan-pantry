@@ -1,3 +1,5 @@
+include Chef::RubixConnection
+
 action :create do
   zabbix_host_group.save
 end
@@ -9,5 +11,6 @@ end
 attr_accessor :zabbix_host_group
 
 def load_current_resource
+  self.zabbix_server     = new_resource.server
   self.zabbix_host_group = Rubix::HostGroup.find_or_create(:name => new_resource.name)
 end

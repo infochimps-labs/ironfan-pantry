@@ -1,3 +1,5 @@
+include Chef::RubixConnection
+
 action :create do
   zabbix_host.save
 end
@@ -13,7 +15,8 @@ def virtual?
 end
 
 def load_current_resource
-  self.zabbix_host = (Rubix::Host.find(:name => new_resource.name) || Rubix::Host.new(:name => new_resource.name))
+  self.zabbix_server = new_resource.server
+  self.zabbix_host   = (Rubix::Host.find(:name => new_resource.name) || Rubix::Host.new(:name => new_resource.name))
 
   load_host_groups
   load_templates

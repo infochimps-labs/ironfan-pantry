@@ -1,3 +1,5 @@
+include Chef::RubixConnection
+
 action :create do
   zabbix_item.save
 end
@@ -9,6 +11,7 @@ end
 attr_accessor :zabbix_host, :zabbix_item
 
 def load_current_resource
+  self.zabbix_server = new_resource.server
   self.zabbix_host = Rubix::Host.find(:name => new_resource.host)
   unless self.zabbix_host
     Chef::Log.error("Cannot find a Zabbix host named #{new_resource.host}")
