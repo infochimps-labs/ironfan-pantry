@@ -11,7 +11,7 @@
 
 * volumes don't deep merge -- eg you have to mount_ephemerals in the facet if you modify htem
 
-
+* kill_old_service should disable services (may be leaving /etc/rc.d cruft)
 
 zabbix:
 

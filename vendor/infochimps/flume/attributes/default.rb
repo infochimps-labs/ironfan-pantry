@@ -25,7 +25,7 @@ node[:flume][:exported_confs] = []
 #
 
 default[:flume][:master  ][:run_state] = :stop
-default[:flume][:node    ][:run_state] = :stop
+default[:flume][:node    ][:run_state] = :start
 
 
 #

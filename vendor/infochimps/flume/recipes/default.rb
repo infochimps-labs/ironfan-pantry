@@ -65,8 +65,7 @@ template "/usr/lib/flume/bin/flume-env.sh" do
     })
 end
 
-%w[commons-codec-1.4.jar commons-httpclient-3.0.1.jar
-   jets3t-0.6.1.jar].each do |file|
+%w[commons-codec-1.4.jar commons-httpclient-3.0.1.jar jets3t-0.6.1.jar].each do |file|
   cookbook_file "/usr/lib/flume/lib/#{file}" do
     owner "root"
     mode "644"
