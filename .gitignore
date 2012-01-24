@@ -61,3 +61,4 @@ knife/checksums/*
 vendor/cluster_chef
 knife/plugins
 site-cookbooks/*
+zabbix_integration

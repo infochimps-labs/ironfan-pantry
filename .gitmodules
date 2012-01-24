@@ -2,3 +2,6 @@
 	path   = vendor/opscode
 	url    = git://github.com/infochimps-labs/opscode_cookbooks.git
         update = merge
+[submodule "vendor/infochimps/zabbix"]
+	path = vendor/infochimps/zabbix
+	url = git://github.com/infochimps-cookbooks/zabbix.git
