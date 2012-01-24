@@ -11,6 +11,17 @@
 
 * volumes don't deep merge -- eg you have to mount_ephemerals in the facet if you modify htem
 
+
+zabbix:
+
+* apache should not install
+* currently requires
+  - nginx, apache, firewall, openssl, mysql, database, postgresql, ufw, iiptables
+* should not contact zabbix server during run
+* use standard directories, not /opt/...
+* use discovery not raw search
+* separate out target selection (this node vs. discovered node) from providing
+
 ### reorg
 
 * symlinks in cookbooks

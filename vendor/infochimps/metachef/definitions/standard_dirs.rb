@@ -1,13 +1,15 @@
 STANDARD_DIRS = Mash.new({
-  :home_dir  => { :uid => 'root', :gid => 'root', },
-  :conf_dir  => { :uid => 'root', :gid => 'root', },
-  :lib_dir   => { :uid => 'root', :gid => 'root', },
-  :log_dir   => { :uid => :user,  :gid => :group, :mode => "0775", },
-  :pid_dir   => { :uid => :user,  :gid => :group, },
-  :tmp_dir   => { :uid => :user,  :gid => :group, },
-  :data_dir  => { :uid => :user,  :gid => :group, },
-  :data_dirs => { :uid => :user,  :gid => :group, },
-  :cache_dir => { :uid => :user,  :gid => :group, },
+  :home_dir     => { :uid => 'root', :gid => 'root', },
+  :conf_dir     => { :uid => 'root', :gid => 'root', },
+  :lib_dir      => { :uid => 'root', :gid => 'root', },
+  :log_dir      => { :uid => :user,  :gid => :group, :mode => "0775", },
+  :pid_dir      => { :uid => :user,  :gid => :group, },
+  :tmp_dir      => { :uid => :user,  :gid => :group, },
+  :data_dir     => { :uid => :user,  :gid => :group, },
+  :data_dirs    => { :uid => :user,  :gid => :group, },
+  :journal_dir  => { :uid => :user,  :gid => :group, },
+  :journal_dirs => { :uid => :user,  :gid => :group, },
+  :cache_dir    => { :uid => :user,  :gid => :group, },
 }) unless defined?(STANDARD_DIRS)
 
 #

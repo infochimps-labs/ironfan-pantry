@@ -1,24 +1,35 @@
-# The number of milliseconds of each tick
-tickTime=2000
+# Produced by Chef -- changes will be overwritten
 
-# The number of ticks that the initial 
-# synchronization phase can take
-initLimit=10
+# The number of milliseconds of each tick (default 2000)
+tickTime=<%=       @zookeeper[:tick_time] %>
 
-# The number of ticks that can pass between 
-# sending a request and getting an acknowledgement
-syncLimit=5
+# Time, in ticks, to allow followers to connect and sync to a leader. 
+initLimit=<%=       @zookeeper[:initial_timeout_ticks] %>
+
+# Time, in ticks, to allow followers to sync with ZooKeeper. If followers fall
+# too far behind a leader, they will be dropped.
+syncLimit=<%=       @zookeeper[:sync_timeout_ticks] %>
+
+# Should the leader accepts client connections? default "yes".  
+leaderServes=<%=   @leader_is_also_server %> 
+
+# maximum simultaneous connections to allow. 
+maxClientCnxns=<%= @zookeeper[:max_client_connections] %>
+
+# number of writes to trigger a snapshot
+snapCount=<%=      @zookeeper[:snapshot_trigger] %>
 
 # the directory where the snapshot is stored.
-dataDir=<%= @zookeeper[:data_dir] %>
+dataDir=<%=        @zookeeper[:data_dir] %>
+
+# transaction journal directory. Should be a dedicated device.
+dataLogDir=<%=     @zookeeper[:journal_dir] %>
 
 # the port at which the clients will connect
-clientPort=<%= @zookeeper[:client_port] %>
+clientPort=<%=     @zookeeper[:client_port] %>
 
 <%- if @zookeeper_hosts %>
 <%- @zookeeper_hosts.each_with_index do |zk_addr, idx| %>
 server.<%= idx %>=<%= zk_addr %>:<%= @zookeeper[:leader_port] %>:<%= @zookeeper[:election_port] %>
 <%- end %>
 <%- end %>
-
-maxClientCnxns=<%= @zookeeper[:max_client_connections] || 1000 %>

@@ -9,11 +9,11 @@ ClusterChef.cluster 'zookeeper_demo' do
   cloud(:ec2) do
     defaults
     availability_zones ['us-east-1d']
-    flavor              't1.micro'
+    flavor              'm1.large'
     backing             'ebs'
     image_name          'cluster_chef-natty'
     bootstrap_distro    'ubuntu10.04-cluster_chef'
-    mount_ephemerals(:tags => { :zookeeper_scratch => true, :zookeeper_data    => false, })
+    mount_ephemerals(:tags => { :zookeeper_journal => true, :zookeeper_scratch => true, :zookeeper_data => false, })
   end
 
   # uncomment if you want to set your environment.
@@ -23,7 +23,7 @@ ClusterChef.cluster 'zookeeper_demo' do
   role                  :chef_client
   role                  :ssh
   role                  :nfs_client
-  role                  :zabbix_agent
+  # role                  :zabbix_agent
 
   role                  :volumes
   role                  :package_set, :last
@@ -36,17 +36,9 @@ ClusterChef.cluster 'zookeeper_demo' do
   role                  :tuning
 
   facet :zookeeper do
-    instances           1
+    instances           3
     role                :zookeeper_server
   end
-
-  cluster_role.override_attributes({
-                                     'discovers' => {
-                                       'zabbix' => {
-                                         'server' => 'urza'
-                                       }
-                                     }
-    })
 
   # Launch the cluster with all of the below set to 'stop'.
   #
@@ -78,7 +70,7 @@ ClusterChef.cluster 'zookeeper_demo' do
     attachable          :ebs
     resizable           true
     snapshot_name       :blank_xfs   # 1 GB xfs -- will growfs on launch
-    tags( :zookeeper_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
+    tags( :zookeeper_data => true, :zookeeper_journal => false, :persistent => true, :local => false, :bulk => true, :fallback => false )
     create_at_launch    true # if no volume is tagged for that node, it will be created
   end
 

@@ -12,6 +12,7 @@ define(:daemon_user,
   :component    => nil,                 # if present, will use node[(name)][(component)] *and then* node[(name)] to look up values.
   :user         => nil,                 # username to create.      default: `scoped_hash[:user]`
   :home         => nil,                 # home directory for daemon. default: `scoped_hash[:pid_dir]`
+  :shell        => '/bin/false',        # shell to set. default: `/bin/false`
   :group        => nil,                 # group for daemon.          default: `scoped_hash[:group]`
   :comment      => nil,                 # comment for user info
   :create_group => true                 # Action to take on the group: `true` means `[:create]`, false-y means do nothing, or you can supply explicit actions (eg `[:create, :manage]`). default: true
@@ -27,13 +28,13 @@ define(:daemon_user,
   #
   user_val                = params[:user].to_s
   group_val               = params[:group].to_s
-  begin 
+  begin
     uid_val                 = node[:users ][user_val ] && node[:users ][user_val ][:uid]
   rescue
     uid_val = nil
   end
   begin
-    gid_val                 = node[:groups][group_val] && node[:groups][group_val][:gid] 
+    gid_val                 = node[:groups][group_val] && node[:groups][group_val][:gid]
   rescue
     gid_val = nil
   end
@@ -58,7 +59,7 @@ define(:daemon_user,
     uid           uid_val
     gid           group_val
     password      nil
-    shell         '/bin/false'
+    shell         params[:shell]
     home          params[:home]
     supports      :manage_home => false # you must create standard dirs yourself
     action        params[:action]

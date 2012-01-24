@@ -1,6 +1,6 @@
 #!/bin/bash
 exec 2>&1
-cd   <%= @options[:pid_dir] %>
+cd  <%= @options[:pid_dir] %>
 
 export ZOOKEEPER_HOME=<%= @options[:home_dir] %>
 export ZOOKEEPER_CONF=<%= @options[:conf_dir] %>
@@ -14,8 +14,12 @@ export JVMFLAGS=-Dzookeeper.log.threshold=INFO
 # See http://java.sun.com/javase/6/docs/technotes/guides/management/agent.html
 # for extensive details on setting up the JVM to accept JMX remote management
 # By default we allow local JMX connections
+export ZOO_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false \
+  -Djava.rmi.server.hostname=<%= @options[:jmx_dash_addr] %> \
+  -Dcom.sun.management.jmxremote.port=<%= @options[:jmx_dash_port] %> \
+  -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
 
-ZOOMAIN="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false org.apache.zookeeper.server.quorum.QuorumPeerMain"
+ZOOMAIN="$ZOO_JMX_OPTS org.apache.zookeeper.server.quorum.QuorumPeerMain"
 
 source <%= @options[:home_dir] %>/bin/zkEnv.sh
 
