@@ -26,8 +26,8 @@ end
 # Create a host for each node (cluster-facet-index).
 everything[:nodes].each do |host_node|
 
-  existing_templates   = (host_node.zabbix.templates   || []).to_set
-  existing_host_groups = (host_node.zabbix.host_groups || []).to_set
+  existing_templates   = ((host_node.zabbix.templates   || []).to_set rescue [])
+  existing_host_groups = ((host_node.zabbix.host_groups || []).to_set rescue [])
 
   existing_host_groups << 'All Nodes'
   existing_host_groups << host_node.cluster_name

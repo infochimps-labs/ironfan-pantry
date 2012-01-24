@@ -20,8 +20,8 @@ if node.zabbix.agent.create_host
 
   zabbix_server_ip = default_zabbix_server_ip
 
-  node_host_groups = (node.zabbix.host_groups || []).to_set
-  node_templates   = (node.zabbix.templates   || []).to_set
+  node_host_groups = ((node.zabbix.host_groups || []) rescue []).to_set
+  node_templates   = ((node.zabbix.templates   || []) rescue []).to_set
 
   node_host_groups << 'All Nodes'
   node_host_groups << node.cluster_name

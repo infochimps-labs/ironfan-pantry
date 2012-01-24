@@ -2,7 +2,9 @@ class Chef
   class Recipe
 
     def all_zabbix_server_ips
-      discover_all(:zabbix, :server).map(&:private_ip) + node.zabbix.agent.servers
+      servers_as_attributes = (node.zabbix.agent.servers                        rescue [])
+      discovered_servers    = (discover_all(:zabbix, :server).map(&:private_ip) rescue [])
+      servers_as_attributes + discovered_servers
     end
 
     def default_zabbix_server_ip

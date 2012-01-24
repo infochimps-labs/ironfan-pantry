@@ -26,7 +26,7 @@ def load_current_resource
 
   self.chef_node = search(:node, "name:#{zabbix_host.name}").first
   if self.chef_node
-    self.zabbix_host.profile = chef_node_profile
+    self.zabbix_host.profile = (chef_node_profile rescue nil)
     self.zabbix_host.ip      = self.chef_node[:ipaddress]
     self.zabbix_host.port    = 10050
   else
@@ -110,33 +110,33 @@ def tag
 end
 
 def hardware
-  num_cpus   = chef_node[:cpu][:total].to_i
-  cpu_models = (0...num_cpus).map { |index| chef_node[:cpu][index.to_s][:model_name] rescue '' }.compact.to_set.to_a.join(', ')
+  num_cpus   = chef_node[:cpu][:total].to_i rescue nil
+  cpu_models = (0...num_cpus).map { |index| chef_node[:cpu][index.to_s][:model_name] rescue '' }.compact.to_set.to_a.join(', ') if num_cpus
   ram        = chef_node[:cpu][:memory][:total] rescue 0
   swap       = chef_node[:cpu][:memory][:swap][:total] rescue 0
   ["CPU: #{num_cpus} (#{cpu_models})", "RAM: #{ram}, SWAP: #{swap}"].join("\n")
 end
 
 def software
-  node_roles    = (chef_node[:roles] || []).join(', ')
-  node_provides = (chef_node[:provides_service] || {}).keys.join(', ')
-  ["Roles: #{node_roles}", "Provides: #{node_provides}"].join("\n")
+  node_roles     = (chef_node[:roles] || []).join(', ')
+  node_announces = (chef_node[:announces] || {}).keys.join(', ')
+  ["Roles: #{node_roles}", "Announces: #{node_announces}"].join("\n")
 end
 
 def contact
-  ["Public: #{chef_node[:ec2][:public_hostname]}", "Private: #{chef_node[:ipaddress]}", "FQDN: #{chef_node[:fqdn]}"].join("\n")
+  ["Public: #{chef_node[:ec2][:public_hostname]}", "Private: #{chef_node[:ipaddress]}", "FQDN: #{chef_node[:fqdn]}"].join("\n") rescue ''
 end
 
 def location
   node_security_groups = (chef_node[:ec2][:security_groups] || []).join(', ')
-  ["Availability Zone: #{chef_node[:ec2][:placement_availability_zone]}", "Security Groups: #{node_security_groups}"].join("\n")
+  ["Availability Zone: #{chef_node[:ec2][:placement_availability_zone]}", "Security Groups: #{node_security_groups}"].join("\n") rescue ''
 end
 
 def notes
   [].tap do |lines|
     (chef_node[:filesystem] || {}).each_pair do |dev, dev_data|
       next unless dev =~ /dev/
-      lines << "#{dev}: #{dev_data[:mount]} (#{dev_data[:kb_size]})"
+      lines << "#{dev}: #{dev_data[:mount]} (#{dev_data[:kb_size]})" rescue nil
     end
   end.join("\n")
 end
