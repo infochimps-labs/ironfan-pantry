@@ -58,4 +58,7 @@ end
 announce(:elasticsearch, :datanode)
 announce(:elasticsearch, :httpnode)
 
+# JMX should listen on the public interface
+node[:elasticsearch][:jmx_dash_addr] = public_ip_of(node)
+
 include_recipe "elasticsearch::config"
