@@ -32,16 +32,19 @@ volumes(node).each do |vol_name, vol|
     bash "fsck #{vol_name} before resizing" do
       code      "fsck -f #{vol.device}"
     end
-    bash "resize #{vol_name}" do
+    r = bash "resize #{vol_name}" do
       code      "resize2fs #{vol.device}"
+      action :nothing
     end
   when 'xfs'
     if not vol.mounted? then Chef::Log.info("Skipping resize of #{vol.fstype} volume #{vol_name}: not mounted (#{vol.inspect})") ; next ; end
-    bash "resize #{vol_name}" do
+    r = bash "resize #{vol_name}" do
       code      "xfs_growfs #{vol.device}"
+      action :nothing
     end
+  else return
   end
-
+  r.run_action(:run)
 
   # don't resize again
   vol.resized!
