@@ -60,7 +60,7 @@ export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS  <%= @hbase[:regionserv
 # want remote access; you'll need to use security groups to open up the high end
 # of all ports (not just this one).
 #
-export HBASE_JMX_BASE="-Djava.rmi.server.hostname=<%= @jmx_hostname %> -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
+export HBASE_JMX_BASE="-Djava.rmi.server.hostname=<%= @hbase[:jmx_dash_addr] %> -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
 
 # JMX port
 export             HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS $HBASE_JMX_BASE -Dcom.sun.management.jmxremote.port=<%= @hbase[:master      ][:jmx_dash_port] %>"

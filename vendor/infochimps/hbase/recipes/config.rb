@@ -31,7 +31,6 @@ hbase_config = Mash.new({
   :ganglia         => discover(:ganglia, :server),
   :ganglia_addr    => (discover(:ganglia, :server) && discover(:ganglia, :server).private_hostname),
   :private_ip      => private_ip_of(node),
-  :jmx_hostname    => public_ip_of(node),
   :ganglia_port    => 8649,
   :period          => 10
 })

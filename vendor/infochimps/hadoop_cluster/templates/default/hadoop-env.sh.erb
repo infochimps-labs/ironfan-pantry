@@ -51,7 +51,7 @@ export          HADOOP_DATANODE_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:datano
 export       HADOOP_TASKTRACKER_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:tasktracker][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>m $HADOOP_TASKTRACKER_OPTS"
 
 # JMX monitoring -- see http://www.cloudera.com/blog/2009/03/hadoop-metrics/
-export                   HADOOP_OPTS="-Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false $HADOOP_OPTS"
+export                   HADOOP_OPTS="-Djava.rmi.server.hostname=<%= @hadoop[:jmx_dash_addr] %> -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false $HADOOP_OPTS"
 export          HADOOP_NAMENODE_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=<%= @hadoop[:namenode   ][:jmx_dash_port] %> $HADOOP_NAMENODE_OPTS"
 export HADOOP_SECONDARYNAMENODE_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=<%= @hadoop[:secondarynn][:jmx_dash_port] %> $HADOOP_SECONDARYNAMENODE_OPTS"
 export        HADOOP_JOBTRACKER_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=<%= @hadoop[:jobtracker ][:jmx_dash_port] %> $HADOOP_JOBTRACKER_OPTS"

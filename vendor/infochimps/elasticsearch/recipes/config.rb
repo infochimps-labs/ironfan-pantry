@@ -27,7 +27,7 @@ end
 template "/etc/elasticsearch/elasticsearch.in.sh" do
   source        "elasticsearch.in.sh.erb"
   mode          0644
-  variables     :elasticsearch => Mash.new({:jmx_dash_addr => public_ip_of(node)}).merge(node[:elasticsearch])
+  variables     :elasticsearch => node[:elasticsearch]
 end
 
 node[:elasticsearch][:seeds] = discover_all(:elasticsearch, :datanode).map(&:private_ip)

@@ -10,6 +10,8 @@ default[:hbase][:regionserver][:java_heap_size_max]     = "2000m"
 default[:hbase][:master      ][:java_heap_size_new]     = "256m"
 default[:hbase][:regionserver][:java_heap_size_new]     = "256m"
 
+# -XX:+UseParNewGC
+
 default[:hbase][:master      ][:gc_tuning_opts]         = "-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+AggressiveOpts"
 default[:hbase][:regionserver][:gc_tuning_opts]         = "-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+AggressiveOpts -XX:CMSInitiatingOccupancyFraction=88"
 

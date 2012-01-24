@@ -45,6 +45,9 @@ node[:hbase][:services].each do |svc|
   directory("#{node[:hbase][:log_dir]}/#{svc}"){ action(:create) ; owner 'hbase' ; group 'hbase'; mode "0755" }
 end
 
+# JMX should listen on the public interface
+node[:hbase][:jmx_dash_addr] = public_ip_of(node)
+
 # FIXME: don't hardcode these...
 link("#{node[:hbase][:home_dir]}/hbase.jar"      ){ to "hbase-0.90.4-cdh3u2.jar"       }
 link("#{node[:hbase][:home_dir]}/hbase-tests.jar"){ to "hbase-0.90.4-cdh3u2-tests.jar" }
