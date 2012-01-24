@@ -22,7 +22,14 @@
 #
 # Config files
 #
-zookeeper_hosts = discover_all(:zookeeper, :server).map(&:private_ip).sort
+zookeeper_hosts = discover_all(:zookeeper, :server).sort_by{|cp| cp.node.name }.map(&:private_ip)
+
+# use explicit value if set, otherwise make the leader a server iff there are
+# four or more zookeepers kicking around
+leader_is_also_server = node[:zookeeper][:leader_is_also_server]
+if (leader_is_also_server.to_s == 'auto')
+  leader_is_also_server = (zookeeper_hosts.length >= 4)
+end
 
 myid = zookeeper_hosts.find_index( private_ip_of(node) )
 template_variables = {
@@ -32,15 +39,15 @@ template_variables = {
 }
 
 %w[ zoo.cfg log4j.properties].each do |conf_file|
-  template "/etc/zookeeper/#{conf_file}" do
-    variables(template_variables)
-    owner    "root"
-    mode     "0644"
-    source   "#{conf_file}.erb"
+  template "#{node[:zookeeper][:conf_dir]}/#{conf_file}" do
+    variables   template_variables
+    owner       "root"
+    mode        "0644"
+    source      "#{conf_file}.erb"
   end
 end
 
-template "/var/zookeeper/myid" do
+template "#{node[:zookeeper][:data_dir]}/myid" do
   owner         "zookeeper"
   mode          "0644"
   variables     template_variables
