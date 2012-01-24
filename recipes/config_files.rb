@@ -22,7 +22,7 @@
 #
 # Config files
 #
-zookeeper_hosts = discover_all(:zookeeper, :server).sort_by{|cp| cp.node.name }.map(&:private_ip)
+zookeeper_hosts = discover_all(:zookeeper, :server).sort_by{|cp| cp.node[:facet_index] }.map(&:private_ip)
 
 # use explicit value if set, otherwise make the leader a server iff there are
 # four or more zookeepers kicking around
@@ -31,11 +31,16 @@ if (leader_is_also_server.to_s == 'auto')
   leader_is_also_server = (zookeeper_hosts.length >= 4)
 end
 
-myid = zookeeper_hosts.find_index( private_ip_of(node) )
+# So that node IDs are stable, use the server's index (eg 'foo-bar-3' = zk id 3)
+# If zookeeper servers span facets, give each a well-sized offset in facet_role
+# (if 'bink' nodes have zkid_offset 10, 'foo-bink-7' would get zkid 17)
+node[:zookeeper][:zkid]  = node[:facet_index]
+node[:zookeeper][:zkid] += node[:zookeeper][:zkid_offset].to_i if node[:zookeeper][:zkid_offset]
+
 template_variables = {
   :zookeeper         => node[:zookeeper],
   :zookeeper_hosts   => zookeeper_hosts,
-  :myid              => myid,
+  :myid              => node[:zookeeper][:zkid],
 }
 
 %w[ zoo.cfg log4j.properties].each do |conf_file|
@@ -44,6 +49,7 @@ template_variables = {
     owner       "root"
     mode        "0644"
     source      "#{conf_file}.erb"
+    notify_startable_services(:zookeeper, [:server])
   end
 end
 
@@ -52,4 +58,5 @@ template "#{node[:zookeeper][:data_dir]}/myid" do
   mode          "0644"
   variables     template_variables
   source        "myid.erb"
+  notify_startable_services(:zookeeper, [:server])
 end
