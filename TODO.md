@@ -22,6 +22,7 @@ zabbix:
 * use standard directories, not /opt/...
 * use discovery not raw search
 * separate out target selection (this node vs. discovered node) from providing
+* zabbix should be in a monitored security group
 
 ### reorg
 
