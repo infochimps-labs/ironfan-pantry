@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-[:flume, :hadoop, :hbase, :zookeeper].each do |component|
+[:flume, :hadoop, :hbase, :zookeeper, :jruby].each do |component|
   next unless node[component]
   Chef::Log.info( [ component, node[component][:exported_jars] ].inspect )
   Array(node[component][:exported_jars]).flatten.each do |export|
