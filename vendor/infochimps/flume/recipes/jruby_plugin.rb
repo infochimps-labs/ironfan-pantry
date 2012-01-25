@@ -19,17 +19,13 @@
 # limitations under the License.
 #
 
-# Note: at the moment, you are on your own for installing jruby. You will have
-# to set node[:flume][:classpath] to include the location for jruby to get this
-# to work.
-
-cookbook_file "/usr/lib/flume/plugins/jruby-flume.jar" do
+cookbook_file "#{node[:flume][:home_dir]}/plugins/jruby-flume.jar" do
   source "jruby-flume.jar"
   owner "flume"
   mode "0644"
 end
 
-directory "/usr/lib/flume/scripts" do
+directory "#{node[:flume][:home_dir]}/scripts" do
   owner "flume"
   mode "0755"
 end
@@ -38,9 +34,9 @@ node[:flume][:plugins][:jruby_flume] ||= {}
 node[:flume][:plugins][:jruby_flume][:classes]    = [ "com.infochimps.flume.jruby.JRubySink",
                                                       "com.infochimps.flume.jruby.JRubySource",
                                                       "com.infochimps.flume.jruby.JRubyDecorator", ]
-node[:flume][:plugins][:jruby_flume][:classpath]  = [ "/usr/lib/flume/plugins/jruby-flume.jar","/usr/lib/jruby/lib/jruby.jar" ]
-node[:flume][:plugins][:jruby_flume][:java_opts]  = [ "-Djruby.home=/usr/lib/jruby",
-                                                      "-Djruby.lib=/usr/lib/jruby/lib",
+node[:flume][:plugins][:jruby_flume][:classpath]  = [ "#{node[:flume][:home_dir]}/plugins/jruby-flume.jar","#{node[:jruby][:home_dir]}/lib/jruby.jar" ]
+node[:flume][:plugins][:jruby_flume][:java_opts]  = [ "-Djruby.home=#{node[:jruby][:home_dir]}",
+                                                      "-Djruby.lib=#{node[:jruby][:home_dir]}/lib",
                                                       "-Djruby.script=jruby", ]
 
 node[:flume][:exported_jars] += [
