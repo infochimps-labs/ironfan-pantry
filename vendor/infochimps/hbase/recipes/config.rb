@@ -33,7 +33,29 @@ hbase_config = Mash.new({
   :private_ip      => private_ip_of(node),
   :ganglia_port    => 8649,
   :period          => 10
-})
+  })
+
+
+[:hadoop].each do |component|
+  next unless node[component]
+  Array(node[component][:exported_jars]).flatten.each do |export|
+    link "#{node[:hbase][:home_dir]}/lib/#{File.basename(export)}" do
+      to  export
+    end
+  end
+
+
+
+  # FIXME: this is brittle, but the best I can do. can you do better?
+  Array(node[component][:exported_libs]).flatten.each do |export|
+    pathsegs = export.gsub(%r{\A.*/native/([\w\.\-]+)/([^/]+)\z}, '\1/\2')
+    Chef::Log.info( [ 'hbase using hadoop native libs', pathsegs, node[:hadoop][:exported_libs], node[:hbase][:home_dir] ].inspect )
+    link "#{node[:hbase][:home_dir]}/lib/native/#{pathsegs}" do
+      to  export
+    end
+  end
+end
+
 
 %w[ hbase-env.sh hbase-site.xml hadoop-metrics.properties ].each do |conf_file|
   template "#{node[:hbase][:conf_dir]}/#{conf_file}" do

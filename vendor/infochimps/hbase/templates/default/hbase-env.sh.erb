@@ -49,8 +49,8 @@ export             HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -Xms<%= @hbase[:master 
 export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Xms<%= @hbase[:regionserver][:java_heap_size_max] %> -Xmx<%= @hbase[:regionserver][:java_heap_size_max] %> -XX:NewSize=<%= @hbase[:regionserver][:java_heap_size_new] %> -XX:MaxNewSize=<%= @hbase[:regionserver][:java_heap_size_new] %>"
 
 # GC options
-export             HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS  <%= @hbase[:master      ][:gc_tuning_opts] %> <%= @hbase[:master      ][:gc_log_opts] %>"
-export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS  <%= @hbase[:regionserver][:gc_tuning_opts] %> <%= @hbase[:regionserver][:gc_log_opts] %>"
+export             HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS  <%= @hbase[:master      ][:gc_tuning_opts] %> <%= @hbase[:master      ][:gc_log_opts] %> -Xloggc:/var/log/hbase/hbase-master-gc.log"
+export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS  <%= @hbase[:regionserver][:gc_tuning_opts] %> <%= @hbase[:regionserver][:gc_log_opts] %> -Xloggc:/var/log/hbase/hbase-regionserver-gc.log"
 
 # Enable JMX exporting. See jmxremote.password and jmxremote.access in
 # $JRE_HOME/lib/management to configure remote password access.  More details
