@@ -21,7 +21,6 @@ if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
 
   # FIXME: nfs_client should look for things by mount. Everything is announced just as ':server' in each realm
   node[:nfs][:exports].each do |exp_name, exp_info|
-    unless exp_info[:realm] then raise "You must specify what realm the nfs export services: when you define node[:nfs][:exports], please also say :realm => 'whatever' -- #{node[:nfs][:exports].to_hash.inspect}" ; end
     announce(:nfs, :server,  :realm => node[:nfs][:exports].values.first[:realm])
   end
 
