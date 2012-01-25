@@ -23,26 +23,22 @@ volumes(node).each do |vol_name, vol|
   next unless vol.resizable?
 
   if not vol.attached?
-    Chef::Log.info "Before mounting, you must attach the #{vol_name} volume at #{vol.device}"
+    Chef::Log.info "Before mounting, you must attach the #{vol_name} volume at #{vol.device} (#{vol.inspect})"
     next
   end
 
   case vol.fstype
   when 'ext2', 'ext3', 'ext4'
-    bash "fsck #{vol_name} before resizing" do
-      code      "fsck -f #{vol.device}"
-    end
-    r = bash "resize #{vol_name}" do
-      code      "resize2fs #{vol.device}"
-      action :nothing
-    end
+    resize_command = "fsck -f '#{vol.device}' && resize2fs '#{vol.device}'"
   when 'xfs'
     if not vol.mounted? then Chef::Log.info("Skipping resize of #{vol.fstype} volume #{vol_name}: not mounted (#{vol.inspect})") ; next ; end
-    r = bash "resize #{vol_name}" do
-      code      "xfs_growfs #{vol.device}"
-      action :nothing
-    end
+    resize_command = "xfs_growfs #{vol.device}"
   else return
+  end
+
+  r = bash "resize #{vol_name}" do
+    code      resize_command
+    action    :nothing
   end
   r.run_action(:run)
 

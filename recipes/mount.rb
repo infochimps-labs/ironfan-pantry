@@ -28,10 +28,11 @@ volumes(node).each do |vol_name, vol|
     next
   end
 
-  directory vol.mount_point do
+  make_dir_rsrc = directory(vol.mount_point) do
     recursive   true
     owner       vol.owner
     group       vol.owner
+    action      :nothing
   end
 
   #
@@ -42,7 +43,7 @@ volumes(node).each do |vol_name, vol|
   # If so, read http://linux-tips.org/article/50/xfs-filesystem-has-duplicate-uuid-problem
   #
 
-  mount vol['mount_point'] do
+  vol_mount_rsrc = mount(vol['mount_point']) do
     device      vol.device
     fstype      vol.fstype
     options     vol.mount_options if vol.mount_options
@@ -50,7 +51,10 @@ volumes(node).each do |vol_name, vol|
     fsck        vol.mount_fsck    if vol.mount_fsck
     device_type vol.device_type   if vol.device_type
     only_if{ vol.attached? }
-    action      [:mount]
+    action      :nothing
   end
+
+  make_dir_rsrc.run_action(:create)
+  vol_mount_rsrc.run_action(:mount)
 
 end
