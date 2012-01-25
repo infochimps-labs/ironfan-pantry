@@ -52,9 +52,12 @@ default[:package_set][:gems][:base]      = %w[ bundler rake ]
 
 default[:package_set][:pkgs][:dev]       = %w[ emacs23-nox elinks w3m-el colordiff ack exuberant-ctags ]
 default[:package_set][:gems][:dev]       = %w[
-  activesupport activemodel extlib json yajl-ruby awesome_print addressable cheat
-  yard jeweler rspec  watchr pry configliere gorillib highline formatador choice rest-client wirble hirb
-  wukong swineherd hackboxen
+  extlib json yajl-ruby awesome_print addressable cheat rest-client
+  yard jeweler rspec watchr pry wirble hirb highline formatador
+  configliere gorillib wukong swineherd hackboxen
+  ] + [
+    { :name => 'activesupport', :version => '3.1.0', },
+    { :name => 'activemodel',   :version => '3.1.0', },
   ]
 
 default[:package_set][:pkgs][:sysadmin]  = %w[ ifstat htop tree chkconfig sysstat nmap python-software-properties ]
