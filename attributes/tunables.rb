@@ -15,8 +15,17 @@ default[:hbase][:regionserver][:java_heap_size_new]     = "256m"
 default[:hbase][:master      ][:gc_tuning_opts]         = "-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+AggressiveOpts"
 default[:hbase][:regionserver][:gc_tuning_opts]         = "-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+AggressiveOpts -XX:CMSInitiatingOccupancyFraction=88"
 
-default[:hbase][:master      ][:gc_log_opts]            = "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/var/log/hbase/hbase-master-gc.log"
-default[:hbase][:regionserver][:gc_log_opts]            = "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:/var/log/hbase/hbase-regionserver-gc.log"
+default[:hbase][:master      ][:gc_log_opts]            = "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
+default[:hbase][:regionserver][:gc_log_opts]            = "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
+
+#
+# !!!NOTE!!!!
+#
+# The slightly-humanized names below are under review and subject to
+# modification until cluster_chef v3 is released. We may change them
+# until then but won't change them after
+#
+#
 
 # hbase.client.write.buffer (default 2097152) Default size of the HTable client write
 #   buffer in bytes.  A bigger buffer takes more memory -- on both the client and server
@@ -105,7 +114,7 @@ default[:hbase][:regionserver][:worker_period]          = 10_000               #
 # hbase.balancer.period (default 300000) -- Period at which the region balancer runs in
 #   the Master.
 #
-default[:hbase][:regionserver][:balancer_period]        = 300000               ## 300000
+default[:hbase][:regionserver][:balancer_period]        = 300_000              ## 300_000
 
 # hbase.regions.slop (default 0) -- Rebalance if any regionserver has more than
 #
@@ -163,7 +172,7 @@ default[:hbase][:memstore][:mslab_enabled]              = false                #
 #   a column families' HStoreFiles has grown to exceed this value, the hosting HRegion is
 #   split in two.
 #
-default[:hbase][:regionserver][:max_filesize]           = (1024 * 1024 * 1024) ## 1GB ; default 256 MB
+default[:hbase][:regionserver][:max_filesize]           = (256 * 1024 * 1024)  ## 256 MB
 
 # hbase.hstore.compactionThreshold (default 3) -- If more than this number of HStoreFiles
 #   in any one HStore (one HStoreFile is written per flush of memstore) then a compaction
@@ -206,6 +215,15 @@ default[:hbase][:compaction][:period]                   = 86_400_000           #
 #   down if you have small cells and want faster random-access of individual cells.
 #
 default[:hbase][:regionserver][:hfile_block_size]       = 65536                ## 65536
+
+# hbase.regionserver.codecs (default "") -- To have a RegionServer test a set of
+# codecs and fail-to-start if any code is missing or misinstalled, add the
+# configuration hbase.regionserver.codecs to your hbase-site.xml with a value of
+# codecs to test on startup. For example if the hbase.regionserver.codecs value
+# is "lzo,gz" and if lzo is not present or improperly installed, the misconfigured
+# RegionServer will fail to start.
+#
+default[:hbase][:regionserver][:required_codecs]        = ""
 
 # hfile.block.cache.size (default 0.2) -- Percentage of maximum heap (-Xmx setting) to
 #   allocate to block cache used by HFile/StoreFile. Default of 0.2 means allocate 20%.

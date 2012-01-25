@@ -13,7 +13,6 @@ default[:hbase][:pid_dir]                      = '/var/run/hbase'
 default[:hbase][:log_dir]                      = '/var/log/hbase'
 default[:hbase][:tmp_dir]                      = '/mnt/hbase/tmp'
 
-
 default[:hbase][:master      ][:port]          = 60000
 default[:hbase][:regionserver][:port]          = 60020
 default[:hbase][:stargate    ][:port]          = 8080
