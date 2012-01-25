@@ -13,6 +13,12 @@
 
 * kill_old_service should disable services (may be leaving /etc/rc.d cruft)
 
+* on first run, volumes are not mounted so volumes are not scheduled to resize.
+  - fixed, but there is an uncomfortable proliferation of .run_action's going on
+  
+* kill old service doesn't go the first time
+
+
 zabbix:
 
 * apache should not install
@@ -23,6 +29,11 @@ zabbix:
 * use discovery not raw search
 * separate out target selection (this node vs. discovered node) from providing
 * zabbix should be in a monitored security group
+
+* The facet that exposes hbase-stargate needs to open the port stargate listens on (8080 by default) to the urza-zabbix facet so that monitoring scripts can work.  This was done by hand this time.
+* weatherlight master needs to expose 35862 to zabbix monitoring.
+
+cerulean - flume / royal - cnc / thelonius - zookeeper / clues - hbase / cadet - automated hadoop / miles - science // sod - talks to azure
 
 ### reorg
 

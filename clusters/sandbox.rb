@@ -43,7 +43,6 @@ ClusterChef.cluster 'sandbox' do
     instances           1
     cloud.flavor        'c1.xlarge'
     recipe              'volumes::build_raid', :first
-    recipe              'volumes::mount'
 
     cloud.mount_ephemerals
     raid_group(:md0) do

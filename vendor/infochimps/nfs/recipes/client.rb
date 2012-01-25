@@ -9,13 +9,13 @@
 # (no license specified)
 #
 
-package "nfs-common"
+package("nfs-common"){action :nothing}.run_action(:install)
 
 bash "modprobe nfs" do
   user          'root'
   code          "modprobe nfs"
   not_if("cat /proc/filesystems | grep -q nfs")
-end
+end.run_action(:run)
 
 nfs_server_ip = discover(:nfs, :server).private_ip rescue nil
 
@@ -27,14 +27,15 @@ else
 
   if node[:nfs] && node[:nfs][:mounts]
     node[:nfs][:mounts].each do |target, config|
-      mount target do
+      r = mount(target) do
         fstype      "nfs"
         options     %w(rw,soft,intr,nfsvers=3)
         device      (config[:device] || "#{nfs_server_ip}:#{config[:remote_path]}")
         dump        0
         pass        0
-        action      [:mount]
+        action      :nothing
       end
+      r.run_action(:mount) # do this immediately
     end
   else
     Chef::Log.warn "You included the NFS client recipe without defining nfs mounts."
