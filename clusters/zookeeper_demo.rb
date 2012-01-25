@@ -23,7 +23,6 @@ ClusterChef.cluster 'zookeeper_demo' do
   role                  :chef_client
   role                  :ssh
   role                  :nfs_client
-  # role                  :zabbix_agent
 
   role                  :volumes
   role                  :package_set, :last
@@ -34,22 +33,13 @@ ClusterChef.cluster 'zookeeper_demo' do
   role                  :org_users
 
   role                  :tuning
+  role                  :jruby
 
   facet :zookeeper do
     instances           3
     role                :zookeeper_server
   end
 
-  # Launch the cluster with all of the below set to 'stop'.
-  #
-  # After initial bootstrap,
-  # * set the run_state to 'start' in the lines below
-  # * run `knife cluster sync bonobo-master` to push those values up to chef
-  # * run `knife cluster kick bonobo-master` to re-converge
-  #
-  # Once you see 'nodes=1' on jobtracker (host:50030) & namenode (host:50070)
-  # control panels, you're good to launch the rest of the cluster.
-  #
   facet(:zookeeper).facet_role.override_attributes({
       :zookeeper => {
         :server      => { :run_state => :start, },
@@ -68,10 +58,10 @@ ClusterChef.cluster 'zookeeper_demo' do
     device              '/dev/sdk' # note: will appear as /dev/xvdk on natty
     mount_point         '/data/ebs1'
     attachable          :ebs
+    snapshot_name       :blank_xfs
     resizable           true
-    snapshot_name       :blank_xfs   # 1 GB xfs -- will growfs on launch
     tags( :zookeeper_data => true, :zookeeper_journal => false, :persistent => true, :local => false, :bulk => true, :fallback => false )
-    create_at_launch    true # if no volume is tagged for that node, it will be created
+    create_at_launch    true
   end
 
 end

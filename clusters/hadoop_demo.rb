@@ -76,8 +76,8 @@ ClusterChef.cluster 'hadoop_demo' do
   #
   # After initial bootstrap,
   # * set the run_state to 'start' in the lines below
-  # * run `knife cluster sync bonobo-master` to push those values up to chef
-  # * run `knife cluster kick bonobo-master` to re-converge
+  # * run `knife cluster sync hadoop_demo-master` to push those values up to chef
+  # * run `knife cluster kick hadoop_demo-master` to re-converge
   #
   # Once you see 'nodes=1' on jobtracker (host:50030) & namenode (host:50070)
   # control panels, you're good to launch the rest of the cluster.
@@ -93,7 +93,7 @@ ClusterChef.cluster 'hadoop_demo' do
     })
 
   # #
-  # # Attach 600GB persistent storage to each node, and use it for all hadoop data_dirs.
+  # # Attach persistent storage to each node, and use it for all hadoop data_dirs.
   # #
   # # Modify the snapshot ID and attached volume size to suit
   # #
@@ -101,12 +101,13 @@ ClusterChef.cluster 'hadoop_demo' do
   #   defaults
   #   size                200
   #   keep                true
-  #   device              '/dev/sdj' # note: will appear as /dev/xvdi on natty
+  #   device              '/dev/sdj' # note: will appear as /dev/xvdj on natty
   #   mount_point         '/data/ebs1'
   #   attachable          :ebs
-  #   snapshot_id         'REPLACE_THIS_PLEASE'
+  #   snapshot_name       :blank_xfs
+  #   resizable           true
   #   tags( :hadoop_data => true, :persistent => true, :local => false, :bulk => true, :fallback => false )
-  #   create_at_launch    true # if no volume is tagged for that node, it will be created
+  #   create_at_launch    true
   # end
 
 end

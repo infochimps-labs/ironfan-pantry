@@ -27,12 +27,21 @@ ClusterChef.cluster 'elasticsearch_demo' do
 
   facet :elasticsearch do
     instances           1
+    recipe              'volumes::build_raid', :first
     recipe              'tuning'
-    # recipe            'volumes::build_raid'
+    #
     recipe              'elasticsearch::default'
     recipe              'elasticsearch::install_from_release'
     recipe              'elasticsearch::install_plugins'
     recipe              'elasticsearch::server'
+
+    cloud.mount_ephemerals
+    raid_group(:md0) do
+      device            '/dev/md0'
+      mount_point       '/raid0'
+      level             0
+      sub_volumes       [:ephemeral0, :ephemeral1, :ephemeral2, :ephemeral3]
+    end
   end
 
 end
