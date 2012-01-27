@@ -1,0 +1,77 @@
+<% server_type = @server_init[:type] %>
+# Ubuntu upstart file at /etc/init/<%= @server_init[:basename] %>.conf
+# Managed by Chef, no touchy.
+
+pre-start script
+    <% if server_type == 'mongodb' %>
+    mkdir -p <%= node[:mongodb][:datadir] %>
+    mkdir -p <%= File.dirname(node[:mongodb][:logfile]) %>
+    <% else %>
+    mkdir -p <%= node[:mongodb][server_type][:datadir] %>
+    mkdir -p <%= File.dirname(node[:mongodb][server_type][:logfile]) %>
+    <% end %>
+end script
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+script
+  ENABLE_MONGODB="yes"
+
+  DAEMON=<%= @server_init[:daemon] %>
+  NAME=<%= @server_init[:basename] %>
+
+  # Default defaults.  Can be overridden by the /etc/default/$NAME
+  <% if server_type == 'mongodb' %>
+  CONF=<%= @node[:mongodb][:config] %>
+  PIDFILE=<%= @node[:mongodb][:pidfile] %>
+  <% else %>
+  CONF=<%= @node[:mongodb][server_type][:config] %>
+  PIDFILE=<%= @node[:mongodb][server_type][:pidfile] %>
+  <% end %>
+
+  <% case server_type; when 'config_server' %>
+  CONFIGSVR=--configsvr
+  <% when 'mongos' %>
+  CONFIGDB="--configdb <%= @configdb_server_list %>"
+  <% else %>
+  REPLSET=<%= @node[:mongodb][:replica_set] %>
+  SHARDSVR=<%= @node[:mongodb][:shard_server] %>
+  <% end %>
+
+  <% unless server_type == 'mongos' %>
+  REST=<%= @node[:mongodb][:rest] %>
+  SYNCDELAY="--syncdelay <%= @node[:mongodb][:syncdelay] %>"
+  <% end %>
+
+  if [ -f /etc/default/$NAME ]; then . /etc/default/$NAME; fi
+
+  # Check for daemon bin
+  if test ! -x $DAEMON; then
+    echo "Could not find $DAEMON"
+    exit 0
+  fi
+
+  # This will enable the REST Interface for MongoDB if told so
+  if test "x$REST" = "xtrue"; then
+    REST=--rest
+  else
+    REST=
+  fi
+
+  # This will make the server part of a replica set
+  if test "x$REPLSET" = "x"; then
+    REPLSET=
+  else
+    REPLSET="--replSet $REPLSET"
+  fi
+
+  # This will make the server participate in sharding
+  if test "x$SHARDSVR" = "xtrue"; then
+    SHARDSVR=--shardsvr
+  else
+    SHARDSVR=
+  fi
+
+  if [ "x$ENABLE_MONGODB" = "xyes" ]; then exec start-stop-daemon --start --quiet --chuid mongodb --exec  /usr/bin/$DAEMON -- $REST $REPLSET $SHARDSVR $CONFIGSVR $SYNCDELAY $CONFIGDB --config $CONF; fi
+end script
