@@ -9,6 +9,7 @@ echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nTidy up the joint for the next 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\napt-get update/upgrade/cleanup:\n"
 apt-get -y update  ;
 apt-get -y upgrade ;
+dpkg --configure -a
 apt-get -f install ;
 apt-get clean ;
 
