@@ -8,27 +8,15 @@ Sets up [Resque](https://github.com/defunkt/resque), "a Redis-backed Ruby librar
 
 ## Attributes
 
-* `[:resque][:dir]`                   -  (default: "/data/db/resque")
 * `[:resque][:log_dir]`               -  (default: "/var/log/resque")
 * `[:resque][:tmp_dir]`               -  (default: "/data/db/resque/tmp")
 * `[:resque][:data_dir]`              -  (default: "/data/db/resque/data")
 * `[:resque][:journal_dir]`           -  (default: "/data/db/resque/swap")
 * `[:resque][:conf_dir]`              -  (default: "/etc/resque")
 * `[:resque][:db_basename]`           -  (default: "resque_queue.rdb")
-* `[:resque][:cluster_name]`          -  (default: "cluster_name")
 * `[:resque][:namespace]`             -  (default: "cluster_name")
 * `[:resque][:user]`                  -  (default: "resque")
 * `[:resque][:group]`                 -  (default: "resque")
-* `[:resque][:queue_addr]`            -  (default: "10.20.30.40")
-* `[:resque][:queue_port]`            -  (default: "6388")
-* `[:resque][:dashboard_port]`        -  (default: "6389")
-* `[:resque][:redis_client_timeout]`  -  (default: "300")
-* `[:resque][:redis_glueoutputbuf]`   -  (default: "yes")
-* `[:resque][:redis_vm_enabled]`      -  (default: "yes")
-* `[:resque][:redis_vm_max_memory]`   -  (default: "128m")
-* `[:resque][:redis_vm_pages]`        -  (default: "16777216")
-* `[:resque][:redis_saves]`           - 
-* `[:resque][:redis_slave]`           -  (default: "no")
 * `[:resque][:app_env]`               -  (default: "production")
 * `[:resque][:home_dir]`              -  (default: "/data/db/resque")
 * `[:resque][:pid_dir]`               -  (default: "/var/run/resque")
@@ -45,6 +33,7 @@ Sets up [Resque](https://github.com/defunkt/resque), "a Redis-backed Ruby librar
 * `dedicated_redis`          - Dedicated redis -- a redis solely for this resque
 * `default`                  - Base configuration for resque
 * `server`                   - Server
+
 ## Integration
 
 Supports platforms: debian and ubuntu
