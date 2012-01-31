@@ -7,8 +7,7 @@ default[:cassandra][:cluster_name]      = node[:cluster_name] || "Test"
 #
 # Make a databag called 'cassandra', with an element 'clusters'.
 # Within that, define a hash named for your cluster (the setting right above).
-# now a keyspace option
-# default[:cassandra][:gc_grace]                      = 864_000
+#
 # - keys_cached:                        specifies the number of keys per sstable whose
 #   locations we keep in memory in "mostly LRU" order.  (JUST the key
 #   locations, NOT any column values.) Specify a fraction (value less
