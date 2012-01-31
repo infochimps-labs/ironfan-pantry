@@ -12,6 +12,7 @@ A very basic recipe to install jruby-1.5.6 from a downloaded tarball.
 * `[:jruby][:release_url]`            - JRuby release tarball to install (default: "http://jruby.org.s3.amazonaws.com/downloads/:version:/jruby-bin-:version:.tar.gz")
 * `[:jruby][:version]`                -  (default: "1.6.5")
 * `[:jruby][:ruby_version]`           -  (default: "1.9")
+  - what version of ruby to behave like
 * `[:java][:java_home]`               -  (default: "/usr/lib/jvm/java-6-sun/jre")
 
 ## Recipes 

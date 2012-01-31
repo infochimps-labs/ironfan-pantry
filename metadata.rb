@@ -33,7 +33,7 @@ attribute "jruby/version",
 
 attribute "jruby/ruby_version",
   :display_name          => "",
-  :description           => "",
+  :description           => "what version of ruby to behave like",
   :default               => "1.9"
 
 attribute "java/java_home",
