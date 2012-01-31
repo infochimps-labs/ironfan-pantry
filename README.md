@@ -17,6 +17,7 @@ Sets up [Resque](https://github.com/defunkt/resque), "a Redis-backed Ruby librar
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * runit
 * redis
 
