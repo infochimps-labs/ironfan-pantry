@@ -26,7 +26,7 @@ From the client machine,
 
 * `[:nfs][:exports]`                  - NFS Exports
   - Describes the volumes to export. Supply a list of pairs: <path-to-export, hash-of-NFS-options>. For example, 
-     default[:nfs][:exports] = [[ '/home', { :nfs_options => '*.internal(rw,no_root_squash,no_subtree_check)' }]]
+       default[:nfs][:exports] = [[ '/home', { :nfs_options => '*.internal(rw,no_root_squash,no_subtree_check)' }]]
 * `[:nfs][:mounts]`                   - NFS Mounts
   - The foreign volumes to mount. Uses metachef discovery to find the NFS server for that volume. Supply a list of pairs: <path-to-export, hash-of-NFS-options>.
 * `[:nfs][:portmap_port]`             -  (default: "111")
