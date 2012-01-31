@@ -77,7 +77,10 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:hadoop][:log_retention_hours]`   -  (default: "24")
   - See [Hadoop Log Location and Retention](http://www.cloudera.com/blog/2010/11/hadoop-log-location-and-retention) for more.
 * `[:hadoop][:java_heap_size_max]`    -  (default: "1000")
+  - uses /etc/default/hadoop-0.20 to set the hadoop daemon's java_heap_size_max
 * `[:hadoop][:min_split_size]`        -  (default: "134217728")
+  - You may wish to set the following to the same as your HDFS block size, esp if
+    you're seeing issues with s3:// turning 1TB files into 30_000+ map tasks
 * `[:hadoop][:s3_block_size]`         - fs.s3n.block.size (default: "134217728")
   - Block size to use when reading files using the native S3 filesystem (s3n: URIs).
 * `[:hadoop][:hdfs_block_size]`       - dfs.block.size (default: "134217728")
@@ -89,6 +92,8 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:hadoop][:io_sort_factor]`        -  (default: "25")
 * `[:hadoop][:io_sort_mb]`            -  (default: "250")
 * `[:hadoop][:extra_classpaths]`      - 
+  - Other recipes can add to this under their own special key, for instance
+    node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'
 * `[:hadoop][:home_dir]`              -  (default: "/usr/lib/hadoop")
 * `[:hadoop][:conf_dir]`              -  (default: "/etc/hadoop/conf")
 * `[:hadoop][:pid_dir]`               -  (default: "/var/run/hadoop")
@@ -96,6 +101,7 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:hadoop][:tmp_dir]`               - 
 * `[:hadoop][:user]`                  -  (default: "hdfs")
 * `[:hadoop][:define_topology]`       - 
+  - define a rack topology? if false (default), all nodes are in the same 'rack'.
 * `[:hadoop][:jobtracker][:handler_count]` -  (default: "40")
 * `[:hadoop][:jobtracker][:run_state]` -  (default: "stop")
 * `[:hadoop][:jobtracker][:java_heap_size_max]` - 
@@ -107,14 +113,30 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:hadoop][:jobtracker][:jmx_dash_port]` -  (default: "8008")
 * `[:hadoop][:namenode][:handler_count]` -  (default: "40")
 * `[:hadoop][:namenode][:run_state]`  -  (default: "stop")
+  - What states to set for services.
+    You want to bring the big daemons up deliberately on initial start.
+    Override in your cluster definition when things are stable.
 * `[:hadoop][:namenode][:java_heap_size_max]` - 
 * `[:hadoop][:namenode][:port]`       -  (default: "8020")
 * `[:hadoop][:namenode][:dash_port]`  -  (default: "50070")
 * `[:hadoop][:namenode][:user]`       -  (default: "hdfs")
 * `[:hadoop][:namenode][:data_dirs]`  - 
+  - These are handled by volumes, which imprints them on the node.
+    If you set an explicit value it will be used and no discovery is done.
+    Chef Attr                    Owner           Permissions  Path                                     Hadoop Attribute
+    [:namenode   ][:data_dir]    hdfs:hadoop     drwx------   {persistent_vols}/hadoop/hdfs/name       dfs.name.dir
+    [:sec..node  ][:data_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/secondary  fs.checkpoint.dir
+    [:datanode   ][:data_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/data       dfs.data.dir
+    [:tasktracker][:scratch_dir] mapred:hadoop   drwxr-xr-x   {scratch_vols   }/hadoop/hdfs/name       mapred.local.dir
+    [:jobtracker ][:system_hdfsdir]  mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/system   mapred.system.dir
+    [:jobtracker ][:staging_hdfsdir] mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/staging  mapred.system.dir
+    Important: In CDH3, the mapred.system.dir directory must be located inside a directory that is owned by mapred. For example, if mapred.system.dir is specified as /mapred/system, then /mapred must be owned by mapred. Don't, for example, specify /mrsystem as mapred.system.dir because you don't want / owned by mapred.
 * `[:hadoop][:namenode][:jmx_dash_port]` -  (default: "8004")
 * `[:hadoop][:datanode][:handler_count]` -  (default: "8")
 * `[:hadoop][:datanode][:run_state]`  -  (default: "start")
+  - You can just kick off the worker daemons, they'll retry. On a full-cluster
+    stop/start (or any other time the main daemons' ip address changes) however
+    you will need to converge chef and then restart them all.
 * `[:hadoop][:datanode][:java_heap_size_max]` - 
 * `[:hadoop][:datanode][:port]`       -  (default: "50010")
 * `[:hadoop][:datanode][:ipc_port]`   -  (default: "50020")
@@ -139,6 +161,7 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:hadoop][:balancer][:run_state]`  -  (default: "stop")
 * `[:hadoop][:balancer][:jmx_dash_port]` -  (default: "8007")
 * `[:hadoop][:balancer][:max_bandwidth]` -  (default: "1048576")
+  - bytes per second -- 1MB/s by default
 * `[:groups][:hadoop][:gid]`          -  (default: "300")
 * `[:groups][:supergroup][:gid]`      -  (default: "301")
 * `[:groups][:hdfs][:gid]`            -  (default: "302")

@@ -99,12 +99,12 @@ attribute "hadoop/log_retention_hours",
 
 attribute "hadoop/java_heap_size_max",
   :display_name          => "",
-  :description           => "",
+  :description           => "uses /etc/default/hadoop-0.20 to set the hadoop daemon's java_heap_size_max",
   :default               => "1000"
 
 attribute "hadoop/min_split_size",
   :display_name          => "",
-  :description           => "",
+  :description           => "You may wish to set the following to the same as your HDFS block size, esp if\nyou're seeing issues with s3:// turning 1TB files into 30_000+ map tasks",
   :default               => "134217728"
 
 attribute "hadoop/s3_block_size",
@@ -149,7 +149,7 @@ attribute "hadoop/io_sort_mb",
 
 attribute "hadoop/extra_classpaths",
   :display_name          => "",
-  :description           => "",
+  :description           => "Other recipes can add to this under their own special key, for instance\nnode[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'",
   :default               => ""
 
 attribute "hadoop/home_dir",
@@ -184,7 +184,7 @@ attribute "hadoop/user",
 
 attribute "hadoop/define_topology",
   :display_name          => "",
-  :description           => "",
+  :description           => "define a rack topology? if false (default), all nodes are in the same 'rack'.",
   :default               => ""
 
 attribute "hadoop/jobtracker/handler_count",
@@ -239,7 +239,7 @@ attribute "hadoop/namenode/handler_count",
 
 attribute "hadoop/namenode/run_state",
   :display_name          => "",
-  :description           => "",
+  :description           => "What states to set for services.\nYou want to bring the big daemons up deliberately on initial start.\nOverride in your cluster definition when things are stable.",
   :default               => "stop"
 
 attribute "hadoop/namenode/java_heap_size_max",
@@ -264,7 +264,7 @@ attribute "hadoop/namenode/user",
 
 attribute "hadoop/namenode/data_dirs",
   :display_name          => "",
-  :description           => "",
+  :description           => "These are handled by volumes, which imprints them on the node.\nIf you set an explicit value it will be used and no discovery is done.\nChef Attr                    Owner           Permissions  Path                                     Hadoop Attribute\n[:namenode   ][:data_dir]    hdfs:hadoop     drwx------   {persistent_vols}/hadoop/hdfs/name       dfs.name.dir\n[:sec..node  ][:data_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/secondary  fs.checkpoint.dir\n[:datanode   ][:data_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/data       dfs.data.dir\n[:tasktracker][:scratch_dir] mapred:hadoop   drwxr-xr-x   {scratch_vols   }/hadoop/hdfs/name       mapred.local.dir\n[:jobtracker ][:system_hdfsdir]  mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/system   mapred.system.dir\n[:jobtracker ][:staging_hdfsdir] mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/staging  mapred.system.dir\nImportant: In CDH3, the mapred.system.dir directory must be located inside a directory that is owned by mapred. For example, if mapred.system.dir is specified as /mapred/system, then /mapred must be owned by mapred. Don't, for example, specify /mrsystem as mapred.system.dir because you don't want / owned by mapred.",
   :default               => ""
 
 attribute "hadoop/namenode/jmx_dash_port",
@@ -279,7 +279,7 @@ attribute "hadoop/datanode/handler_count",
 
 attribute "hadoop/datanode/run_state",
   :display_name          => "",
-  :description           => "",
+  :description           => "You can just kick off the worker daemons, they'll retry. On a full-cluster\nstop/start (or any other time the main daemons' ip address changes) however\nyou will need to converge chef and then restart them all.",
   :type                  => "array",
   :default               => "start"
 
@@ -401,7 +401,7 @@ attribute "hadoop/balancer/jmx_dash_port",
 
 attribute "hadoop/balancer/max_bandwidth",
   :display_name          => "",
-  :description           => "",
+  :description           => "bytes per second -- 1MB/s by default",
   :default               => "1048576"
 
 attribute "groups/hadoop/gid",

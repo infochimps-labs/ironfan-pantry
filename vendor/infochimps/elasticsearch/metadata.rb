@@ -220,7 +220,7 @@ attribute "elasticsearch/proxy_hostname",
 
 attribute "elasticsearch/log_level/default",
   :display_name          => "",
-  :description           => "",
+  :description           => "most of the log lines are manageable at level 'DEBUG'\nthe voluminous ones are broken out separately",
   :default               => "DEBUG"
 
 attribute "elasticsearch/log_level/index_store",

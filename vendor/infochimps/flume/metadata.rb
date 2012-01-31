@@ -47,7 +47,7 @@ attribute "flume/plugins",
 
 attribute "flume/classes",
   :display_name          => "",
-  :description           => "",
+  :description           => "classes to include as plugins",
   :default               => ""
 
 attribute "flume/classpath",
@@ -77,7 +77,7 @@ attribute "flume/home_dir",
 
 attribute "flume/conf_dir",
   :display_name          => "",
-  :description           => "",
+  :description           => "default[:flume][:tmp_dir]               = '/mnt/flume/tmp'",
   :default               => "/etc/flume/conf"
 
 attribute "flume/log_dir",
