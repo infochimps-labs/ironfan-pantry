@@ -22,6 +22,7 @@ The server recipe additionally
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * java
 * apt
 * runit
