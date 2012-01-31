@@ -6,22 +6,6 @@ Statsd, a non-blocking proxy to graphite: counting and timing for great justice
 
 Installs statsd daemon for recording arbitrary information to graphite
 
-## Attributes
-
-* `[:statsd][:git_repo]`              -  (default: "https://github.com/etsy/statsd.git")
-* `[:statsd][:port]`                  -  (default: "8125")
-* `[:statsd][:flush_interval]`        -  (default: "10000")
-* `[:statsd][:home_dir]`              -  (default: "/usr/local/share/statsd")
-* `[:statsd][:conf_dir]`              -  (default: "/etc/statsd")
-* `[:statsd][:log_dir]`               -  (default: "/var/log/statsd")
-* `[:statsd][:pid_dir]`               -  (default: "/var/run/statsd")
-* `[:statsd][:user]`                  -  (default: "statsd")
-* `[:statsd][:run_state]`             -  (default: "start")
-* `[:statsd][:graphite][:port]`       -  (default: "2003")
-* `[:statsd][:graphite][:addr]`       -  (default: "localhost")
-* `[:groups][:statsd][:gid]`          -  (default: "310")
-* `[:users][:statsd][:uid]`           -  (default: "310")
-
 ## Recipes 
 
 * `default`                  - Base configuration for statsd
@@ -37,6 +21,22 @@ Cookbook dependencies:
 * graphite
 * metachef
 
+
+## Attributes
+
+* `[:statsd][:git_repo]`              -  (default: "https://github.com/etsy/statsd.git")
+* `[:statsd][:port]`                  -  (default: "8125")
+* `[:statsd][:flush_interval]`        -  (default: "10000")
+* `[:statsd][:home_dir]`              -  (default: "/usr/local/share/statsd")
+* `[:statsd][:conf_dir]`              -  (default: "/etc/statsd")
+* `[:statsd][:log_dir]`               -  (default: "/var/log/statsd")
+* `[:statsd][:pid_dir]`               -  (default: "/var/run/statsd")
+* `[:statsd][:user]`                  -  (default: "statsd")
+* `[:statsd][:run_state]`             -  (default: "start")
+* `[:statsd][:graphite][:port]`       -  (default: "2003")
+* `[:statsd][:graphite][:addr]`       -  (default: "localhost")
+* `[:groups][:statsd][:gid]`          -  (default: "310")
+* `[:users][:statsd][:uid]`           -  (default: "310")
 
 ## License and Author
 
