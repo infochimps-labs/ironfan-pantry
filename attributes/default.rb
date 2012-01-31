@@ -49,7 +49,7 @@ default[:zabbix][:web][:timezone]       = 'Europe/London' # UTC
 # API
 default[:zabbix][:api][:path]     = 'api_jsonrpc.php'
 default[:zabbix][:api][:username] = ''
-default[:zabbix][:web][:password] = ''
+default[:zabbix][:api][:password] = ''
 
 # SMTP
 default[:zabbix][:smtp][:from]     = 'fixme@example.com'
