@@ -1,8 +1,6 @@
 # package_set chef cookbook
 
-Installs extra packages that don't warrant their own cookbook (tree, htop,
-colordiff and so on), yet still provides visibility, dev-vs-production
-tradeoffs, and fine-grained version control where necessary.
+Installs extra packages that don't warrant their own cookbook (tree, htop, colordiff and so on), yet still provides visibility, dev-vs-production tradeoffs, and fine-grained version control where necessary.
 
 ## Overview
 
@@ -47,26 +45,28 @@ must expressly add the set 'foo' to your node[:package_set][:install] attribute.
 
 ## Attributes
 
-* `[:package_set][:install]`             - 
-* `[:package_set][:pkgs][:base]`         - 
-* `[:package_set][:pkgs][:dev]`          - 
-* `[:package_set][:pkgs][:sysadmin]`     - 
-* `[:package_set][:pkgs][:text]`         - 
-* `[:package_set][:pkgs][:ec2]`          - 
-* `[:package_set][:pkgs][:vagrant]`      - 
-* `[:package_set][:pkgs][:python]`       - 
-* `[:package_set][:pkgs][:datatools]`    - 
-* `[:package_set][:pkgs][:emacs]`        - 
-* `[:package_set][:gems][:base]`         - 
-* `[:package_set][:gems][:dev]`          - 
-* `[:package_set][:gems][:sysadmin]`     - 
-* `[:package_set][:gems][:text]`         - 
-* `[:package_set][:gems][:ec2]`          - 
-* `[:package_set][:gems][:vagrant]`      - 
+* `[:package_set][:install]`          - Package sets to install
+  - Choose the package sets to install. See package_set/pkgs and package_set/gems for their contents.
+* `[:package_set][:pkgs][:base]`      - Base set of packages, suitable for all machines
+* `[:package_set][:pkgs][:dev]`       - 
+* `[:package_set][:pkgs][:sysadmin]`  - 
+* `[:package_set][:pkgs][:text]`      - 
+* `[:package_set][:pkgs][:ec2]`       - 
+* `[:package_set][:pkgs][:vagrant]`   - 
+* `[:package_set][:pkgs][:python]`    - 
+* `[:package_set][:pkgs][:datatools]` - 
+* `[:package_set][:pkgs][:emacs]`     - 
+* `[:package_set][:gems][:base]`      - 
+* `[:package_set][:gems][:dev]`       - 
+* `[:package_set][:gems][:sysadmin]`  - 
+* `[:package_set][:gems][:text]`      - 
+* `[:package_set][:gems][:ec2]`       - 
+* `[:package_set][:gems][:vagrant]`   - 
 
 ## Recipes 
 
 * `default`                  - Base configuration for package_set
+
 ## Integration
 
 Supports platforms: debian and ubuntu

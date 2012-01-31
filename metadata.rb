@@ -6,6 +6,7 @@ version          "3.0.3"
 
 description      "Installs extra packages that don't warrant their own cookbook (tree, htop, colordiff and so on), yet still provides visibility, dev-vs-production tradeoffs, and fine-grained version control where necessary."
 
+
 recipe           "package_set::default",               "Base configuration for package_set"
 
 %w[ debian ubuntu ].each do |os|
@@ -20,21 +21,21 @@ attribute "package_set/install",
 
 attribute "package_set/pkgs/base",
   :display_name          => "Base set of packages, suitable for all machines",
-  :description           => "",
+  :description           => "Base set of packages, suitable for all machines",
   :type                  => "array",
-  :default               => ["tree", "git", "zip", "openssl"]
+  :default               => ["tree", "git", "zip", "openssl", "wget", "curl", "runit", "libyaml-dev", "libxslt1-dev"]
 
 attribute "package_set/pkgs/dev",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["emacs23-nox", "elinks", "colordiff", "ack", "exuberant-ctags"]
+  :default               => ["emacs23-nox", "elinks", "w3m-el", "colordiff", "ack", "exuberant-ctags"]
 
 attribute "package_set/pkgs/sysadmin",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["ifstat", "atop", "htop", "tree", "chkconfig", "sysstat", "htop", "nmap"]
+  :default               => ["ifstat", "htop", "tree", "chkconfig", "sysstat", "nmap", "python-software-properties"]
 
 attribute "package_set/pkgs/text",
   :display_name          => "",
@@ -52,7 +53,7 @@ attribute "package_set/pkgs/vagrant",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["ifstat", "htop", "tree", "chkconfig", "sysstat", "htop", "nmap"]
+  :default               => ["ifstat", "htop", "tree", "chkconfig", "sysstat", "nmap"]
 
 attribute "package_set/pkgs/python",
   :display_name          => "",
@@ -76,13 +77,13 @@ attribute "package_set/gems/base",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["bundler", "rake"]
+  :default               => ["bundler"]
 
 attribute "package_set/gems/dev",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["activesupport", "activemodel", "extlib", "json", "yajl-ruby", "awesome_print", "addressable", "cheat", "yard", "jeweler", "rspec", "watchr", "pry", "configliere", "gorillib", "highline", "formatador", "choice", "rest-client", "wirble", "hirb"]
+  :default               => ["extlib", "json", "yajl-ruby", "awesome_print", "addressable", "cheat", "rest-client", "yard", "jeweler", "rspec", "watchr", "pry", "wirble", "hirb", "highline", "formatador", "configliere", "gorillib", "wukong", "swineherd", "hackboxen", {:name=>"activesupport", :version=>"3.1.0"}, {:name=>"activemodel", :version=>"3.1.0"}]
 
 attribute "package_set/gems/sysadmin",
   :display_name          => "",
@@ -99,10 +100,10 @@ attribute "package_set/gems/ec2",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["fog", "right_aws"]
+  :default               => ["fog", "right_aws", "cluster_chef"]
 
 attribute "package_set/gems/vagrant",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["vagrant"]
+  :default               => ["vagrant", "veewee", "cluster_chef"]
