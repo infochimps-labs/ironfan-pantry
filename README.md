@@ -1,6 +1,6 @@
 # nfs chef cookbook
 
-Configures NFS
+NFS: network shared filesystem
 
 ## Overview
 
@@ -28,7 +28,11 @@ From the client machine,
   - Describes the volumes to export. Supply a list of pairs: <path-to-export, hash-of-NFS-options>. For example, 
      default[:nfs][:exports] = [[ '/home', { :nfs_options => '*.internal(rw,no_root_squash,no_subtree_check)' }]]
 * `[:nfs][:mounts]`                   - NFS Mounts
-  - The foreign volumes to mount. Uses metachef to find the NFS server for that volume. Supply a list of pairs: <path-to-export, hash-of-NFS-options>.
+  - The foreign volumes to mount. Uses metachef discovery to find the NFS server for that volume. Supply a list of pairs: <path-to-export, hash-of-NFS-options>.
+* `[:nfs][:portmap_port]`             -  (default: "111")
+* `[:nfs][:nfsd_port]`                -  (default: "2049")
+* `[:nfs][:mountd_port]`              -  (default: "45560")
+* `[:nfs][:statd_port]`               -  (default: "56785")
 * `[:firewall][:port_scan][:portmap]` - 
 * `[:firewall][:port_scan][:nfsd]`    - 
 * `[:firewall][:port_scan][:mountd]`  - 
@@ -36,15 +40,16 @@ From the client machine,
 
 ## Recipes 
 
-* `client`                   - NFS client: uses metachef discovery to find its server, and mounts the corresponding NFS directory
+* `client`                   - NFS client: uses metachef to discover its server, and mounts the corresponding NFS directory
 * `default`                  - Base configuration for nfs
-* `server`                   - NFS server: exports directories via NFS; announces using provides_service.
+* `server`                   - NFS server: exports directories via NFS; announces using metachef.
+
 ## Integration
 
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
-* provides_service
+* metachef
 
 
 ## License and Author
