@@ -8,13 +8,6 @@ Has recipes to:
 
 * **create a raid volume of ephememeral drives**
 
-## Attributes
-
-* `[:ec2][:raid][:level]`             - Raid level to apply to the volume. (default: "0")
-  - Raid level to apply to the volume. See the mdadm documentation
-* `[:ec2][:raid][:read_ahead]`        -  (default: "65536")
-* `[:ec2][:raid][:mount]`             -  (default: "/raid0")
-
 ## Recipes 
 
 * `attach_ebs`               - Attach EBS volumes as directed by node[:volumes]
@@ -29,6 +22,13 @@ Cookbook dependencies:
 * volumes
 * metachef
 
+
+## Attributes
+
+* `[:ec2][:raid][:level]`             - Raid level to apply to the volume. (default: "0")
+  - Raid level to apply to the volume. See the mdadm documentation
+* `[:ec2][:raid][:read_ahead]`        -  (default: "65536")
+* `[:ec2][:raid][:mount]`             -  (default: "/raid0")
 
 ## License and Author
 
