@@ -10,7 +10,7 @@ depends          "aws"
 depends          "volumes"
 depends          "metachef"
 
-recipe           "volumes_ebs::default",               "Placeholder cookbook"
+recipe           "volumes_ebs::default",               "Sources dependencies but does nothing. Call volumes_ebs::attach_ebs or similar."
 recipe           "volumes_ebs::attach_ebs",            "Attach EBS volumes as directed by node[:volumes]"
 
 %w[ debian ubuntu ].each do |os|
