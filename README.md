@@ -115,6 +115,8 @@ limitations under the License.
 * `[:elasticsearch][:proxy_port]`     -  (default: "8200")
 * `[:elasticsearch][:proxy_hostname]` -  (default: "elasticsearch.yourdomain.com")
 * `[:elasticsearch][:log_level][:default]` -  (default: "DEBUG")
+  - most of the log lines are manageable at level 'DEBUG'
+    the voluminous ones are broken out separately
 * `[:elasticsearch][:log_level][:index_store]` -  (default: "INFO")
 * `[:elasticsearch][:log_level][:action_shard]` -  (default: "INFO")
 * `[:elasticsearch][:log_level][:cluster_service]` -  (default: "INFO")
