@@ -1,6 +1,6 @@
 # ganglia chef cookbook
 
-Installs/Configures ganglia
+Ganglia: a distributed high-performance monitoring system
 
 ## Overview
 
@@ -26,6 +26,7 @@ Installs/Configures ganglia
 * `default`                  - Base configuration for ganglia
 * `monitor`                  - Ganglia monitor -- discovers and sends to its ganglia_server
 * `server`                   - Ganglia server -- contact point for all ganglia_monitors
+
 ## Integration
 
 Supports platforms: debian and ubuntu
@@ -33,6 +34,7 @@ Supports platforms: debian and ubuntu
 Cookbook dependencies:
 * java
 * runit
+* volumes
 * metachef
 
 

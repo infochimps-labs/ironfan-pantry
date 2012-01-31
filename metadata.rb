@@ -8,7 +8,6 @@ description      "Ganglia: a distributed high-performance monitoring system"
 
 depends          "java"
 depends          "runit"
-
 depends          "volumes"
 depends          "metachef"
 
