@@ -8,6 +8,7 @@ description      "Grabbag of utility cookbooks"
 
 recipe           "cloud_utils::burn_ami_prep",        "Burn Ami Prep"
 recipe           "cloud_utils::virtualbox_metadata",  "Virtualbox Metadata"
+recipe           "cloud_utils::pickle_node",          "Write the node metadata out into a file for later use"
 
 %w[ debian ubuntu ].each do |os|
   supports os

@@ -18,20 +18,10 @@ recipe           "statsd::server",                     "Server"
   supports os
 end
 
-attribute "statsd/cluster_name",
-  :display_name          => "",
-  :description           => "",
-  :default               => "cluster_name"
-
 attribute "statsd/git_repo",
   :display_name          => "",
   :description           => "",
   :default               => "https://github.com/etsy/statsd.git"
-
-attribute "statsd/install_dir",
-  :display_name          => "",
-  :description           => "",
-  :default               => "/usr/src/statsd"
 
 attribute "statsd/port",
   :display_name          => "",

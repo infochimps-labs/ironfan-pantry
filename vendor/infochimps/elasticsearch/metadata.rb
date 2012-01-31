@@ -21,6 +21,7 @@ recipe           "elasticsearch::install_from_git",    "Install From Git"
 recipe           "elasticsearch::install_from_release", "Install From Release"
 recipe           "elasticsearch::install_plugins",     "Install Plugins"
 recipe           "elasticsearch::server",              "Server"
+recipe           "elasticsearch::config",              "Finalizes the config, writes out the config files"
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -35,11 +36,6 @@ attribute "elasticsearch/cluster_name",
   :display_name          => "",
   :description           => "",
   :default               => "default"
-
-attribute "elasticsearch/install_dir",
-  :display_name          => "",
-  :description           => "",
-  :default               => "/usr/local/share/elasticsearch"
 
 attribute "elasticsearch/data_root",
   :display_name          => "",
