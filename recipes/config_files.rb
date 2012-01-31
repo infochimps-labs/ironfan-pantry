@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       zookeeper
 # Description::         Config files -- include this last after discovery
-# Recipe::              default
+# Recipe::              config_files
 # Author::              Chris Howe - Infochimps, Inc
 #
 # Copyright 2010, Infochimps, Inc.

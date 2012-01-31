@@ -9,7 +9,6 @@ description      "Zookeeper, a distributed high-availability consistent datastor
 depends          "java"
 depends          "apt"
 depends          "runit"
-
 depends          "volumes"
 depends          "metachef"
 depends          "hadoop_cluster"
@@ -51,7 +50,7 @@ attribute "zookeeper/log_dir",
 attribute "zookeeper/max_client_connections",
   :display_name          => "",
   :description           => "",
-  :default               => "30"
+  :default               => "300"
 
 attribute "zookeeper/home_dir",
   :display_name          => "",
@@ -73,6 +72,61 @@ attribute "zookeeper/user",
   :display_name          => "",
   :description           => "",
   :default               => "zookeeper"
+
+attribute "zookeeper/pid_dir",
+  :display_name          => "",
+  :description           => "",
+  :default               => "/var/run/zookeeper"
+
+attribute "zookeeper/client_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "2181"
+
+attribute "zookeeper/jmx_dash_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "2182"
+
+attribute "zookeeper/leader_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "2888"
+
+attribute "zookeeper/election_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "3888"
+
+attribute "zookeeper/java_heap_size_max",
+  :display_name          => "",
+  :description           => "",
+  :default               => "1000"
+
+attribute "zookeeper/tick_time",
+  :display_name          => "",
+  :description           => "",
+  :default               => "2000"
+
+attribute "zookeeper/snapshot_trigger",
+  :display_name          => "",
+  :description           => "",
+  :default               => "100000"
+
+attribute "zookeeper/initial_timeout_ticks",
+  :display_name          => "",
+  :description           => "",
+  :default               => "10"
+
+attribute "zookeeper/sync_timeout_ticks",
+  :display_name          => "",
+  :description           => "",
+  :default               => "5"
+
+attribute "zookeeper/leader_is_also_server",
+  :display_name          => "",
+  :description           => "",
+  :default               => "auto"
 
 attribute "zookeeper/server/run_state",
   :display_name          => "",
