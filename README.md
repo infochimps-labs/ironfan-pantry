@@ -1,19 +1,31 @@
-# Dashpot chef cookbook
+# dashpot chef cookbook
 
-Lightweight dashboard for each server
+Creates and serves a lightweight pluggable dashboard for a machine
 
 ## Overview
 
+Creates and serves a lightweight pluggable dashboard for a machine
 
 ## Attributes
 
+* `[:dashpot][:conf_dir]`             -  (default: "/etc/dashpot")
+* `[:dashpot][:log_dir]`              -  (default: "/var/log/dashpot")
+* `[:dashpot][:home_dir]`             -  (default: "/var/lib/dashpot")
+* `[:dashpot][:user]`                 -  (default: "root")
+* `[:dashpot][:port]`                 -  (default: "6789")
+* `[:dashpot][:run_state]`            -  (default: "start")
+
 ## Recipes 
+
+* `default`                  - Dashboard for this machine: index of services and their dashboard snippets
+* `server`                   - Lightweight thttpd server to render dashpot dashboards
 
 ## Integration
 
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+* runit
 * metachef
 
 
