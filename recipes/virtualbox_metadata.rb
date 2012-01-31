@@ -1,5 +1,5 @@
 #
-# Cookbook Name::       metachef
+# Cookbook Name::       cloud_utils
 # Description::         Virtualbox Metadata
 # Recipe::              virtualbox_metadata
 # Author::              Philip (flip) Kromer - Infochimps, Inc
