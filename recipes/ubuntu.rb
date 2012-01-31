@@ -1,6 +1,6 @@
 #
-# Cookbook Name::       metachef
-# Description::         Dedicated Server Tuning
+# Cookbook Name::       tuning
+# Description::         Applies tuning for Ubuntu systems
 # Recipe::              ubuntu
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
