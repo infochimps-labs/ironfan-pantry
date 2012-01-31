@@ -7,4 +7,6 @@
 # Apache 2.0
 #
 
+include_recipe "database"
+
 include_recipe "zabbix::database_#{node.zabbix.database.install_method}"

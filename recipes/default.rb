@@ -7,6 +7,8 @@
 # Apache 2.0
 #
 
+include_recipe "metachef"
+
 # Create zabbix User
 daemon_user(:zabbix) do
   comment       "zabbix runner"

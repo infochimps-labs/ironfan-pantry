@@ -7,6 +7,8 @@
 # Apache 2.0
 #
 
+include_recipe "nginx"
+
 template "/etc/zabbix/php.ini" do
   source 'php.ini.erb'
   owner 'www-data'
