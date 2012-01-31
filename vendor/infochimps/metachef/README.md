@@ -2,6 +2,10 @@
 
 Cluster orchestration -- coordinates discovery, integration and decoupling of cookbooks
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/metachef](http://github.com/infochimps-cookbooks/metachef)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Cookbooks repeatably express these and other aspects:

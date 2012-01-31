@@ -2,6 +2,10 @@
 
 Addon to the volumes cookbook: Attach and mount EBS volumes on the amazon cloud
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/volumes_ebs](http://github.com/infochimps-cookbooks/volumes_ebs)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Has recipes to:

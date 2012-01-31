@@ -2,6 +2,10 @@
 
 NFS: network shared filesystem
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/nfs](http://github.com/infochimps-cookbooks/nfs)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Configures NFS.

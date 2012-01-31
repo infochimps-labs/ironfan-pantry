@@ -2,6 +2,10 @@
 
 Installs/Configures snappy, the compression codec from google
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/snappy](http://github.com/infochimps-cookbooks/snappy)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 A very basic recipe to install snappy from a downloaded tarball.

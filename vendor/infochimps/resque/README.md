@@ -2,6 +2,10 @@
 
 Installs/Configures resque
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/resque](http://github.com/infochimps-cookbooks/resque)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Sets up [Resque](https://github.com/defunkt/resque), "a Redis-backed Ruby library for creating background jobs, placing them on multiple queues, and processing them later."

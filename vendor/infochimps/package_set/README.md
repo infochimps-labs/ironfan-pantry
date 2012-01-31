@@ -2,6 +2,10 @@
 
 Installs extra packages that don't warrant their own cookbook (tree, htop, colordiff and so on), yet still provides visibility, dev-vs-production tradeoffs, and fine-grained version control where necessary.
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/package_set](http://github.com/infochimps-cookbooks/package_set)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 All but the most hermetic production machines benefit from certain base

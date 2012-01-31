@@ -2,6 +2,10 @@
 
 Installs/Configures firewall
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/firewall](http://github.com/infochimps-cookbooks/firewall)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Defines custom iptable rules when the original cookbook doesn't define iptables

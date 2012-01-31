@@ -2,6 +2,10 @@
 
 Apply OS-specific tuning using parameters set by recipes and roles
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/tuning](http://github.com/infochimps-cookbooks/tuning)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Apply OS-specific tuning using parameters set by recipes and roles

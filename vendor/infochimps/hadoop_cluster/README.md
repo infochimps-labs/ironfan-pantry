@@ -2,6 +2,10 @@
 
 Hadoop: distributed massive-scale data processing framework. Store and analyze terabyte-scale datasets with ease
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/hadoop_cluster](http://github.com/infochimps-cookbooks/hadoop_cluster)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 The hadoop_cluster cookbook lets you spin up hadoop clusters of arbitrary size, makes it easy to configure and tune them, and opens up powerful new ways to reduce your compute bill. 

@@ -2,6 +2,10 @@
 
 Creates and serves a lightweight pluggable dashboard for a machine
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/dashpot](http://github.com/infochimps-cookbooks/dashpot)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Creates and serves a lightweight pluggable dashboard for a machine

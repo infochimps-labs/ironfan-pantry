@@ -2,6 +2,10 @@
 
 Ganglia: a distributed high-performance monitoring system
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/ganglia](http://github.com/infochimps-cookbooks/ganglia)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Installs/Configures ganglia

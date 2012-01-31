@@ -2,6 +2,10 @@
 
 Pig: a data analysis program for hadoop. It's like SQL but with less suck and more scalable.
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/pig](http://github.com/infochimps-cookbooks/pig)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 This cookbook

@@ -2,6 +2,10 @@
 
 Cassandra: a massively scalable high-performance distributed storage system
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/cassandra](http://github.com/infochimps-cookbooks/cassandra)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 # Cassandra  Cluster

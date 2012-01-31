@@ -2,6 +2,10 @@
 
 Elasticsearch: a distributed full-text search database based on Lucene. You know, for search
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/elasticsearch](http://github.com/infochimps-cookbooks/elasticsearch)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 = THIS IS THE INFOCHIMPS VERSION

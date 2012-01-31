@@ -2,6 +2,10 @@
 
 Statsd, a non-blocking proxy to graphite: counting and timing for great justice
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/statsd](http://github.com/infochimps-cookbooks/statsd)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Installs statsd daemon for recording arbitrary information to graphite

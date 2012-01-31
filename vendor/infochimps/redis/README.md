@@ -2,6 +2,10 @@
 
 Redis: a fast, flexible datastore offering an extremely useful set of data structure primitives
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/redis](http://github.com/infochimps-cookbooks/redis)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Redis, a fast lightweight database

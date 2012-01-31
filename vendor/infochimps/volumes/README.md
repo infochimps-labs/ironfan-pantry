@@ -2,6 +2,10 @@
 
 Mounts volumes as directed by node metadata. Can attach external cloud drives, such as ebs volumes.
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/volumes](http://github.com/infochimps-cookbooks/volumes)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 This is a set of simple helpers for assigning components their locations on disk according to these common use cases:

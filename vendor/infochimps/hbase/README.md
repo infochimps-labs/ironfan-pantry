@@ -2,6 +2,10 @@
 
 HBase: a massively-scalable high-throughput datastore based on the Hadoop HDFS
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/hbase](http://github.com/infochimps-cookbooks/hbase)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Installs/Configures HBase

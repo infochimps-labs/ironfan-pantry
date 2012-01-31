@@ -2,6 +2,10 @@
 
 Installs/Configures install_from
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/install_from](http://github.com/infochimps-cookbooks/install_from)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Does the fetch-unpack-configure-build-install dance.

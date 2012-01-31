@@ -2,6 +2,10 @@
 
 The most helpful motd file evar
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/motd](http://github.com/infochimps-cookbooks/motd)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 Only the most helpful motd file **ever**.
