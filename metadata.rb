@@ -9,12 +9,11 @@ description      "Mounts volumes as directed by node metadata. Can attach extern
 depends          "metachef"
 depends          "xfs"
 
-recipe           "volumes::default",         "Placeholder -- see other recipes in ec2 cookbook"
-recipe           "volumes::mount",           "Mount the volumes listed in node[:volumes]"
-recipe           "volumes::build_raid",      "Build a raid array of volumes as directed by node[:volumes]"
-recipe           "volumes::resize",          "Resize mountables in node[:volumes] to fill the volume"
-recipe           "volumes::format",          "Format the volumes listed in node[:volumes]"
-
+recipe           "volumes::default",                   "Placeholder -- see other recipes in ec2 cookbook"
+recipe           "volumes::mount",                     "Mount the volumes listed in node[:volumes]"
+recipe           "volumes::build_raid",                "Build a raid array of volumes as directed by node[:volumes]"
+recipe           "volumes::resize",                    "Resize mountables in node[:volumes] to fill the volume"
+recipe           "volumes::format",                    "Format the volumes listed in node[:volumes]"
 
 %w[ debian ubuntu ].each do |os|
   supports os

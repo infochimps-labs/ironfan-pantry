@@ -1,6 +1,6 @@
 # volumes chef cookbook
 
-Assign components to volumes based on characteristics (fast, bulk, persistent, etc), not by fixed path
+Mounts volumes as directed by node metadata. Can attach external cloud drives, such as ebs volumes.
 
 ## Overview
 
@@ -237,11 +237,11 @@ Besides creating the directory, we store the calculated path into
 
 ## Attributes
 
-* `[:volumes][:volumes]`    - Logical description of volumes on this machine (default: "{}")
+* `[:volumes]`                        - Logical description of volumes on this machine (default: "{}")
   - This hash maps an arbitrary name for a volume to its device path, mount point, filesystem type, and so forth.
-
+  
   volumes understands the same arguments at the `mount` resource (nb. the prefix on `options`, `dump` and `pass`):
-
+  
   * mount_point    (required to mount drive) The directory/path where the device should be mounted, eg '/data/redis'
   * device         (required to mount drive) The special block device or remote node, a label or an uuid to mount, eg '/dev/sdb'. See note below about Xen device name translation.
   * device_type    The type of the device specified -- :device, :label :uuid (default: `:device`)
@@ -249,16 +249,16 @@ Besides creating the directory, we store the calculated path into
   * mount_options  Array or string containing mount options (default: `"defaults"`)
   * mount_dump     For entry in fstab file: dump frequency in days (default: `0`)
   * mount_pass     For entry in fstab file: Pass number for fsck (default: `2`)
-
-
+  
+  
   volumes offers special helpers if you supply these additional attributes:
-
+  
   * :scratch       if true, included in `scratch_volumes` (default: `nil`)
   * :persistent    if true, included in `persistent_volumes` (default: `nil`)
   * :attachable    used by the `ec2::attach_volumes` cookbook.
-
+  
   Here is an example, typical of an amazon m1.large machine:
-
+  
     node[:volumes] = { :volumes => {
         :scratch1 => { :device => "/dev/sdb",  :mount_point => "/mnt", :scratch => true, },
         :scratch2 => { :device => "/dev/sdc",  :mount_point => "/mnt2", :scratch => true, },
@@ -266,27 +266,31 @@ Besides creating the directory, we store the calculated path into
         :hdfs2    => { :device => "/dev/sdk",  :mount_point => "/data/hdfs2", :persistent => true, :attachable => :ebs },
       }
     }
-
+  
   It describes two scratch drives (fast local storage, but wiped when the machine is torn down) and two persistent drives (network-attached virtual storage, permanently available).
-
+  
   Note: On Xen virtualization systems (eg EC2), the volumes are *renamed* from /dev/sdj to /dev/xvdj -- but the amazon API requires you refer to it as /dev/sdj.
-
+  
   If the `node[:virtualization][:system]` is 'xen' **and** there are no /dev/sdXX devices at all **and** there are /dev/xvdXX devices present, volumes will internally convert any device point of the form `/dev/sdXX` to `/dev/xvdXX`. If the example above is a Xen box, the values for :device will instead be `"/dev/xvdb"`, `"/dev/xvdc"`, `"/dev/xvdj"` and `"/dev/xvdk"`.
+  
+* `[:metachef][:aws_credential_source]` -  (default: "data_bag")
+* `[:metachef][:aws_credential_handle]` -  (default: "main")
 
-* `[:volumes][:aws_credential_source]` -  (default: "data_bag")
-* `[:volumes][:aws_credential_handle]` -  (default: "main")
-
-## Recipes
+## Recipes 
 
 * `build_raid`               - Build a raid array of volumes as directed by node[:volumes]
 * `default`                  - Placeholder -- see other recipes in ec2 cookbook
+* `format`                   - Format the volumes listed in node[:volumes]
 * `mount`                    - Mount the volumes listed in node[:volumes]
+* `resize`                   - Resize mountables in node[:volumes] to fill the volume
+
 ## Integration
 
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
 * metachef
+* xfs
 
 
 ## License and Author
