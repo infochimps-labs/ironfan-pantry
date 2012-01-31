@@ -91,9 +91,9 @@ attribute "flume/pid_dir",
   :default               => "/var/run/flume"
 
 attribute "flume/master/external_zookeeper",
-  :display_name          => "Use External Zookeeper?",
-  :description           => "false to use flume's zookeeper. True to attach to an external zookeeper.",
-  :default               => ""
+  :display_name          => "false to use flume's zookeeper. True to attach to an external zookeeper.",
+  :description           => "By default, flume installs its own zookeeper instance.  With :external_zookeeper to \"true\", the recipe will work out which machines are in the zookeeper quorum based on cluster membership; modify node[:discovers][:zookeeper_server] to have it use an external cluster",
+  :default               => "false"
 
 attribute "flume/master/zookeeper_port",
   :display_name          => "port to talk to zookeeper on (for external zookeeper)",
