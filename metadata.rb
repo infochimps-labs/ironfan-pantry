@@ -20,6 +20,7 @@ recipe           "flume::jruby_plugin",                "Jruby Plugin"
 recipe           "flume::master",                      "Configures Flume Master, installs and starts service"
 recipe           "flume::node",                        "Configures Flume Node, installs and starts service"
 recipe           "flume::test_flow",                   "Test Flow"
+recipe           "flume::config",                      "Finalizes the config, writes out the config files"
 
 %w[ debian ubuntu ].each do |os|
   supports os
