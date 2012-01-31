@@ -11,7 +11,6 @@ depends          "apt"
 depends          "runit"
 depends          "thrift"
 depends          "iptables"
-
 depends          "volumes"
 depends          "metachef"
 depends          "install_from"
@@ -382,3 +381,9 @@ attribute "users/cassandra/gid",
   :display_name          => "",
   :description           => "",
   :default               => "330"
+
+attribute "tuning/ulimit/cassandra",
+  :display_name          => "",
+  :description           => "",
+  :type                  => "hash",
+  :default               => {:nofile=>{:both=>32768}, :nproc=>{:both=>50000}}
