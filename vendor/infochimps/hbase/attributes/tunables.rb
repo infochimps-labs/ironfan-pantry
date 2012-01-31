@@ -3,19 +3,28 @@
 # Tunables
 #
 
+# set hbase user's ulimits for heavy usage
 default[:tuning][:ulimit]['hbase']  = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
 
+# total size of the JVM heap (master)
 default[:hbase][:master      ][:java_heap_size_max]     = "1000m"
+# total size of the JVM heap (regionserver)
 default[:hbase][:regionserver][:java_heap_size_max]     = "2000m"
+# size of the JVM "New Generation/Eden" heap segment (master)
 default[:hbase][:master      ][:java_heap_size_new]     = "256m"
+# size of the JVM "New Generation/Eden" heap segment (regionserver)
 default[:hbase][:regionserver][:java_heap_size_new]     = "256m"
 
 # -XX:+UseParNewGC
 
+# JVM garbage collection tuning for the hbase master
 default[:hbase][:master      ][:gc_tuning_opts]         = "-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+AggressiveOpts"
+# JVM garbage collection tuning for the hbase regionserver
 default[:hbase][:regionserver][:gc_tuning_opts]         = "-XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:+AggressiveOpts -XX:CMSInitiatingOccupancyFraction=88"
 
+# What details to log about JVM garbage collection statistics for the hbase master
 default[:hbase][:master      ][:gc_log_opts]            = "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
+# What details to log about JVM garbage collection statistics for the hbase regionserver
 default[:hbase][:regionserver][:gc_log_opts]            = "-verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps"
 
 #

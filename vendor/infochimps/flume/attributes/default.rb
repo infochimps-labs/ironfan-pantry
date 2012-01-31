@@ -32,11 +32,10 @@ default[:flume][:node    ][:run_state] = :start
 # Tunables
 #
 
-# By default, flume installs its own zookeeper instance.
-# Set :external_zookeeper to "true". The recipe will
-# work out which machines are in the zookeeper quorum
-# based on cluster membership. (See [:flume][:cluster_name]
-# above.
+# By default, flume installs its own zookeeper instance.  With
+# :external_zookeeper to "true", the recipe will work out which machines are in
+# the zookeeper quorum based on cluster membership; modify
+# node[:discovers][:zookeeper_server] to have it use an external cluster
 default[:flume][:master][:external_zookeeper] = false
 default[:flume][:master][:zookeeper_port] = 2181
 
