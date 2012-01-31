@@ -9,7 +9,8 @@ description      "Creates and serves a lightweight pluggable dashboard for a mac
 depends          "runit"
 depends          "metachef"
 
-recipe           "dashpot",       "Lightweight dashboard for this machine: index of services and their dashboard snippets"
+recipe           "dashpot",         "Dashboard for this machine: index of services and their dashboard snippets"
+recipe           "dashpot::server", "Lightweight thttpd server to render dashpot dashboards"
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -34,13 +35,3 @@ attribute "dashpot/user",
   :display_name          => "",
   :description           => "",
   :default               => "root"
-
-attribute "dashpot/thttpd/port",
-  :display_name          => "",
-  :description           => "",
-  :default               => "6789"
-
-attribute "dashpot/dashboard/run_state",
-  :display_name          => "",
-  :description           => "",
-  :default               => "start"
