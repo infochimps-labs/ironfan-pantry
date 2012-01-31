@@ -31,6 +31,11 @@ attribute "jruby/version",
   :description           => "",
   :default               => "1.6.5"
 
+attribute "jruby/ruby_version",
+  :display_name          => "",
+  :description           => "",
+  :default               => "1.9"
+
 attribute "java/java_home",
   :display_name          => "",
   :description           => "",
