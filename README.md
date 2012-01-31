@@ -22,6 +22,7 @@ Installs/Configures HBase
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * java
 * apt
 * runit
