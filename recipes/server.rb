@@ -21,6 +21,7 @@
 
 include_recipe 'ganglia'
 include_recipe "runit"
+include_recipe "volumes"
 
 daemon_user('ganglia.server')
 
