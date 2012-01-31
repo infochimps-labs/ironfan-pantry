@@ -23,5 +23,4 @@ unless( node['java']['install_flavor'] == 'sun')
   warn "Warning!! You are *strongly* recommended to use Sun Java for pig. Set node['java']['install_flavor'] = 'sun' in a role -- right now it's '#{node['java']['install_flavor']}'"
 end
 
-include_recipe "install_from"
 include_recipe "java"
