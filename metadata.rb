@@ -10,8 +10,8 @@ depends          "aws"
 depends          "volumes"
 depends          "metachef"
 
-recipe           "volumes_ec2::default",               "Placeholder cookbook"
-recipe           "volumes_ec2::attach_ebs",            "Attach EBS volumes as directed by node[:volumes]"
+recipe           "volumes_ebs::default",               "Placeholder cookbook"
+recipe           "volumes_ebs::attach_ebs",            "Attach EBS volumes as directed by node[:volumes]"
 
 %w[ debian ubuntu ].each do |os|
   supports os
