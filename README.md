@@ -22,6 +22,29 @@ This recipe relies on cluster_discovery_services to determine which nodes
 across the cluster act as flume masters, and which nodes provide zookeeper
 servers.
 
+## Recipes 
+
+* `config`                   - Finalizes the config, writes out the config files
+* `default`                  - Base configuration for flume
+* `hbase_sink_plugin`        - Hbase Sink Plugin
+* `jruby_plugin`             - Jruby Plugin
+* `master`                   - Configures Flume Master, installs and starts service
+* `node`                     - Configures Flume Node, installs and starts service
+* `test_flow`                - Test Flow
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* java
+* apt
+* runit
+* volumes
+* metachef
+* hadoop_cluster
+
+
 ## Attributes
 
 * `[:flume][:aws_access_key]`         - AWS access key used for writing to s3 buckets
@@ -65,29 +88,6 @@ servers.
 * `[:flume][:master][:zookeeper_port]` - port to talk to zookeeper on (for external zookeeper) (default: "2181")
 * `[:flume][:master][:run_state]`     -  (default: "stop")
 * `[:flume][:node][:run_state]`       -  (default: "start")
-
-## Recipes 
-
-* `config`                   - Finalizes the config, writes out the config files
-* `default`                  - Base configuration for flume
-* `hbase_sink_plugin`        - Hbase Sink Plugin
-* `jruby_plugin`             - Jruby Plugin
-* `master`                   - Configures Flume Master, installs and starts service
-* `node`                     - Configures Flume Node, installs and starts service
-* `test_flow`                - Test Flow
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* java
-* apt
-* runit
-* volumes
-* metachef
-* hadoop_cluster
-
 
 ## License and Author
 
