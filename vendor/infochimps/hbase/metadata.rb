@@ -12,6 +12,7 @@ depends          "runit"
 
 depends          "volumes"
 depends          "metachef"
+depends          "dashpot"
 
 depends          "hadoop_cluster"
 depends          "zookeeper"

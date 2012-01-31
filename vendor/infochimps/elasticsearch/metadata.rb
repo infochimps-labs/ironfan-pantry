@@ -9,17 +9,14 @@ description      "Elasticsearch: a distributed full-text search database based o
 depends          "java"
 depends          "runit"
 depends          "aws"
-depends          "nginx"
 
 depends          "volumes"
 depends          "tuning"
 depends          "metachef"
 depends          "install_from"
-depends          "dashpot"
 
 recipe           "elasticsearch::client",              "Client"
 recipe           "elasticsearch::default",             "Base configuration for elasticsearch"
-recipe           "elasticsearch::http",                "Http"
 recipe           "elasticsearch::install_from_git",    "Install From Git"
 recipe           "elasticsearch::install_from_release", "Install From Release"
 recipe           "elasticsearch::install_plugins",     "Install Plugins"

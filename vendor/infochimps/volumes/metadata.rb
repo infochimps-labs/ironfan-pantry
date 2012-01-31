@@ -7,6 +7,7 @@ version          "3.0.3"
 description      "Mounts volumes as directed by node metadata. Can attach external cloud drives, such as ebs volumes."
 
 depends          "metachef"
+depends          "xfs"
 
 recipe           "volumes::default",         "Placeholder -- see other recipes in ec2 cookbook"
 recipe           "volumes::mount",           "Mount the volumes listed in node[:volumes]"

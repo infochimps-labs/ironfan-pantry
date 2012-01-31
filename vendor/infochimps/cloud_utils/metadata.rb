@@ -6,8 +6,6 @@ version          "3.0.3"
 
 description      "Grabbag of utility cookbooks"
 
-depends          "runit"
-
 recipe           "cloud_utils::burn_ami_prep",        "Burn Ami Prep"
 recipe           "cloud_utils::virtualbox_metadata",  "Virtualbox Metadata"
 

@@ -27,6 +27,8 @@
 #
 #
 
+include_recipe 'install_from'
+
 install_from_release(:mx4j) do
   release_url   node[:cassandra][:mx4j_release_url]
   home_dir      "/usr/local/share/mx4j"

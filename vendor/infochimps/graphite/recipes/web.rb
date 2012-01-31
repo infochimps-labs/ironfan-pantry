@@ -21,6 +21,7 @@
 
 include_recipe "apache2::mod_python"
 include_recipe "runit"
+include_recipe 'install_from'
 
 package "python-cairo-dev"
 package "python-django"

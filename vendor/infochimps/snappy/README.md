@@ -19,7 +19,7 @@ From [their documentation](http://code.google.com/p/snappy/):
 > compresses at about 250 MB/sec or more and decompresses at about 500 MB/sec or
 > more.  Snappy is widely used inside Google, in everything from BigTable and
 > MapReduce to our internal RPC systems. (Snappy has previously been referred to
-> as “Zippy” in some presentations and the likes.)
+> as "Zippy" in some presentations and the likes.)
 >
 > For more information, please see the README. Benchmarks against a few other
 > compression libraries (zlib, LZO, LZF, FastLZ, and QuickLZ) are included in

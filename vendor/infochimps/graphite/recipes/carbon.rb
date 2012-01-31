@@ -20,6 +20,7 @@
 #
 
 include_recipe "runit"
+include_recipe 'install_from'
 
 package "python-twisted"
 

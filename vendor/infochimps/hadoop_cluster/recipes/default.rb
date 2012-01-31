@@ -24,6 +24,8 @@ include_recipe "apt"
 include_recipe "volumes"
 class Chef::Recipe; include HadoopCluster ; end
 
+include_recipe "metachef"
+include_recipe "tuning"
 include_recipe "hadoop_cluster::add_cloudera_repo"
 
 #

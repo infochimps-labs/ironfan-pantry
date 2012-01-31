@@ -21,8 +21,14 @@
 
 include_recipe 'xfs'
 
-package        'mdadm'
+#
+# install mdadm immediately
+#
+package('mdadm'){ action :nothing }.run_action(:install)
 
+#
+# Assemble raid groups using volumes defined in node metadata -- see volumes/libraries/volumes.rb
+#
 Metachef.raid_groups(node).each do |rg_name, rg|
 
   sub_vols = sub_volumes(node, rg)
