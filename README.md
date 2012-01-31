@@ -33,6 +33,7 @@ From the client machine,
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * metachef
 
 
