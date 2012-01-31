@@ -10,6 +10,26 @@ The server recipe additionally
 * creates the service, and applies the state given in `node[:zookeeper][:server][:daemon_state]`
 * announces zookeeper-server
 
+## Recipes 
+
+* `client`                   - Installs Zookeeper client libraries
+* `config_files`             - Config files -- include this last after discovery
+* `default`                  - Base configuration for zookeeper
+* `server`                   - Installs Zookeeper server, sets up and starts service
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* java
+* apt
+* runit
+* volumes
+* metachef
+* hadoop_cluster
+
+
 ## Attributes
 
 * `[:groups][:zookeeper][:gid]`       -  (default: "305")
@@ -61,26 +81,6 @@ The server recipe additionally
     "auto" means "true if there are 4 or more zookeepers, false otherwise"
 * `[:zookeeper][:server][:run_state]` -  (default: "stop")
 * `[:users][:zookeeper][:uid]`        -  (default: "305")
-
-## Recipes 
-
-* `client`                   - Installs Zookeeper client libraries
-* `config_files`             - Config files -- include this last after discovery
-* `default`                  - Base configuration for zookeeper
-* `server`                   - Installs Zookeeper server, sets up and starts service
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* java
-* apt
-* runit
-* volumes
-* metachef
-* hadoop_cluster
-
 
 ## License and Author
 
