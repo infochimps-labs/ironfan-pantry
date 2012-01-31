@@ -6,6 +6,18 @@ Installs/Configures Sys Logging to papertrailapp.com
 
 Connect syslog to papertrailapp.com.
 
+## Recipes 
+
+* `default`                  - Base configuration for papertrail
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* rsyslog
+
+
 ## Attributes
 
 * `[:papertrail][:logger]`            - Logger to use. Support loggers include: rsyslog. Defaults to rsyslog. (default: "rsyslog")
@@ -27,18 +39,6 @@ Connect syslog to papertrailapp.com.
     For example:
       default[:papertrail][:watch_files] = [{:filename => "/var/log/myapp.log", :tag => "myapp:"}]
     
-
-## Recipes 
-
-* `default`                  - Base configuration for papertrail
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* rsyslog
-
 
 ## License and Author
 

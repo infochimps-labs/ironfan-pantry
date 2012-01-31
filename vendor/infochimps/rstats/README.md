@@ -6,13 +6,6 @@ Installs and configures the R stats analysis language
 
 Installs rstats, a statistical analysis program
 
-## Attributes
-
-* `[:rstats][:cran_mirror_url]`       -  (default: "http://cran.stat.ucla.edu")
-* `[:rstats][:home_dir]`              -  (default: "/usr/lib/R")
-* `[:rstats][:conf_dir]`              -  (default: "/etc/R")
-* `[:rstats][:r_packages]`            - 
-
 ## Recipes 
 
 * `default`                  - Installs the base R package, a ruby interface, and some basic R packages.
@@ -22,6 +15,13 @@ Installs rstats, a statistical analysis program
 Supports platforms: debian and ubuntu
 
 
+
+## Attributes
+
+* `[:rstats][:cran_mirror_url]`       -  (default: "http://cran.stat.ucla.edu")
+* `[:rstats][:home_dir]`              -  (default: "/usr/lib/R")
+* `[:rstats][:conf_dir]`              -  (default: "/etc/R")
+* `[:rstats][:r_packages]`            - 
 
 ## License and Author
 

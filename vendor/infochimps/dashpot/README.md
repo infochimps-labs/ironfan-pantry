@@ -6,15 +6,6 @@ Creates and serves a lightweight pluggable dashboard for a machine
 
 Creates and serves a lightweight pluggable dashboard for a machine
 
-## Attributes
-
-* `[:dashpot][:conf_dir]`             -  (default: "/etc/dashpot")
-* `[:dashpot][:log_dir]`              -  (default: "/var/log/dashpot")
-* `[:dashpot][:home_dir]`             -  (default: "/var/lib/dashpot")
-* `[:dashpot][:user]`                 -  (default: "root")
-* `[:dashpot][:port]`                 -  (default: "6789")
-* `[:dashpot][:run_state]`            -  (default: "start")
-
 ## Recipes 
 
 * `default`                  - Dashboard for this machine: index of services and their dashboard snippets
@@ -28,6 +19,15 @@ Cookbook dependencies:
 * runit
 * metachef
 
+
+## Attributes
+
+* `[:dashpot][:conf_dir]`             -  (default: "/etc/dashpot")
+* `[:dashpot][:log_dir]`              -  (default: "/var/log/dashpot")
+* `[:dashpot][:home_dir]`             -  (default: "/var/lib/dashpot")
+* `[:dashpot][:user]`                 -  (default: "root")
+* `[:dashpot][:port]`                 -  (default: "6789")
+* `[:dashpot][:run_state]`            -  (default: "start")
 
 ## License and Author
 

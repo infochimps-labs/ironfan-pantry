@@ -56,6 +56,36 @@ Author:: Joshua Timberman (<joshua@opscode.com>), Flip Kromer (<flip@infochimps.
 
 Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 
+## Recipes 
+
+* `add_cloudera_repo`        - Add Cloudera repo to package manager
+* `cluster_conf`             - Configure cluster
+* `datanode`                 - Installs Hadoop Datanode service
+* `default`                  - Base configuration for hadoop_cluster
+* `doc`                      - Installs Hadoop documentation
+* `fake_topology`            - Pretend that groups of machines are on different racks so you can execute them without guilt
+* `hdfs_fuse`                - Installs Hadoop HDFS Fuse service (regular filesystem access to HDFS files)
+* `jobtracker`               - Installs Hadoop Jobtracker service
+* `namenode`                 - Installs Hadoop Namenode service
+* `secondarynn`              - Installs Hadoop Secondary Namenode service
+* `simple_dashboard`         - Simple Dashboard
+* `tasktracker`              - Installs Hadoop Tasktracker service
+* `wait_on_hdfs_safemode`    - Wait on HDFS Safemode -- insert between cookbooks to ensure HDFS is available
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* java
+* apt
+* runit
+* volumes
+* tuning
+* metachef
+* dashpot
+
+
 ## Attributes
 
 * `[:cluster_size]`                   - Number of machines in the cluster (default: "5")
@@ -171,36 +201,6 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:users][:mapred][:uid]`           -  (default: "303")
 * `[:tuning][:ulimit][:hdfs]`         - 
 * `[:tuning][:ulimit][:mapred]`       - 
-
-## Recipes 
-
-* `add_cloudera_repo`        - Add Cloudera repo to package manager
-* `cluster_conf`             - Configure cluster
-* `datanode`                 - Installs Hadoop Datanode service
-* `default`                  - Base configuration for hadoop_cluster
-* `doc`                      - Installs Hadoop documentation
-* `fake_topology`            - Pretend that groups of machines are on different racks so you can execute them without guilt
-* `hdfs_fuse`                - Installs Hadoop HDFS Fuse service (regular filesystem access to HDFS files)
-* `jobtracker`               - Installs Hadoop Jobtracker service
-* `namenode`                 - Installs Hadoop Namenode service
-* `secondarynn`              - Installs Hadoop Secondary Namenode service
-* `simple_dashboard`         - Simple Dashboard
-* `tasktracker`              - Installs Hadoop Tasktracker service
-* `wait_on_hdfs_safemode`    - Wait on HDFS Safemode -- insert between cookbooks to ensure HDFS is available
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* java
-* apt
-* runit
-* volumes
-* tuning
-* metachef
-* dashpot
-
 
 ## License and Author
 

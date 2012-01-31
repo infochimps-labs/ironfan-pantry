@@ -22,6 +22,20 @@ From the client machine,
 
 * [How to configure NFS on linux](http://how-to.linuxcareer.com/how-to-configure-nfs-on-linux)
 
+## Recipes 
+
+* `client`                   - NFS client: uses metachef to discover its server, and mounts the corresponding NFS directory
+* `default`                  - Base configuration for nfs
+* `server`                   - NFS server: exports directories via NFS; announces using metachef.
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* metachef
+
+
 ## Attributes
 
 * `[:nfs][:exports]`                  - NFS Exports
@@ -37,20 +51,6 @@ From the client machine,
 * `[:firewall][:port_scan][:nfsd]`    - 
 * `[:firewall][:port_scan][:mountd]`  - 
 * `[:firewall][:port_scan][:statd]`   - 
-
-## Recipes 
-
-* `client`                   - NFS client: uses metachef to discover its server, and mounts the corresponding NFS directory
-* `default`                  - Base configuration for nfs
-* `server`                   - NFS server: exports directories via NFS; announces using metachef.
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* metachef
-
 
 ## License and Author
 

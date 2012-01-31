@@ -6,9 +6,6 @@ The most helpful motd file evar
 
 Only the most helpful motd file **ever**.
 
-## Attributes
-
-
 ## Recipes 
 
 * `default`                  - Base configuration for motd
@@ -18,6 +15,9 @@ Only the most helpful motd file **ever**.
 
 Supports platforms: debian and ubuntu
 
+
+
+## Attributes
 
 
 ## License and Author

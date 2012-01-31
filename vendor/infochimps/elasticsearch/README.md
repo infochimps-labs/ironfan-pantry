@@ -74,6 +74,31 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+## Recipes 
+
+* `client`                   - Client
+* `config`                   - Finalizes the config, writes out the config files
+* `default`                  - Base configuration for elasticsearch
+* `install_from_git`         - Install From Git
+* `install_from_release`     - Install From Release
+* `install_plugins`          - Install Plugins
+* `load_balancer`            - Load Balancer
+* `server`                   - Server
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* java
+* runit
+* aws
+* volumes
+* tuning
+* metachef
+* install_from
+
+
 ## Attributes
 
 * `[:elasticsearch][:version]`        -  (default: "0.18.5")
@@ -126,31 +151,6 @@ limitations under the License.
 * `[:users][:elasticsearch][:uid]`    -  (default: "61021")
 * `[:groups][:elasticsearch][:gid]`   -  (default: "61021")
 * `[:tuning][:ulimit][:@elasticsearch]` - 
-
-## Recipes 
-
-* `client`                   - Client
-* `config`                   - Finalizes the config, writes out the config files
-* `default`                  - Base configuration for elasticsearch
-* `install_from_git`         - Install From Git
-* `install_from_release`     - Install From Release
-* `install_plugins`          - Install Plugins
-* `load_balancer`            - Load Balancer
-* `server`                   - Server
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* java
-* runit
-* aws
-* volumes
-* tuning
-* metachef
-* install_from
-
 
 ## License and Author
 

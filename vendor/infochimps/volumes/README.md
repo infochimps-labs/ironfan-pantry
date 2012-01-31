@@ -235,6 +235,23 @@ Besides creating the directory, we store the calculated path into
 
   node[:system][:component][:handle]
 
+## Recipes 
+
+* `build_raid`               - Build a raid array of volumes as directed by node[:volumes]
+* `default`                  - Placeholder -- see other recipes in ec2 cookbook
+* `format`                   - Format the volumes listed in node[:volumes]
+* `mount`                    - Mount the volumes listed in node[:volumes]
+* `resize`                   - Resize mountables in node[:volumes] to fill the volume
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* metachef
+* xfs
+
+
 ## Attributes
 
 * `[:volumes]`                        - Logical description of volumes on this machine (default: "{}")
@@ -277,23 +294,6 @@ Besides creating the directory, we store the calculated path into
   - where should we get the AWS keys?
 * `[:metachef][:aws_credential_handle]` -  (default: "main")
   - the key within that data bag
-
-## Recipes 
-
-* `build_raid`               - Build a raid array of volumes as directed by node[:volumes]
-* `default`                  - Placeholder -- see other recipes in ec2 cookbook
-* `format`                   - Format the volumes listed in node[:volumes]
-* `mount`                    - Mount the volumes listed in node[:volumes]
-* `resize`                   - Resize mountables in node[:volumes] to fill the volume
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* metachef
-* xfs
-
 
 ## License and Author
 

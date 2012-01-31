@@ -32,12 +32,6 @@ From [their documentation](http://code.google.com/p/snappy/):
 > Snappy is written in C++, but C bindings are included, and several bindings to
 > other languages are maintained by third parties
 
-## Attributes
-
-* `[:snappy][:home_dir]`              - Installed location of snappy (default: "/usr/local/share/snappy")
-* `[:snappy][:release_url]`           - Snappy release tarball to install (default: "http://snappy.googlecode.com/files/snappy-:version:.tar.gz")
-* `[:snappy][:version]`               -  (default: "1.0.4")
-
 ## Recipes 
 
 * `default`                  - Base configuration for snappy
@@ -49,6 +43,12 @@ Supports platforms: debian and ubuntu
 Cookbook dependencies:
 * install_from
 
+
+## Attributes
+
+* `[:snappy][:home_dir]`              - Installed location of snappy (default: "/usr/local/share/snappy")
+* `[:snappy][:release_url]`           - Snappy release tarball to install (default: "http://snappy.googlecode.com/files/snappy-:version:.tar.gz")
+* `[:snappy][:version]`               -  (default: "1.0.4")
 
 ## License and Author
 

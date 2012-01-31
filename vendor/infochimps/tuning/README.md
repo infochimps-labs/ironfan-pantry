@@ -6,6 +6,17 @@ Apply OS-specific tuning using parameters set by recipes and roles
 
 Apply OS-specific tuning using parameters set by recipes and roles
 
+## Recipes 
+
+* `default`                  - Calls out to the right tuning recipe based on platform
+* `ubuntu`                   - Applies tuning for Ubuntu systems
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+
+
 ## Attributes
 
 * `[:tuning][:overcommit_memory]`     -  (default: "1")
@@ -29,17 +40,6 @@ Apply OS-specific tuning using parameters set by recipes and roles
     agressiveness, lower values decrease the amount of swap.
     Since dedicated servers prefer the process death of OOM to the machine-wide
     death of swap churn, make the machine be as agressive as possible.
-
-## Recipes 
-
-* `default`                  - Calls out to the right tuning recipe based on platform
-* `ubuntu`                   - Applies tuning for Ubuntu systems
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-
 
 ## License and Author
 

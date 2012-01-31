@@ -6,6 +6,33 @@ HBase: a massively-scalable high-throughput datastore based on the Hadoop HDFS
 
 Installs/Configures HBase
 
+## Recipes 
+
+* `backup_tables`            - Cron job to backup tables to S3
+* `config`                   - Finalizes the config, writes out the config files
+* `dashboard`                - Simple dashboard for HBase config and state
+* `default`                  - Base configuration for hbase
+* `master`                   - HBase Master
+* `regionserver`             - HBase Regionserver
+* `stargate`                 - HBase Stargate: HTTP frontend to HBase
+* `thrift`                   - HBase Thrift Listener
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* java
+* apt
+* runit
+* volumes
+* metachef
+* dashpot
+* hadoop_cluster
+* zookeeper
+* ganglia
+
+
 ## Attributes
 
 * `[:groups][:hbase][:gid]`           -  (default: "304")
@@ -224,33 +251,6 @@ Installs/Configures HBase
     disable automated major compactions.
 * `[:users][:hbase][:uid]`            -  (default: "304")
 * `[:tuning][:ulimit][:hbase]`        - 
-
-## Recipes 
-
-* `backup_tables`            - Cron job to backup tables to S3
-* `config`                   - Finalizes the config, writes out the config files
-* `dashboard`                - Simple dashboard for HBase config and state
-* `default`                  - Base configuration for hbase
-* `master`                   - HBase Master
-* `regionserver`             - HBase Regionserver
-* `stargate`                 - HBase Stargate: HTTP frontend to HBase
-* `thrift`                   - HBase Thrift Listener
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* java
-* apt
-* runit
-* volumes
-* metachef
-* dashpot
-* hadoop_cluster
-* zookeeper
-* ganglia
-
 
 ## License and Author
 

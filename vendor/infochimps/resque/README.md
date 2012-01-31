@@ -6,6 +6,21 @@ Installs/Configures resque
 
 Sets up [Resque](https://github.com/defunkt/resque), "a Redis-backed Ruby library for creating background jobs, placing them on multiple queues, and processing them later."
 
+## Recipes 
+
+* `dedicated_redis`          - Dedicated redis -- a redis solely for this resque
+* `default`                  - Base configuration for resque
+* `server`                   - Server
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* runit
+* redis
+
+
 ## Attributes
 
 * `[:resque][:log_dir]`               -  (default: "/var/log/resque")
@@ -27,21 +42,6 @@ Sets up [Resque](https://github.com/defunkt/resque), "a Redis-backed Ruby librar
 * `[:resque][:dashboard][:run_state]` -  (default: "start")
 * `[:users][:resque][:uid]`           -  (default: "336")
 * `[:groups][:resque][:gid]`          -  (default: "336")
-
-## Recipes 
-
-* `dedicated_redis`          - Dedicated redis -- a redis solely for this resque
-* `default`                  - Base configuration for resque
-* `server`                   - Server
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* runit
-* redis
-
 
 ## License and Author
 
