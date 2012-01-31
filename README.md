@@ -6,9 +6,6 @@ Grabbag of utility cookbooks
 
 Grabbag of utility cookbooks
 
-## Attributes
-
-
 ## Recipes 
 
 * `burn_ami_prep`            - Burn Ami Prep
@@ -19,6 +16,9 @@ Grabbag of utility cookbooks
 
 Supports platforms: debian and ubuntu
 
+
+
+## Attributes
 
 
 ## License and Author
