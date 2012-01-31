@@ -21,6 +21,27 @@ matches anything. The catchall retains minutely data for 13 months, as in the
 default config. stats retains data every 10 seconds for 6 hours, every minute
 for a week, and every 10 minutes for 5 years.
 
+## Recipes 
+
+* `carbon`                   - Carbon
+* `default`                  - Base configuration for graphite
+* `ganglia`                  - Ganglia
+* `web`                      - Web
+* `whisper`                  - Whisper
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* python
+* apache2
+* runit
+* ganglia
+* install_from
+* metachef
+
+
 ## Attributes
 
 * `[:graphite][:conf_dir]`            -  (default: "/etc/graphite/")
@@ -46,27 +67,6 @@ for a week, and every 10 minutes for 5 years.
 * `[:graphite][:graphite_web][:release_url_checksum]` -  (default: "a3e16265")
 * `[:users][:graphite][:uid]`         -  (default: "446")
 * `[:groups][:graphite][:gid]`        -  (default: "446")
-
-## Recipes 
-
-* `carbon`                   - Carbon
-* `default`                  - Base configuration for graphite
-* `ganglia`                  - Ganglia
-* `web`                      - Web
-* `whisper`                  - Whisper
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* python
-* apache2
-* runit
-* ganglia
-* install_from
-* metachef
-
 
 ## License and Author
 
