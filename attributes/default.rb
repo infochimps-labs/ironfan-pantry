@@ -8,6 +8,7 @@ default[:redis][:data_dir]          = "/var/lib/redis"
 
 default[:redis][:home_dir]          = "/usr/local/share/redis"
 default[:redis][:pid_file]          = "/var/run/redis.pid"
+
 default[:redis][:db_basename]       = "dump.rdb"
 
 default[:redis ][:user]              = 'redis'
