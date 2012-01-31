@@ -18,6 +18,7 @@ Has recipes to:
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * aws
 * volumes
 * metachef
