@@ -59,14 +59,6 @@ when new services register.
 Nodes register a service by calling `announce`, which sets a hash containing
 'timestamp' (the time of registry) and other metadata passed in.
 
-## Attributes
-
-* `[:metachef][:conf_dir]`            -  (default: "/etc/metachef")
-* `[:metachef][:log_dir]`             -  (default: "/var/log/metachef")
-* `[:metachef][:home_dir]`            -  (default: "/etc/metachef")
-* `[:metachef][:user]`                -  (default: "root")
-* `[:users][:root][:primary_group]`   -  (default: "root")
-
 ## Recipes 
 
 * `default`                  - Base configuration for metachef
@@ -76,6 +68,14 @@ Nodes register a service by calling `announce`, which sets a hash containing
 Supports platforms: debian and ubuntu
 
 
+
+## Attributes
+
+* `[:metachef][:conf_dir]`            -  (default: "/etc/metachef")
+* `[:metachef][:log_dir]`             -  (default: "/var/log/metachef")
+* `[:metachef][:home_dir]`            -  (default: "/etc/metachef")
+* `[:metachef][:user]`                -  (default: "root")
+* `[:users][:root][:primary_group]`   -  (default: "root")
 
 ## License and Author
 
