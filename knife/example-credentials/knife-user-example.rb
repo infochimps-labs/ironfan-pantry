@@ -5,14 +5,14 @@
 #
 
 #
-# EC2 cloud keys
+# EC2 cloud keys - if you use this (you should) remove the keys from knife-org.rb
 #
+
 # Chef::Config.knife[:aws_access_key_id]      = "XXX"
 # Chef::Config.knife[:aws_secret_access_key]  = "XXX"
-# Chef::Config.knife[:aws_account_id]         = "XXX" # no dashes or spaces
 
 #
-# Cookbook templating -- only 
+# Cookbook templating -- only
 #
 # Chef::Config[:cookbook_copyright] =  "Bob Dobbs Jr, fnord.com"
 # Chef::Config[:cookbook_email    ] =  "bob@fnord.com"

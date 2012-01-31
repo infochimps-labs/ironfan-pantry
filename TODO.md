@@ -1,3 +1,6 @@
+* If account ID is blank, security groups don't resolve
+  - security group pairing is brittle and crappy overall
+
 * aws key databag + helper
 * cucumber
 * hbase

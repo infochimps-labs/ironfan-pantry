@@ -28,6 +28,7 @@ Chef::Config.instance_eval do
   #
   # cookbook_path  [
   #   "#{homebase}/cookbooks",
+  #   "#{homebase}/site-cookbooks",
   #   "#{homebase}/vendor/opscode/cookbooks",
   #   "#{homebase}/vendor/internal/cookbooks",
   #   ]
@@ -38,6 +39,15 @@ Chef::Config.instance_eval do
   #
   # you can remove this section if not in EC2
   #
+
+  # # This is org-wide. No dashes or spaces please.
+  # Chef::Config.knife[:aws_account_id]           = "XXXX"
+
+  # # Best practice is to make per-user accounts w/ IAM, placed in knife-user-YOU.rb --
+  # # but if you want to use an org-wide AWS key, place it here
+  # Chef::Config.knife[:aws_access_key_id]      = "XXXX"
+  # Chef::Config.knife[:aws_secret_access_key]  = "YYYY"
+
   # Add your own AMIs to the hash below
   #
   # Change `NAME_FOR_AMI` to a helpful identifier. For example, our standard
@@ -70,18 +80,15 @@ Chef::Config.instance_eval do
     })
   Chef::Log.debug("Loaded #{__FILE__}, now have #{ec2_image_info.size} ec2 images")
 
-  # Each user should duplicate the following into {credentials_path}/knife-user-{username}.rb
-  # and edit them to suit:
-  #
-  # Chef::Config.knife[:aws_access_key_id]      = "XXXX"
-  # Chef::Config.knife[:aws_secret_access_key]  = "XXXX"
-  # Chef::Config.knife[:aws_account_id]         = "XXXX"
-
-  #
-  # If you primarily use AWS cloud services, set these.
-  #
+  # # For an AWS cloud, tell knife to use the public hostname not the fqdn
   # knife[:ssh_address_attribute] = 'cloud.public_hostname'
+
+  # # if set, uses the system account to log in
   # knife[:ssh_user]              = 'ubuntu'
+
+  # Don't complain about ssh known_hosts
+  knife[:host_key_verify]       = false # yeah... so 0.10.7 uses one, 0.10.4 the other.
+  knife[:no_host_key_verify]    = true
 
   # ===========================================================================
   #
