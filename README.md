@@ -43,6 +43,16 @@ setting `node[:package_set][:pkgs][:foo]`, no need to modify this
 cookbook. Selecting *which* packages to install is however unambiguous -- you
 must expressly add the set 'foo' to your node[:package_set][:install] attribute.
 
+## Recipes 
+
+* `default`                  - Base configuration for package_set
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+
+
 ## Attributes
 
 * `[:package_set][:install]`          - Package sets to install
@@ -62,16 +72,6 @@ must expressly add the set 'foo' to your node[:package_set][:install] attribute.
 * `[:package_set][:gems][:text]`      - 
 * `[:package_set][:gems][:ec2]`       - 
 * `[:package_set][:gems][:vagrant]`   - 
-
-## Recipes 
-
-* `default`                  - Base configuration for package_set
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-
 
 ## License and Author
 
