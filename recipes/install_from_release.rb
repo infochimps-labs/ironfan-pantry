@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+include_recipe 'install_from'
+
 install_from_release(:elasticsearch) do
   release_url   node[:elasticsearch][:release_url]
   home_dir      node[:elasticsearch][:home_dir]
