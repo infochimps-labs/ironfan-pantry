@@ -27,6 +27,7 @@ recipe           "hadoop_cluster::doc",                "Installs Hadoop document
 recipe           "hadoop_cluster::hdfs_fuse",          "Installs Hadoop HDFS Fuse service (regular filesystem access to HDFS files)"
 recipe           "hadoop_cluster::wait_on_hdfs_safemode", "Wait on HDFS Safemode -- insert between cookbooks to ensure HDFS is available"
 recipe           "hadoop_cluster::simple_dashboard",   "Simple Dashboard"
+recipe           "hadoop_cluster::fake_topology",      "Pretend that groups of machines are on different racks so you can execute them without guilt"
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -101,11 +102,6 @@ attribute "hadoop/java_heap_size_max",
   :display_name          => "",
   :description           => "",
   :default               => "1000"
-
-attribute "hadoop/max_balancer_bandwidth",
-  :display_name          => "",
-  :description           => "",
-  :default               => "1048576"
 
 attribute "hadoop/min_split_size",
   :display_name          => "",
@@ -305,11 +301,6 @@ attribute "hadoop/tasktracker/run_state",
   :default               => "start"
 
 attribute "hadoop/tasktracker/java_heap_size_max",
-  :display_name          => "",
-  :description           => "",
-  :default               => ""
-
-attribute "hadoop/tasktracker/scratch_dir",
   :display_name          => "",
   :description           => "",
   :default               => ""
