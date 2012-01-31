@@ -1,6 +1,6 @@
 #
 # Cookbook Name::       elasticsearch
-# Description::         load_balancer
+# Description::         Load Balancer
 # Recipe::              load_balancer
 # Author::              GoTime, modifications by Infochimps
 #

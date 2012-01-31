@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       elasticsearch
-# Description::         configuration files for elasticsearch
-# Recipe::              default
+# Description::         Finalizes the config, writes out the config files
+# Recipe::              config
 # Author::              GoTime, modifications by Infochimps
 #
 # Copyright 2010, GoTime
