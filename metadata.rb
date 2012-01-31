@@ -23,6 +23,9 @@ recipe           "hbase::default",                     "Base configuration for h
 recipe           "hbase::master",                      "HBase Master"
 recipe           "hbase::regionserver",                "HBase Regionserver"
 recipe           "hbase::stargate",                    "HBase Stargate: HTTP frontend to HBase"
+recipe           "hbase::thrift",                      "HBase Thrift Listener"
+recipe           "hbase::dashboard",                   "Simple dashboard for HBase config and state"
+recipe           "hbase::config",                      "Finalizes the config, writes out the config files"
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -37,16 +40,6 @@ attribute "hbase/tmp_dir",
   :display_name          => "",
   :description           => "",
   :default               => "/mnt/hbase/tmp"
-
-attribute "hbase/cluster_name",
-  :display_name          => "",
-  :description           => "",
-  :default               => "cluster_name"
-
-attribute "hbase/weekly_backup_tables",
-  :display_name          => "",
-  :description           => "",
-  :default               => ""
 
 attribute "hbase/home_dir",
   :display_name          => "",
@@ -68,17 +61,10 @@ attribute "hbase/pid_dir",
   :description           => "",
   :default               => "/var/run/hbase"
 
-attribute "hbase/exported_confs",
+attribute "hbase/weekly_backup_tables",
   :display_name          => "",
   :description           => "",
-  :type                  => "array",
-  :default               => ["/hbase-default.xml", "/hbase-site.xml"]
-
-attribute "hbase/exported_jars",
-  :display_name          => "",
-  :description           => "",
-  :type                  => "array",
-  :default               => ["/usr/lib/hbase/hbase-0.90.1-cdh3u0.jar", "/usr/lib/hbase/hbase-0.90.1-cdh3u0-tests.jar"]
+  :default               => ""
 
 attribute "hbase/master/java_heap_size_max",
   :display_name          => "",
