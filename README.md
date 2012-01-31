@@ -8,6 +8,7 @@ Installs/Configures hive
 
 ## Attributes
 
+
 ## Recipes 
 
 * `default`                  - Base configuration for hive
@@ -18,6 +19,7 @@ Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
 * java
+* hadoop_cluster
 
 
 ## License and Author
