@@ -16,6 +16,7 @@ A very basic recipe to install jruby-1.5.6 from a downloaded tarball.
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * java
 * install_from
 
