@@ -1,6 +1,6 @@
 # flume chef cookbook
 
-Installs/Configures flume
+Flume: reliable decoupled shipment of logs and data.
 
 ## Overview
 
@@ -62,16 +62,18 @@ servers.
   - false to use flume's zookeeper. True to attach to an external zookeeper.
 * `[:flume][:master][:zookeeper_port]` - port to talk to zookeeper on (for external zookeeper) (default: "2181")
 * `[:flume][:master][:run_state]`     -  (default: "stop")
-* `[:flume][:node][:run_state]`       -  (default: "stop")
+* `[:flume][:node][:run_state]`       -  (default: "start")
 
 ## Recipes 
 
+* `config`                   - Finalizes the config, writes out the config files
 * `default`                  - Base configuration for flume
 * `hbase_sink_plugin`        - Hbase Sink Plugin
 * `jruby_plugin`             - Jruby Plugin
 * `master`                   - Configures Flume Master, installs and starts service
 * `node`                     - Configures Flume Node, installs and starts service
 * `test_flow`                - Test Flow
+
 ## Integration
 
 Supports platforms: debian and ubuntu
@@ -82,6 +84,7 @@ Cookbook dependencies:
 * runit
 * volumes
 * metachef
+* hadoop_cluster
 
 
 ## License and Author
