@@ -1,6 +1,6 @@
 # statsd chef cookbook
 
-Installs/Configures statsd
+Statsd, a non-blocking proxy to graphite: counting and timing for great justice
 
 ## Overview
 
@@ -8,9 +8,7 @@ Installs statsd daemon for recording arbitrary information to graphite
 
 ## Attributes
 
-* `[:statsd][:cluster_name]`          -  (default: "cluster_name")
 * `[:statsd][:git_repo]`              -  (default: "https://github.com/etsy/statsd.git")
-* `[:statsd][:install_dir]`           -  (default: "/usr/src/statsd")
 * `[:statsd][:port]`                  -  (default: "8125")
 * `[:statsd][:flush_interval]`        -  (default: "10000")
 * `[:statsd][:home_dir]`              -  (default: "/usr/local/share/statsd")
@@ -28,6 +26,7 @@ Installs statsd daemon for recording arbitrary information to graphite
 
 * `default`                  - Base configuration for statsd
 * `server`                   - Server
+
 ## Integration
 
 Supports platforms: debian and ubuntu
