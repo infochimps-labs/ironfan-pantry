@@ -26,10 +26,10 @@ attribute "volumes",
 
 attribute "metachef/aws_credential_source",
   :display_name          => "",
-  :description           => "",
+  :description           => "where should we get the AWS keys?",
   :default               => "data_bag"
 
 attribute "metachef/aws_credential_handle",
   :display_name          => "",
-  :description           => "",
+  :description           => "the key within that data bag",
   :default               => "main"
