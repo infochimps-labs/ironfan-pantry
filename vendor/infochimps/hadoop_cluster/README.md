@@ -1,6 +1,6 @@
 # hadoop_cluster chef cookbook
 
-Installs hadoop on anything from a single-node to a high-performance cluster. 
+Hadoop: distributed massive-scale data processing framework. Store and analyze terabyte-scale datasets with ease
 
 ## Overview
 
@@ -60,7 +60,7 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 
 * `[:cluster_size]`                   - Number of machines in the cluster (default: "5")
   - Number of machines in the cluster. This is used to size things like handler counts, etc.
-* `[:apt][:cloudera][:force_distro]`  - Override the distro name apt uses to look up repos
+* `[:apt][:cloudera][:force_distro]`  - Override the distro name apt uses to look up repos (default: "maverick")
   - Typically, leave this blank. However if (as is the case in Nov 2011) you are on natty but Cloudera's repo only has packages up to maverick, use this to override.
 * `[:apt][:cloudera][:release_name]`  - Release identifier (eg cdh3u2) of the cloudera repo to use. See also hadoop/deb_version (default: "cdh3u2")
 * `[:hadoop][:handle]`                - Version prefix for the daemons and other components (default: "hadoop-0.20")
@@ -77,7 +77,6 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:hadoop][:log_retention_hours]`   -  (default: "24")
   - See [Hadoop Log Location and Retention](http://www.cloudera.com/blog/2010/11/hadoop-log-location-and-retention) for more.
 * `[:hadoop][:java_heap_size_max]`    -  (default: "1000")
-* `[:hadoop][:max_balancer_bandwidth]` -  (default: "1048576")
 * `[:hadoop][:min_split_size]`        -  (default: "134217728")
 * `[:hadoop][:s3_block_size]`         - fs.s3n.block.size (default: "134217728")
   - Block size to use when reading files using the native S3 filesystem (s3n: URIs).
@@ -96,6 +95,7 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:hadoop][:log_dir]`               - 
 * `[:hadoop][:tmp_dir]`               - 
 * `[:hadoop][:user]`                  -  (default: "hdfs")
+* `[:hadoop][:define_topology]`       - 
 * `[:hadoop][:jobtracker][:handler_count]` -  (default: "40")
 * `[:hadoop][:jobtracker][:run_state]` -  (default: "stop")
 * `[:hadoop][:jobtracker][:java_heap_size_max]` - 
@@ -104,33 +104,41 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:hadoop][:jobtracker][:port]`     -  (default: "8021")
 * `[:hadoop][:jobtracker][:dash_port]` -  (default: "50030")
 * `[:hadoop][:jobtracker][:user]`     -  (default: "mapred")
+* `[:hadoop][:jobtracker][:jmx_dash_port]` -  (default: "8008")
 * `[:hadoop][:namenode][:handler_count]` -  (default: "40")
 * `[:hadoop][:namenode][:run_state]`  -  (default: "stop")
 * `[:hadoop][:namenode][:java_heap_size_max]` - 
-* `[:hadoop][:namenode][:data_dir]`   - 
 * `[:hadoop][:namenode][:port]`       -  (default: "8020")
 * `[:hadoop][:namenode][:dash_port]`  -  (default: "50070")
 * `[:hadoop][:namenode][:user]`       -  (default: "hdfs")
+* `[:hadoop][:namenode][:data_dirs]`  - 
+* `[:hadoop][:namenode][:jmx_dash_port]` -  (default: "8004")
 * `[:hadoop][:datanode][:handler_count]` -  (default: "8")
 * `[:hadoop][:datanode][:run_state]`  -  (default: "start")
 * `[:hadoop][:datanode][:java_heap_size_max]` - 
-* `[:hadoop][:datanode][:data_dir]`   - 
 * `[:hadoop][:datanode][:port]`       -  (default: "50010")
 * `[:hadoop][:datanode][:ipc_port]`   -  (default: "50020")
 * `[:hadoop][:datanode][:dash_port]`  -  (default: "50075")
 * `[:hadoop][:datanode][:user]`       -  (default: "hdfs")
+* `[:hadoop][:datanode][:data_dirs]`  - 
+* `[:hadoop][:datanode][:jmx_dash_port]` -  (default: "8006")
 * `[:hadoop][:tasktracker][:http_threads]` -  (default: "32")
 * `[:hadoop][:tasktracker][:run_state]` -  (default: "start")
 * `[:hadoop][:tasktracker][:java_heap_size_max]` - 
-* `[:hadoop][:tasktracker][:scratch_dir]` - 
 * `[:hadoop][:tasktracker][:dash_port]` -  (default: "50060")
 * `[:hadoop][:tasktracker][:user]`    -  (default: "mapred")
+* `[:hadoop][:tasktracker][:scratch_dirs]` - 
+* `[:hadoop][:tasktracker][:jmx_dash_port]` -  (default: "8009")
 * `[:hadoop][:secondarynn][:run_state]` -  (default: "stop")
 * `[:hadoop][:secondarynn][:java_heap_size_max]` - 
-* `[:hadoop][:secondarynn][:data_dir]` - 
 * `[:hadoop][:secondarynn][:dash_port]` -  (default: "50090")
 * `[:hadoop][:secondarynn][:user]`    -  (default: "hdfs")
+* `[:hadoop][:secondarynn][:data_dirs]` - 
+* `[:hadoop][:secondarynn][:jmx_dash_port]` -  (default: "8005")
 * `[:hadoop][:hdfs_fuse][:run_state]` -  (default: "stop")
+* `[:hadoop][:balancer][:run_state]`  -  (default: "stop")
+* `[:hadoop][:balancer][:jmx_dash_port]` -  (default: "8007")
+* `[:hadoop][:balancer][:max_bandwidth]` -  (default: "1048576")
 * `[:groups][:hadoop][:gid]`          -  (default: "300")
 * `[:groups][:supergroup][:gid]`      -  (default: "301")
 * `[:groups][:hdfs][:gid]`            -  (default: "302")
@@ -138,9 +146,8 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `[:java][:java_home]`               -  (default: "/usr/lib/jvm/java-6-sun/jre")
 * `[:users][:hdfs][:uid]`             -  (default: "302")
 * `[:users][:mapred][:uid]`           -  (default: "303")
-* `[:tuning][:ulimit][:hdfs]`  - 
-* `[:tuning][:ulimit][:hbase]` - 
-* `[:tuning][:ulimit][:mapred]` - 
+* `[:tuning][:ulimit][:hdfs]`         - 
+* `[:tuning][:ulimit][:mapred]`       - 
 
 ## Recipes 
 
@@ -149,6 +156,7 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `datanode`                 - Installs Hadoop Datanode service
 * `default`                  - Base configuration for hadoop_cluster
 * `doc`                      - Installs Hadoop documentation
+* `fake_topology`            - Pretend that groups of machines are on different racks so you can execute them without guilt
 * `hdfs_fuse`                - Installs Hadoop HDFS Fuse service (regular filesystem access to HDFS files)
 * `jobtracker`               - Installs Hadoop Jobtracker service
 * `namenode`                 - Installs Hadoop Namenode service
@@ -156,6 +164,7 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 * `simple_dashboard`         - Simple Dashboard
 * `tasktracker`              - Installs Hadoop Tasktracker service
 * `wait_on_hdfs_safemode`    - Wait on HDFS Safemode -- insert between cookbooks to ensure HDFS is available
+
 ## Integration
 
 Supports platforms: debian and ubuntu
@@ -165,7 +174,9 @@ Cookbook dependencies:
 * apt
 * runit
 * volumes
+* tuning
 * metachef
+* dashpot
 
 
 ## License and Author

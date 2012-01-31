@@ -1,6 +1,6 @@
 # redis chef cookbook
 
-Installs and configures Redis server
+Redis: a fast, flexible datastore offering an extremely useful set of data structure primitives
 
 ## Overview
 
@@ -11,18 +11,14 @@ Redis, a fast lightweight database
 * `[:redis][:home_dir]`               -  (default: "/usr/local/share/redis")
 * `[:redis][:pid_file]`               - Redis PID file path (default: "/var/run/redis.pid")
   - Path to the PID file when daemonized.
-* `[:redis][:log_file]`               - Redis log file path (default: "/var/log/redis/redis.log")
-  - Path to the log file when daemonized.
+* `[:redis][:log_dir]`                - Redis log dir path (default: "/var/log/redis")
+  - Path to the log directory when daemonized -- will be stored in [log_dir]/redis.log.
 * `[:redis][:data_dir]`               - Redis database directory (default: "/var/lib/redis")
   - Path to the directory for database files.
 * `[:redis][:db_basename]`            - Redis database filename (default: "dump.rdb")
   - Filename for the database storage.
 * `[:redis][:release_url]`            - URL for redis release package (default: "http://redis.googlecode.com/files/redis-:version:.tar.gz")
   - If using the install_from_release strategy, the URL for the release tarball
-* `[:redis][:master_server]`          - Redis replication master server name (default: "master-redis.domain")
-  - The master server for this replication slave.
-* `[:redis][:master_port]`            - Redis replication master server port (default: "6379")
-  - The master server port for this replication slave.
 * `[:redis][:glueoutputbuf]`          - Redis output buffer coalescing (default: "yes")
   - Glue small output buffers together into larger TCP packets.
 * `[:redis][:saves]`                  - Redis disk persistence policies
@@ -31,10 +27,7 @@ Redis, a fast lightweight database
   - Act as a replication slave to a master redis database.
 * `[:redis][:shareobjects]`           - Redis shared object compression (default: "no") (default: "no")
   - Attempt to reduce memory use by sharing storage for substrings.
-* `[:redis][:shareobjectspoolsize]`   - Redis shared object pool size (default: "1024")
-  - The size of the pool for object sharing.
 * `[:redis][:conf_dir]`               -  (default: "/etc/redis")
-* `[:redis][:log_dir]`                -  (default: "/var/log/redis")
 * `[:redis][:user]`                   -  (default: "redis")
 * `[:redis][:version]`                -  (default: "2.0.2")
 * `[:redis][:server][:addr]`          - IP address to bind. (default: "0.0.0.0")
@@ -52,6 +45,7 @@ Redis, a fast lightweight database
 * `install_from_package`     - Install From Ubuntu Package -- easy but lags in version
 * `install_from_release`     - Install From Release
 * `server`                   - Redis server with runit service
+
 ## Integration
 
 Supports platforms: debian and ubuntu

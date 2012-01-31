@@ -11,18 +11,21 @@ A very basic recipe to install jruby-1.5.6 from a downloaded tarball.
 * `[:jruby][:home_dir]`               - Installed location of jruby (default: "/usr/local/share/jruby")
 * `[:jruby][:release_url]`            - JRuby release tarball to install (default: "http://jruby.org.s3.amazonaws.com/downloads/:version:/jruby-bin-:version:.tar.gz")
 * `[:jruby][:version]`                -  (default: "1.6.5")
+* `[:jruby][:ruby_version]`           -  (default: "1.9")
 * `[:java][:java_home]`               -  (default: "/usr/lib/jvm/java-6-sun/jre")
 
 ## Recipes 
 
 * `default`                  - Base configuration for jruby
 * `gems`                     - Gems
+
 ## Integration
 
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
 * java
+* install_from
 
 
 ## License and Author

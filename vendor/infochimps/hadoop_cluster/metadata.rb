@@ -9,7 +9,6 @@ description      "Hadoop: distributed massive-scale data processing framework. S
 depends          "java"
 depends          "apt"
 depends          "runit"
-
 depends          "volumes"
 depends          "tuning"
 depends          "metachef"
@@ -41,7 +40,7 @@ attribute "cluster_size",
 attribute "apt/cloudera/force_distro",
   :display_name          => "Override the distro name apt uses to look up repos",
   :description           => "Typically, leave this blank. However if (as is the case in Nov 2011) you are on natty but Cloudera's repo only has packages up to maverick, use this to override.",
-  :default               => ""
+  :default               => "maverick"
 
 attribute "apt/cloudera/release_name",
   :display_name          => "Release identifier (eg cdh3u2) of the cloudera repo to use. See also hadoop/deb_version",
@@ -183,6 +182,11 @@ attribute "hadoop/user",
   :description           => "",
   :default               => "hdfs"
 
+attribute "hadoop/define_topology",
+  :display_name          => "",
+  :description           => "",
+  :default               => ""
+
 attribute "hadoop/jobtracker/handler_count",
   :display_name          => "",
   :description           => "",
@@ -223,6 +227,11 @@ attribute "hadoop/jobtracker/user",
   :description           => "",
   :default               => "mapred"
 
+attribute "hadoop/jobtracker/jmx_dash_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "8008"
+
 attribute "hadoop/namenode/handler_count",
   :display_name          => "",
   :description           => "",
@@ -252,6 +261,16 @@ attribute "hadoop/namenode/user",
   :display_name          => "",
   :description           => "",
   :default               => "hdfs"
+
+attribute "hadoop/namenode/data_dirs",
+  :display_name          => "",
+  :description           => "",
+  :default               => ""
+
+attribute "hadoop/namenode/jmx_dash_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "8004"
 
 attribute "hadoop/datanode/handler_count",
   :display_name          => "",
@@ -289,6 +308,16 @@ attribute "hadoop/datanode/user",
   :description           => "",
   :default               => "hdfs"
 
+attribute "hadoop/datanode/data_dirs",
+  :display_name          => "",
+  :description           => "",
+  :default               => ""
+
+attribute "hadoop/datanode/jmx_dash_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "8006"
+
 attribute "hadoop/tasktracker/http_threads",
   :display_name          => "",
   :description           => "",
@@ -315,6 +344,16 @@ attribute "hadoop/tasktracker/user",
   :description           => "",
   :default               => "mapred"
 
+attribute "hadoop/tasktracker/scratch_dirs",
+  :display_name          => "",
+  :description           => "",
+  :default               => ""
+
+attribute "hadoop/tasktracker/jmx_dash_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "8009"
+
 attribute "hadoop/secondarynn/run_state",
   :display_name          => "",
   :description           => "",
@@ -335,10 +374,35 @@ attribute "hadoop/secondarynn/user",
   :description           => "",
   :default               => "hdfs"
 
+attribute "hadoop/secondarynn/data_dirs",
+  :display_name          => "",
+  :description           => "",
+  :default               => ""
+
+attribute "hadoop/secondarynn/jmx_dash_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "8005"
+
 attribute "hadoop/hdfs_fuse/run_state",
   :display_name          => "",
   :description           => "",
   :default               => "stop"
+
+attribute "hadoop/balancer/run_state",
+  :display_name          => "",
+  :description           => "",
+  :default               => "stop"
+
+attribute "hadoop/balancer/jmx_dash_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "8007"
+
+attribute "hadoop/balancer/max_bandwidth",
+  :display_name          => "",
+  :description           => "",
+  :default               => "1048576"
 
 attribute "groups/hadoop/gid",
   :display_name          => "",
@@ -376,12 +440,6 @@ attribute "users/mapred/uid",
   :default               => "303"
 
 attribute "tuning/ulimit/hdfs",
-  :display_name          => "",
-  :description           => "",
-  :type                  => "hash",
-  :default               => {:nofile=>{:both=>32768}, :nproc=>{:both=>50000}}
-
-attribute "tuning/ulimit/hbase",
   :display_name          => "",
   :description           => "",
   :type                  => "hash",

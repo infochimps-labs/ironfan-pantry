@@ -1,5 +1,5 @@
 #
-# Cookbook Name::       ec2
+# Cookbook Name::       volumes_ebs
 # Description::         Attach EBS volumes as directed by node[:volumes]
 # Recipe::              attach_ebs
 # Author::              Philip (flip) Kromer - Infochimps, Inc

@@ -39,7 +39,7 @@ attribute "pig/combine_splits",
 attribute "pig/version",
   :display_name          => "",
   :description           => "",
-  :default               => "0.9.1"
+  :default               => "0.9.2"
 
 attribute "java/java_home",
   :display_name          => "JAVA_HOME environment variable to set for compilation",

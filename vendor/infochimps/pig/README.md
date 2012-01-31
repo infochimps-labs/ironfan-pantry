@@ -1,6 +1,6 @@
 # pig chef cookbook
 
-Installs pig, a data analysis program for hadoop. It's like SQL but awesome and infinitely scalable.
+Pig: a data analysis program for hadoop. It's like SQL but with less suck and more scalable.
 
 ## Overview
 
@@ -16,7 +16,7 @@ This cookbook
 * `[:pig][:release_url]`              - URL of pig release tarball (default: ":apache_mirror:/pig/pig-:version:/pig-:version:.tar.gz")
 * `[:pig][:combine_splits]`           - tunable: combine small files to reduce the number of map tasks (default: "true")
   - Processing input (either user input or intermediate input) from multiple small files can be inefficient because a separate map has to be created for each file. Pig can now combined small files so that they are processed as a single map. combine_splits turns this on or off.
-* `[:pig][:version]`                  -  (default: "0.9.1")
+* `[:pig][:version]`                  -  (default: "0.9.2")
 * `[:java][:java_home]`               - JAVA_HOME environment variable to set for compilation (default: "/usr/lib/jvm/java-6-sun/jre")
   - JAVA_HOME environment variable to set for compilation. This should be the path to the 'jre' subdirectory of your Sun Java install (*not* OpenJDK).
 
@@ -36,6 +36,7 @@ Cookbook dependencies:
 * java
 * apt
 * install_from
+* hadoop_cluster
 
 
 ## License and Author

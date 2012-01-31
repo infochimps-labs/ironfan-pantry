@@ -1,6 +1,6 @@
 #
-# Cookbook Name::       ec2
-# Description::         Placeholder cookbook -- see ec2::raid_ephemeral
+# Cookbook Name::       volumes_ebs
+# Description::         Sources dependencies but does nothing. Call volumes_ebs::attach_ebs or similar.
 # Recipe::              default
 # Author::              Mike Heffner
 #

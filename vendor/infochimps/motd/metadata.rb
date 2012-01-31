@@ -8,6 +8,7 @@ description      "The most helpful motd file evar"
 
 
 recipe           "motd::default",                      "Base configuration for motd"
+recipe           "motd::ec2",                          "Ec2"
 
 %w[ debian ubuntu ].each do |os|
   supports os

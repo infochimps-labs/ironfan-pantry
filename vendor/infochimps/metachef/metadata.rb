@@ -6,7 +6,8 @@ version          "3.0.3"
 
 description      "Cluster orchestration -- coordinates discovery, integration and decoupling of cookbooks"
 
-recipe           "metachef::default",              "Base configuration for metachef"
+
+recipe           "metachef::default",                  "Base configuration for metachef"
 
 %w[ debian ubuntu ].each do |os|
   supports os

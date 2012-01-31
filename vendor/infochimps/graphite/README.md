@@ -23,9 +23,12 @@ for a week, and every 10 minutes for 5 years.
 
 ## Attributes
 
-* `[:graphite][:home_dir]`            -  (default: "/opt/graphite/")
-* `[:graphite][:data_dir]`            -  (default: "/opt/graphite/storage")
-* `[:graphite][:log_dir]`             -  (default: "/opt/graphite/storage/log/webapp")
+* `[:graphite][:conf_dir]`            -  (default: "/etc/graphite/")
+* `[:graphite][:home_dir]`            -  (default: "/usr/local/share/graphite/")
+* `[:graphite][:data_dir]`            -  (default: "/var/lib/graphite/storage/")
+* `[:graphite][:log_dir]`             -  (default: "/var/log/graphite/")
+* `[:graphite][:pid_dir]`             -  (default: "/var/run/graphite")
+* `[:graphite][:user]`                -  (default: "graphite")
 * `[:graphite][:carbon][:line_rcvr_addr]` -  (default: "127.0.0.1")
 * `[:graphite][:carbon][:pickle_rcvr_addr]` -  (default: "127.0.0.1")
 * `[:graphite][:carbon][:cache_query_addr]` -  (default: "127.0.0.1")
@@ -41,6 +44,8 @@ for a week, and every 10 minutes for 5 years.
 * `[:graphite][:graphite_web][:version]` -  (default: "0.9.7c")
 * `[:graphite][:graphite_web][:release_url]` -  (default: "http://launchpadlibrarian.net/62379635/graphite-web-0.9.7c.tar.gz")
 * `[:graphite][:graphite_web][:release_url_checksum]` -  (default: "a3e16265")
+* `[:users][:graphite][:uid]`         -  (default: "446")
+* `[:groups][:graphite][:gid]`        -  (default: "446")
 
 ## Recipes 
 
@@ -49,6 +54,7 @@ for a week, and every 10 minutes for 5 years.
 * `ganglia`                  - Ganglia
 * `web`                      - Web
 * `whisper`                  - Whisper
+
 ## Integration
 
 Supports platforms: debian and ubuntu
@@ -58,6 +64,8 @@ Cookbook dependencies:
 * apache2
 * runit
 * ganglia
+* install_from
+* metachef
 
 
 ## License and Author

@@ -27,6 +27,26 @@ attribute "nfs/mounts",
   :type                  => "array",
   :default               => [["/home", {:owner=>"root", :remote_path=>"/home"}]]
 
+attribute "nfs/portmap_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "111"
+
+attribute "nfs/nfsd_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "2049"
+
+attribute "nfs/mountd_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "45560"
+
+attribute "nfs/statd_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "56785"
+
 attribute "firewall/port_scan/portmap",
   :display_name          => "",
   :description           => "",

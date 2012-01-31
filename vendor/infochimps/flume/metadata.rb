@@ -9,7 +9,6 @@ description      "Flume: reliable decoupled shipment of logs and data."
 depends          "java"
 depends          "apt"
 depends          "runit"
-
 depends          "volumes"
 depends          "metachef"
 depends          "hadoop_cluster"
@@ -109,4 +108,4 @@ attribute "flume/master/run_state",
 attribute "flume/node/run_state",
   :display_name          => "",
   :description           => "",
-  :default               => "stop"
+  :default               => "start"

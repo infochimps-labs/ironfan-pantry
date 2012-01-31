@@ -31,6 +31,7 @@ Connect syslog to papertrailapp.com.
 ## Recipes 
 
 * `default`                  - Base configuration for papertrail
+
 ## Integration
 
 Supports platforms: debian and ubuntu

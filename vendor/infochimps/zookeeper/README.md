@@ -1,6 +1,6 @@
 # zookeeper chef cookbook
 
-Installs/Configures zookeeper
+Zookeeper, a distributed high-availability consistent datastore
 
 ## Overview
 
@@ -14,19 +14,34 @@ The server recipe additionally
 
 * `[:groups][:zookeeper][:gid]`       -  (default: "305")
 * `[:zookeeper][:data_dir]`           -  (default: "/var/zookeeper")
+  - [set by recipe]
+* `[:zookeeper][:journal_dir]`        -  (default: "/var/zookeeper")
+  - [set by recipe]
 * `[:zookeeper][:cluster_name]`       -  (default: "cluster_name")
 * `[:zookeeper][:log_dir]`            -  (default: "/var/log/zookeeper")
-* `[:zookeeper][:max_client_connections]` -  (default: "30")
+* `[:zookeeper][:max_client_connections]` -  (default: "300")
 * `[:zookeeper][:home_dir]`           -  (default: "/usr/lib/zookeeper")
-* `[:zookeeper][:exported_jars]`        - 
+* `[:zookeeper][:exported_jars]`      - 
 * `[:zookeeper][:conf_dir]`           -  (default: "/etc/zookeeper")
 * `[:zookeeper][:user]`               -  (default: "zookeeper")
+* `[:zookeeper][:pid_dir]`            -  (default: "/var/run/zookeeper")
+* `[:zookeeper][:client_port]`        -  (default: "2181")
+* `[:zookeeper][:jmx_dash_port]`      -  (default: "2182")
+* `[:zookeeper][:leader_port]`        -  (default: "2888")
+* `[:zookeeper][:election_port]`      -  (default: "3888")
+* `[:zookeeper][:java_heap_size_max]` -  (default: "1000")
+* `[:zookeeper][:tick_time]`          -  (default: "2000")
+* `[:zookeeper][:snapshot_trigger]`   -  (default: "100000")
+* `[:zookeeper][:initial_timeout_ticks]` -  (default: "10")
+* `[:zookeeper][:sync_timeout_ticks]` -  (default: "5")
+* `[:zookeeper][:leader_is_also_server]` -  (default: "auto")
 * `[:zookeeper][:server][:run_state]` -  (default: "stop")
 * `[:users][:zookeeper][:uid]`        -  (default: "305")
 
 ## Recipes 
 
 * `client`                   - Installs Zookeeper client libraries
+* `config_files`             - Config files -- include this last after discovery
 * `default`                  - Base configuration for zookeeper
 * `server`                   - Installs Zookeeper server, sets up and starts service
 
@@ -40,6 +55,7 @@ Cookbook dependencies:
 * runit
 * volumes
 * metachef
+* hadoop_cluster
 
 
 ## License and Author

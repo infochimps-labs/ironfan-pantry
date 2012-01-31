@@ -41,12 +41,12 @@ attribute "graphite/data_dir",
 attribute "graphite/log_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/var/log/webapp"
+  :default               => "/var/log/graphite/"
 
 attribute "graphite/pid_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/var/run/webapp"
+  :default               => "/var/run/graphite"
 
 attribute "graphite/user",
   :display_name          => "",
@@ -127,3 +127,13 @@ attribute "graphite/graphite_web/release_url_checksum",
   :display_name          => "",
   :description           => "",
   :default               => "a3e16265"
+
+attribute "users/graphite/uid",
+  :display_name          => "",
+  :description           => "",
+  :default               => "446"
+
+attribute "groups/graphite/gid",
+  :display_name          => "",
+  :description           => "",
+  :default               => "446"

@@ -14,4 +14,3 @@ recipe           "hive::default",                      "Base configuration for h
 %w[ debian ubuntu ].each do |os|
   supports os
 end
-

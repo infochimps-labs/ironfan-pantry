@@ -7,19 +7,12 @@ version          "3.0.3"
 description      "Apply OS-specific tuning using parameters set by recipes and roles"
 
 
-
 recipe           "tuning::default",                    "Calls out to the right tuning recipe based on platform"
 recipe           "tuning::ubuntu",                     "Applies tuning for Ubuntu systems"
 
 %w[ debian ubuntu ].each do |os|
   supports os
 end
-
-attribute "tuning/ulimit",
-  :display_name          => "",
-  :description           => "",
-  :default               => "",
-  :type                  => "hash"
 
 attribute "tuning/overcommit_memory",
   :display_name          => "",

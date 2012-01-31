@@ -9,7 +9,6 @@ description      "Elasticsearch: a distributed full-text search database based o
 depends          "java"
 depends          "runit"
 depends          "aws"
-
 depends          "volumes"
 depends          "tuning"
 depends          "metachef"
@@ -22,6 +21,7 @@ recipe           "elasticsearch::install_from_release", "Install From Release"
 recipe           "elasticsearch::install_plugins",     "Install Plugins"
 recipe           "elasticsearch::server",              "Server"
 recipe           "elasticsearch::config",              "Finalizes the config, writes out the config files"
+recipe           "elasticsearch::load_balancer",       "Load Balancer"
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -30,7 +30,7 @@ end
 attribute "elasticsearch/version",
   :display_name          => "",
   :description           => "",
-  :default               => "0.13.1"
+  :default               => "0.18.5"
 
 attribute "elasticsearch/cluster_name",
   :display_name          => "",
@@ -135,17 +135,17 @@ attribute "elasticsearch/expected_nodes",
 attribute "elasticsearch/fd_ping_interval",
   :display_name          => "",
   :description           => "",
-  :default               => "1s"
+  :default               => "2s"
 
 attribute "elasticsearch/fd_ping_timeout",
   :display_name          => "",
   :description           => "",
-  :default               => "30s"
+  :default               => "60s"
 
 attribute "elasticsearch/fd_ping_retries",
   :display_name          => "",
   :description           => "",
-  :default               => "3"
+  :default               => "6"
 
 attribute "elasticsearch/jmx_dash_port",
   :display_name          => "",
@@ -197,6 +197,26 @@ attribute "elasticsearch/plugins",
   :description           => "",
   :type                  => "array",
   :default               => ["cloud-aws"]
+
+attribute "elasticsearch/http_ports",
+  :display_name          => "",
+  :description           => "",
+  :default               => "9200-9300"
+
+attribute "elasticsearch/api_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "9300"
+
+attribute "elasticsearch/proxy_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "8200"
+
+attribute "elasticsearch/proxy_hostname",
+  :display_name          => "",
+  :description           => "",
+  :default               => "elasticsearch.yourdomain.com"
 
 attribute "elasticsearch/log_level/default",
   :display_name          => "",

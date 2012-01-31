@@ -1,6 +1,6 @@
 # snappy chef cookbook
 
-Installs/Configures the "snappy" compression library from google
+Installs/Configures snappy, the compression codec from google
 
 ## Overview
 
@@ -36,25 +36,24 @@ From [their documentation](http://code.google.com/p/snappy/):
 
 * `[:snappy][:home_dir]`              - Installed location of snappy (default: "/usr/local/share/snappy")
 * `[:snappy][:release_url]`           - Snappy release tarball to install (default: "http://snappy.googlecode.com/files/snappy-:version:.tar.gz")
-* `[:snappy][:version]`               -  (default: "1.6.5")
+* `[:snappy][:version]`               -  (default: "1.0.4")
 
 ## Recipes 
 
 * `default`                  - Base configuration for snappy
-* `gems`                     - Gems
 
 ## Integration
 
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
-* java
+* install_from
 
 
 ## License and Author
 
-Author::                Jacob Perkins - Infochimps, Inc (<coders@infochimps.com>)
-Copyright::             2011, Jacob Perkins - Infochimps, Inc
+Author::                Philip (flip) Kromer - Infochimps, Inc (<coders@infochimps.com>)
+Copyright::             2011, Philip (flip) Kromer - Infochimps, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

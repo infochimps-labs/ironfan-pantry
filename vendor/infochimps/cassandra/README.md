@@ -1,6 +1,6 @@
 # cassandra chef cookbook
 
-Installs and configures the Cassandra distributed storage system
+Cassandra: a massively scalable high-performance distributed storage system
 
 ## Overview
 
@@ -19,20 +19,20 @@ Modified to use `metachef` discovery and options preparation.
 * `[:cassandra][:commitlog_dir]`      -  (default: "/mnt/cassandra/commitlog")
 * `[:cassandra][:data_dirs]`          - 
 * `[:cassandra][:saved_caches_dir]`   -  (default: "/var/lib/cassandra/saved_caches")
-* `[:cassandra][:user]`               -  (default: "cassandra")
+* `[:cassandra][:user]`               - cassandra (default: "cassandra")
+  - The cassandra user
 * `[:cassandra][:listen_addr]`        -  (default: "localhost")
 * `[:cassandra][:seeds]`              - 
 * `[:cassandra][:rpc_addr]`           -  (default: "localhost")
 * `[:cassandra][:rpc_port]`           -  (default: "9160")
 * `[:cassandra][:storage_port]`       -  (default: "7000")
-* `[:cassandra][:jmx_dash_port]`           -  (default: "12345")
-* `[:cassandra][:mx4j_port]`   -  (default: "8081")
-* `[:cassandra][:mx4j_addr]`   -  (default: "127.0.0.1")
+* `[:cassandra][:jmx_dash_port]`      -  (default: "12345")
+* `[:cassandra][:mx4j_port]`          -  (default: "8081")
+* `[:cassandra][:mx4j_addr]`          -  (default: "127.0.0.1")
 * `[:cassandra][:release_url]`        -  (default: ":apache_mirror:/cassandra/:version:/apache-cassandra-:version:-bin.tar.gz")
 * `[:cassandra][:git_repo]`           -  (default: "git://git.apache.org/cassandra.git")
 * `[:cassandra][:git_revision]`       -  (default: "cdd239dcf82ab52cb840e070fc01135efb512799")
 * `[:cassandra][:jna_deb_amd64_url]`  -  (default: "http://debian.riptano.com/maverick/pool/libjna-java_3.2.7-0~nmu.2_amd64.deb")
-* `[:cassandra][:mx4j_url]`           -  (default: "http://downloads.sourceforge.net/project/mx4j/MX4J%20Binary/3.0.2/mx4j-3.0.2.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmx4j%2Ffiles%2F&ts=1303407638&use_mirror=iweb")
 * `[:cassandra][:auto_bootstrap]`     - Cassandra automatic boostrap boolean (default: "false")
   - Boolean indicating whether a node should automatically boostrap on startup.
 * `[:cassandra][:keyspaces]`          - Cassandra keyspaces
@@ -41,23 +41,18 @@ Modified to use `metachef` discovery and options preparation.
   - The IAuthenticator to be used for access control.
 * `[:cassandra][:partitioner]`        -  (default: "org.apache.cassandra.dht.RandomPartitioner")
 * `[:cassandra][:initial_token]`      - 
-* `[:cassandra][:rpc_timeout]`        -  (default: "5000")
 * `[:cassandra][:commitlog_rotation_threshold]` -  (default: "128")
 * `[:cassandra][:thrift_framed_transport]` -  (default: "15")
 * `[:cassandra][:disk_access_mode]`   -  (default: "auto")
 * `[:cassandra][:sliced_buffer_size]` -  (default: "64")
-* `[:cassandra][:flush_data_buffer_size]` -  (default: "32")
-* `[:cassandra][:flush_index_buffer_size]` -  (default: "8")
 * `[:cassandra][:column_index_size]`  -  (default: "64")
 * `[:cassandra][:memtable_throughput]` -  (default: "64")
-* `[:cassandra][:binary_memtable_throughput]` -  (default: "256")
 * `[:cassandra][:memtable_ops]`       -  (default: "0.3")
 * `[:cassandra][:memtable_flush_after]` -  (default: "60")
 * `[:cassandra][:concurrent_reads]`   -  (default: "8")
 * `[:cassandra][:concurrent_writes]`  -  (default: "32")
 * `[:cassandra][:commitlog_sync]`     -  (default: "periodic")
 * `[:cassandra][:commitlog_sync_period]` -  (default: "10000")
-* `[:cassandra][:gc_grace]`           -  (default: "864000")
 * `[:cassandra][:authority]`          -  (default: "org.apache.cassandra.auth.AllowAllAuthority")
 * `[:cassandra][:hinted_handoff_enabled]` -  (default: "true")
 * `[:cassandra][:max_hint_window_in_ms]` -  (default: "3600000")
@@ -85,12 +80,14 @@ Modified to use `metachef` discovery and options preparation.
 * `[:cassandra][:log_dir]`            -  (default: "/var/log/cassandra")
 * `[:cassandra][:lib_dir]`            -  (default: "/var/lib/cassandra")
 * `[:cassandra][:pid_dir]`            -  (default: "/var/run/cassandra")
-* `[:cassandra][:group]`              -  (default: "nogroup")
+* `[:cassandra][:group]`              - nogroup (default: "nogroup")
+  - The group that cassandra belongs to
 * `[:cassandra][:version]`            -  (default: "0.7.10")
 * `[:cassandra][:mx4j_version]`       -  (default: "3.0.2")
 * `[:cassandra][:mx4j_release_url]`   -  (default: "http://downloads.sourceforge.net/project/mx4j/MX4J%20Binary/x.x/mx4j-x.x.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmx4j%2Ffiles%2F&ts=1303407638&use_mirror=iweb")
 * `[:users][:cassandra][:uid]`        -  (default: "330")
 * `[:users][:cassandra][:gid]`        -  (default: "330")
+* `[:tuning][:ulimit][:cassandra]`    - 
 
 ## Recipes 
 
@@ -106,19 +103,22 @@ Modified to use `metachef` discovery and options preparation.
 * `iptables`                 - Automatically configure iptables rules for cassandra.
 * `jna_support`              - Jna Support
 * `mx4j`                     - Mx4j
+* `ruby_client`              - support gems for cassandra (incl. fauna/cassandra and apache/avro)
 * `server`                   - Server
+
 ## Integration
 
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
 * java
+* apt
 * runit
 * thrift
-* volumes
-* provides_service
-* metachef
 * iptables
+* volumes
+* metachef
+* install_from
 
 
 ## License and Author

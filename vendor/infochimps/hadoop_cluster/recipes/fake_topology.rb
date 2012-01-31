@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       hadoop_cluster
-# Description::         Configure cluster
-# Recipe::              cluster_conf
+# Description::         Pretend that groups of machines are on different racks so you can execute them without guilt
+# Recipe::              fake_topology
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
 # Copyright 2011, Philip (flip) Kromer - Infochimps, Inc

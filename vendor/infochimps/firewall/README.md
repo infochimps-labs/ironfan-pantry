@@ -16,6 +16,7 @@ rules or there is no cookbook (for example, ssh).
 
 * `default`                  - Base configuration for firewall
 * `port_scan`                - Port Scan
+
 ## Integration
 
 Supports platforms: debian and ubuntu
