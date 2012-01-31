@@ -32,6 +32,7 @@ Modified to use `metachef` discovery and options preparation.
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * java
 * apt
 * runit
