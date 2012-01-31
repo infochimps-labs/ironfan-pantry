@@ -16,6 +16,7 @@ Installs/Configures nodejs
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * python
 
 
