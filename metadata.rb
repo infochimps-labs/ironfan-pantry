@@ -49,7 +49,7 @@ attribute "zookeeper/log_dir",
 
 attribute "zookeeper/max_client_connections",
   :display_name          => "",
-  :description           => "",
+  :description           => "Limits the number of concurrent connections (at the socket level) that a\nsingle client, identified by IP address, may make to a single member of the\nZooKeeper ensemble. This is used to prevent certain classes of DoS attacks,\nincluding file descriptor exhaustion. The zookeeper default is 60; this file\nbumps that to 300, but you will want to turn this up even more on a production\nmachine. Setting this to 0 entirely removes the limit on concurrent\nconnections.",
   :default               => "300"
 
 attribute "zookeeper/home_dir",
@@ -105,27 +105,27 @@ attribute "zookeeper/java_heap_size_max",
 
 attribute "zookeeper/tick_time",
   :display_name          => "",
-  :description           => "",
+  :description           => "the length of a single tick, which is the basic time unit used by ZooKeeper,\nas measured in milliseconds. It is used to regulate heartbeats, and\ntimeouts. For example, the minimum session timeout will be two ticks.",
   :default               => "2000"
 
 attribute "zookeeper/snapshot_trigger",
   :display_name          => "",
-  :description           => "",
+  :description           => "ZooKeeper logs transactions to a transaction log. After snapCount transactions\nare written to a log file a snapshot is started and a new transaction log file\nis created. The default snapCount is 100,000.",
   :default               => "100000"
 
 attribute "zookeeper/initial_timeout_ticks",
   :display_name          => "",
-  :description           => "",
+  :description           => "Time, in ticks, to allow followers to connect and sync to a leader. Increase\nif the amount of data managed by ZooKeeper is large",
   :default               => "10"
 
 attribute "zookeeper/sync_timeout_ticks",
   :display_name          => "",
-  :description           => "",
+  :description           => "Time, in ticks, to allow followers to sync with ZooKeeper. If followers fall\ntoo far behind a leader, they will be dropped.",
   :default               => "5"
 
 attribute "zookeeper/leader_is_also_server",
   :display_name          => "",
-  :description           => "",
+  :description           => "Should the leader accepts client connections? default \"yes\".  The leader\nmachine coordinates updates. For higher update throughput at thes slight\nexpense of read throughput the leader can be configured to not accept clients\nand focus on coordination. The default to this option is yes, which means that\na leader will accept client connections. Turning on leader selection is highly\nrecommended when you have more than three ZooKeeper servers in an ensemble.\n\"auto\" means \"true if there are 4 or more zookeepers, false otherwise\"",
   :default               => "auto"
 
 attribute "zookeeper/server/run_state",
