@@ -6,6 +6,8 @@
 #
 # Apache 2.0
 #
+
+
 # http://conoroneill.net/monitoring-ec2-servers-with-zabbix
 
 %w[id token phone].each do |prop|
