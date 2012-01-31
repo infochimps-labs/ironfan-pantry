@@ -16,6 +16,7 @@ Installs statsd daemon for recording arbitrary information to graphite
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * runit
 * nodejs
 * graphite
