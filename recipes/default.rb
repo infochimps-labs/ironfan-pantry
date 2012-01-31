@@ -9,4 +9,6 @@
 # (no license specified)
 #
 
+include_recipe "metachef"
+
 package "nfs-common"
