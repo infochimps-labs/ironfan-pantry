@@ -12,6 +12,8 @@ Only the most helpful motd file **ever**.
 ## Recipes 
 
 * `default`                  - Base configuration for motd
+* `ec2`                      - Ec2
+
 ## Integration
 
 Supports platforms: debian and ubuntu
