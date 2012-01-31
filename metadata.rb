@@ -18,7 +18,8 @@ end
 attribute "tuning/ulimit",
   :display_name          => "",
   :description           => "",
-  :default               => ""
+  :default               => "",
+  :type                  => "hash"
 
 attribute "tuning/overcommit_memory",
   :display_name          => "",
