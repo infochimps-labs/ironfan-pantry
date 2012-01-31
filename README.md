@@ -17,6 +17,7 @@ Installs/Configures nodejs
 
 * `compile`                  - Compile
 * `default`                  - Base configuration for nodejs
+
 ## Integration
 
 Supports platforms: debian and ubuntu
