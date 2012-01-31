@@ -19,14 +19,14 @@ Connect syslog to papertrailapp.com.
   - By default, this recipe will log to Papertrail using the system's hostname. If you want to set the hostname that will be used (think ephemeral cloud nodes) you can set `hostname_name` (preferred) or `hostname_cmd` (used if `hostname_name` is absent).
 * `[:papertrail][:watch_files]`       - Command to run to determine system's hostname
   - A list of files that will be to watch and include in the papertrail logging -- useful for including output from applications that aren't configured to use syslog.
-  
-  Each entry in this list is a hash of:
-  * [:filename] - Full path to the file.
-  * [:tag] - What to tag log lines that come from this file. Best to use a short application name.
-  
-  For example:
-    default[:papertrail][:watch_files] = [{:filename => "/var/log/myapp.log", :tag => "myapp:"}]
-  
+    
+    Each entry in this list is a hash of:
+    * [:filename] - Full path to the file.
+    * [:tag] - What to tag log lines that come from this file. Best to use a short application name.
+    
+    For example:
+      default[:papertrail][:watch_files] = [{:filename => "/var/log/myapp.log", :tag => "myapp:"}]
+    
 
 ## Recipes 
 
