@@ -17,6 +17,7 @@ depends          "hadoop_cluster"
 recipe           "zookeeper::client",                  "Installs Zookeeper client libraries"
 recipe           "zookeeper::default",                 "Base configuration for zookeeper"
 recipe           "zookeeper::server",                  "Installs Zookeeper server, sets up and starts service"
+recipe           "zookeeper::config_files",            "Config files -- include this last after discovery"
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -29,7 +30,12 @@ attribute "groups/zookeeper/gid",
 
 attribute "zookeeper/data_dir",
   :display_name          => "",
-  :description           => "",
+  :description           => "[set by recipe]",
+  :default               => "/var/zookeeper"
+
+attribute "zookeeper/journal_dir",
+  :display_name          => "",
+  :description           => "[set by recipe]",
   :default               => "/var/zookeeper"
 
 attribute "zookeeper/cluster_name",
