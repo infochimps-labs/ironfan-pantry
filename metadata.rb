@@ -14,9 +14,7 @@ depends          "iptables"
 
 depends          "volumes"
 depends          "metachef"
-depends          "tuning"
 depends          "install_from"
-depends          "dashpot"
 
 recipe           "cassandra::autoconf",                "Automatically configure nodes from chef-server information."
 recipe           "cassandra::ec2snitch",               "Automatically configure properties snitch for clusters on EC2."

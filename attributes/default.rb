@@ -128,3 +128,8 @@ default[:cassandra][:phi_convict_threshold]        = 8
 default[:cassandra][:request_scheduler]            = 'org.apache.cassandra.scheduler.NoScheduler'
 default[:cassandra][:throttle_limit]               = 80           # 2x (concurrent_reads + concurrent_writes)
 default[:cassandra][:request_scheduler_id]         = 'keyspace'
+
+#
+# Machine tuning -- use the tuning cookbook to have this take effect
+#
+default[:tuning][:ulimit]['cassandra'] = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
