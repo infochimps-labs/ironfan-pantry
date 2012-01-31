@@ -90,6 +90,7 @@ limitations under the License.
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * java
 * runit
 * aws

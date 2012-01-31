@@ -77,6 +77,7 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * java
 * apt
 * runit

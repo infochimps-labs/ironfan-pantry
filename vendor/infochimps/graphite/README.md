@@ -34,6 +34,7 @@ for a week, and every 10 minutes for 5 years.
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * python
 * apache2
 * runit

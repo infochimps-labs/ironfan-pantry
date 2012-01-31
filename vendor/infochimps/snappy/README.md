@@ -41,6 +41,7 @@ From [their documentation](http://code.google.com/p/snappy/):
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * install_from
 
 

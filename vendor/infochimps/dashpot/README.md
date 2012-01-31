@@ -16,6 +16,7 @@ Creates and serves a lightweight pluggable dashboard for a machine
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * runit
 * metachef
 

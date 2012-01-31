@@ -23,6 +23,7 @@ This cookbook
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * java
 * apt
 * install_from

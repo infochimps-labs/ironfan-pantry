@@ -17,6 +17,7 @@ Installs/Configures ganglia
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * java
 * runit
 * volumes
