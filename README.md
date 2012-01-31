@@ -10,6 +10,38 @@ Cookbook based on Benjamin Black's (<b@b3k.us>) -- original at http://github.com
 
 Modified to use `metachef` discovery and options preparation.
 
+## Recipes 
+
+* `authentication`           - Authentication
+* `autoconf`                 - Automatically configure nodes from chef-server information.
+* `bintools`                 - Bintools
+* `client`                   - Client
+* `default`                  - Base configuration for cassandra
+* `ec2snitch`                - Automatically configure properties snitch for clusters on EC2.
+* `install_from_git`         - Install From Git
+* `install_from_package`     - Install From Package
+* `install_from_release`     - Install From Release
+* `iptables`                 - Automatically configure iptables rules for cassandra.
+* `jna_support`              - Jna Support
+* `mx4j`                     - Mx4j
+* `ruby_client`              - support gems for cassandra (incl. fauna/cassandra and apache/avro)
+* `server`                   - Server
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* java
+* apt
+* runit
+* thrift
+* iptables
+* volumes
+* metachef
+* install_from
+
+
 ## Attributes
 
 * `[:cassandra][:cluster_name]`       - Cassandra cluster name (default: "cluster_name")
@@ -104,38 +136,6 @@ Modified to use `metachef` discovery and options preparation.
 * `[:users][:cassandra][:uid]`        -  (default: "330")
 * `[:users][:cassandra][:gid]`        -  (default: "330")
 * `[:tuning][:ulimit][:cassandra]`    - 
-
-## Recipes 
-
-* `authentication`           - Authentication
-* `autoconf`                 - Automatically configure nodes from chef-server information.
-* `bintools`                 - Bintools
-* `client`                   - Client
-* `default`                  - Base configuration for cassandra
-* `ec2snitch`                - Automatically configure properties snitch for clusters on EC2.
-* `install_from_git`         - Install From Git
-* `install_from_package`     - Install From Package
-* `install_from_release`     - Install From Release
-* `iptables`                 - Automatically configure iptables rules for cassandra.
-* `jna_support`              - Jna Support
-* `mx4j`                     - Mx4j
-* `ruby_client`              - support gems for cassandra (incl. fauna/cassandra and apache/avro)
-* `server`                   - Server
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* java
-* apt
-* runit
-* thrift
-* iptables
-* volumes
-* metachef
-* install_from
-
 
 ## License and Author
 
