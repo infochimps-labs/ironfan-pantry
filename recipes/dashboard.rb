@@ -1,7 +1,7 @@
 #
-# Cookbook Name::       hadoop_cluster
-# Description::         Simple Dashboard
-# Recipe::              simple_dashboard
+# Cookbook Name::       hbase
+# Description::         Simple dashboard for HBase config and state
+# Recipe::              dashboard
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
 # Copyright 2011, Philip (flip) Kromer - Infochimps, Inc

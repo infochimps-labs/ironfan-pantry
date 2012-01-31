@@ -1,6 +1,6 @@
 #
 # Cookbook Name::       hbase
-# Description::         HBase Config files
+# Description::         Finalizes the config, writes out the config files
 # Recipe::              config
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
