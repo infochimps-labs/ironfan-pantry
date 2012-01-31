@@ -15,6 +15,7 @@ Modified to use `metachef` discovery and options preparation.
 * `[:cassandra][:cluster_name]`       - Cassandra cluster name (default: "cluster_name")
   - The name for the Cassandra cluster in which this node should participate.  The default is 'Test Cluster'.
 * `[:cassandra][:home_dir]`           -  (default: "/usr/local/share/cassandra")
+  - Directories, hosts and ports        # =
 * `[:cassandra][:conf_dir]`           -  (default: "/etc/cassandra")
 * `[:cassandra][:commitlog_dir]`      -  (default: "/mnt/cassandra/commitlog")
 * `[:cassandra][:data_dirs]`          - 
@@ -30,13 +31,25 @@ Modified to use `metachef` discovery and options preparation.
 * `[:cassandra][:mx4j_port]`          -  (default: "8081")
 * `[:cassandra][:mx4j_addr]`          -  (default: "127.0.0.1")
 * `[:cassandra][:release_url]`        -  (default: ":apache_mirror:/cassandra/:version:/apache-cassandra-:version:-bin.tar.gz")
+  - install_from_release: tarball url
 * `[:cassandra][:git_repo]`           -  (default: "git://git.apache.org/cassandra.git")
+  - Git repo location
 * `[:cassandra][:git_revision]`       -  (default: "cdd239dcf82ab52cb840e070fc01135efb512799")
+  - until ruby gem is updated, use cdd239dcf82ab52cb840e070fc01135efb512799
 * `[:cassandra][:jna_deb_amd64_url]`  -  (default: "http://debian.riptano.com/maverick/pool/libjna-java_3.2.7-0~nmu.2_amd64.deb")
+  - JNA deb location
 * `[:cassandra][:auto_bootstrap]`     - Cassandra automatic boostrap boolean (default: "false")
   - Boolean indicating whether a node should automatically boostrap on startup.
 * `[:cassandra][:keyspaces]`          - Cassandra keyspaces
-  - Hash of keyspace definitions.
+  - Make a databag called 'cassandra', with an element 'clusters'. Within that, define a hash named for your cluster:
+    
+    - keys_cached:        specifies the number of keys per sstable whose locations we keep in memory in "mostly LRU" order.  (JUST the key locations, NOT any column values.) Specify a fraction (value less than 1) or an absolute number of keys to cache.  Defaults to 200000 keys.
+    - rows_cached:        specifies the number of rows whose entire contents we cache in memory. Do not use this on ColumnFamilies with large rows, or ColumnFamilies with high write:read ratios. Specify a fraction (value less than 1) or an absolute number of rows to cache. Defaults to 0. (i.e. row caching is off by default)
+    - comment:            used to attach additional human-readable information about the column family to its definition.
+    - read_repair_chance: specifies the probability with which read repairs should be invoked on non-quorum reads.  must be between 0 and 1. defaults to 1.0 (always read repair).
+    - preload_row_cache:  If true, will populate row cache on startup. Defaults to false.
+    - gc_grace_seconds:   specifies the time to wait before garbage collecting tombstones (deletion markers). defaults to 864000 (10 days). See http://wiki.apache.org/cassandra/DistributedDeletes
+    
 * `[:cassandra][:authenticator]`      - Cassandra authenticator (default: "org.apache.cassandra.auth.AllowAllAuthenticator")
   - The IAuthenticator to be used for access control.
 * `[:cassandra][:partitioner]`        -  (default: "org.apache.cassandra.dht.RandomPartitioner")
@@ -83,8 +96,11 @@ Modified to use `metachef` discovery and options preparation.
 * `[:cassandra][:group]`              - nogroup (default: "nogroup")
   - The group that cassandra belongs to
 * `[:cassandra][:version]`            -  (default: "0.7.10")
+  - install_from_release
 * `[:cassandra][:mx4j_version]`       -  (default: "3.0.2")
+  - MX4J Version
 * `[:cassandra][:mx4j_release_url]`   -  (default: "http://downloads.sourceforge.net/project/mx4j/MX4J%20Binary/x.x/mx4j-x.x.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmx4j%2Ffiles%2F&ts=1303407638&use_mirror=iweb")
+  - MX4J location (at least as of Version 3.0.2)
 * `[:users][:cassandra][:uid]`        -  (default: "330")
 * `[:users][:cassandra][:gid]`        -  (default: "330")
 * `[:tuning][:ulimit][:cassandra]`    - 

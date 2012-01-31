@@ -41,7 +41,7 @@ attribute "cassandra/cluster_name",
 
 attribute "cassandra/home_dir",
   :display_name          => "",
-  :description           => "",
+  :description           => "Directories, hosts and ports        # =",
   :default               => "/usr/local/share/cassandra"
 
 attribute "cassandra/conf_dir",
@@ -113,22 +113,22 @@ attribute "cassandra/mx4j_addr",
 
 attribute "cassandra/release_url",
   :display_name          => "",
-  :description           => "",
+  :description           => "install_from_release: tarball url",
   :default               => ":apache_mirror:/cassandra/:version:/apache-cassandra-:version:-bin.tar.gz"
 
 attribute "cassandra/git_repo",
   :display_name          => "",
-  :description           => "",
+  :description           => "Git repo location",
   :default               => "git://git.apache.org/cassandra.git"
 
 attribute "cassandra/git_revision",
   :display_name          => "",
-  :description           => "",
+  :description           => "until ruby gem is updated, use cdd239dcf82ab52cb840e070fc01135efb512799",
   :default               => "cdd239dcf82ab52cb840e070fc01135efb512799"
 
 attribute "cassandra/jna_deb_amd64_url",
   :display_name          => "",
-  :description           => "",
+  :description           => "JNA deb location",
   :default               => "http://debian.riptano.com/maverick/pool/libjna-java_3.2.7-0~nmu.2_amd64.deb"
 
 attribute "cassandra/auto_bootstrap",
@@ -138,15 +138,7 @@ attribute "cassandra/auto_bootstrap",
 
 attribute "cassandra/keyspaces",
   :display_name          => "Cassandra keyspaces",
-  :description           => "Make a databag called 'cassandra', with an element 'clusters'. Within that, define a hash named for your cluster:
-
-- keys_cached:        specifies the number of keys per sstable whose locations we keep in memory in \"mostly LRU\" order.  (JUST the key locations, NOT any column values.) Specify a fraction (value less than 1) or an absolute number of keys to cache.  Defaults to 200000 keys.
-- rows_cached:        specifies the number of rows whose entire contents we cache in memory. Do not use this on ColumnFamilies with large rows, or ColumnFamilies with high write:read ratios. Specify a fraction (value less than 1) or an absolute number of rows to cache. Defaults to 0. (i.e. row caching is off by default)
-- comment:            used to attach additional human-readable information about the column family to its definition.
-- read_repair_chance: specifies the probability with which read repairs should be invoked on non-quorum reads.  must be between 0 and 1. defaults to 1.0 (always read repair).
-- preload_row_cache:  If true, will populate row cache on startup. Defaults to false.
-- gc_grace_seconds:   specifies the time to wait before garbage collecting tombstones (deletion markers). defaults to 864000 (10 days). See http://wiki.apache.org/cassandra/DistributedDeletes
-",
+  :description           => "Make a databag called 'cassandra', with an element 'clusters'. Within that, define a hash named for your cluster:\n\n- keys_cached:        specifies the number of keys per sstable whose locations we keep in memory in \"mostly LRU\" order.  (JUST the key locations, NOT any column values.) Specify a fraction (value less than 1) or an absolute number of keys to cache.  Defaults to 200000 keys.\n- rows_cached:        specifies the number of rows whose entire contents we cache in memory. Do not use this on ColumnFamilies with large rows, or ColumnFamilies with high write:read ratios. Specify a fraction (value less than 1) or an absolute number of rows to cache. Defaults to 0. (i.e. row caching is off by default)\n- comment:            used to attach additional human-readable information about the column family to its definition.\n- read_repair_chance: specifies the probability with which read repairs should be invoked on non-quorum reads.  must be between 0 and 1. defaults to 1.0 (always read repair).\n- preload_row_cache:  If true, will populate row cache on startup. Defaults to false.\n- gc_grace_seconds:   specifies the time to wait before garbage collecting tombstones (deletion markers). defaults to 864000 (10 days). See http://wiki.apache.org/cassandra/DistributedDeletes\n",
   :type                  => "array",
   :default               => ""
 
@@ -367,17 +359,17 @@ attribute "cassandra/group",
 
 attribute "cassandra/version",
   :display_name          => "",
-  :description           => "",
+  :description           => "install_from_release",
   :default               => "0.7.10"
 
 attribute "cassandra/mx4j_version",
   :display_name          => "",
-  :description           => "",
+  :description           => "MX4J Version",
   :default               => "3.0.2"
 
 attribute "cassandra/mx4j_release_url",
   :display_name          => "",
-  :description           => "",
+  :description           => "MX4J location (at least as of Version 3.0.2)",
   :default               => "http://downloads.sourceforge.net/project/mx4j/MX4J%20Binary/x.x/mx4j-x.x.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmx4j%2Ffiles%2F&ts=1303407638&use_mirror=iweb"
 
 attribute "users/cassandra/uid",
