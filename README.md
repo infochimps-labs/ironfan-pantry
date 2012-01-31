@@ -140,6 +140,37 @@ of a port the database exposes.
 0.0.6 
 	- Change the name of the web_app to fit the fqdn
 
+## Recipes 
+
+* `agent`                    - Installs and launches Zabbix agent.
+* `agent_prebuild`           - Downloads, configures, & launches pre-built Zabbix agent
+* `agent_source`             - Downloads, builds, configures, & launches Zabbix agent from source.
+* `create_hosts`             - Create Hosts
+* `database`                 - Configures Zabbix database.
+* `database_mysql`           - Configures Zabbix MySQL database.
+* `default`                  - Sets up Zabbix directory structure & user.
+* `firewall`                 - Configures firewall access between Zabbix server & agents.
+* `server`                   - Installs and launches Zabbix server.
+* `server_sends_email`       - Configures Zabbix server to be able to send email via a remote SMTP server.
+* `server_sends_texts`       - Configures Zabbix server to be able to send texts using Twilio.
+* `server_source`            - Downloads, builds, configures, & launches Zabbix server from source.
+* `web`                      - Configures PHP-driven, reverse-proxied Zabbix web frontend.
+* `web_apache`               - Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache.
+* `web_nginx`                - Configures PHP-driven, reverse-proxied Zabbix web frontend using nginx.
+
+## Integration
+
+Supports platforms: debian and ubuntu
+
+Cookbook dependencies:
+* apache2
+* nginx
+* database, >= 1.0.0
+* mysql, >= 1.2.0
+* ufw, >= 0.6.1
+* metachef
+
+
 ## Attributes
 
 * `[:zabbix][:home_dir]`              -  (default: "/opt/zabbix")
@@ -225,37 +256,6 @@ of a port the database exposes.
   - The Twilio phone number used by Zabbix to send SMS.
 * `[:users][:zabbix][:uid]`           -  (default: "447")
 * `[:groups][:zabbix][:gid]`          -  (default: "447")
-
-## Recipes 
-
-* `agent`                    - Installs and launches Zabbix agent.
-* `agent_prebuild`           - Downloads, configures, & launches pre-built Zabbix agent
-* `agent_source`             - Downloads, builds, configures, & launches Zabbix agent from source.
-* `create_hosts`             - Create Hosts
-* `database`                 - Configures Zabbix database.
-* `database_mysql`           - Configures Zabbix MySQL database.
-* `default`                  - Sets up Zabbix directory structure & user.
-* `firewall`                 - Configures firewall access between Zabbix server & agents.
-* `server`                   - Installs and launches Zabbix server.
-* `server_sends_email`       - Configures Zabbix server to be able to send email via a remote SMTP server.
-* `server_sends_texts`       - Configures Zabbix server to be able to send texts using Twilio.
-* `server_source`            - Downloads, builds, configures, & launches Zabbix server from source.
-* `web`                      - Configures PHP-driven, reverse-proxied Zabbix web frontend.
-* `web_apache`               - Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache.
-* `web_nginx`                - Configures PHP-driven, reverse-proxied Zabbix web frontend using nginx.
-
-## Integration
-
-Supports platforms: debian and ubuntu
-
-Cookbook dependencies:
-* apache2
-* nginx
-* database, >= 1.0.0
-* mysql, >= 1.2.0
-* ufw, >= 0.6.1
-* metachef
-
 
 ## License and Author
 
