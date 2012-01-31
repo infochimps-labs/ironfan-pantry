@@ -2,6 +2,10 @@
 
 Installs/Configures Zabbix server, client, & web frontend.
 
+* Cookbook source:   [http://github.com/infochimps-cookbooks/zabbix](http://github.com/infochimps-cookbooks/zabbix)
+* ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
+* Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
+
 ## Overview
 
 This cookbook can install
