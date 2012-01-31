@@ -68,11 +68,18 @@ module ClusterChef
     #
     # @return [ClusterChef::Component] component from server to most recently-announce
     def discover(sys, subsys, realm=nil)
-      discover_all(sys, subsys, realm).last or raise("Cannot find '#{component_name}'")
+      discover_all(sys, subsys, realm).last
+    end
+
+
+    # Like #discover (find the latest announcement for the given system), but
+    # raises an error if not found
+    def discover!(*args)
+      discover(*args) or raise("Cannot find #{realm}-#{sys}-#{subsys}")
     end
 
     def discovery_realm(sys, subsys=nil)
-      node[:discovers][sys][subsys] rescue node[:cluster_name]
+      node[:discovers][sys][subsys] || node[:cluster_name] rescue node[:cluster_name]
     end
 
     def node_components(server)
@@ -93,7 +100,7 @@ module ClusterChef
     #   components_with(:log)
     #
     def components_with(aspect)
-      node_components(self.node).select{|comp| not comp.log.empty? }
+      node_components(self.node).select{|comp| not comp.send(aspect).empty? }
     end
 
   protected
