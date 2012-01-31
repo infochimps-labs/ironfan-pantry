@@ -29,6 +29,7 @@ recipe           "cassandra::install_from_release",    "Install From Release"
 recipe           "cassandra::jna_support",             "Jna Support"
 recipe           "cassandra::mx4j",                    "Mx4j"
 recipe           "cassandra::server",                  "Server"
+recipe           "cassandra::ruby_client",             "support gems for cassandra (incl. fauna/cassandra and apache/avro)"
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -131,11 +132,6 @@ attribute "cassandra/jna_deb_amd64_url",
   :description           => "",
   :default               => "http://debian.riptano.com/maverick/pool/libjna-java_3.2.7-0~nmu.2_amd64.deb"
 
-attribute "cassandra/mx4j_url",
-  :display_name          => "",
-  :description           => "",
-  :default               => "http://downloads.sourceforge.net/project/mx4j/MX4J%20Binary/3.0.2/mx4j-3.0.2.zip?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fmx4j%2Ffiles%2F&ts=1303407638&use_mirror=iweb"
-
 attribute "cassandra/auto_bootstrap",
   :display_name          => "Cassandra automatic boostrap boolean",
   :description           => "Boolean indicating whether a node should automatically boostrap on startup.",
@@ -162,11 +158,6 @@ attribute "cassandra/initial_token",
   :description           => "",
   :default               => ""
 
-attribute "cassandra/rpc_timeout",
-  :display_name          => "",
-  :description           => "",
-  :default               => "5000"
-
 attribute "cassandra/commitlog_rotation_threshold",
   :display_name          => "",
   :description           => "",
@@ -187,16 +178,6 @@ attribute "cassandra/sliced_buffer_size",
   :description           => "",
   :default               => "64"
 
-attribute "cassandra/flush_data_buffer_size",
-  :display_name          => "",
-  :description           => "",
-  :default               => "32"
-
-attribute "cassandra/flush_index_buffer_size",
-  :display_name          => "",
-  :description           => "",
-  :default               => "8"
-
 attribute "cassandra/column_index_size",
   :display_name          => "",
   :description           => "",
@@ -206,11 +187,6 @@ attribute "cassandra/memtable_throughput",
   :display_name          => "",
   :description           => "",
   :default               => "64"
-
-attribute "cassandra/binary_memtable_throughput",
-  :display_name          => "",
-  :description           => "",
-  :default               => "256"
 
 attribute "cassandra/memtable_ops",
   :display_name          => "",
@@ -241,11 +217,6 @@ attribute "cassandra/commitlog_sync_period",
   :display_name          => "",
   :description           => "",
   :default               => "10000"
-
-attribute "cassandra/gc_grace",
-  :display_name          => "",
-  :description           => "",
-  :default               => "864000"
 
 attribute "cassandra/authority",
   :display_name          => "",
