@@ -6,21 +6,6 @@ Ganglia: a distributed high-performance monitoring system
 
 Installs/Configures ganglia
 
-## Attributes
-
-* `[:ganglia][:home_dir]`             -  (default: "/var/lib/ganglia")
-* `[:ganglia][:log_dir]`              -  (default: "/var/log/ganglia")
-* `[:ganglia][:conf_dir]`             -  (default: "/etc/ganglia")
-* `[:ganglia][:pid_dir]`              -  (default: "/var/run/ganglia")
-* `[:ganglia][:data_dir]`             -  (default: "/var/lib/ganglia/rrds")
-* `[:ganglia][:user]`                 -  (default: "ganglia")
-* `[:ganglia][:send_port]`            -  (default: "8649")
-* `[:ganglia][:rcv_port]`             -  (default: "8649")
-* `[:ganglia][:monitor][:run_state]`  -  (default: "start")
-* `[:ganglia][:server][:run_state]`   -  (default: "start")
-* `[:users][:ganglia][:uid]`          -  (default: "320")
-* `[:groups][:ganglia][:gid]`         -  (default: "320")
-
 ## Recipes 
 
 * `default`                  - Base configuration for ganglia
@@ -37,6 +22,21 @@ Cookbook dependencies:
 * volumes
 * metachef
 
+
+## Attributes
+
+* `[:ganglia][:home_dir]`             -  (default: "/var/lib/ganglia")
+* `[:ganglia][:log_dir]`              -  (default: "/var/log/ganglia")
+* `[:ganglia][:conf_dir]`             -  (default: "/etc/ganglia")
+* `[:ganglia][:pid_dir]`              -  (default: "/var/run/ganglia")
+* `[:ganglia][:data_dir]`             -  (default: "/var/lib/ganglia/rrds")
+* `[:ganglia][:user]`                 -  (default: "ganglia")
+* `[:ganglia][:send_port]`            -  (default: "8649")
+* `[:ganglia][:rcv_port]`             -  (default: "8649")
+* `[:ganglia][:monitor][:run_state]`  -  (default: "start")
+* `[:ganglia][:server][:run_state]`   -  (default: "start")
+* `[:users][:ganglia][:uid]`          -  (default: "320")
+* `[:groups][:ganglia][:gid]`         -  (default: "320")
 
 ## License and Author
 
