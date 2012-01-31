@@ -15,6 +15,7 @@ Connect syslog to papertrailapp.com.
 Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
+
 * rsyslog
 
 
