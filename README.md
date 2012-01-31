@@ -1,6 +1,6 @@
-# ec2 chef cookbook
+# volumes_ebs chef cookbook
 
-Installs/Configures ec2-specific capabilites
+Addon to the volumes cookbook: Attach and mount EBS volumes on the amazon cloud
 
 ## Overview
 
@@ -18,8 +18,8 @@ Has recipes to:
 ## Recipes 
 
 * `attach_ebs`               - Attach EBS volumes as directed by node[:volumes]
-* `default`                  - Placeholder cookbook -- see ec2::raid_ephemeral
-* `raid_ephemeral`           - Build a RAID volume out of the ephemeral drives
+* `default`                  - Sources dependencies but does nothing. Call volumes_ebs::attach_ebs or similar.
+
 ## Integration
 
 Supports platforms: debian and ubuntu
