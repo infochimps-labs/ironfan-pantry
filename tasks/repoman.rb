@@ -30,6 +30,7 @@ module ClusterChef
       has_keys(
         :solo_root,          # holds the solo/ versions of the repo
         :main_dir,           # the local checkout to mine
+        :main_ref,        # the branch of the local checkout to mine
         :vendor              # direectory within vendor/ to target inside homebase
         )
 
@@ -74,7 +75,7 @@ module ClusterChef
           end
         end
       end
-      
+
       # convert to string, but mask the token
       def to_s()
         "#{super[0..-3]} repos=#{@repos.values.map(&:name).inspect} >"
@@ -95,6 +96,7 @@ module ClusterChef
         :name,
         :push_urlbase,       # base url for target repo names, eg git@github.com:infochimps-cookbooks
         :main_dir,           # the local checkout to mine
+        :main_ref,        # the branch of the local checkout to mine
         :github_api_urlbase, # github API url base
         :github_org,         # github organization, eg 'infochimps-cookbooks'
         :github_team,        # github team to authorize for the repo
@@ -124,11 +126,11 @@ module ClusterChef
       end
 
       def define_tasks
-        # task "repo:solo:pull_from_github" => pull_to_solo_from_github
-        # task "repo:solo:push_to_github"   => push_from_solo_to_github
-        # task "repo:solo:pull_from_main"   => pull_to_solo_from_main
-        # task "repo:main:pull_from_solo"   => pull_to_main_from_solo
-        # task "repo:main:subtree_split"    => subtree_split
+        task "repo:solo:pull_from_github" => pull_to_solo_from_github
+        task "repo:solo:push_to_github"   => push_from_solo_to_github
+        task "repo:solo:pull_from_main"   => pull_to_solo_from_main
+        task "repo:main:pull_from_solo"   => pull_to_main_from_solo
+        task "repo:main:subtree_split"    => subtree_split
         task("repo:pull:all" => sync_and_pull)
         task("repo:push:all" => sync_and_push)
       end
@@ -226,15 +228,15 @@ module ClusterChef
           end
         end
       end
-      
+
       #
       # other
       #
 
       def in_main_tree
-        raise "Repo dirty. Too terrified to move.\n#{filth}" unless clean?
+        # raise "Repo dirty. Too terrified to move.\n#{filth}" unless clean?
         cd main_dir do
-          sh("git", "checkout", "public")
+          sh("git", "checkout", main_ref)
           yield
         end
       end

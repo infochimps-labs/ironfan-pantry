@@ -36,7 +36,7 @@ module ClusterChef
 
       # Create the repo if it doesn't exist
       def github_create
-        Log.debug("Creating #{name}")
+        Log.info("Creating #{name}")
         github_api_post("repos/create",
           :name   => github_repo_name, :public => (public? ? '1' : '0') ) do |*args, &block|
           harmless(:create, 422, *args, &block)
@@ -44,7 +44,7 @@ module ClusterChef
       end
 
       def github_update
-        Log.debug("Updating #{name} metadata")
+        Log.info("Updating #{name} metadata")
         github_api_post("repos/show/#{github_repo_name}",
           :name   => github_repo_name,
           :values => {
@@ -57,7 +57,7 @@ module ClusterChef
       end
 
       def github_add_teams
-        Log.debug("Authorizing team #{github_team} on #{name}")
+        Log.info("Authorizing team #{github_team} on #{name}")
         github_api_post("teams/#{github_team}/repositories",
           :name => github_repo_name)
       end
@@ -115,7 +115,7 @@ module ClusterChef
 
       def harmless(action, ok_codes, resp, req, result, &block)
         if Array(ok_codes).include?(resp.code)
-          Log.debug("Github repo #{github_repo_name} doesn't need #{action} (#{resp.to_s}), skipping")
+          Log.info("Github repo #{github_repo_name} doesn't need #{action} (#{resp.to_s}), skipping")
           resp
         else
           resp.return!(req, result, &block)

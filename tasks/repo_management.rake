@@ -22,11 +22,15 @@ GITHUB_TEAM       = '117089'
 # * TODO: Also those hardcoded values should be configurable
 
 def get_repoman
-  cookbooks = FileList['vendor/infochimps/*'].select{|d| File.directory?(d) }.sort_by{|d| File.basename(d) }.reverse
+  cookbooks = FileList['vendor/infochimps/*' ].
+    select{|d| File.directory?(d) }.
+    reject{|d| d =~ /\/(zabbix_integration|zabbix|users)$/ }.
+    sort_by{|d| File.basename(d) }.reverse
   clxn = ClusterChef::Repoman::Collection.new(
     cookbooks,
     :vendor      => 'infochimps',
     :main_dir    => HOMEBASE_MAIN_DIR,
+    :main_ref    => 'public',
     :solo_root   => File.join(REPOMAN_ROOT_DIR, 'solo'),
     :github_org  => GITHUB_ORG,
     :github_team => GITHUB_TEAM,
@@ -62,8 +66,10 @@ end
 #   ClusterChef::Repoman::Collection.new(['rvm'],     :vendor => 'fnichol', :main_dir => nil, :github_org  => GITHUB_ORG, :github_team => GITHUB_TEAM )
 # end
 
-# repoman = get_repoman
-# repoman.each_repo{|r| r.define_tasks }
+if ENV['DO_REPOMAN']
+  repoman = get_repoman
+  repoman.each_repo{|r| r.define_tasks }
+end
 
 def get_repo(repo_name)
   repoman  = get_repoman
@@ -194,43 +200,43 @@ namespace :repo do
   #     end
   #   end
   # end
+
   #
-  # #
-  # # Manage the github repos
-  # #
-  # namespace :gh do
-  #   desc 'repo mgmt: github target repo information'
-  #   task :show, [:repo_name] do |rt, args|
-  #     check_args(rt, args)
-  #     repoman, repo = get_repo(args.repo_name)
-  #     info = repo.github_info
-  #     puts JSON.pretty_generate(info)
-  #   end
+  # Manage the github repos
   #
-  #   desc 'repo mgmt: create github target repo'
-  #   task :sync, [:repo_name] do |rt, args|
-  #     check_args(rt, args)
-  #     repoman, repo = get_repo(args.repo_name)
-  #     repo.github_sync
-  #   end
-  #
-  #   desc 'repo mgmt: ensure all github targets exist'
-  #   task :sync_all do |rt, args|
-  #     check_args(rt, args)
-  #     repoman = get_repoman
-  #     repoman.each_repo do |repo|
-  #       banner(rt, args, repo)
-  #       repo.github_sync
-  #     end
-  #   end
-  #
-  #   desc 'repo mgmt: delete github target repo. must set the REPOMAN_LOOK_IN_TRUNK environment variable.'
-  #   task :whack, [:repo_name] do |rt, args|
-  #     check_args(rt, args)
-  #     repoman, repo = get_repo(args.repo_name)
-  #     info = repo.github_delete!
-  #     Log.info("whacked #{repo.name}")
-  #   end
-  # end
+  namespace :gh do
+    desc 'repo mgmt: github target repo information'
+    task :show, [:repo_name] do |rt, args|
+      check_args(rt, args)
+      repoman, repo = get_repo(args.repo_name)
+      info = repo.github_info
+      puts JSON.pretty_generate(info)
+    end
+
+    desc 'repo mgmt: create github target repo'
+    task :sync, [:repo_name] do |rt, args|
+      check_args(rt, args)
+      repoman, repo = get_repo(args.repo_name)
+      repo.github_sync
+    end
+
+    desc 'repo mgmt: ensure all github targets exist'
+    task :sync_all do |rt, args|
+      check_args(rt, args)
+      repoman = get_repoman
+      repoman.each_repo do |repo|
+        banner(rt, args, repo)
+        repo.github_sync
+      end
+    end
+
+    desc 'repo mgmt: delete github target repo. must set the REPOMAN_LOOK_IN_TRUNK environment variable.'
+    task :whack, [:repo_name] do |rt, args|
+      check_args(rt, args)
+      repoman, repo = get_repo(args.repo_name)
+      info = repo.github_delete!
+      Log.info("whacked #{repo.name}")
+    end
+  end
 
 end
