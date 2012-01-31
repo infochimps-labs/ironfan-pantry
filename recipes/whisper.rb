@@ -20,6 +20,7 @@
 #
 
 include_recipe "runit"
+include_recipe 'install_from'
 
 install_from_release('whisper') do
   version       node[:graphite][:whisper][:version]

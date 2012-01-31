@@ -20,6 +20,7 @@
 #
 
 include_recipe "graphite"
+include_recipe "ganglia"
 
 target = "#{node[:graphite][:data_dir]}/rrd/#{node[:ganglia][:cluster_name]}"
 
