@@ -72,6 +72,8 @@ end
   end
 end
 
+gem_package 'right_aws'
+
 directory "/usr/lib/flume/plugins" do
   owner "flume"
 end
