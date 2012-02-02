@@ -52,12 +52,14 @@ directory "/opt/zabbix-#{node.zabbix.server.version}/frontends/php" do
   notifies :run, resources(:script => "zabbix_fix_web_right")
 end
 
-directory node.zabbix.web.log_dir do
-  owner 'www-data'
-  group 'www-data'
-  mode '0755'
-  action :create
-  recursive true
+[node.zabbix.web.log_dir, "/opt/zabbix-#{node.zabbix.server.version}/frontends/php/conf"].each do |d|
+  directory d do
+    owner 'www-data'
+    group 'www-data'
+    mode '0755'
+    action :create
+    recursive true
+  end
 end
 
 template "/opt/zabbix-#{node.zabbix.server.version}/frontends/php/conf/zabbix.conf.php" do
