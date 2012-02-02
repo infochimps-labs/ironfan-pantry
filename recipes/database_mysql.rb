@@ -74,14 +74,16 @@ if m.list_dbs.include?(node.zabbix.database.name) == false
     command "#{populate_command}/create/data/images_mysql.sql"
     action :nothing
   end
+end
 
-  # Grant Zabbix user to connect from *this* node
-  mysql_database_user node.zabbix.database.user do
-    connection    root_mysql_conn
-    password      node.zabbix.database.password
-    host          node.fqdn     # connections only allowed from *this* node
-    database_name node.zabbix.database.name
-    privileges    [:select,:update,:insert,:create,:drop,:delete]
-    action        :grant
-  end
+# Grant Zabbix user to connect from *this* node.  We do this even if
+# the database already exists to handle the situation in which this
+# node's IP changes (e.g. - during stop/start).
+mysql_database_user node.zabbix.database.user do
+  connection    root_mysql_conn
+  password      node.zabbix.database.password
+  host          node.fqdn     # connections only allowed from *this* node
+  database_name node.zabbix.database.name
+  privileges    [:select,:update,:insert,:create,:drop,:delete]
+  action        :grant
 end
