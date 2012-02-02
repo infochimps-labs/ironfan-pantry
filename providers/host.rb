@@ -1,11 +1,11 @@
 include Chef::RubixConnection
 
 action :create do
-  zabbix_host.save
+  zabbix_host.save if connected_to_zabbix?
 end
 
 action :destroy do
-  zabbix_host.destroy
+  zabbix_host.destroy if connected_to_zabbix?
 end
 
 attr_accessor :zabbix_host, :chef_node
@@ -15,7 +15,8 @@ def virtual?
 end
 
 def load_current_resource
-  self.zabbix_server = new_resource.server
+  return unless connect_to_zabbix_server(new_resource.server)
+  
   self.zabbix_host   = (Rubix::Host.find(:name => new_resource.name) || Rubix::Host.new(:name => new_resource.name))
 
   load_host_groups

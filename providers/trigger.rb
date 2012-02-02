@@ -1,17 +1,17 @@
 include ::Chef::RubixConnection
 
 action :create do
-  zabbix_trigger.save
+  zabbix_trigger.save if connected_to_zabbix?
 end
 
 action :destroy do
-  zabbix_trigger.destroy
+  zabbix_trigger.destroy if connected_to_zabbix?
 end
 
 attr_accessor :zabbix_trigger, :zabbix_host
 
 def load_current_resource
-  self.zabbix_server = new_resource.server
+  connect_to_zabbix_server(new_resource.server)
   self.zabbix_host   = Rubix::Host.find(:name => new_resource.host)
   unless self.zabbix_host
     Chef::Log.error("Cannot find a Zabbix host named #{new_resource.name}")
