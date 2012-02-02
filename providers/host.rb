@@ -23,27 +23,28 @@ def load_current_resource
   load_host_groups
   load_templates
   load_user_macros
+  load_machine_fields unless virtual?
+  Chef::Log.info("I AM SETTING THE IP OF #{new_resource.name} to #{self.zabbix_host.ip}")
+end
 
-  return if virtual?
-
+def load_machine_fields
   self.chef_node = search(:node, "name:#{zabbix_host.name}").first
   if self.chef_node
     self.zabbix_host.profile = (chef_node_profile rescue nil)
     self.zabbix_host.port    = 10050
-
+    self.zabbix_host.ip      = self.chef_node[:ipaddress]
+    self.zabbix_host.use_ip  = true
     begin
       new_resource.aws_access_key(node.aws.aws_access_key)
       new_resource.aws_secret_access_key(node.aws.aws_secret_access_key)
       response = ec2.describe_instances(self.chef_node[:ec2][:instance_id])
-      self.zabbix_host.monitored = false if response.size == 1 && response.first[:aws_state] == 'stopped'
+      state = response.first[:aws_state] if response.size == 1
+      if %w[stopping stopped terminating terminated].include?(state)
+        self.zabbix_host.monitored = false
+        self.zabbix_host.ip = '0.0.0.0'
+      end
     rescue RightAws::AwsError => e
       Chef::Log.warn("Could not determine monitoring state for #{host_node.node_name}: #{e.message}")
-    end
-
-    if self.zabbix_host.monitored
-      self.zabbix_host.ip = self.chef_node[:ipaddress]  
-    else
-      self.zabbix_host.ip = '0.0.0.0'
     end
   else
     Chef::Log.error("Cannot find a Chef node named '#{zabbix_host.name}' to register in Zabbix.")
