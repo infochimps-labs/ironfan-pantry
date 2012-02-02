@@ -1,4 +1,5 @@
 include Chef::RubixConnection
+include Opscode::Aws::Ec2
 
 action :create do
   zabbix_host.save if connected_to_zabbix?
@@ -28,8 +29,22 @@ def load_current_resource
   self.chef_node = search(:node, "name:#{zabbix_host.name}").first
   if self.chef_node
     self.zabbix_host.profile = (chef_node_profile rescue nil)
-    self.zabbix_host.ip      = self.chef_node[:ipaddress]
     self.zabbix_host.port    = 10050
+
+    begin
+      new_resource.aws_access_key(node.aws.aws_access_key)
+      new_resource.aws_secret_access_key(node.aws.aws_secret_access_key)
+      response = ec2.describe_instances(self.chef_node[:ec2][:instance_id])
+      self.zabbix_host.monitored = false if response.size == 1 && response.first[:aws_state] == 'stopped'
+    rescue RightAws::AwsError => e
+      Chef::Log.warn("Could not determine monitoring state for #{host_node.node_name}: #{e.message}")
+    end
+
+    if self.zabbix_host.monitored
+      self.zabbix_host.ip = self.chef_node[:ipaddress]  
+    else
+      self.zabbix_host.ip = '0.0.0.0'
+    end
   else
     Chef::Log.error("Cannot find a Chef node named '#{zabbix_host.name}' to register in Zabbix.")
   end
@@ -86,21 +101,20 @@ def load_user_macros
 end
 
 def chef_node_profile
-  case
-  when (!virtual? && chef_node)
-    {
-      'devicetype' => (chef_node[:ec2] && chef_node[:ec2][:instance_type]),
-      'name'       => zabbix_host.name,
-      'os'         => [chef_node[:platform], chef_node[:platform_version]].join(' '),
-      'serialno'   => (chef_node[:ec2] && chef_node[:ec2][:instance_id]),
-      'tag'        => tag,
-      'macaddress' => chef_node[:macaddress],
-      'hardware'   => hardware,
-      'software'   => software,
-      'contact'    => contact,
-      'location'   => location,
-      'notes'      => notes
-    }
+  if (!virtual? && chef_node)
+    {}.tap do |pro|
+      pro['devicetype'] = (chef_node[:ec2] && chef_node[:ec2][:instance_type])            rescue nil
+      pro['name']       = zabbix_host.name                                                rescue nil
+      pro['os']         = [chef_node[:platform], chef_node[:platform_version]].join('] ') rescue nil
+      pro['serialno']   = (chef_node[:ec2] && chef_node[:ec2][:instance_id])              rescue nil
+      pro['tag']        = tag                                                             rescue nil
+      pro['macaddress'] = chef_node[:macaddress]                                          rescue nil
+      pro['hardware']   = hardware                                                        rescue nil
+      pro['software']   = software                                                        rescue nil
+      pro['contact']    = contact                                                         rescue nil
+      pro['location']   = location                                                        rescue nil
+      pro['notes']      = notes                                                           rescue nil
+    end
   else
     {}
   end
