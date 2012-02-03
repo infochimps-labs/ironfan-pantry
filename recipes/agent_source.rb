@@ -73,7 +73,7 @@ remote_file "/opt/zabbix-#{node.zabbix.agent.version}-agent.tar.gz" do
   source "http://freefr.dl.sourceforge.net/project/zabbix/#{node.zabbix.agent.branch}/#{node.zabbix.agent.version}/zabbix-#{node.zabbix.agent.version}.tar.gz"
   mode "0644"
   action :create_if_missing
-  notifies :run, "script[install_zabbix_agent]"
+  notifies :run, "script[install_zabbix_agent]", :immediately
 end
 
 # Define zabbix_agentd service

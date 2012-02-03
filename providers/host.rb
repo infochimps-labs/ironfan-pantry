@@ -28,7 +28,6 @@ def load_current_resource
 end
 
 def load_machine_fields
-  node.save
   self.chef_node = search(:node, "name:#{zabbix_host.name}").first
   if self.chef_node
     self.zabbix_host.profile = (chef_node_profile rescue nil)
