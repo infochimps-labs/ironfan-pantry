@@ -41,6 +41,7 @@ if node.zabbix.agent.create_host
 
   node_templates << 'Template_Node'
 
+  node.save
   zabbix_host node[:node_name] do
     server      zabbix_server_ip
     host_groups node_host_groups.to_a
@@ -50,7 +51,6 @@ if node.zabbix.agent.create_host
 end
 
 announce(:zabbix, :agent,
-         :realm => discovery_realm(:zabbix, :server),
          :logs  => { :agent => node.zabbix.agent.log_dir },
          :ports => { :agent => {
              :port   => 10051,
