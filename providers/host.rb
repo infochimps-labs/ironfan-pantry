@@ -23,7 +23,7 @@ def load_current_resource
   load_host_groups
   load_templates
   load_user_macros
-  load_machine_fields unless virtual?
+  load_machine_fields unless virtual? || new_resource.monitored == false
 end
 
 def load_machine_fields
