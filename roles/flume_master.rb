@@ -6,4 +6,5 @@ run_list(*%w[
   flume::master
   flume::node
   flume::jruby_plugin
+  flume::hbase_sink_plugin
 ])
