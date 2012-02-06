@@ -52,5 +52,9 @@ announce(:zabbix, :web,
              :service => 'http'
            }
          },
-         :daemons => { :php => 'zabbix_web' }
-         )
+         :daemons => {
+           :php_cgi => {
+             :name => 'php-cgi',
+             :cmd  => 'zabbix'
+           }
+         })
