@@ -29,7 +29,8 @@ end
 
 # Load Attr2HbaseEventSink as a plugin
 node[:flume][:plugins][:hbase_sink]  ||= {}
-node[:flume][:plugins][:hbase_sink][:classes] =  [ "com.cloudera.flume.hbase.Attr2HBaseEventSink" ]
+node[:flume][:plugins][:hbase_sink][:classes] =  [ "com.cloudera.flume.hbase.Attr2HBaseEventSink", 
+					           "com.cloudera.flume.hbase.HBaseSink" ]
 
 # Make sure that hbase-sink.jar and hbase-site.xml can be located on the
 # classpath
