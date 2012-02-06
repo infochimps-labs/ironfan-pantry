@@ -50,7 +50,6 @@ if node.zabbix.agent.create_host
 end
 
 announce(:zabbix, :agent,
-         :realm => discovery_realm(:zabbix, :server),
          :logs  => { :agent => node.zabbix.agent.log_dir },
          :ports => { :agent => {
              :port   => 10051,
