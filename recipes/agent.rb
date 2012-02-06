@@ -45,6 +45,7 @@ if node.zabbix.agent.create_host
     server      zabbix_server_ip
     host_groups node_host_groups.to_a
     templates   node_templates.to_a
+    monitored   true
   end
 end
 
