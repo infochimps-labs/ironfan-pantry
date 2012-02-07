@@ -5,7 +5,7 @@ class Chef
     include Chef::RubixConnection
 
     def all_zabbix_nodes_clusters_and_facets ip
-      everything = { :nodes => Set.new, :node_names => Set.new, :cluster_names => Set.new, :cluster_facet_names => Set.new }
+      everything = { :nodes => Set.new, :node_names => Set.new, :cluster_names => Set.new, :cluster_facet_names => Set.new, :host_names => Set.new }
       return everything unless connect_to_zabbix_server(ip)
       
       everything[:hosts]      = Rubix::Host.all
