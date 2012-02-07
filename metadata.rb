@@ -27,7 +27,6 @@ recipe           "zabbix::server_sends_email",         "Configures Zabbix server
 recipe           "zabbix::web",                        "Configures PHP-driven, reverse-proxied Zabbix web frontend."
 recipe           "zabbix::web_apache",                 "Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache."
 recipe           "zabbix::web_nginx",                  "Configures PHP-driven, reverse-proxied Zabbix web frontend using nginx."
-recipe           "zabbix::create_hosts",               "Create Hosts"
 
 %w[ debian ubuntu ].each do |os|
   supports os
