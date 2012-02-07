@@ -1,3 +1,5 @@
+require File.expand_path('rubix_connection.rb', File.dirname(__FILE__))
+
 class Chef
   class Recipe
     include Chef::RubixConnection
