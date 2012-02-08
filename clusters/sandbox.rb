@@ -15,7 +15,7 @@ ClusterChef.cluster 'sandbox' do
 
   environment           :dev
 
-  role                  :base_role
+  role                  :systemwide
   role                  :chef_client
   role                  :ssh
   role                  :nfs_client
@@ -28,7 +28,7 @@ ClusterChef.cluster 'sandbox' do
   role                  :org_final, :last
   role                  :org_users
 
-  facet :cocina do
+  facet :simple do
     instances           1
     role                :hadoop_s3_keys
     recipe 'route53::default'

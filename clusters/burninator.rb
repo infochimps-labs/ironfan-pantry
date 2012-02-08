@@ -20,7 +20,7 @@ ClusterChef.cluster 'burninator' do
 
   environment           :dev
 
-  role                  :base_role
+  role                  :systemwide
   role                  :chef_client
   role                  :ssh
 

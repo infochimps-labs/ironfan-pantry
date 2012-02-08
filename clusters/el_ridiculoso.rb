@@ -19,7 +19,7 @@ ClusterChef.cluster 'el_ridiculoso' do
 
   environment           :dev
 
-  role                  :base_role
+  role                  :systemwide
   role                  :chef_client
   role                  :ssh
   role                  :nfs_client

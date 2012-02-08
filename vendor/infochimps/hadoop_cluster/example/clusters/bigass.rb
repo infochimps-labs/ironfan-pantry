@@ -32,7 +32,7 @@ ClusterChef.cluster 'bigass' do
 
   environment           :prod
 
-  role                  :base_role
+  role                  :systemwide
   role                  :chef_client
   role                  :ssh
   role                  :nfs_client

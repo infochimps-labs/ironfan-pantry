@@ -21,7 +21,7 @@ ClusterChef.cluster 'hadoop_demo' do
   # # uncomment if you want to set your environment.
   # environment           :prod
 
-  role                  :base_role
+  role                  :systemwide
   role                  :chef_client
   role                  :ssh
   role                  :nfs_client
