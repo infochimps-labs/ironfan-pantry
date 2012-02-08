@@ -1,4 +1,4 @@
-name        'base_role'
+name        'systemwide'
 description 'top level attributes, applies to all nodes'
 
 run_list *%w[
