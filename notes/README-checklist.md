@@ -33,7 +33,7 @@ You should also separate system configuration from multi-system integration. Coo
 
 ### Templates
 
-* *DO NOT* use node[:foo] in your recipes except in rare circumstances. Instead, say `variables :foo => node[:foo]`; this lets folks use that cookbook from elsewhere.
+* *DO NOT* use node[:foo] in your templates except in rare circumstances. Instead, say `variables :foo => node[:foo]`; this lets folks use that cookbook from elsewhere.
 
 ### Attributes
  

@@ -8,11 +8,13 @@ Vagrant::Config.run do |config|
   # cloud we're targeting
   cluster          = 'cocina'
   facet            = 'sandbox'
-  facet_index      = '0'
-  node_name        = "#{cluster}-#{facet}-#{facet_index}"
-  host_network_ip  = "33.33.33.21"
+  host_network_blk = "33.33.33"
   chef_server_url  = "http://33.33.33.20:4000"
-  chef_environment = "vm_dev"
+  chef_environment = "dev"
+  os_version       = "natty"
+  #
+  homebase_on_vm_dir = "/cloud"
+  homebase_on_host_dir = File.expand_path("../..", File.dirname(__FILE__))
 
   # ===========================================================================
   #
@@ -20,79 +22,90 @@ Vagrant::Config.run do |config|
   #
 
   # Home for credentials and machine-specific setup
-  cluster_privates_dir = File.expand_path("../../knife/#{cluster}/", File.dirname(__FILE__))
+  cluster_privates_dir = File.expand_path("knife/#{cluster}-credentials", homebase_on_host_dir)
 
-  # box to build off of.
-  config.vm.box = "cluster-chef-natty"
+  [0, 1].each do |facet_index|
+
+    node_name        = "#{cluster}-#{facet}-#{facet_index}"
+
+    config.vm.define :"sandbox_#{facet_index}" do |cfg|
+      cfg.vm.box = "cluster-chef-#{os_version}"
+      cfg.vm.network  :hostonly, "#{host_network_blk}.#{30 + facet_index}"
+
+      #
+      # See http://www.virtualbox.org/manual/ch08.html#idp12418752
+      # for the craziness
+      #
+      cfg.vm.customize [
+        "modifyvm", :id,
+        "--name",    node_name,
+        "--memory",  "640",
+        # Use the host resolver for DNS so that VPN continues to work within the VM
+        # "--natdnshostresolver1", "on",
+      ]
+
+      # Assign this VM to a bridged network, allowing you to connect directly to a
+      # network using the host's network device. This makes the VM appear as another
+      # physical device on your network.
+      # cfg.vm.network :bridged
+
+      # Forward a port from the guest to the host, which allows for outside
+      # computers to access the VM, whereas host only networking does not.
+      # cfg.vm.forward_port 80, 8080
+
+      cfg.vm.provision :chef_client do |chef|
+        #
+        chef.node_name         = node_name
+        # chef.client_key_path     = File.join(cluster_privates_dir, "client_keys", "client-#{node_name}.pem")
+
+        #
+        # chef.node_name         = node_name
+        # chef.client_key_path     = File.join(cluster_privates_dir, "client_keys", "client-#{node_name}.pem")
+        #
+        chef.chef_server_url   = chef_server_url
+        chef.validation_client_name = "#{cluster}-validator"
+        chef.validation_key_path = File.join(cluster_privates_dir, "#{cluster}-validator.pem")
+        chef.environment         = chef_environment
+        #
+        chef.add_role       :base_role
+        chef.add_role       :chef_client
+        chef.add_role       :ssh
+        # chef.add_role     :nfs_client
+        #
+        chef.add_recipe     'cloud_utils::virtualbox_metadata'
+        chef.add_role       :package_set
+        #
+
+        chef.json = {
+          "cluster_name"    => cluster,
+          "facet_name"      => facet,
+          "facet_index"     => facet_index,
+          #
+          "nfs" => { "mounts" => [
+              ["/home/#{ENV['USER']}", { "owner" => ENV['USER'], "remote_path" => ENV['HOME'] } ],
+            ] },
+          "tuning"          => { "swappiness" => "60", "overcommit_memory" => "1", "overcommit_ratio" => "100" },
+          "java"            => { "install_flavor" =>"sun" },
+          "volumes" => {
+            "root"          => { "tags" => { "scratch" => true }, "mount_point" => "/", "device" => "/dev/mapper/cluster--chef--natty-root", "mountable" => false }
+          }
+        }
+      end
+    end
+  end
 
   # Boot with a GUI so you can see the screen. (Default is headless)
   config.vm.boot_mode = :gui
 
-  # Host only network IP lets you access it via the IP.
-  config.vm.network  host_network_ip
-
   # Mount this to see all our chefs and stuff: [type, vm_path, host_path]
-  config.vm.share_folder "homebase", "/cloud",    "../.."
-  config.vm.share_folder "chef",     "/etc/chef", cluster_privates_dir
+  config.vm.share_folder "homebase",  homebase_on_vm_dir, homebase_on_host_dir
+  # config.vm.share_folder "etc-chef",  '/etc/chef',        File.join(cluster_privates_dir, "chef_server")
 
-  config.vm.customize do |vm|
-    # Name the VM
-    vm.name        = node_name
-    # Bump up the memory
-    vm.memory_size = 640
-    # Use the host resolver for DNS so that VPN continues to work within the VM
-    vm.network_adapters.each do |na|
-      if na.enabled? && na.nat_driver
-        na.nat_driver.dns_use_host_resolver = true
-      end
-    end
-  end
 
   # ===========================================================================
   #
   # Provision with chef
   #
 
-  # Enable provisioning with chef solo, specifying a cookbooks path (relative
-  # to this Vagrantfile), and adding some recipes and/or roles.
-  #
-  config.vm.provision :chef_client do |chef|
-    #
-    chef.node_name         = node_name
-    #
-    chef.chef_server_url   = chef_server_url
-    chef.validation_client_name = "#{cluster}-validator"
-    chef.validation_key_path = File.join(cluster_privates_dir, "#{cluster}-validator.pem")
-    chef.client_key_path     = File.join(cluster_privates_dir, "client_keys", "client-#{node_name}.pem")
-    chef.environment         = chef_environment
-    #
-    chef.add_role       :base_role
-    chef.add_role       :chef_client
-    chef.add_role       :ssh
-    # chef.add_role     :nfs_client
-    #
-    chef.add_recipe     'cloud_utils::virtualbox_metadata'
-    chef.add_role       :package_set
-    #
-    chef.json = {
-      "cluster_name"    => cluster,
-      "facet_name"      => facet,
-      "facet_index"     => facet_index,
-      #
-      "nfs" => { "mounts" => [
-          ["/home/#{ENV['USER']}", { "owner" => ENV['USER'], "remote_path" => ENV['HOME'] } ],
-        ] },
-      "package_set" => {
-        "install"       => [ "base", "dev", "sysadmin", "vagrant" ],
-        "gems"          => { "cluster_chef" => %w[ cluster_chef ] }
-      },
-      "tuning"          => { "swappiness" => "60", "overcommit_memory" => "1", "overcommit_ratio" => "100" },
-      "java"            => { "install_flavor" =>"sun" },
-      "apt"             => { "cloudera" => { "force_distro" => "maverick" } },
-      "volumes" => {
-        "root"          => { "tags" => { "scratch" => true }, "mount_point" => "/", "device" => "/dev/mapper/natty--base-root", "mountable" => false }
-      }
-    }
-  end
 
 end

@@ -112,8 +112,10 @@ __________________________________________________________________________
   `-----END..` blocks.
   - do a `chmod 600 {homebase}/knife/cocina/{yourname}.pem`
   
-* [Create the 'vm_dev' environment](http://33.33.33.20:4040/environments/new)
-  - you don't need to set anything, just create it.
+* [Create the environments](http://33.33.33.20:4040/environments) by running
+
+        knife environment from file environments/prod.rb
+        knife environment from file environments/dev.rb
 
 * go to cluster_chef_homebase/knife and make a copy of the credentials directory for the cocina world
 

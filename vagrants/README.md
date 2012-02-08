@@ -11,6 +11,19 @@ These are the parts of the vagrant automation:
 * a set of conventions for using Vagrant with chef in a local debugging or testing environment.
 
 
+on desktop:
+* ssh key for machine
 
+on desktop and chef server:
+* server.rb
+* validation.pem
+* validator.pem
+* cookbooks
+* roles
 
-
+on desktop and chef client:
+* chef-dna.json
+* client.pem
+* validator.pem
+* client.rb
+* data bag keys
