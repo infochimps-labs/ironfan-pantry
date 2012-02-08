@@ -15,10 +15,12 @@ class Chef
 
       # Make sure Rubix is available to us.
       begin
+        gem     'rubix', '>= 0.1.3'
         require 'rubix'
-      rescue LoadError => e
-        gem_package('rubix') { action :nothing }.run_action(:install)
+      rescue Gem::LoadError, LoadError => e
+        gem_package('rubix') { action :nothing ; version '0.1.3' }.run_action(:install)
         Gem.clear_paths
+        gem     'rubix', '>= 0.1.3'
         require 'rubix'
       end
 
@@ -41,6 +43,22 @@ class Chef
     def connected_to_zabbix?
       @connected_to_zabbix
     end
-    
   end
+
+  class Recipe
+    
+    include ::Chef::RubixConnection
+    
+    def all_zabbix_server_ips
+      realm                 = (node[:discovers][:zabbix][:server]                       rescue nil)
+      servers_as_attributes = (node.zabbix.agent.servers                                rescue [])
+      discovered_servers    = (discover_all(:zabbix, :server, realm).map(&:private_ip)  rescue [])
+      servers_as_attributes + discovered_servers
+    end
+
+    def default_zabbix_server_ip
+      all_zabbix_server_ips.first
+    end
+  end
+  
 end

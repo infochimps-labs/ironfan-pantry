@@ -40,7 +40,7 @@ default[:zabbix][:database][:install_method]  = 'mysql'
 
 # Web frontend
 default[:zabbix][:web][:fqdn]           = ""
-default[:zabbix][:web][:bind_ip]        = '127.0.0.1'
+default[:zabbix][:web][:bind_ip]        = nil
 default[:zabbix][:web][:port]           = 9101
 default[:zabbix][:web][:log_dir]        = '/var/log/zabbix_web'
 default[:zabbix][:web][:install_method] = 'apache'
