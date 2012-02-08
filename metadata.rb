@@ -161,8 +161,8 @@ attribute "zabbix/web/fqdn",
 
 attribute "zabbix/web/bind_ip",
   :display_name          => "",
-  :description           => "The local IP to bind PHP at when using nginx to serve the Zabbix web frontend.",
-  :default               => "127.0.0.1"
+  :description           => "The local IP to bind PHP at when using nginx to serve the Zabbix web frontend.  Will use the node's private IP if nil.",
+  :default               => nil
 
 attribute "zabbix/web/port",
   :display_name          => "",
