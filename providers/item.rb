@@ -12,18 +12,22 @@ attr_accessor :zabbix_host, :zabbix_item
 
 def load_current_resource
   return unless connect_to_zabbix_server(new_resource.server)
-  self.zabbix_host = Rubix::Host.find(:name => new_resource.host)
-  unless self.zabbix_host
-    Chef::Log.error("Cannot find a Zabbix host named #{new_resource.host}")
-    return
+  begin
+    self.zabbix_host = Rubix::Host.find(:name => new_resource.host)
+    unless self.zabbix_host
+      Chef::Log.error("Cannot find a Zabbix host named #{new_resource.host}")
+      return
+    end
+    
+    self.zabbix_item = Rubix::Item.find(:host_id => self.zabbix_host.id, :key => new_resource.key) || Rubix::Item.new(:host_id => self.zabbix_host.id, :key => new_resource.key)
+    self.zabbix_item.description = new_resource.name
+    self.zabbix_item.type        = new_resource.type
+    self.zabbix_item.value_type  = new_resource.value_type
+    self.zabbix_item.units       = new_resource.units
+    load_applications
+  rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED => e
+    ::Chef::Log.warn("Could not create Zabbix item #{new_resource.key}: #{e.message}")
   end
-  
-  self.zabbix_item = Rubix::Item.find(:host_id => self.zabbix_host.id, :key => new_resource.key) || Rubix::Item.new(:host_id => self.zabbix_host.id, :key => new_resource.key)
-  self.zabbix_item.description = new_resource.name
-  self.zabbix_item.type        = new_resource.type
-  self.zabbix_item.value_type  = new_resource.value_type
-  self.zabbix_item.units       = new_resource.units
-  load_applications
 end
 
 def load_applications

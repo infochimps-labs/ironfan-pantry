@@ -16,14 +16,17 @@ end
 
 def load_current_resource
   return unless connect_to_zabbix_server(new_resource.server)
-  
-  self.zabbix_host           = (Rubix::Host.find(:name => new_resource.name) || Rubix::Host.new(:name => new_resource.name))
-  self.zabbix_host.monitored = new_resource.monitored
-
-  load_host_groups
-  load_templates
-  load_user_macros
-  load_machine_fields unless virtual? || new_resource.monitored == false
+  begin
+    self.zabbix_host           = (Rubix::Host.find(:name => new_resource.name) || Rubix::Host.new(:name => new_resource.name))
+    self.zabbix_host.monitored = new_resource.monitored
+    
+    load_host_groups
+    load_templates
+    load_user_macros
+    load_machine_fields unless virtual? || new_resource.monitored == false
+  rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED => e
+    ::Chef::Log.warn("Could not create Zabbix host #{new_resource.name}: #{e.message}")
+  end
 end
 
 def load_machine_fields

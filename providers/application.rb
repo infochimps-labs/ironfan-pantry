@@ -15,6 +15,10 @@ attr_accessor :zabbix_host
 
 def load_current_resource
   return unless connect_to_zabbix_server(new_resource.server)
-  self.zabbix_host = Rubix::Host.find(:name => new_resource.host)
-  Chef::Log.error("Cannot find a Zabbix host named #{new_resource.host}") unless self.zabbix_host
+  begin
+    self.zabbix_host = Rubix::Host.find(:name => new_resource.host)
+    Chef::Log.error("Cannot find a Zabbix host named #{new_resource.host}") unless self.zabbix_host
+  rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED => e
+    ::Chef::Log.warn("Could not create Zabbix application #{new_resource.name}: #{e.message}")
+  end
 end
