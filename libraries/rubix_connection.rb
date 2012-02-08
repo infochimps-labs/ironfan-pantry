@@ -15,10 +15,12 @@ class Chef
 
       # Make sure Rubix is available to us.
       begin
+        gem     'rubix', '>= 0.1.3'
         require 'rubix'
-      rescue LoadError => e
-        gem_package('rubix') { action :nothing }.run_action(:install)
+      rescue Gem::LoadError, LoadError => e
+        gem_package('rubix') { action :nothing ; version '0.1.3' }.run_action(:install)
         Gem.clear_paths
+        gem     'rubix', '>= 0.1.3'
         require 'rubix'
       end
 
