@@ -22,7 +22,7 @@ module Metachef
     def inspect
       str = [super()[2..-2]]
       str << "ohai_fstype:#{current[:fstype]}"
-      "<#{self.class} #{str.join(" ")} #{current} a?#{attached?} m?#{mounted?} f?#{formattable?} r?#{resizable?}>"
+      "<#{self.class} #{str.join(" ")} #{current} a?#{attached?} m?#{mounted?} f?#{formattable?} f!#{self[:formatted]} r?#{resizable?} r!#{self[:resized]} >"
     end
 
     # if device_type is :device, checks that the device is present.
@@ -54,7 +54,7 @@ module Metachef
     end
 
     def ready_to_format?
-      !!( formattable? && attached? && (not mounted?) && (`file -s #{device}`.chomp =~ /: data/) )
+      !!( formattable? && attached? && (not mounted?) && (`file -s #{device}`.chomp =~ /\bdata\b/) )
     end
 
     def in_raid?

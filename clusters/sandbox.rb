@@ -28,11 +28,7 @@ ClusterChef.cluster 'sandbox' do
   role                  :org_final, :last
   role                  :org_users
 
-  facet :korny do
-    instances           1
-  end
-
-  facet :mrflip do
+  facet :cocina do
     instances           1
     role                :hadoop_s3_keys
     recipe 'route53::default'
@@ -41,15 +37,16 @@ ClusterChef.cluster 'sandbox' do
 
   facet :raid_demo do
     instances           1
-    cloud.flavor        'c1.xlarge'
+    cloud.flavor        'm1.large'
     recipe              'volumes::build_raid', :first
 
     cloud.mount_ephemerals
     raid_group(:md0) do
+      defaults
       device            '/dev/md0'
       mount_point       '/raid0'
       level             0
-      sub_volumes       [:ephemeral0, :ephemeral1, :ephemeral2, :ephemeral3]
+      sub_volumes       [:ephemeral0, :ephemeral1] # , :ephemeral2, :ephemeral3]
     end
   end
 

@@ -40,20 +40,24 @@ Metachef.raid_groups(node).each do |rg_name, rg|
   # unmount all devices tagged for that raid group
   #
   sub_vols.each do |_, sub_vol|
-    mount sub_vol.mount_point do
+    act = mount sub_vol.mount_point do
       device sub_vol.device
-      action [:umount, :disable]
+      action :nothing
     end
+    act.run_action(:umount)
+    act.run_action(:disable)
   end
 
   #
   # Create the raid array
   #
-  mdadm(rg.device) do
+  act = mdadm(rg.device) do
     devices   sub_vols.values.map(&:device)
     level     0
-    action    [:create, :assemble]
+    action    :nothing
   end
+  act.run_action(:create)
+  act.run_action(:assemble)
 
   # # Scan
   # File.open("/etc/mdadm/mdadm.conf", "a") do |f|
@@ -67,12 +71,14 @@ Metachef.raid_groups(node).each do |rg_name, rg|
 
   if rg.formattable?
     if rg.ready_to_format?
-      bash "format #{rg.name} (#{rg.sub_volumes})" do
+      act = bash "format #{rg.name} (#{rg.sub_volumes})" do
         user      "root"
         # Returns success iff the drive is formatted XFS
         code      %Q{ mkfs.xfs -f #{rg.device} ; file -s #{rg.device} | grep XFS }
         not_if("file -s #{rg.device} | grep XFS")
+        action(:nothing)
       end
+      act.run_action(:run)
       rg.formatted!
     else
       Chef::Log.warn("Not formatting #{rg.name}. Volume is unready: (#{rg.inspect})")
