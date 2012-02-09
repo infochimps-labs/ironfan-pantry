@@ -1,32 +1,41 @@
-The provided knife.rb file is not essential to use cluster_chef, but has proven exceedingly useful if your workflow involves either multiple chef servers or multiple clouds. We use vagrant to develop cookbooks and the cloud to deploy them. This setup organizes public / private credentials and shared / specialized config files so that it's easy to keep them secure and DRY.
+The provided knife.rb file is not essential to use cluster_chef, but has proven exceedingly useful if your workflow involves either multiple Chef Servers or multiple clouds. We use Vagrant to develop cookbooks and the cloud to deploy them. This setup organizes public / private credentials and shared / specialized config files so that it's easy to keep them secure and DRY.
 
-For more information about configuring Knife, see the [Knife documentation](http://help.opscode.com/faqs/chefbasics/knife).
+For more information about configuring Knife, see the [Knife documentation](http://wiki.opscode.com/display/chef/Knife).
 
 ## For existing users
 
-If you have an existing knife setup, there's no reason to change. Simply add
+If you have an existing Knife setup, there's no reason to change. Simply add
 
         cluster_path   [ "#{/path/to/your/homebase}/clusters"  ]
 
-to your `knife.rb` file and start adding clusters there. For everyone else, 
+to your `knife.rb` file and start adding clusters there. 
 
-## Set up knife configuration
+## For everyone else
+
+### Set up knife configuration
 
 In your ~/.bashrc (or whatever), add lines
+
+**SYANOTE: had to make ~/.bachrc in emacs, with Travis's help**
+**SYAFLAG: What could be whatever?  The whatever threw me off.  Is it advisable that I put it in bashrc, or does it matter?  What are potential 'whatevers'?**
 
         export CHEF_USER={username}         
         export CHEF_ORGANIZATION={organization}  
         export CHEF_HOMEBASE={homebase}
 
-The source your config file to set those environment variables.
+Then source your config file to set those environment variables.
 
-So that knife finds its configuration files, symlink the `{homebase}/knife` directory (the one holding this file) to be your `~/.chef` folder. (Or see the end of the readme for alternatives you may prefer)
+**SYAFLAG: How?  Not necessary to explain?**
+
+So that Knife finds its configuration files, symlink the `{homebase}/knife` directory (the one holding this file) to be your `~/.chef` folder. (Or see the end of the README for alternatives you may prefer)
 
         ln -sni $CHEF_HOMEBASE/knife ~/.chef
 
-## Credentials
+### Credentials
 
 All the keys and settings specific to your organization are held in a separate directory, versioned and distributed independently of the homebase. 
+
+**SYAFLAG: "all the keys...are held in a separate directory...".  What directory?**
 
 To set up your credentials directory, visit `{homebase}/knife` and duplicate the example, naming it {organization}-credentials:
 
@@ -36,7 +45,10 @@ To set up your credentials directory, visit `{homebase}/knife` and duplicate the
         git init ; git add .
         git commit -m "New credentials universe for $CHEF_ORGANIZATION" .
 
-## User / Cloud config
+**SYAFLAG: Need to make credentials available on a central server. Need keys.  Nate cloned over credentials and moved into my infochimps_test-credentials**
+
+
+### User / Cloud config
 
 Add your credentials in the following places:
 
@@ -59,7 +71,7 @@ Add your credentials in the following places:
 
 ## Try it out
 
-You should now be able to use knife.
+You should now be able to use Knife.
 
         $ export CHEF_ORGANIZATION=cocina 
 
