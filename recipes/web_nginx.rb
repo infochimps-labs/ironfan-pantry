@@ -45,11 +45,17 @@ end
 runit_service "zabbix_web"
 
 announce(:zabbix, :web,
-         :logs    => { :app => node.zabbix.web.log_dir, :sv => '/etc/sv/zabbix_web/log/main/current' },
+         :logs    => {
+           :php_cgi => node.zabbix.web.log_dir,
+           :runit => {
+             :path      => '/etc/sv/zabbix_web/log/main/current',
+             :logrotate => false
+           }
+         },
          :ports   => {
-           :app => {
-             :port    => node.zabbix.web.port,
-             :service => 'http'
+           :php_cgi => {
+             :port     => node.zabbix.web.port,
+             :protocol => 'http'
            }
          },
          :daemons => {

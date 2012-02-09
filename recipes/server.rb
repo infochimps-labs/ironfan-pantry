@@ -33,8 +33,8 @@ announce(:zabbix, :server,
          :logs =>  { :server => node.zabbix.server.log_dir },
          :ports => {
            :server => {
-             :port   => 10050,
-             :ignore => true
+             :port    => 10050,
+             :monitor => false
            }
          },
          :daemons => { :server => 'zabbix_server' }

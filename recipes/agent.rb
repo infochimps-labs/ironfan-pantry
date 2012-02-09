@@ -53,8 +53,8 @@ end
 announce(:zabbix, :agent,
          :logs  => { :agent => node.zabbix.agent.log_dir },
          :ports => { :agent => {
-             :port   => 10051,
-             :ignore => true
+             :port    => 10051,
+             :monitor => false
            }
          },
          :daemons => { :agent => 'zabbix_agentd' }
