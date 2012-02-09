@@ -4,6 +4,7 @@ require 'chef/mixin/deep_merge'
 $_default_environment = {
   :discovers => {
     :nfs        => { :server => 'sandbox' },
-    :zabbix     => { :server => 'sandbpx' },
+    :zabbix     => { :server => 'sandbox' },
   },
+  :route53 => { :zone => "YOURDOMAIN.com" },
 }
