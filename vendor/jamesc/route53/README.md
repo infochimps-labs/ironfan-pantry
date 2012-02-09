@@ -5,6 +5,33 @@ Automatically configures system DNS using Amazon Route53.
 
 It creates CNAME entries similar to those created in the dynect cookbook
 
+
+## Getting Started
+
+Assume you are setting up a domain to hold these. Let's call it 'awesomesauce.com'
+
+* In the Amazon Route53 console, create a hosted zone called awesomesauce.com. 
+  - Note the NS servers AWS gives you.
+  - make a CNAME record ('foo.awesomesauce.com') and point it somewhere identifiable, like 'www.infochimps.com'.
+  
+* go to your domain registrar and set the hosted zone's NS servers as the domain's NS servers. 
+  - WAIT A FEW MINUTES (you don't want to cache an out-of-date entry),
+  - then run `host foo.awesomesauce.com`. You should see something like
+  
+        foo.awesomesauce.com is an alias for www.infochimps.com
+        www.infochimps.com has address xx.xx.xx.xx
+
+* In your chef environment, set the default zone. If you don't have anything else in there, it will look like
+
+ 	    {"defaults":{"route53":{"zone":"awesomesauce.com"}},"overrides":{}}
+        
+* Follow the remaining instructions below. Adding `route53::ec2` to a machine 'web_demo-server-3' should give you `web-demo-server-3.awesomesauce.com`.
+
+* If you want to use a subdomain -- so that your machines will be `web-demo-server-3.cloud.awesomesauce.com`, 
+  - create a hosted zone `cloud.awesomesauce.com`, and note its nameservers (let's call them 'Y')
+  - in the nameserver for `awesomesauce.com`, create NS records pointing to Y. You shouldn't make another SOA record.
+  - set `node[:route53][:zone]` to be `cloud.awesomesauce.com` 
+
 REQUIREMENTS
 ============
 
@@ -100,6 +127,7 @@ a_record
 --------
 
 The `route53::a_record` recipe will create an `A` record for the node using the detected hostname and IP address from `ohai`.
+
 
 FURTHER READING
 ===============
