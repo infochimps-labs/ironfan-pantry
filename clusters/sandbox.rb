@@ -51,5 +51,6 @@ ClusterChef.cluster 'sandbox' do
   end
 
   cluster_role.override_attributes({
+      :route53 => { :zone => "chimpy.us" }
     })
 end
