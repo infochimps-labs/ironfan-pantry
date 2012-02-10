@@ -9,13 +9,14 @@ default[:zabbix][:templates]   = nil
 default[:zabbix][:host_groups] = nil
 
 # Agent
-default[:zabbix][:agent][:servers]           = []
-default[:zabbix][:agent][:configure_options] = ["--prefix=#{zabbix_home_dir}", "--with-libcurl"]
-default[:zabbix][:agent][:branch]            = "ZABBIX%20Latest%20Stable"
-default[:zabbix][:agent][:version]           = "1.8.5"
-default[:zabbix][:agent][:install_method]    = "prebuild"
-default[:zabbix][:agent][:log_dir]           = '/var/log/zabbix_agent'
-default[:zabbix][:agent][:create_host]       = true
+default[:zabbix][:agent][:servers]                = []
+default[:zabbix][:agent][:configure_options]      = ["--prefix=#{zabbix_home_dir}", "--with-libcurl"]
+default[:zabbix][:agent][:branch]                 = "ZABBIX%20Latest%20Stable"
+default[:zabbix][:agent][:version]                = "1.8.5"
+default[:zabbix][:agent][:install_method]         = "prebuild"
+default[:zabbix][:agent][:log_dir]                = '/var/log/zabbix_agent'
+default[:zabbix][:agent][:create_host]            = true
+default[:zabbix][:agent][:unmonitor_on_shutdown]  = false
 
 default[:zabbix][:user]  = "zabbix"
 default[:users ]['zabbix'][:uid]    = 447

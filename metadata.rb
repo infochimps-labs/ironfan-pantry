@@ -88,6 +88,11 @@ attribute "zabbix/agent/create_host",
   :description           => "Whether to create a Zabbix host for this node.",
   :default               => "true"
 
+attribute "zabbix/agent/unmonitor_on_shutdown",
+  :display_name          => "",
+  :description           => "Whether to unmonitor this node's Zabbix host when the node is shutdown or rebooted.",
+  :default               => "false"
+
 attribute "zabbix/server/version",
   :display_name          => "",
   :description           => "The version of the Zabbix server to install.",

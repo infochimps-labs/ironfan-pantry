@@ -48,6 +48,9 @@ if node.zabbix.agent.create_host
     templates   node_templates.to_a
     monitored   true
   end
+end
+
+if node.zabbix.agent.unmonitor_on_shutdown
 
   template "/etc/zabbix/externalscripts/unmonitor_zabbix_host.rb" do
     source    "unmonitor_zabbix_host.rb.erb"
