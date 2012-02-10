@@ -48,7 +48,22 @@ if node.zabbix.agent.create_host
     templates   node_templates.to_a
     monitored   true
   end
+
+  template "/etc/zabbix/externalscripts/unmonitor_zabbix_host.rb" do
+    source    "unmonitor_zabbix_host.rb.erb"
+    mode      '0776'
+    variables :ip => zabbix_server_ip
+    action    :create
+    
+  end
+  
+  template "/etc/init/unmonitor_zabbix_host.conf" do
+    source 'unmonitor_zabbix_host.conf.erb'
+    action :create
+  end
+  
 end
+
 
 announce(:zabbix, :agent,
          # register in the same realm, for discovery purposes
