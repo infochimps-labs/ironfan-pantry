@@ -46,8 +46,8 @@ template "/usr/lib/flume/conf/flume-site.xml" do
       :master_id          => flume_master_id,
       :external_zookeeper => flume_external_zookeeper,
       :zookeepers         => flume_zookeeper_list,
-      :aws_access_key     => node[:aws][:access_key],
-      :aws_secret_key     => node[:aws][:secret_access_key],
+      :aws_access_key     => (node[:aws][:access_key] || node[:aws][:aws_access_key]),
+      :aws_secret_key     => (node[:aws][:secret_access_key] || node[:aws][:aws_secret_access_key]),
       :collector_output_format =>
       node[:flume][:collector][:output_format],
       :collector_codec     => node[:flume][:collector][:codec],
