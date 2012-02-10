@@ -20,7 +20,7 @@
 # Force immediate install of these packages
 
 package("libxml2-dev"      ){ action :nothing }.run_action(:install)
-package("libxslt-dev"      ){ action :nothing }.run_action(:install)
+package("libxslt1-dev"     ){ action :nothing }.run_action(:install)
 gem_package("fog"          ){ action :nothing }.run_action(:install)
 gem_package("net-ssh-multi"){ action :nothing }.run_action(:install)
 

@@ -1,4 +1,4 @@
- #
+#
 # Cookbook Name:: route53
 # Library:: route53
 #
@@ -19,6 +19,55 @@
 
 begin
   require 'fog'
+
+  module Fog
+    module DNS
+      class AWS
+
+        class Record < Fog::Model
+
+          attribute :created_at,  :aliases => ['SubmittedAt']
+
+          def update(new_value, new_ttl)
+            Chef::Log.info(["update record model", self].inspect)
+            requires :name, :type, :zone
+            #
+            batch = []
+            old_records = zone.records.select{|record| (record.name == self.name) && (record.type == self.type) }
+            Chef::Log.info(["update record model", old_records].inspect)
+            old_records.each do |record|
+              batch << { :action => 'DELETE', :name => record.name, :resource_records => [*record.value], :ttl => record.ttl.to_s, :type => record.type }
+            end
+            batch << { :action => 'CREATE', :name => name, :resource_records => [*new_value], :ttl => new_ttl.to_s, :type => type }
+            #
+            Chef::Log.info(batch.inspect)
+            data = connection.change_resource_record_sets(zone.id, batch).body
+            merge_attributes(data)
+            @last_change_id     = data['Id']
+            @last_change_status = data['Status']
+            [@last_change_id, @last_change_status]
+          end
+
+          def wait
+            return unless @last_change_id
+            while @last_change_status != 'INSYNC'
+              sleep 2
+              response = connection.get_change(@last_change_id)
+              if response.status == 200
+                @last_change_id     = response.body['Id']
+                @last_change_status = response.body['Status']
+              else
+                Chef::Log.warn("Bad request: #{response.status} -- #{response}")
+              end
+              yield(@last_change_id, @last_change_status) if block_given?
+            end
+          end
+
+        end
+      end
+    end
+  end
+
 rescue LoadError
   Chef::Log.warn("Missing gem 'fog'")
 end
@@ -27,78 +76,53 @@ module Opscode
   module Route53
     module Route53
 
-      def find_zone_id(zone_name="")
-        zone_id  = nil
-        options  = { :max_items => 200 }
-        response = route53.list_hosted_zones(options)
-        return unless (response.status == 200)
-        #
-        zones = response.body['HostedZones']
-        zones.each do |zone|
-          domain_name  = zone['Name']
-          if domain_name.chop == zone_name
-            zone_id = zone['Id'].sub('/hostedzone/', '')
-          end
-        end
-        zone_id
-      end
-
-      def resource_record(zone_id, fqdn, type)
-        rr = nil
-        options = { :max_items => 100, :name => "platform14.net.", :type => type}
-        response = route53.list_resource_record_sets(zone_id, options)
-        return unless (response.status == 200)
-        #
-        records = response.body['ResourceRecordSets']
-        records.each do |record|
-          Chef::Log.debug("Record : #{record}")
-          record_name = record['Name']
-          rr = record if (record_name.chop == fqdn) && (record['Type'] == type)
-        end
-        rr
-      end
-
-      def update_resource_record(zone_id, fqdn, type, ttl, values, rr=nil)
-        rr ||= resource_record(zone_id, fqdn, type)
-
-        # Create if it doesn't exising in route53 already
-        if rr.nil?
-          create_resource_record(zone_id, fqdn, type, ttl, values)
-        else
-
-        end
-      end
-
-      def create_resource_record(zone_id, fqdn, type, ttl, values )
-        record = { :name => fqdn, :type => type, :ttl => 3600, :resource_records => values, :action => "CREATE" }
-        #
-        change_batch = [record]
-        options      = { :comment => "Change #{type} record for #{fqdn}"}
-        response     = route53.change_resource_record_sets( zone_id, change_batch, options)
-        #
-        if response.status == 200
-          change_id  = response.body['Id']
-          status     = response.body['Status']
-        end
-
-        #wait until new zone is live across all name servers
-        while status == 'PENDING'
-          sleep 2
-          response    = route53.get_change(change_id)
-          if response.status == 200
-            change_id = response.body['Id']
-            status    = response.body['Status']
-          end
-          Chef::Log.info("Creating Resource Record for  #{fqdn} (#{type}) - #{status}")
-        end
-      end
-
       def route53
         @@route53 ||= Fog::DNS.new(
           :provider => 'AWS',
           :aws_access_key_id     => new_resource.aws_access_key_id,
           :aws_secret_access_key => new_resource.aws_secret_access_key)
       end
+
+      def zones
+        route53.zones
+      end
+
+      def zone_for_name(zone_name)
+        zones.detect{|zone| zone.domain == "#{zone_name}." }
+      end
+
+      def zone_for_id(zone_id)
+        zones.detect{|zone| zone.id == zone_id }
+      end
+
+      def resource_record(zone, fqdn, type)
+        zone.records.detect{|record| (record.name == "#{fqdn}.") && (record.type == type) }
+      end
+
+      def update_resource_record(zone, fqdn, type, ttl, values, rr=nil)
+        Chef::Log.info(["update_resource_record", fqdn, type, ttl.to_s, values, rr].inspect)
+        rr ||= resource_record(zone, fqdn, type)
+        if rr.nil?
+          create_resource_record(zone, fqdn, type, ttl, values)
+        else
+          rr.update(values, ttl.to_s) && rr.wait{|cid,status| Chef::Log.info("Creating Resource Record for #{fqdn} (#{type}) - #{status}") }
+        end
+      end
+
+      def create_resource_record(zone, fqdn, type, ttl, values)
+        Chef::Log.info(["create_resource_record", fqdn, type, ttl, values].inspect)
+        zone.records.create(:name => fqdn, :type => type, :ttl => ttl.to_s, :value => values)
+      end
+
+      def delete_resource_record(zone, fqdn, type, ttl, values)
+        rr = resource_record(zone, fqdn, type)
+        if rr.nil?
+          Chef::Log.warn("Tried to delete non-existent record #{fqdn} (#{type} #{values})")
+        else
+          rr.destroy
+        end
+      end
+
     end
   end
 end
