@@ -52,7 +52,7 @@ end
 
 announce(:zabbix, :agent,
          # register in the same realm, for discovery purposes
-         :realm => node.discovers.zabbix.server, 
+         :realm => discovery_realm(:zabbix, :server), 
          :logs  => { :agent => node.zabbix.agent.log_dir },
          :ports => { :agent => {
              :port    => 10051,
