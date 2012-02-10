@@ -10,8 +10,7 @@
 #
 # A reckless cheapskate can terminate all the nodes in one rack and let the namenode sort itself out.
 
-# Size of each rack
-RACK_SIZE = 5
+RACK_SIZE = <%= @hadoop[:fake_rack_size] %>
 
 # calculate the lookup table while we're in chef means the script is stupid and
 # doesn't need access to chef

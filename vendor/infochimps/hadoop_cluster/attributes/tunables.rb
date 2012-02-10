@@ -40,6 +40,7 @@ default[:hadoop][:log_retention_hours ]              = 24
 
 # define a rack topology? if false (default), all nodes are in the same 'rack'.
 default[:hadoop][:define_topology]                   = false
+default[:hadoop][:fake_rack_size]                    = 4
 
 #
 # Tune cluster settings for size of instance

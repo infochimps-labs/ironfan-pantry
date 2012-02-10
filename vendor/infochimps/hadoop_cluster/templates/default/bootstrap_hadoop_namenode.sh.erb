@@ -127,7 +127,14 @@ else
 fi
 
 echo
-echo "6/6: Success! you can start the rest of the daemons now by running:"
-echo
-echo '  for foo in datanode secondarynamenode tasktracker jobtracker ; do echo $foo ; sudo service hadoop_$foo start ; done'
-echo
+echo "6/6: Success! Set the other hadoop processes to the started run state, eg"
+echo ""
+echo "       override_attributes({"
+echo "         # ..."
+echo "         :hadoop => {"
+echo "           :datanode    => { :run_state => :start, },"
+echo "           # ..."
+echo "       }})"
+echo ""
+echo "    and then run chef-client to re-converge this machine. You can also launch all the other workers now."
+echo 
