@@ -61,12 +61,10 @@ Installation
 3. Set up your [knife.rb](http://help.opscode.com/faqs/chefbasics/knife) file.
 
   - _New to Chef_: If you don't have an existing chef setup, follow steps in
-   [knife/README.md](https://github.com/infochimps-labs/cluster_chef-homebase/tree/public/knife/README.md)
+   [knife/README.md](https://github.com/sya/cluster_chef-homebase/blob/master/knife/README.md)
    to set up `~/.chef` and its Credentials (`knife/{organization}-credentials`)
    folder. Be sure to set the environment variables in both your .bashrc and
    your current shell session:
-
-**SYAFLAG: Instructions for how to do this necessary?**
 
         export CHEF_USER={username} CHEF_ORGANIZATION={organization} CHEF_HOMEBASE={homebase}
 
