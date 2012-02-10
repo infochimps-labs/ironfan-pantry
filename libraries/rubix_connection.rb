@@ -2,6 +2,9 @@ class Chef
   
   module RubixConnection
 
+    # The version of Rubix we expect to use.
+    RUBIX_VERSION = '>= 0.2.1'
+
     # For a pool of shared connections to Zabbix API servers.
     CONNECTIONS = {  }
     
@@ -15,12 +18,12 @@ class Chef
 
       # Make sure Rubix is available to us.
       begin
-        gem     'rubix', '>= 0.1.3'
+        gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
         require 'rubix'
       rescue Gem::LoadError, LoadError => e
-        gem_package('rubix') { action :nothing ; version '0.1.3' }.run_action(:install)
+        gem_package('rubix') { action :nothing ; version ::Chef::RubixConnection::RUBIX_VERSION }.run_action(:install)
         Gem.clear_paths
-        gem     'rubix', '>= 0.1.3'
+        gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
         require 'rubix'
       end
 
