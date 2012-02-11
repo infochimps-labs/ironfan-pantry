@@ -1,5 +1,6 @@
 STANDARD_DIRS = Mash.new({
   :home_dir     => { :uid => 'root', :gid => 'root', },
+  :deploy_root  => { :uid => 'root', :gid => 'root', },
   :conf_dir     => { :uid => 'root', :gid => 'root', },
   :lib_dir      => { :uid => 'root', :gid => 'root', },
   :log_dir      => { :uid => :user,  :gid => :group, :mode => "0775", },
