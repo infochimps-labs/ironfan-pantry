@@ -4,3 +4,6 @@
 [submodule "vendor/infochimps/zabbix"]
 	path = vendor/infochimps/zabbix
 	url = git://github.com/infochimps-cookbooks/zabbix.git
+[submodule "vendor/mathie/homebrew"]
+	path = vendor/mathie/homebrew
+	url = https://github.com/infochimps-cookbooks/chef-homebrew.git
