@@ -23,6 +23,7 @@ package("libxml2-dev"      ){ action :nothing }.run_action(:install)
 package("libxslt1-dev"     ){ action :nothing }.run_action(:install)
 gem_package("fog"          ){ action :nothing }.run_action(:install)
 gem_package("net-ssh-multi"){ action :nothing }.run_action(:install)
+gem_package("ghost"        ){ action :nothing }.run_action(:install)
 
 # Source the fog gem, forcing Gem to recognize new version if any
 
