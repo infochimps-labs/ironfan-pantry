@@ -38,9 +38,17 @@
 #
 
 #
-# Package sets to install. Add or remove as convenience & prudence dictate.
+# Package sets to install. Set this in a role -- for example
 #
-default[:package_set][:install]          = %w[ base dev sysadmin ]
+#     default_attributes({
+#       :package_set => {
+#         :install => %w[ base dev sysadmin ],
+#       }
+#     })
+#
+# Later roles can use the "!merge:" feature to knock it out
+#
+default[:package_set][:install]          = %w[ ]
 
 # --------------------------------------------------------------------------
 #
