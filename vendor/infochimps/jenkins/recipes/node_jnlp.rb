@@ -1,6 +1,6 @@
 #
 # Cookbook Name::       jenkins
-# Description::         Creates the user and group for the Jenkins slave to run as and '/jnlpJars/slave.jar' is downloaded from the Jenkins server.  Depends on runit_service from the runit cookbook.
+# Description::         Creates the user and group for the Jenkins worker to run as and '/jnlpJars/slave.jar' is downloaded from the Jenkins server.  Depends on runit_service from the runit cookbook.
 # Recipe::              node_jnlp
 # Author::              Doug MacEachern <dougm@vmware.com>
 # Author::              Fletcher Nichol <fnichol@nichol.ca>
@@ -22,40 +22,42 @@
 
 include_recipe "runit"
 
-service_name = "jenkins-slave"
-slave_jar = "#{node[:jenkins][:node][:home]}/slave.jar"
+package 'groovy'
 
-group node[:jenkins][:node][:user] do
+service_name = "jenkins-worker"
+worker_jar = "#{node[:jenkins][:worker][:home_dir]}/slave.jar"
+
+group node[:jenkins][:worker][:user] do
 end
 
-user node[:jenkins][:node][:user] do
+user node[:jenkins][:worker][:user] do
   comment "Jenkins CI node (jnlp)"
-  gid node[:jenkins][:node][:user]
-  home node[:jenkins][:node][:home]
+  gid node[:jenkins][:worker][:user]
+  home node[:jenkins][:worker][:home_dir]
 end
 
-directory node[:jenkins][:node][:home] do
+directory node[:jenkins][:worker][:home_dir] do
   action :create
-  owner node[:jenkins][:node][:user]
-  group node[:jenkins][:node][:user]
+  owner node[:jenkins][:worker][:user]
+  group node[:jenkins][:worker][:user]
 end
 
-jenkins_node node[:jenkins][:node][:name] do
-  description  node[:jenkins][:node][:description]
-  executors    node[:jenkins][:node][:executors]
-  remote_fs    node[:jenkins][:node][:home]
-  labels       node[:jenkins][:node][:labels]
-  mode         node[:jenkins][:node][:mode]
+jenkins_node node[:jenkins][:worker][:name] do
+  description  node[:jenkins][:worker][:description]
+  executors    node[:jenkins][:worker][:executors]
+  remote_fs    node[:jenkins][:worker][:home_dir]
+  labels       node[:jenkins][:worker][:labels]
+  mode         node[:jenkins][:worker][:mode]
   launcher     "jnlp"
-  mode         node[:jenkins][:node][:mode]
-  availability node[:jenkins][:node][:availability]
+  mode         node[:jenkins][:worker][:mode]
+  availability node[:jenkins][:worker][:availability]
 end
 
-remote_file slave_jar do
+remote_file worker_jar do
   source "#{node[:jenkins][:server][:url]}/jnlpJars/slave.jar"
-  owner node[:jenkins][:node][:user]
+  owner node[:jenkins][:worker][:user]
   #only restart if slave.jar is updated
-  if ::File.exists?(slave_jar)
+  if ::File.exists?(worker_jar)
     notifies :restart, "service[#{service_name}]", :immediately
   end
 end

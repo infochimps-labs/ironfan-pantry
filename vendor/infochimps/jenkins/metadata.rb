@@ -4,32 +4,35 @@ license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "0.5"
 
-description      "Installs and configures Jenkins CI server & slaves"
+description      "Installs and configures Jenkins CI server & workers"
 
+depends          "apt"
 depends          "java"
-depends          "apache2"
-depends          "nginx"
+depends          "metachef"
+depends          "volumes"
+
 depends          "runit"
 depends          "iptables"
-depends          "mountable_volumes"
-depends          "provides_service"
+
+depends          "apache2"
+depends          "nginx"
 
 recipe           "jenkins::auth_github_oauth",         "Auth Github Oauth"
 recipe           "jenkins::build_from_github",         "Build From Github"
 recipe           "jenkins::build_ruby_rspec",          "Build Ruby Rspec"
-recipe           "jenkins::default",                   "Installs a Jenkins CI server using the http://jenkins-ci.org/redhat RPM.  The recipe also generates an ssh private key and stores the ssh public key in the node 'jenkins[:pubkey]' attribute for use by the node recipes."
+recipe           "jenkins::default",                   "Installs a Jenkins CI server using the http://jenkins-ci.org/redhat RPM.  The recipe also generates an ssh private key and stores the ssh public key in the node 'jenkins[:public_key]' attribute for use by the node recipes."
 recipe           "jenkins::iptables",                  "Set up ip_tables to allow access to the daemons"
-recipe           "jenkins::node_jnlp",                 "Creates the user and group for the Jenkins slave to run as and '/jnlpJars/slave.jar' is downloaded from the Jenkins server.  Depends on runit_service from the runit cookbook."
-recipe           "jenkins::node_ssh",                  "Creates the user and group for the Jenkins slave to run as and sets `.ssh/authorized_keys` to the 'jenkins[:pubkey]' attribute.  The 'jenkins-cli.jar'[1] is downloaded from the Jenkins server and used to manage the nodes via the 'groovy'[2] cli command.  Jenkins is configured to launch a slave agent on the node using its SSH slave plugin[3].\n\n[1] http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI\n[2] http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Script+Console\n[3] http://wiki.jenkins-ci.org/display/JENKINS/SSH+Slaves+plugin"
-recipe           "jenkins::node_windows",              "Creates the home directory for the node slave and sets 'JENKINS_HOME' and 'JENKINS_URL' system environment variables.  The 'winsw'[1] Windows service wrapper will be downloaded and installed, along with generating `jenkins-slave.xml` from a template.  Jenkins is configured with the node as a 'jnlp'[2] slave and '/jnlpJars/slave.jar' is downloaded from the Jenkins server.  The 'jenkinsslave' service will be started the first time the recipe is run or if the service is not running.  The 'jenkinsslave' service will be restarted if '/jnlpJars/slave.jar' has changed.  The end results is functionally the same had you chosen the option to 'Let Jenkins control this slave as a Windows service'[3].\n\n[1] http://weblogs.java.net/blog/2008/09/29/winsw-windows-service-wrapper-less-restrictive-license\n[2] http://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds\n[3] http://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+as+a+Windows+service"
+recipe           "jenkins::worker_jnlp",                 "Creates the user and group for the Jenkins worker to run as and '/jnlpJars/worker.jar' is downloaded from the Jenkins server.  Depends on runit_service from the runit cookbook."
+recipe           "jenkins::worker_ssh",                  "Creates the user and group for the Jenkins worker to run as and sets `.ssh/authorized_keys` to the 'jenkins[:public_key]' attribute.  The 'jenkins-cli.jar'[1] is downloaded from the Jenkins server and used to manage the nodes via the 'groovy'[2] cli command.  Jenkins is configured to launch a worker agent on the node using its SSH worker plugin[3].\n\n[1] http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+CLI\n[2] http://wiki.jenkins-ci.org/display/JENKINS/Jenkins+Script+Console\n[3] http://wiki.jenkins-ci.org/display/JENKINS/SSH+Workers+plugin"
+recipe           "jenkins::worker_windows",              "Creates the home directory for the node worker and sets 'JENKINS_HOME' and 'JENKINS_URL' system environment variables.  The 'winsw'[1] Windows service wrapper will be downloaded and installed, along with generating `jenkins-worker.xml` from a template.  Jenkins is configured with the node as a 'jnlp'[2] worker and '/jnlpJars/worker.jar' is downloaded from the Jenkins server.  The 'jenkinsworker' service will be started the first time the recipe is run or if the service is not running.  The 'jenkinsworker' service will be restarted if '/jnlpJars/worker.jar' has changed.  The end results is functionally the same had you chosen the option to 'Let Jenkins control this worker as a Windows service'[3].\n\n[1] http://weblogs.java.net/blog/2008/09/29/winsw-windows-service-wrapper-less-restrictive-license\n[2] http://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds\n[3] http://wiki.jenkins-ci.org/display/JENKINS/Installing+Jenkins+as+a+Windows+service"
 recipe           "jenkins::proxy_apache2",             "Uses the apache2 recipe from the apache2 cookbook to install an HTTP frontend proxy. To automatically activate this recipe set the `node[:jenkins][:http_proxy][:variant]` to `apache2`."
 recipe           "jenkins::proxy_nginx",               "Uses the nginx::source recipe from the nginx cookbook to install an HTTP frontend proxy. To automatically activate this recipe set the `node[:jenkins][:http_proxy][:variant]` to `nginx`."
 recipe           "jenkins::server",                    "Server"
 recipe           "jenkins::user_key",                  "User Key"
 recipe           "jenkins::cli",                       "This resource can be used to execute the Jenkins cli from your recipes.  For example, install plugins via update center and restart Jenkins:\n\n    %w(git URLSCM build-publisher).each do |plugin|\n      jenkins_cli \"install-plugin \#{plugin}\"\n      jenkins_cli \"safe-restart\"\n    end"
-recipe           "jenkins::node",                      "This resource can be used to configure nodes as the 'node_ssh' and 'node_windows' recipes do or \"Launch slave via execution of command on the Master\"\n\n    jenkins_node node[:fqdn] do\n      description  \"My node for things, stuff and whatnot\"\n      executors    5\n      remote_fs    \"/var/jenkins\"\n      launcher     \"command\"\n      command      \"ssh -i my_key \#{node[:fqdn]} java -jar \#{remote_fs}/slave.jar\"\n      env          \"ANT_HOME\" => \"/usr/local/ant\", \"M2_REPO\" => \"/dev/null\"\n    end"
-recipe           "jenkins::job",                       "This resource manages jenkins jobs, supporting the following actions:\n\n   :create, :update, :delete, :build, :disable, :enable\n\nThe 'create' and 'update' actions require a jenkins job config.xml.  Example:\n\n    git_branch = 'master'\n    job_name = \"sigar-\#{branch}-\#{node[:os]}-\#{node[:kernel][:machine]}\"\n\n    job_config = File.join(node[:jenkins][:node][:home], \"\#{job_name}-config.xml\")\n\n    jenkins_job job_name do\n      action :nothing\n      config job_config\n    end\n\n    template job_config do\n      source \"sigar-jenkins-config.xml\"\n      variables :job_name => job_name, :branch => git_branch, :node => node[:fqdn]\n      notifies :update, resources(:jenkins_job => job_name), :immediately\n      notifies :build, resources(:jenkins_job => job_name), :immediately\n    end"
-recipe           "jenkins::manage_node",               "The script to generate groovy that manages a node can be used standalone.  For example:\n\n    % ruby manage_node.rb name slave-hostname remote_fs /home/jenkins ... | java -jar jenkins-cli.jar -s http://jenkins:8080/ groovy = "
+recipe           "jenkins::worker",                      "This resource can be used to configure nodes as the 'node_ssh' and 'node_windows' recipes do or \"Launch worker via execution of command on the Master\"\n\n    jenkins_node node[:fqdn] do\n      description  \"My node for things, stuff and whatnot\"\n      executors    5\n      remote_fs    \"/var/jenkins\"\n      launcher     \"command\"\n      command      \"ssh -i my_key \#{node[:fqdn]} java -jar \#{remote_fs}/worker.jar\"\n      env          \"ANT_HOME\" => \"/usr/local/ant\", \"M2_REPO\" => \"/dev/null\"\n    end"
+recipe           "jenkins::job",                       "This resource manages jenkins jobs, supporting the following actions:\n\n   :create, :update, :delete, :build, :disable, :enable\n\nThe 'create' and 'update' actions require a jenkins job config.xml.  Example:\n\n    git_branch = 'master'\n    job_name = \"sigar-\#{branch}-\#{node[:os]}-\#{node[:kernel][:machine]}\"\n\n    job_config = File.join(node[:jenkins][:worker][:home_dir], \"\#{job_name}-config.xml\")\n\n    jenkins_job job_name do\n      action :nothing\n      config job_config\n    end\n\n    template job_config do\n      source \"sigar-jenkins-config.xml\"\n      variables :job_name => job_name, :branch => git_branch, :worker => node[:fqdn]\n      notifies :update, resources(:jenkins_job => job_name), :immediately\n      notifies :build, resources(:jenkins_job => job_name), :immediately\n    end"
+recipe           "jenkins::manage_node",               "The script to generate groovy that manages a node can be used standalone.  For example:\n\n    % ruby manage_node.rb name worker-hostname remote_fs /home/jenkins ... | java -jar jenkins-cli.jar -s http://jenkins:8080/ groovy = "
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -80,7 +83,7 @@ attribute "jenkins/server/host",
   :description           => "Host interface address for the Jenkins server",
   :default               => ""
 
-attribute "jenkins/server/jvm_heap",
+attribute "jenkins/server/java_heap_size_max",
   :display_name          => "tunable: Java maximum heap size",
   :description           => "tunable: Java maximum heap size",
   :default               => "384"
@@ -103,7 +106,7 @@ attribute "jenkins/node/name",
 attribute "jenkins/node/description",
   :display_name          => "Jenkins node description",
   :description           => "Jenkins node description",
-  :default               => "ubuntu 10.4 [  ] slave on hostname"
+  :default               => "ubuntu 10.4 [  ] worker on hostname"
 
 attribute "jenkins/node/executors",
   :display_name          => "Number of node executors",
@@ -136,13 +139,13 @@ attribute "jenkins/node/availability",
   :default               => "always"
 
 attribute "jenkins/node/in_demand_delay",
-  :display_name          => "number of minutes for which jobs must be waiting in the queue before attempting to launch this slave.",
-  :description           => "number of minutes for which jobs must be waiting in the queue before attempting to launch this slave.",
+  :display_name          => "number of minutes for which jobs must be waiting in the queue before attempting to launch this worker.",
+  :description           => "number of minutes for which jobs must be waiting in the queue before attempting to launch this worker.",
   :default               => "0"
 
 attribute "jenkins/node/idle_delay",
-  :display_name          => "number of minutes that this slave must remain idle before taking it off-line. ",
-  :description           => "number of minutes that this slave must remain idle before taking it off-line. ",
+  :display_name          => "number of minutes that this worker must remain idle before taking it off-line. ",
+  :description           => "number of minutes that this worker must remain idle before taking it off-line. ",
   :default               => "1"
 
 attribute "jenkins/node/env",
@@ -151,33 +154,33 @@ attribute "jenkins/node/env",
   :default               => ""
 
 attribute "jenkins/node/user",
-  :display_name          => "user the slave runs as",
-  :description           => "user the slave runs as",
+  :display_name          => "user the worker runs as",
+  :description           => "user the worker runs as",
   :default               => "jenkins-node"
 
 attribute "jenkins/node/ssh_host",
-  :display_name          => "Hostname or IP Jenkins should connect to when launching an SSH slave",
-  :description           => "Hostname or IP Jenkins should connect to when launching an SSH slave",
+  :display_name          => "Hostname or IP Jenkins should connect to when launching an SSH worker",
+  :description           => "Hostname or IP Jenkins should connect to when launching an SSH worker",
   :default               => ""
 
 attribute "jenkins/node/ssh_port",
-  :display_name          => "SSH slave port",
-  :description           => "SSH slave port",
+  :display_name          => "SSH worker port",
+  :description           => "SSH worker port",
   :default               => "22"
 
 attribute "jenkins/node/ssh_user",
-  :display_name          => "SSH slave user name (only required if jenkins server and slave user is different)",
-  :description           => "SSH slave user name (only required if jenkins server and slave user is different)",
+  :display_name          => "SSH worker user name (only required if jenkins server and worker user is different)",
+  :description           => "SSH worker user name (only required if jenkins server and worker user is different)",
   :default               => "22"
 
 attribute "jenkins/node/ssh_pass",
-  :display_name          => "SSH slave password (not required when server is installed via default recipe)",
-  :description           => "SSH slave password (not required when server is installed via default recipe)",
+  :display_name          => "SSH worker password (not required when server is installed via default recipe)",
+  :description           => "SSH worker password (not required when server is installed via default recipe)",
   :default               => ""
 
 attribute "jenkins/node/jvm_options",
-  :display_name          => "SSH slave JVM options",
-  :description           => "SSH slave JVM options",
+  :display_name          => "SSH worker JVM options",
+  :description           => "SSH worker JVM options",
   :default               => ""
 
 attribute "jenkins/node/ssh_private_key",

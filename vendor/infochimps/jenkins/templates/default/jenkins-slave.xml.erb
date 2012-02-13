@@ -23,15 +23,15 @@ THE SOFTWARE.
 -->
 
 <!--
-  Windows service definition for Jenkins slave
+  Windows service definition for Jenkins worker
 
   To uninstall, run "jenkins-slave.exe stop" to stop the service, then "jenkins-slave.exe uninstall" to uninstall the service.
   Both commands don't produce any output if the execution is successful. 
 -->
 <service>
-  <id>jenkinsslave</id>
-  <name>Jenkins Slave</name>
-  <description>This service runs a slave for Jenkins continuous integration system.
+  <id>jenkinsworker</id>
+  <name>Jenkins Worker</name>
+  <description>This service runs a worker for Jenkins continuous integration system.
 (Installed by Chef)
   </description>
   <!--

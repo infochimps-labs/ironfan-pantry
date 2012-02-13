@@ -1,6 +1,6 @@
 #
 # Cookbook Name::       jenkins
-# Description::         Creates the home directory for the node slave and sets 'JENKINS_HOME' and 'JENKINS_URL' system environment variables.  The 'winsw'[1] Windows service wrapper will be downloaded and installed, along with generating `jenkins-slave.xml` from a template.  Jenkins is configured with the node as a 'jnlp'[2] slave and '/jnlpJars/slave.jar' is downloaded from the Jenkins server.  The 'jenkinsslave' service will be started the first time the recipe is run or if the service is not running.  The 'jenkinsslave' service will be restarted if '/jnlpJars/slave.jar' has changed.  The end results is functionally the same had you chosen the option to 'Let Jenkins control this slave as a Windows service'[3].
+# Description::         Creates the home directory for the node worker and sets 'JENKINS_HOME' and 'JENKINS_URL' system environment variables.  The 'winsw'[1] Windows service wrapper will be downloaded and installed, along with generating `jenkins-worker.xml` from a template.  Jenkins is configured with the node as a 'jnlp'[2] worker and '/jnlpJars/worker.jar' is downloaded from the Jenkins server.  The 'jenkinsworker' service will be started the first time the recipe is run or if the service is not running.  The 'jenkinsworker' service will be restarted if '/jnlpJars/worker.jar' has changed.  The end results is functionally the same had you chosen the option to 'Let Jenkins control this worker as a Windows service'[3].
 #
 # [1] http://weblogs.java.net/blog/2008/09/29/winsw-windows-service-wrapper-less-restrictive-license
 # [2] http://wiki.jenkins-ci.org/display/JENKINS/Distributed+builds
@@ -24,11 +24,11 @@
 # limitations under the License.
 #
 
-home = node[:jenkins][:node][:home]
+home = node[:jenkins][:worker][:home_dir]
 url  = node[:jenkins][:server][:url]
 
 jenkins_exe = "#{home}\\jenkins-slave.exe"
-service_name = "jenkinsslave"
+service_name = "jenkinsworker"
 
 directory home do
   action :create
@@ -44,10 +44,10 @@ env "JENKINS_URL" do
   value url
 end
 
-template "#{home}/jenkins-slave.xml" do
-  source "jenkins-slave.xml"
+template "#{home}/jenkins-worker.xml" do
+  source "jenkins-worker.xml"
   variables(:jenkins_home => home,
-            :jnlp_url => "#{url}/computer/#{node[:jenkins][:node][:name]}/slave-agent.jnlp")
+            :jnlp_url => "#{url}/computer/#{node[:jenkins][:worker][:name]}/slave-agent.jnlp")
 end
 
 #XXX how-to get this directly from the jenkins server?
@@ -65,15 +65,15 @@ service service_name do
   action :nothing
 end
 
-jenkins_node node[:jenkins][:node][:name] do
-  description  node[:jenkins][:node][:description]
-  executors    node[:jenkins][:node][:executors]
-  remote_fs    node[:jenkins][:node][:home]
-  labels       node[:jenkins][:node][:labels]
-  mode         node[:jenkins][:node][:mode]
-  launcher     node[:jenkins][:node][:launcher]
-  mode         node[:jenkins][:node][:mode]
-  availability node[:jenkins][:node][:availability]
+jenkins_node node[:jenkins][:worker][:name] do
+  description  node[:jenkins][:worker][:description]
+  executors    node[:jenkins][:worker][:executors]
+  remote_fs    node[:jenkins][:worker][:home_dir]
+  labels       node[:jenkins][:worker][:labels]
+  mode         node[:jenkins][:worker][:mode]
+  launcher     node[:jenkins][:worker][:launcher]
+  mode         node[:jenkins][:worker][:mode]
+  availability node[:jenkins][:worker][:availability]
 end
 
 remote_file "#{home}\\slave.jar" do

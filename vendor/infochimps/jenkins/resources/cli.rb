@@ -24,7 +24,7 @@
 actions :run
 
 attribute :url, :kind_of => String
-attribute :home, :kind_of => String
+attribute :home_dir, :kind_of => String
 attribute :command, :kind_of => String
 attribute :timeout, :kind_of => Integer
 attribute :block, :kind_of => Proc

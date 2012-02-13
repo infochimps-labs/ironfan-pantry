@@ -22,101 +22,108 @@
 #
 
 
-# default[:jenkins][:mirror]       = "http://updates.jenkins-ci.org"
-default[:apt][:jenkins][:url]     = "http://pkg.jenkins-ci.org/debian"
-default[:jenkins][:plugins_mirror] = "http://updates.jenkins-ci.org"
-default[:jenkins][:java_home] = ENV['JAVA_HOME']
+#
+# Services
+#
 
-default[:jenkins][:server][:home] = "/var/lib/jenkins"
-default[:jenkins][:server][:user] = "jenkins"
+default[:jenkins][:server ][:run_state] = :start
+default[:jenkins][:worker ][:run_state] = :start
+
+#
+# Locations
+#
+
+default[:jenkins][:conf_dir]            = "/etc/jenkins"
+default[:jenkins][:log_dir]             = "/var/log/jenkins"
+default[:jenkins][:lib_dir]             = "/var/lib/jenkins"
+default[:jenkins][:pid_dir]             = "/var/run/jenkins"
 
 case node[:platform]
-when "debian", "ubuntu"
-  default[:jenkins][:server][:group] = "nogroup"
+when /mac_os_x/
+  default[:jenkins][:server][:home_dir] = "/Users/Shared/Jenkins"
+  default[:jenkins][:worker][:home_dir] = "/Users/Shared/Jenkins"
+  default[:jenkins][:install_dir]       = "/usr/local/lib"
+
+  server_username = "_jenkins"
+  worker_username = "_jenkins"
+  group_name      = "_jenkins"
+
 else
-  default[:jenkins][:server][:group] = node[:jenkins][:server][:user]
+  default[:jenkins][:server][:home_dir] = "/var/lib/jenkins"
+  default[:jenkins][:worker][:home_dir] = "/var/lib/jenkins_worker"
+  default[:jenkins][:install_dir]       = "/usr/share/jenkins"
+
+  server_username = "jenkins"
+  worker_username = "jenkins_worker"
+  group_name      = "jenkins"
 end
 
-default[:jenkins][:server][:port]    = 8080
-default[:jenkins][:server][:host]    = node[:fqdn]
 
-default[:jenkins][:server][:jvm_heap] = 384
+default[:jenkins][:server][:user]     = server_username
+default[:jenkins][:server][:group]    = group_name
+default[:jenkins][:worker][:user]     = worker_username
+default[:jenkins][:worker][:group]    = group_name
 
-default[:jenkins][:iptables_allow] = "enable"
+default[:users ][worker_username][:uid] = 361
+default[:users ][server_username][:uid] = 360
+default[:groups][group_name     ][:gid] = 360
+
+
+# port for HTTP connector (default 8080; disable with -1)
+default[:jenkins][:server][:port]       = 8080
+# port for AJP connector (disabled by default)
+default[:jenkins][:server][:ajp_port]   = -1
+
+default[:jenkins][:worker][:name]       = node.name
+
+#
+# Install
+#
+
+# working around: http://tickets.opscode.com/browse/CHEF-1848; set to true if you have the CHEF-1848 patch applied
+default[:jenkins][:server][:use_head]   = false
+
+# default[:jenkins][:mirror]            = "http://updates.jenkins-ci.org"
+default[:apt][:jenkins][:url]           = "http://pkg.jenkins-ci.org/debian"
+default[:jenkins][:plugins_mirror]      = "http://updates.jenkins-ci.org"
 
 #download the latest version of plugins, bypassing update center
 #example: ["git", "URLSCM", ...]
-default[:jenkins][:server][:plugins] = []
+default[:jenkins][:server][:plugins]    = []
 
-# working around: http://tickets.opscode.com/browse/CHEF-1848; set to true if you have the CHEF-1848 patch applied
-default[:jenkins][:server][:use_head] = false
+#
+# Integration
+#
 
+default[:jenkins][:iptables_allow]      = "enable"
 
-#See Jenkins >> Nodes >> $name >> Configure
-
-#"Name"
-default[:jenkins][:node][:name]    = node[:fqdn]
+#
+# Description
+#
 
 #"Description"
-default[:jenkins][:node][:description] =
+default[:jenkins][:worker][:description] =
   "#{node[:platform]} #{node[:platform_version]} " <<
   "[#{node[:kernel][:os]} #{node[:kernel][:release]} #{node[:kernel][:machine]}] " <<
-  "slave on #{node[:hostname]}"
-
-#"# of executors"
-default[:jenkins][:node][:executors] = 1
-
-#"Remote FS root"
-if node[:os] == "windows"
-  default[:jenkins][:node][:home] = "C:/jenkins"
-elsif node[:os] == "darwin"
-  default[:jenkins][:node][:home] = "/Users/jenkins"
-else
-  default[:jenkins][:node][:home] = "/var/lib/jenkins-node"
-end
-
+  "worker on #{node[:hostname]}"
 #"Labels"
-default[:jenkins][:node][:labels] = (node[:tags] || []).join(" ")
+default[:jenkins][:worker][:labels]     = (node[:tags] || []).join(" ")
 
-#"Usage"
-#  "Utilize this slave as much as possible" -> "normal"
-#  "Leave this machine for tied jobs only"  -> "exclusive"
-default[:jenkins][:node][:mode] = "normal"
+#
+# SSH worker options
+#
 
-#"Launch method"
-#  "Launch slave agents via JNLP"                        -> "jnlp"
-#  "Launch slave via execution of command on the Master" -> "command"
-#  "Launch slave agents on Unix machines via SSH"         -> "ssh"
-if node[:os] == "windows"
-  default[:jenkins][:node][:launcher] = "jnlp"
-else
-  default[:jenkins][:node][:launcher] = "ssh"
-end
-
-#"Availability"
-#  "Keep this slave on-line as much as possible"                   -> "always"
-#  "Take this slave on-line when in demand and off-line when idle" -> "demand"
-default[:jenkins][:node][:availability] = "always"
-
-#  "In demand delay"
-default[:jenkins][:node][:in_demand_delay] = 0
-#  "Idle delay"
-default[:jenkins][:node][:idle_delay] = 1
-
-#"Node Properties"
-#[x] "Environment Variables"
-default[:jenkins][:node][:env] = nil
-
-default[:jenkins][:node][:user] = "jenkins-node"
-
-#SSH options
-default[:jenkins][:node][:ssh_host] = node[:fqdn]
-default[:jenkins][:node][:ssh_port] = 22
-default[:jenkins][:node][:ssh_user] = default[:jenkins][:node][:user]
-default[:jenkins][:node][:ssh_pass] = nil
-default[:jenkins][:node][:jvm_options] = nil
+default[:jenkins][:worker][:ssh_host]   = node[:fqdn]
+default[:jenkins][:worker][:ssh_port]   = 22
+default[:jenkins][:worker][:ssh_user]   = default[:jenkins][:worker][:user]
+default[:jenkins][:worker][:ssh_pass]   = nil
+default[:jenkins][:worker][:jvm_options] = nil
 #jenkins master defaults to: "#{ENV['HOME']}/.ssh/id_rsa"
-default[:jenkins][:node][:ssh_private_key] = nil
+default[:jenkins][:worker][:ssh_private_key] = nil
+
+#
+# HTTP frontend
+#
 
 default[:jenkins][:http_proxy][:variant]              = nil
 default[:jenkins][:http_proxy][:www_redirect]         = "disable"

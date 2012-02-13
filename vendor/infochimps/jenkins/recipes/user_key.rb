@@ -19,36 +19,28 @@
 # limitations under the License.
 #
 
-pkey = "#{node[:jenkins][:server][:home]}/.ssh/id_rsa"
+public_key_filename = "#{node[:jenkins][:server][:home_dir]}/.ssh/id_rsa"
 
-user node[:jenkins][:server][:user] do
-  home      node[:jenkins][:server][:home]
+directory File.dirname(public_key_filename) do
+  owner         node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  mode          "0700"
+  recursive     true
+  action        :create
 end
 
-directory node[:jenkins][:server][:home] do
-  recursive true
-  owner     node[:jenkins][:server][:user]
-  group     node[:jenkins][:server][:group]
+ruby_block "record jenkins ssh public_key" do
+  block{        node.set[:jenkins][:server][:public_key] = File.open("#{public_key_filename}.pub") { |f| f.gets } }
+  action        :nothing
 end
 
-directory "#{node[:jenkins][:server][:home]}/.ssh" do
-  mode      "0700"
-  owner     node[:jenkins][:server][:user]
-  group     node[:jenkins][:server][:group]
-  recursive true
-  action    :create
+execute "ssh-keygen -f #{public_key_filename} -N ''" do
+  user          node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  notifies      :create, 'ruby_block[record jenkins ssh public_key]', :immediately
+  not_if{ File.exists?(public_key_filename) }
 end
 
-execute "ssh-keygen -f #{pkey} -N ''" do
-  user  node[:jenkins][:server][:user]
-  group node[:jenkins][:server][:group]
-  not_if { File.exists?(pkey) }
-end
-
-ruby_block "store jenkins ssh pubkey" do
-  block do
-    node.set[:jenkins][:server][:pubkey] = File.open("#{pkey}.pub") { |f| f.gets }
-  end
-end
-
-Chef::Log.info ['pubkey', __FILE__]
+announce(:jenkins, :ssher,
+  :user       => node[:jenkins][:server][:user],
+  :public_key => node[:jenkins][:server][:public_key] )

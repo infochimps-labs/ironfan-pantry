@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+
+    <!-- run with sudo launchctl start org.jenkins-ci -->
+    
+    <key>Label</key>            <string>org.jenkins-ci.jenkins_server</string>
+    <key>UserName</key>         <string><%= @jenkins[:server][:user]  %></string>
+    <key>GroupName</key>        <string><%= @jenkins[:server][:group] %></string>
+    <key>RunAtLoad</key>        <%= @startable ? "<true/>" : "<false/>" %>
+    <key>KeepAlive</key>        <%= @startable ? "<true/>" : "<false/>" %>
+
+    <key>StandardOutPath</key>    <string><%= @jenkins[:log_dir] %>/jenkins.log</string>
+    <key>StandardErrorPath</key>  <string><%= @jenkins[:log_dir] %>/jenkins-error.log</string>
+      
+    <key>Program</key>            <string><%= node[:java][:java_home] %>/bin/java</string>
+    <key>ProgramArguments</key>
+      <array>
+        <string><%= node[:java][:java_home] %>/bin/java</string>
+        <string>-jar</string>
+        <string><%= @jenkins[:install_dir] %>/jenkins.war</string>
+        <string>--webroot=<%= @jenkins[:server][:home_dir] %>/war</string>
+        <string>--httpPort=<%= @jenkins[:server][:port] %></string>
+        <string>--ajp13Port=<%= @jenkins[:server][:ajp_port] %></string>
+        <!-- <string> - - httpListenAddress=<%= @jenkins[:server][:host] %></string> -->
+        <!-- <string>/bin/bash</string> -->
+        <!-- <string>/Library/Application Support/Jenkins/jenkins-runner.sh</string> -->
+      </array>
+        
+    <key>EnvironmentVariables</key>
+      <dict>
+        <key>JENKINS_HOME</key>   <string><%= @jenkins[:server][:home_dir] %></string>
+        <key>_JAVA_OPTIONS</key>  <string>-Xmx<%= @jenkins[:server][:java_heap_size_max] %>m -Djava.net.preferIPv4Stack=true -Dfile.encoding=UTF-8</string>
+      </dict>
+
+  </dict>
+</plist>

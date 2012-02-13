@@ -19,101 +19,83 @@
 # limitations under the License.
 #
 
-include_recipe "runit"
-include_recipe "iptables"
+include_recipe "jenkins::default"
 
-group(node[:jenkins][:server][:user]){ gid 360 }
-user node[:jenkins][:server][:user] do
-  comment "Jenkins CI node (ssh)"
-  home      node[:jenkins][:server][:home]
-  group     node[:jenkins][:server][:user]
-  uid       360
-  shell     "/bin/sh"
-  action    :manage
+announce(:jenkins, :server,
+  :port => node[:jenkins][:server][:port],
+  :user => node[:jenkins][:server][:user]
+  )
+
+daemon_user('jenkins.server') do
+  shell         "/bin/sh"
+  manage_home   true
 end
 
-directory node[:jenkins][:server][:home] do
-  recursive true
-  owner     node[:jenkins][:server][:user]
-  group     node[:jenkins][:server][:group]
+standard_dirs('jenkins.server') do
+  directories   :conf_dir, :pid_dir, :lib_dir, :log_dir
 end
 
-directory "#{node[:jenkins][:server][:home]}/plugins" do
-  owner     node[:jenkins][:server][:user]
-  group     node[:jenkins][:server][:group]
-  not_if{   node[:jenkins][:server][:plugins].empty? }
+directory "#{node[:jenkins][:server][:home_dir]}/war" do
+  owner         node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  mode          "0755"
+  action        :create
 end
 
-node[:jenkins][:server][:plugins].each do |name|
-  plugin_file = "#{node[:jenkins][:server][:home]}/plugins/#{name}.hpi"
-  remote_file plugin_file do
-    Chef::Log.info "plugin: #{name}"
-    source  "#{node[:jenkins][:plugins_mirror]}/latest/#{name}.hpi"
-    backup  false
-    owner   node[:jenkins][:server][:user]
-    group   node[:jenkins][:server][:group]
-    not_if{ File.exists?(plugin_file) }
+case node.platform
+when "ubuntu", "debian"
+
+  include_recipe "runit"
+  package        "daemon"
+
+  template '/etc/default/jenkins' do
+    source        'etc-default-jenkins.erb'
+    mode          "0644"
+    action        :create
+    notifies      :restart,  "service[jenkins_server]"
+    variables     :jenkins => node[:jenkins]
   end
-end
 
-# See http://jenkins-ci.org/debian/
-package_provider       = Chef::Provider::Package::Dpkg
-pid_file               = "/var/run/jenkins/jenkins.pid"
-install_starts_service = true
-
-# FIXME: apt provider-ize
-apt_key                = "/tmp/jenkins-ci.org.key"
-
-remote_file apt_key do
-  source "#{node[:apt][:jenkins][:url]}/jenkins-ci.org.key"
-  action :create
-end
-
-execute "add-jenkins_repo-key" do
-  command %Q{echo "Adding jenkins apt repo key" ; apt-key add #{apt_key}}
-  action :nothing
-end
-
-file "/etc/apt/sources.list.d/jenkins.list" do
-  owner   "root"
-  group   "root"
-  mode    0644
-  content "deb #{node[:jenkins][:apt_mirror]} binary/\n"
-  action  :create
-  notifies :run, "execute[add-jenkins_repo-key]",        :immediately
-  notifies :run, resources(:execute => "apt-get update"), :immediately
-end
-
-service "jenkins" do
-  supports [ :stop, :start, :restart, :status ]
-  # "jenkins status" will exit(0) even when the process is not running
-  status_command "test -f #{pid_file} && kill -0 `cat #{pid_file}`"
-  action :nothing
-end
-provide_service('jenkins_server', :port => node[:jenkins][:server][:port])
-
-template '/etc/default/jenkins' do
-  source    'etc-default-jenkins.erb'
-  mode      "0644"
-  action    :create
-  notifies  :restart,  "service[jenkins]"
-end
-
-# Install jenkins
-package "daemon"
-package "jenkins"
-
-# restart if this run only added new plugins
-log "plugins updated, restarting jenkins" do
-  # ugh :restart does not work, need to sleep after stop.
-  notifies :stop,  "service[jenkins]",  :immediately
-  notifies :restart,  "service[jenkins]"
-  only_if do
-    if File.exists?(pid_file)
-      htime = File.mtime(pid_file)
-      Dir["#{node[:jenkins][:server][:home]}/plugins/*.hpi"].select { |file|
-        File.mtime(file) > htime
-      }.size > 0
-    end
+  service "jenkins_server" do
+    run_state     node[:jenkins][:server][:run_state]
+    options       Mash.new(:service_name => 'jenkins_server').merge(node[:jenkins])
   end
+  # kill_old_service("jenkins") do
+  #   only_if{ File.exists?("/etc/init.d/jenkins") }
+  # end
+
+when /mac_os_x/
+
+  template '/Library/LaunchDaemons/org.jenkins-ci.jenkins_server.plist' do
+    source      "org.jenkins-ci.jenkins_server.plist.erb"
+    variables   :jenkins => node[:jenkins], :startable => startable?(node[:jenkins][:server])
+  end
+
+  service "jenkins_server" do
+    provider    Chef::Provider::Service::Macosx
+    action      node[:jenkins][:server][:run_state]
+  end
+
+  Chef::Log.debug <<EOF
+Currently cannot launch jenkins service on #{node.platform}, you're on your own.
+
+Here's what brew recommends:
+
+  If this is your first install, automatically load on login with:
+    mkdir -p ~/Library/LaunchAgents
+  cp /usr/local/Cellar/jenkins/*/homebrew.mxcl.jenkins.plist ~/Library/LaunchAgents/
+    launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.jenkins.plist
+
+  If this is an upgrade and you already have the homebrew.mxcl.jenkins.plist loaded:
+    launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.jenkins.plist
+  cp /usr/local/Cellar/jenkins/*/homebrew.mxcl.jenkins.plist ~/Library/LaunchAgents/
+    launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.jenkins.plist
+
+  Or start it manually:
+    java -jar /usr/local/Cellar/jenkins/*/lib/jenkins.war
+
+EOF
+
+else
+  Chef::Log.warn "Don't know how to install jenkins service on platform #{node.platform}, you're on your own"
 end

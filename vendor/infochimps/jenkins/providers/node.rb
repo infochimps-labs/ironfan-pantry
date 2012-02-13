@@ -33,12 +33,12 @@ def action_create
     backup false
   end
 
-  cookbook_file "#{node[:jenkins][:node][:home]}/node_info.groovy" do
+  cookbook_file "#{node[:jenkins][:worker][:home_dir]}/node_info.groovy" do
     source "node_info.groovy"
     action :create
   end
 
-  jenkins_cli "groovy #{node[:jenkins][:node][:home]}/node_info.groovy #{new_resource.name}" do
+  jenkins_cli "groovy #{node[:jenkins][:worker][:home_dir]}/node_info.groovy #{new_resource.name}" do
     block do |stdout|
       current_node = JSON.parse(stdout)
       node_exists = current_node.keys.size > 0
