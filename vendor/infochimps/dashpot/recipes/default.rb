@@ -21,7 +21,7 @@
 
 include_recipe  'metachef'
 
-standard_dirs(:dashpot) do
+standard_dirs('dashpot.server') do
   directories  :home_dir, :log_dir, :conf_dir
 end
 
