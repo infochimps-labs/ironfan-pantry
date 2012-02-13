@@ -63,6 +63,7 @@ default[:jenkins][:server][:user]     = server_username
 default[:jenkins][:server][:group]    = group_name
 default[:jenkins][:worker][:user]     = worker_username
 default[:jenkins][:worker][:group]    = group_name
+default[:jenkins][:worker][:shell]    = "/bin/bash"
 
 default[:users ][worker_username][:uid] = 361
 default[:users ][server_username][:uid] = 360
@@ -89,7 +90,7 @@ default[:jenkins][:plugins_mirror]      = "http://updates.jenkins-ci.org"
 
 #download the latest version of plugins, bypassing update center
 #example: ["git", "URLSCM", ...]
-default[:jenkins][:server][:plugins]    = []
+default[:jenkins][:server][:plugins]    = %w[ notification ]
 
 #
 # Integration

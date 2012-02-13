@@ -38,7 +38,8 @@ include_recipe "jenkins::default"
 ssher = discover(:jenkins, :ssher)
 
 daemon_user('jenkins.worker') do
-  shell         "/bin/sh"
+  shell         node[:jenkins][:worker][:shell]
+  home          node[:jenkins][:worker][:home_dir]
   manage_home   true
 end
 
@@ -53,13 +54,14 @@ directory "#{node[:jenkins][:worker][:home_dir]}/.ssh" do
   group         node[:jenkins][:worker][:group]
 end
 
-if ssher && ssher.info[:public_key]
+public_key = ssher && (ssher.info[:public_key] || ssher.info[:info][:public_key])
+if public_key
   file "#{node[:jenkins][:worker][:home_dir]}/.ssh/authorized_keys" do
     action      :create
     mode        "0600"
     owner       node[:jenkins][:worker][:user]
     group       node[:jenkins][:worker][:group]
-    content     ssher.info[:public_key]
+    content     public_key
   end
 end
 
@@ -81,3 +83,13 @@ end
 #   private_key  node[:jenkins][:worker][:ssh_private_key]
 #   jvm_options  node[:jenkins][:worker][:jvm_options]
 # end
+
+file "#{node[:jenkins][:worker][:home_dir]}/.gitconfig" do
+  owner         node[:jenkins][:worker][:user]
+  mode          "0600"
+  content <<EOF
+[user]
+        name            = Philip (flip) Kromer
+        email           = flip@infochimps.org
+EOF
+end

@@ -7,8 +7,5 @@ default_attributes(
 )
 
 override_attributes({
-    :users => {
-      :chef_client => { :user => 'chef'}
-
-    }
+    :chef_client => { :user => 'chef'}
   })

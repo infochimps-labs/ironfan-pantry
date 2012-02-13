@@ -28,6 +28,7 @@ announce(:jenkins, :server,
 
 daemon_user('jenkins.server') do
   shell         "/bin/sh"
+  home          node[:jenkins][:server][:home_dir]
   manage_home   true
 end
 
