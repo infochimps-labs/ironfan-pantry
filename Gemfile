@@ -8,6 +8,12 @@ group :development do
   gem 'bundler',     "~> 1"
   gem 'rspec',       "~> 2.5"
   gem 'yard',        "~> 0.6"
+
+  gem 'ruby_gntp'
+
+  gem 'guard'
+  gem 'guard-process'
+  gem 'guard-chef'
 end
 
 group :support do
