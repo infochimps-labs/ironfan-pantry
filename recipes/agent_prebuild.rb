@@ -26,7 +26,7 @@ template "/etc/zabbix/zabbix_agentd.conf" do
   owner "root"
   group "root"
   mode "644"
-  notifies :restart, "service[zabbix_agentd]"
+  notifies :restart, "service[zabbix_agentd]", :delayed
   variables :server_ips => server_ips
 end
 
