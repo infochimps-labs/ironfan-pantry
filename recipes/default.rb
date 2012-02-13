@@ -6,6 +6,7 @@ end
 
 package 'git'
 
-execute "update homebrew from github" do
+execute "update homebrew" do
   command "/usr/local/bin/brew update || true"
+  action  :nothing
 end
