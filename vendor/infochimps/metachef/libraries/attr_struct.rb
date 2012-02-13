@@ -54,6 +54,10 @@ module ClusterChef
       val.is_a?(self.class) && (val.to_hash == self.to_hash)
     end
 
+    def to_s
+      [ super[0..-2], ' ', to_mash.to_s[1..-2], ">" ].join
+    end
+
     #
     # Returns a hash with each key set to its associated value.
     #

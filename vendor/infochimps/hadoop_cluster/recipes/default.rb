@@ -19,8 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "java::sun"
-include_recipe "apt"
+include_recipe "java"
 include_recipe "volumes"
 class Chef::Recipe; include HadoopCluster ; end
 

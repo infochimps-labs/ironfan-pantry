@@ -3,6 +3,7 @@ STANDARD_DIRS = Mash.new({
   :deploy_root  => { :uid => 'root', :gid => 'root', },
   :conf_dir     => { :uid => 'root', :gid => 'root', },
   :lib_dir      => { :uid => 'root', :gid => 'root', },
+  :install_dir  => { :uid => 'root', :gid => 'root', },
   :log_dir      => { :uid => :user,  :gid => :group, :mode => "0775", },
   :pid_dir      => { :uid => :user,  :gid => :group, },
   :tmp_dir      => { :uid => :user,  :gid => :group, },
@@ -30,8 +31,9 @@ define(:standard_dirs,
   :group       => nil  # group for user.          default: `scoped_hash[:group]`
   ) do
 
-  sys, subsys = params[:name].to_s.split(".", 2).map(&:to_sym)
-  component = ClusterChef::Component.new(node, sys, subsys)
+  sys, subsys = params[:name].to_s.split(".", 2)
+  raise "Component name should be a system.subsystem pair, like 'cassandra.server' -- got '#{params[:name]}'" unless sys && subsys
+  component = ClusterChef::Component.new(node, sys.to_sym, subsys.to_sym)
 
   params[:user]       ||= component.node_attr(:user, :required)
   params[:group]      ||= component.node_attr(:group) || params[:user]
@@ -41,6 +43,7 @@ define(:standard_dirs,
     hsh = (STANDARD_DIRS.include?(dir_type) ? STANDARD_DIRS[dir_type].dup : Mash.new)
     hsh[:uid] = params[:user]  if (hsh[:uid] == :user )
     hsh[:gid] = params[:group] if (hsh[:gid] == :group)
+    hsh[:gid] = node[:users]['root'][:primary_group] if (hsh[:gid] == 'root')
     [dir_paths].flatten.each do |dir_path|
       directory dir_path do
         owner       hsh[:uid]

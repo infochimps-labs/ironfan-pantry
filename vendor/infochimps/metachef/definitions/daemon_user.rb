@@ -12,6 +12,7 @@ define(:daemon_user,
   :component    => nil,                 # if present, will use node[(name)][(component)] *and then* node[(name)] to look up values.
   :user         => nil,                 # username to create.      default: `scoped_hash[:user]`
   :home         => nil,                 # home directory for daemon. default: `scoped_hash[:pid_dir]`
+  :manage_home  => false,               # manage home directory? set to false, because most daemon users should not own their own home
   :shell        => '/bin/false',        # shell to set. default: `/bin/false`
   :group        => nil,                 # group for daemon.          default: `scoped_hash[:group]`
   :comment      => nil,                 # comment for user info
@@ -28,16 +29,8 @@ define(:daemon_user,
   #
   user_val                = params[:user].to_s
   group_val               = params[:group].to_s
-  begin
-    uid_val                 = node[:users ][user_val ] && node[:users ][user_val ][:uid]
-  rescue
-    uid_val = nil
-  end
-  begin
-    gid_val                 = node[:groups][group_val] && node[:groups][group_val][:gid]
-  rescue
-    gid_val = nil
-  end
+  uid_val                 = node[:users ][user_val ] && node[:users ][user_val ][:uid] rescue nil
+  gid_val                 = node[:groups][group_val] && node[:groups][group_val][:gid] rescue nil
 
   params[:create_group]   = [:create] if (params[:create_group] == true)
   params[:create_group]   = false     if (group_val == 'nogroup')
@@ -45,7 +38,7 @@ define(:daemon_user,
   #
   # Make the group
   #
-  if params[:create_group] && (group_val != 'nogroup')
+  if params[:create_group]
     group group_val do
       gid       gid_val
       action    params[:create_group]
@@ -56,13 +49,13 @@ define(:daemon_user,
   # Make the user
   #
   user user_val do
-    uid           uid_val
-    gid           group_val
-    password      nil
-    shell         params[:shell]
-    home          params[:home]
-    supports      :manage_home => false # you must create standard dirs yourself
-    action        params[:action]
+    uid         uid_val
+    gid         group_val
+    password    nil
+    shell       params[:shell]
+    home        params[:home]
+    supports    :manage_home => params[:manage_home]
+    action      params[:action]
   end
 
 end

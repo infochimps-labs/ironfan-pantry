@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+include_recipe "apt"
+
 if node[:apt][:cloudera][:force_distro] != node[:lsb][:codename]
   Chef::Log.info "Forcing cloudera distro to '#{node[:apt][:cloudera][:force_distro]}' (your machine is '#{node[:lsb][:codename]}')"
 end

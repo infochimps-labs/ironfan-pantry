@@ -15,13 +15,16 @@ module ClusterChef
     dsl_attr(:name,      :kind_of => String, :coerce => :to_s)
     dsl_attr(:realm,     :kind_of => Symbol, :coerce => :to_sym)
     dsl_attr(:timestamp, :kind_of => String, :regex => /\d{10}/)
+    dsl_attr(:info,      :kind_of => Mash)
 
     def initialize(node, sys, subsys, hsh={})
       @node = node
+      hsh   = Mash.new(hsh.to_hash)
       super(sys, subsys)
+      merge!(hsh)
       self.name      subsys.to_s.empty? ? sys.to_sym : "#{sys}_#{subsys}".to_sym
       self.timestamp ClusterChef::NodeUtils.timestamp
-      merge!(hsh)
+      self.info      hsh
     end
 
     # A segmented name for the component
@@ -97,12 +100,12 @@ module ClusterChef
     #       end
     #       self.logs
     #     end
-    # 
+    #
     def self.has_aspect(klass)
       self.aspect_types[klass.plural_handle] = klass
       # 'logs' method
       dsl_attr(klass.plural_handle, :kind_of => Mash, :dup_default => Mash.new)
-      # 'log' method: this is just a slightly modified dsl_attr 
+      # 'log' method: this is just a slightly modified dsl_attr
       define_method(klass.handle) do |name, val=nil, &block|
         hsh = self.send(klass.plural_handle)
         #
