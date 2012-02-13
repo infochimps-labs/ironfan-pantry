@@ -37,7 +37,7 @@ class Chef
         ::Chef::RubixConnection::CONNECTIONS[ip] = connection
         Rubix.connection = ::Chef::RubixConnection::CONNECTIONS[ip] = connection
         @connected_to_zabbix                     = true
-      rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED => e
+      rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED, Timeout::Error => e
         ::Chef::Log.warn("Could not connect to Zabbix API at #{url} as #{node.zabbix.api.username}: #{e.message}")
         false
       end
