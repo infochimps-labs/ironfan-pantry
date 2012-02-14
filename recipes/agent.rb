@@ -39,8 +39,6 @@ if node.zabbix.agent.create_host
   node_host_groups << node.cluster_name
   node_host_groups << [node.cluster_name, node.facet_name].join('-')
 
-  node_templates << 'Template_Node'
-
   node.save
   zabbix_host node[:node_name] do
     server      zabbix_server_ip

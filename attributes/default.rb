@@ -51,15 +51,3 @@ default[:zabbix][:web][:timezone]       = 'Europe/London' # UTC
 default[:zabbix][:api][:path]     = 'api_jsonrpc.php'
 default[:zabbix][:api][:username] = ''
 default[:zabbix][:api][:password] = ''
-
-# SMTP
-default[:zabbix][:smtp][:from]     = 'fixme@example.com'
-default[:zabbix][:smtp][:server]   = 'smtp.example.com'
-default[:zabbix][:smtp][:port]     = '25'
-default[:zabbix][:smtp][:username] = ''
-default[:zabbix][:smtp][:password] = ''
-
-# SMS -- Twilio
-default[:zabbix][:twilio][:id]    = ''
-default[:zabbix][:twilio][:token] = ''
-default[:zabbix][:twilio][:phone] = ''

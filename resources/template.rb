@@ -1,4 +1,4 @@
-actions :import
+actions :create, :update
 
 # The IP of the Zabbix web application server.
 attribute :server, :kind_of => String, :default => 'localhost'
@@ -24,6 +24,6 @@ attribute :update_templates, :equal_to => [true, false], :default => true
 
 def initialize *args
   super
-  @action = :import
+  @action = :update
   @source ||= ::File.basename(name)
 end

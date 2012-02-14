@@ -34,8 +34,8 @@ node[:zabbix][:server][:version] = "1.9.6"
 ### USAGE:
 
 In addition to the basic recipes that set up the agent, the server, or
-the web frontend, this cookbook contains LWRPs for Zabbix ideas like
-hosts, host groups, items, & triggers.
+the web frontend, this cookbook contains LWRPs for Zabbix resources
+like hosts, host groups, items, & triggers.
 
 These can be used directly in cookbooks to create Zabbix integrations.
 Say we're setting up a database and we need to monitor the performance

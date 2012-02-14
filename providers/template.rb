@@ -1,6 +1,24 @@
 include Chef::RubixConnection
 
-action :import do
+action :create do
+  if connected_to_zabbix? && (new_resource.creates.empty? || new_resource.creates.all? { |template_name| Rubix::Template.find(:name => template_name) })
+    import_template
+  end
+end
+
+action :update do
+  import_template
+end
+                           
+# From chef/provider/cookbook_file.rb
+def file_cache_location
+  @file_cache_location ||= begin
+    cookbook = run_context.cookbook_collection[new_resource.cookbook || new_resource.cookbook_name]
+    cookbook.preferred_filename_on_disk_location(node, :files, new_resource.source)
+  end
+end
+
+def import_template
   Chef::Log.info("Attempting to import Zabbix template #{new_resource.name}...")
   ::File.open(file_cache_location) do |f|
     begin 
@@ -21,11 +39,5 @@ action :import do
     end
   end
 end
-                           
-# From chef/provider/cookbook_file.rb
-def file_cache_location
-  @file_cache_location ||= begin
-    cookbook = run_context.cookbook_collection[new_resource.cookbook || new_resource.cookbook_name]
-    cookbook.preferred_filename_on_disk_location(node, :files, new_resource.source)
-  end
-end
+
+    

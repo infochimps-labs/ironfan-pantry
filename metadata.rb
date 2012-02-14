@@ -22,8 +22,6 @@ recipe           "zabbix::database_mysql",             "Configures Zabbix MySQL 
 recipe           "zabbix::database",                   "Configures Zabbix database."
 recipe           "zabbix::server",                     "Installs and launches Zabbix server."
 recipe           "zabbix::server_source",              "Downloads, builds, configures, & launches Zabbix server from source."
-recipe           "zabbix::server_sends_texts",         "Configures Zabbix server to be able to send texts using Twilio."
-recipe           "zabbix::server_sends_email",         "Configures Zabbix server to be able to send email via a remote SMTP server."
 recipe           "zabbix::web",                        "Configures PHP-driven, reverse-proxied Zabbix web frontend."
 recipe           "zabbix::web_apache",                 "Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache."
 recipe           "zabbix::web_nginx",                  "Configures PHP-driven, reverse-proxied Zabbix web frontend using nginx."
@@ -203,46 +201,6 @@ attribute "zabbix/api/password",
   :display_name          => "",
   :description           => "The Zabbix user's password for talking to Zabbix's API.",
   :default               => ""
-
-attribute "zabbix/smtp/from",
-  :display_name          => "",
-  :description           => "The From: address used by Zabbix to send email.",
-  :default               => "fixme@example.com"
-
-attribute "zabbix/smtp/server",
-  :display_name          => "",
-  :description           => "The SMTP server used by Zabbix to send email.",
-  :default               => "smtp.example.com"
-
-attribute "zabbix/smtp/port",
-  :display_name          => "",
-  :description           => "The SMTP server's port used by Zabbix to send email.",
-  :default               => "25"
-
-attribute "zabbix/smtp/username",
-  :display_name          => "",
-  :description           => "The username used by Zabbix to send email.",
-  :default               => "zabbix"
-
-attribute "zabbix/smtp/password",
-  :display_name          => "",
-  :description           => "The password used by Zabbix to send email.",
-  :default               => "fixme"
-
-attribute "zabbix/twilio/id",
-  :display_name          => "",
-  :description           => "The Twilio ID used by Zabbix to send SMS.",
-  :default               => "fixme"
-
-attribute "zabbix/twilio/token",
-  :display_name          => "",
-  :description           => "The Twilio token used by Zabbix to send SMS.",
-  :default               => "fixme"
-
-attribute "zabbix/twilio/phone",
-  :display_name          => "",
-  :description           => "The Twilio phone number used by Zabbix to send SMS.",
-  :default               => "fixme"
 
 attribute "users/zabbix/uid",
   :display_name          => "",
