@@ -29,7 +29,7 @@ ClusterChef.cluster 'sandbox' do
   role                  :org_users
 
   facet :simple do
-    instances           1
+    instances           2
     role                :hadoop_s3_keys
     recipe 'route53::default'
     recipe 'route53::ec2'

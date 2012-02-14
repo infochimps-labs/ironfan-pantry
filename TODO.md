@@ -67,6 +67,22 @@ Yikes! It's long. Luckily we are badasses. Comments and assitance welcome.
 * full roll out of log_integration, monitoring
 * Rakefile becomes skinnier
 
+* a helper and way to collect package names that vary across platforms
+  - `package_for_platform` helper selects right name, delegates all else to `package`.
+  - use attributes/package_mapping.rb -- consistent and out of the way
+  - may want to anticipate the platform_family functionality (but won't be here til chef 11)
+    
+        # libxml is the default 
+        package_mapping('foo', 
+            /mac_os_x/ => "a', [:freebsd, :bsdlite] => "b", [:windows, :mingw32] => "c")
+            
+        # or you can use an explicit default 
+        package_mapping('bar', :default => 'Q',
+            /mac_os_x/ => "a', [:freebsd, :bsdlite] => "b", [:windows, :mingw32] => "c")            
+
+
+ 
+
 ## Cookbook checklist:
 (Nathan)
 
@@ -129,3 +145,7 @@ Yikes! It's long. Luckily we are badasses. Comments and assitance welcome.
 * build out cookbook munger, make it less spike-y
 * spot pricing
 * rackspace compatibility
+
+* https://github.com/imeyer/chef-handler-graphite/wiki
+* https://github.com/jtimberman/chef-handler-updated-resources/blob/master/lib/chef/handler/updated_resources.rb
+* http://wiki.opscode.com/display/chef/Distributing+Chef+Handlers
