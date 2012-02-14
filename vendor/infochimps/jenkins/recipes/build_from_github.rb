@@ -19,10 +19,6 @@
 # limitations under the License.
 #
 
-package 'git'
+include_recipe 'git'
 
-jenkins_plugins = %w[ git github github-api ]
-unless jenkins_plugins.all?{|jplg| node[:jenkins][:server][:plugins].include?(jplg) }
-  node[:jenkins][:server][:plugins] = (node[:jenkins][:server][:plugins] + jenkins_plugins).uniq
-  node.save
-end
+JenkinsHelpers.jenkins_plugins('git', 'github', 'github-api')

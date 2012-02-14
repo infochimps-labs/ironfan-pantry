@@ -10,6 +10,7 @@ depends          "apt"
 depends          "java"
 depends          "metachef"
 depends          "volumes"
+depends          "git"
 
 depends          "runit"
 depends          "iptables"

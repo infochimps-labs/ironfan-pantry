@@ -21,8 +21,4 @@
 
 include_recipe 'jenkins::build_from_github'
 
-jenkins_plugins = %w[ github-oauth ]
-unless jenkins_plugins.all?{|jplg| node[:jenkins][:server][:plugins].include?(jplg) }
-  node[:jenkins][:server][:plugins] = (node[:jenkins][:server][:plugins] + jenkins_plugins).uniq
-  node.save
-end
+JenkinsHelpers.jenkins_plugins('github-oauth')
