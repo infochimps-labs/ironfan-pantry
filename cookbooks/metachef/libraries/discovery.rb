@@ -109,6 +109,7 @@ module ClusterChef
     #
     def discover_all_nodes(component_name)
       all_servers = search(:node, "announces:#{component_name}" ) rescue []
+      all_servers.reject!{|server| %w[stop].include?(server.node[:state]) }  # remove nodes which are stopped...
       all_servers.reject!{|server| server.name == node.name}  # remove this node...
       all_servers << node if node[:announces][component_name] # & use a fresh version
       Chef::Log.warn("No node announced for '#{component_name}'") if all_servers.empty?
