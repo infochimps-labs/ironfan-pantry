@@ -28,7 +28,7 @@ attribute "pig/home_dir",
 
 attribute "pig/release_url",
   :display_name          => "URL of pig release tarball",
-  :description           => "URL of pig release tarball",
+  :description           => "You can use template dingbats like `:apache_mirror:`, `:version:`, etc -- see the install_from cookbook for details.",
   :default               => ":apache_mirror:/pig/pig-:version:/pig-:version:.tar.gz"
 
 attribute "pig/combine_splits",

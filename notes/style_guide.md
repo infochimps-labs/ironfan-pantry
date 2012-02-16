@@ -1,4 +1,6 @@
-# Checklist for cookbooks, clusters and roles
+# Ironfan + Chef Style Guide
+
+**NOTE**: NEEDS UPDATE. will be current by time of launch but the below may differ from what you see in practice.
 
 ## Cookbooks
 
