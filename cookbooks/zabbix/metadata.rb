@@ -135,7 +135,7 @@ attribute "zabbix/database/port",
 attribute "zabbix/database/root_user",
   :display_name          => "",
   :description           => "Root user for the Zabbix database server.",
-  :default               => ""
+  :default               => "root"
 
 attribute "zabbix/database/root_password",
   :display_name          => "",
@@ -195,12 +195,17 @@ attribute "zabbix/api/path",
 attribute "zabbix/api/username",
   :display_name          => "",
   :description           => "The Zabbix user for talking to Zabbix's API.",
-  :default               => ""
+  :default               => "chef"
 
 attribute "zabbix/api/password",
   :display_name          => "",
   :description           => "The Zabbix user's password for talking to Zabbix's API.",
-  :default               => ""
+  :default               => "fixme"
+
+attribute "zabbix/api/user_group",
+  :display_name          => "",
+  :description           => "The Zabbix user's group (with API access) for talking to Zabbix's API.",
+  :default               => "chefs"
 
 attribute "users/zabbix/uid",
   :display_name          => "",
