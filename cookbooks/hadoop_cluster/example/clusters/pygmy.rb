@@ -6,10 +6,10 @@
 #
 #
 # You will need the role definitions from
-# [cluster_chef-homebase](https://github.com/infochimps-labs/cluster_chef-homebase)
+# [ironfan-homebase](https://github.com/infochimps-labs/ironfan-homebase)
 # to use this cluster
 #
-ClusterChef.cluster 'pygmy' do
+Ironfan.cluster 'pygmy' do
   cloud(:ec2) do
     defaults
     availability_zones ['us-east-1d']
@@ -18,7 +18,7 @@ ClusterChef.cluster 'pygmy' do
     flavor              'm1.large'
     backing             'ebs'
     image_name          'natty'
-    bootstrap_distro    'ubuntu10.04-cluster_chef'
+    bootstrap_distro    'ubuntu10.04-ironfan'
     chef_client_script  'client.rb'
     mount_ephemerals(:tags => { :hadoop_scratch => true })
   end

@@ -1,6 +1,6 @@
 #
-# Cookbook Name::       dashpot
-# Description::         Lightweight thttpd server to render dashpot dashboards
+# Cookbook Name::       minidash
+# Description::         Lightweight thttpd server to render minidash dashboards
 # Recipe::              server
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe  'dashpot'
+include_recipe  'minidash'
 include_recipe  'runit'
 
 #
@@ -29,13 +29,13 @@ include_recipe  'runit'
 package         'thttpd'
 package         'thttpd-util'
 
-template "#{node[:dashpot][:conf_dir]}/dashboard-thttpd.conf" do
+template "#{node[:minidash][:conf_dir]}/dashboard-thttpd.conf" do
   owner         "root"
   mode          "0644"
   source        "dashboard-thttpd.conf.erb"
 end
 
-runit_service "dashpot_dashboard" do
-  run_state     node[:dashpot][:run_state]
-  options       node[:dashpot]
+runit_service "minidash_dashboard" do
+  run_state     node[:minidash][:run_state]
+  options       node[:minidash]
 end

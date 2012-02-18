@@ -1404,15 +1404,15 @@
     "java",
     "zsh",
     "ntp",
-    "cluster_chef::virtualbox_metadata",
+    "ironfan::virtualbox_metadata",
     "git",
     "big_package::default",
     "nfs",
     "nfs::client",
     "xfs",
     "mountable_volumes::mount",
-    "cluster_chef",
-    "cluster_chef::dedicated_server_tuning",
+    "ironfan",
+    "ironfan::dedicated_server_tuning",
     "thrift",
     "flume::master",
     "flume::node",
@@ -1421,12 +1421,12 @@
     "hadoop_cluster::add_cloudera_repo",
     "hadoop_cluster::datanode",
     "hadoop_cluster::jobtracker",
-    "cluster_chef::dashboard",
+    "ironfan::dashboard",
     "hadoop_cluster::namenode",
     "hadoop_cluster::secondarynn",
     "hadoop_cluster::tasktracker",
     "hadoop_cluster::cluster_conf",
-    "hadoop_cluster::simple_dashboard",
+    "hadoop_cluster::minidash",
     "ganglia::server",
     "ganglia::monitor",
     "redis",
@@ -1444,7 +1444,7 @@
     "rstats",
     "nodejs",
     "jruby",
-    "cluster_chef::pickle_node"
+    "ironfan::pickle_node"
   ],
   "pkg_sets": {
     "install": [
@@ -1883,15 +1883,15 @@
     "el_ridiculoso:hbase.regionserver": {
     }
   },
-  "cluster_chef": {
-    "conf_dir": "/etc/cluster_chef",
-    "log_dir": "/var/log/cluster_chef",
-    "home_dir": "/etc/cluster_chef",
+  "ironfan": {
+    "conf_dir": "/etc/ironfan",
+    "log_dir": "/var/log/ironfan",
+    "home_dir": "/etc/ironfan",
     "user": "root",
     "thttpd": {
       "port": 6789
     },
-    "dashboard": {
+    "minidash": {
       "links": {
         "hadoop.namenode": "http://33.33.33.12:50070",
         "hadoop.secondarynn": "http://33.33.33.12:50090",
@@ -2135,14 +2135,14 @@
     "role[chef_client]",
     "role[ssh]",
     "recipe[motd]",
-    "recipe[cluster_chef::virtualbox_metadata]",
-    "recipe[cluster_chef::pickle_node]",
+    "recipe[ironfan::virtualbox_metadata]",
+    "recipe[ironfan::pickle_node]",
     "recipe[git]",
     "recipe[big_package::default]",
     "role[nfs_client]",
     "role[mountable_volumes]",
-    "recipe[cluster_chef]",
-    "recipe[cluster_chef::dedicated_server_tuning]",
+    "recipe[ironfan]",
+    "recipe[ironfan::dedicated_server_tuning]",
     "role[hadoop_s3_keys]",
     "recipe[thrift]",
     "recipe[flume::master]",
@@ -2155,7 +2155,7 @@
     "role[hadoop_secondarynn]",
     "role[hadoop_tasktracker]",
     "recipe[hadoop_cluster::cluster_conf]",
-    "recipe[hadoop_cluster::simple_dashboard]",
+    "recipe[hadoop_cluster::minidash]",
     "recipe[ganglia::server]",
     "recipe[ganglia::monitor]",
     "role[redis_server]",
@@ -2166,6 +2166,6 @@
     "recipe[rstats]",
     "recipe[nodejs]",
     "recipe[jruby]",
-    "recipe[cluster_chef::dashboard]"
+    "recipe[ironfan::dashboard]"
   ]
 }

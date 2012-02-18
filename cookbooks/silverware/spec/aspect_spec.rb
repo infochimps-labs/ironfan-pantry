@@ -2,13 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require SILVERWARE_DIR("libraries/silverware")
 require SILVERWARE_DIR("libraries/aspects")
 
-describe ClusterChef::Aspect do
+describe Ironfan::Aspect do
   include_context 'dummy_chef'
 
-  let(:foo_aspect){ Class.new(ClusterChef::Aspect){ def self.handle() :foo end } }
+  let(:foo_aspect){ Class.new(Ironfan::Aspect){ def self.handle() :foo end } }
   after(:each) do
-    ClusterChef::Component.keys.delete(:foos)
-    ClusterChef::Component.aspect_types.delete(:foos)
+    Ironfan::Component.keys.delete(:foos)
+    Ironfan::Component.aspect_types.delete(:foos)
   end
 
   it 'knows its handle' do
@@ -17,9 +17,9 @@ describe ClusterChef::Aspect do
 
   context 'register!' do
     it 'shows up in the Component.aspect_types' do
-      ClusterChef::Component.aspect_types.should_not include(foo_aspect)
+      Ironfan::Component.aspect_types.should_not include(foo_aspect)
       foo_aspect.register!
-      ClusterChef::Component.aspect_types[:foos].should == foo_aspect
+      Ironfan::Component.aspect_types[:foos].should == foo_aspect
     end
 
     it 'means it is called when a Component#harvest_all aspects' do

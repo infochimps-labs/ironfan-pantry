@@ -18,15 +18,15 @@
       "directory[/data/db/resque/swap]": 332,
       "directory[/data/db/resque/tmp]": 330,
       "directory[/data/db/resque]": 328,
-      "directory[/etc/cluster_chef/dashboard]": 201,
-      "directory[/etc/cluster_chef]": 200,
+      "directory[/etc/ironfan/dashboard]": 201,
+      "directory[/etc/ironfan]": 200,
       "directory[/etc/ganglia]": 284,
       "directory[/etc/hadoop/conf]": 155,
       "directory[/etc/redis]": 305,
       "directory[/etc/resque]": 333,
-      "directory[/etc/sv/cluster_chef_dashboard/log/main]": 206,
-      "directory[/etc/sv/cluster_chef_dashboard/log]": 205,
-      "directory[/etc/sv/cluster_chef_dashboard]": 204,
+      "directory[/etc/sv/ironfan_dashboard/log/main]": 206,
+      "directory[/etc/sv/ironfan_dashboard/log]": 205,
+      "directory[/etc/sv/ironfan_dashboard]": 204,
       "directory[/etc/sv/ganglia_monitor/log/main]": 290,
       "directory[/etc/sv/ganglia_monitor/log]": 289,
       "directory[/etc/sv/ganglia_monitor]": 288,
@@ -77,7 +77,7 @@
       "directory[/var/lib/ganglia/rrds]": 286,
       "directory[/var/lib/ganglia]": 282,
       "directory[/var/lib/redis]": 307,
-      "directory[/var/log/cluster_chef]": 199,
+      "directory[/var/log/ironfan]": 199,
       "directory[/var/log/ganglia]": 283,
       "directory[/var/log/hadoop-0.20]": 170,
       "directory[/var/log/hadoop]": 168,
@@ -144,7 +144,7 @@
       "group[zookeeper]": 132,
 
       "link[/etc/hadoop/conf/hbase-site.xml]": 357,
-      "link[/etc/init.d/cluster_chef_dashboard]": 209,
+      "link[/etc/init.d/ironfan_dashboard]": 209,
       "link[/etc/init.d/ganglia_monitor]": 293,
       "link[/etc/init.d/ganglia_server]": 274,
       "link[/etc/init.d/hadoop_datanode]": 180,
@@ -156,7 +156,7 @@
       "link[/etc/init.d/resque_dashboard]": 340,
       "link[/etc/init.d/zookeeper]": 140,
       "link[/etc/motd]": 5,
-      "link[/etc/service/cluster_chef_dashboard]": 210,
+      "link[/etc/service/ironfan_dashboard]": 210,
       "link[/etc/service/ganglia_monitor]": 294,
       "link[/etc/service/ganglia_server]": 275,
       "link[/etc/service/hadoop_datanode]": 181,
@@ -256,7 +256,7 @@
 
       "remote_file[/var/chef/cache/distribute_setup.py]": 91,
 
-      "ruby_block[supervise_cluster_chef_dashboard_sleep]": 211,
+      "ruby_block[supervise_ironfan_dashboard_sleep]": 211,
       "ruby_block[supervise_ganglia_monitor_sleep]": 295,
       "ruby_block[supervise_ganglia_server_sleep]": 276,
       "ruby_block[supervise_hadoop_datanode_sleep]": 182,
@@ -268,7 +268,7 @@
       "ruby_block[supervise_resque_dashboard_sleep]": 342,
       "ruby_block[supervise_zookeeper_sleep]": 142,
 
-      "service[cluster_chef_dashboard]": 213,
+      "service[ironfan_dashboard]": 213,
       "service[flume-master]": 121,
       "service[flume-node]": 123,
       "service[ganglia_monitor]": 297,
@@ -287,7 +287,7 @@
 
       "template[/etc/R/Rprofile.site]": 384,
       "template[/etc/R/repositories]": 383,
-      "template[/etc/cluster_chef/dashboard-thttpd.conf]": 203,
+      "template[/etc/ironfan/dashboard-thttpd.conf]": 203,
       "template[/etc/default/hadoop-0.20]": 255,
       "template[/etc/ganglia/gmetad.conf]": 268,
       "template[/etc/ganglia/gmond.conf]": 287,
@@ -310,8 +310,8 @@
       "template[/etc/security/limits.d/hbase.conf]": 86,
       "template[/etc/security/limits.d/hdfs.conf]": 85,
       "template[/etc/security/limits.d/mapred.conf]": 87,
-      "template[/etc/sv/cluster_chef_dashboard/log/run]": 208,
-      "template[/etc/sv/cluster_chef_dashboard/run]": 207,
+      "template[/etc/sv/ironfan_dashboard/log/run]": 208,
+      "template[/etc/sv/ironfan_dashboard/run]": 207,
       "template[/etc/sv/ganglia_monitor/log/run]": 292,
       "template[/etc/sv/ganglia_monitor/run]": 291,
       "template[/etc/sv/ganglia_server/log/run]": 273,
@@ -349,7 +349,7 @@
       "user[redis]": 304,
       "user[resque]": 327,
       "user[zookeeper]": 133,
-      "file[/etc/cluster_chef/chef_node-el_ridiculoso-aqui-0.json]": 392
+      "file[/etc/ironfan/chef_node-el_ridiculoso-aqui-0.json]": 392
     },
     "@insert_after_idx": null,
     "@resources": [
@@ -3928,7 +3928,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/etc/cluster_chef",
+          "name": "/etc/ironfan",
           "noop": null,
           "before": null,
           "params": {
@@ -3958,9 +3958,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/etc/cluster_chef",
+          "path": "/etc/ironfan",
           "recursive": false,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "default",
           "enclosing_provider": null,
           "owner": "root",
@@ -3971,7 +3971,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/etc/cluster_chef",
+          "name": "/etc/ironfan",
           "noop": null,
           "before": null,
           "params": {
@@ -4001,9 +4001,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/etc/cluster_chef",
+          "path": "/etc/ironfan",
           "recursive": false,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "default",
           "enclosing_provider": null,
           "owner": "root",
@@ -4032,10 +4032,10 @@
           "ignore_failure": false,
           "retries": 0,
           "retry_delay": 2,
-          "not_if": "#<Proc:0x000000045fcc70@/var/chef/cache/cookbooks/cluster_chef/recipes/dedicated_server_tuning.rb:25>",
+          "not_if": "#<Proc:0x000000045fcc70@/var/chef/cache/cookbooks/ironfan/recipes/dedicated_server_tuning.rb:25>",
           "not_if_args": {
           },
-          "only_if": "#<Proc:0x000000045fccc0@/var/chef/cache/cookbooks/cluster_chef/recipes/dedicated_server_tuning.rb:24>",
+          "only_if": "#<Proc:0x000000045fccc0@/var/chef/cache/cookbooks/ironfan/recipes/dedicated_server_tuning.rb:24>",
           "only_if_args": {
           },
           "immediate_notifications": [],
@@ -4055,7 +4055,7 @@
           "code": "echo 1 > /proc/sys/vm/overcommit_memory",
           "interpreter": "bash",
           "flags": null,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dedicated_server_tuning",
           "enclosing_provider": null
         }
@@ -4081,10 +4081,10 @@
           "ignore_failure": false,
           "retries": 0,
           "retry_delay": 2,
-          "not_if": "#<Proc:0x000000045fb898@/var/chef/cache/cookbooks/cluster_chef/recipes/dedicated_server_tuning.rb:25>",
+          "not_if": "#<Proc:0x000000045fb898@/var/chef/cache/cookbooks/ironfan/recipes/dedicated_server_tuning.rb:25>",
           "not_if_args": {
           },
-          "only_if": "#<Proc:0x000000045fb8e8@/var/chef/cache/cookbooks/cluster_chef/recipes/dedicated_server_tuning.rb:24>",
+          "only_if": "#<Proc:0x000000045fb8e8@/var/chef/cache/cookbooks/ironfan/recipes/dedicated_server_tuning.rb:24>",
           "only_if_args": {
           },
           "immediate_notifications": [],
@@ -4104,7 +4104,7 @@
           "code": "echo 100 > /proc/sys/vm/overcommit_ratio",
           "interpreter": "bash",
           "flags": null,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dedicated_server_tuning",
           "enclosing_provider": null
         }
@@ -4130,10 +4130,10 @@
           "ignore_failure": false,
           "retries": 0,
           "retry_delay": 2,
-          "not_if": "#<Proc:0x0000000460aa00@/var/chef/cache/cookbooks/cluster_chef/recipes/dedicated_server_tuning.rb:25>",
+          "not_if": "#<Proc:0x0000000460aa00@/var/chef/cache/cookbooks/ironfan/recipes/dedicated_server_tuning.rb:25>",
           "not_if_args": {
           },
-          "only_if": "#<Proc:0x0000000460aa50@/var/chef/cache/cookbooks/cluster_chef/recipes/dedicated_server_tuning.rb:24>",
+          "only_if": "#<Proc:0x0000000460aa50@/var/chef/cache/cookbooks/ironfan/recipes/dedicated_server_tuning.rb:24>",
           "only_if_args": {
           },
           "immediate_notifications": [],
@@ -4153,7 +4153,7 @@
           "code": "echo 75 > /proc/sys/vm/swappiness",
           "interpreter": "bash",
           "flags": null,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dedicated_server_tuning",
           "enclosing_provider": null
         }
@@ -4198,7 +4198,7 @@
           "local": false,
           "variables": {
           },
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dedicated_server_tuning",
           "enclosing_provider": null,
           "owner": "root",
@@ -4246,7 +4246,7 @@
           "local": false,
           "variables": {
           },
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dedicated_server_tuning",
           "enclosing_provider": null,
           "owner": "root",
@@ -4294,7 +4294,7 @@
           "local": false,
           "variables": {
           },
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dedicated_server_tuning",
           "enclosing_provider": null,
           "owner": "root",
@@ -9643,7 +9643,7 @@
           "candidate_version": null,
           "response_file": null,
           "source": null,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null
         }
@@ -9686,7 +9686,7 @@
           "candidate_version": null,
           "response_file": null,
           "source": null,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null
         }
@@ -9694,7 +9694,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/etc/cluster_chef",
+          "name": "/etc/ironfan",
           "noop": null,
           "before": null,
           "params": {
@@ -9708,7 +9708,7 @@
             "home_dir": null,
             "user": "root",
             "group": "root",
-            "name": "cluster_chef"
+            "name": "ironfan"
           },
           "provider": null,
           "allowed_actions": [
@@ -9735,9 +9735,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/etc/cluster_chef",
+          "path": "/etc/ironfan",
           "recursive": true,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -9748,7 +9748,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/var/log/cluster_chef",
+          "name": "/var/log/ironfan",
           "noop": null,
           "before": null,
           "params": {
@@ -9762,7 +9762,7 @@
             "home_dir": null,
             "user": "root",
             "group": "root",
-            "name": "cluster_chef"
+            "name": "ironfan"
           },
           "provider": null,
           "allowed_actions": [
@@ -9789,9 +9789,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/var/log/cluster_chef",
+          "path": "/var/log/ironfan",
           "recursive": true,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -9802,7 +9802,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/etc/cluster_chef",
+          "name": "/etc/ironfan",
           "noop": null,
           "before": null,
           "params": {
@@ -9816,7 +9816,7 @@
             "home_dir": null,
             "user": "root",
             "group": "root",
-            "name": "cluster_chef"
+            "name": "ironfan"
           },
           "provider": null,
           "allowed_actions": [
@@ -9843,9 +9843,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/etc/cluster_chef",
+          "path": "/etc/ironfan",
           "recursive": true,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -9856,7 +9856,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/etc/cluster_chef/dashboard",
+          "name": "/etc/ironfan/dashboard",
           "noop": null,
           "before": null,
           "params": {
@@ -9884,9 +9884,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/etc/cluster_chef/dashboard",
+          "path": "/etc/ironfan/dashboard",
           "recursive": false,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "mode": "0755"
@@ -9895,7 +9895,7 @@
       {
         "json_class": "Chef::Resource::Template",
         "instance_vars": {
-          "name": "/etc/cluster_chef/dashboard-thttpd.conf",
+          "name": "/etc/ironfan/dashboard-thttpd.conf",
           "noop": null,
           "before": null,
           "params": {
@@ -9925,14 +9925,14 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "template",
-          "path": "/etc/cluster_chef/dashboard-thttpd.conf",
+          "path": "/etc/ironfan/dashboard-thttpd.conf",
           "backup": 5,
           "source": "dashboard-thttpd.conf.erb",
           "cookbook": null,
           "local": false,
           "variables": {
           },
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -9943,7 +9943,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/etc/sv/cluster_chef_dashboard",
+          "name": "/etc/sv/ironfan_dashboard",
           "noop": null,
           "before": null,
           "params": {
@@ -9957,7 +9957,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -9965,7 +9965,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": null,
           "allowed_actions": [
@@ -9992,9 +9992,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/etc/sv/cluster_chef_dashboard",
+          "path": "/etc/sv/ironfan_dashboard",
           "recursive": false,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -10005,7 +10005,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/etc/sv/cluster_chef_dashboard/log",
+          "name": "/etc/sv/ironfan_dashboard/log",
           "noop": null,
           "before": null,
           "params": {
@@ -10019,7 +10019,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10027,7 +10027,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": null,
           "allowed_actions": [
@@ -10054,9 +10054,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/etc/sv/cluster_chef_dashboard/log",
+          "path": "/etc/sv/ironfan_dashboard/log",
           "recursive": false,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -10067,7 +10067,7 @@
       {
         "json_class": "Chef::Resource::Directory",
         "instance_vars": {
-          "name": "/etc/sv/cluster_chef_dashboard/log/main",
+          "name": "/etc/sv/ironfan_dashboard/log/main",
           "noop": null,
           "before": null,
           "params": {
@@ -10081,7 +10081,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10089,7 +10089,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": null,
           "allowed_actions": [
@@ -10116,9 +10116,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "directory",
-          "path": "/etc/sv/cluster_chef_dashboard/log/main",
+          "path": "/etc/sv/ironfan_dashboard/log/main",
           "recursive": false,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -10129,7 +10129,7 @@
       {
         "json_class": "Chef::Resource::Template",
         "instance_vars": {
-          "name": "/etc/sv/cluster_chef_dashboard/run",
+          "name": "/etc/sv/ironfan_dashboard/run",
           "noop": null,
           "before": null,
           "params": {
@@ -10143,7 +10143,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10151,7 +10151,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": null,
           "allowed_actions": [
@@ -10178,14 +10178,14 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "template",
-          "path": "/etc/sv/cluster_chef_dashboard/run",
+          "path": "/etc/sv/ironfan_dashboard/run",
           "backup": 5,
-          "source": "sv-cluster_chef_dashboard-run.erb",
+          "source": "sv-ironfan_dashboard-run.erb",
           "cookbook": null,
           "local": false,
           "variables": {
           },
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -10197,7 +10197,7 @@
       {
         "json_class": "Chef::Resource::Template",
         "instance_vars": {
-          "name": "/etc/sv/cluster_chef_dashboard/log/run",
+          "name": "/etc/sv/ironfan_dashboard/log/run",
           "noop": null,
           "before": null,
           "params": {
@@ -10211,7 +10211,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10219,7 +10219,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": null,
           "allowed_actions": [
@@ -10246,14 +10246,14 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "template",
-          "path": "/etc/sv/cluster_chef_dashboard/log/run",
+          "path": "/etc/sv/ironfan_dashboard/log/run",
           "backup": 5,
-          "source": "sv-cluster_chef_dashboard-log-run.erb",
+          "source": "sv-ironfan_dashboard-log-run.erb",
           "cookbook": null,
           "local": false,
           "variables": {
           },
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "owner": "root",
@@ -10265,7 +10265,7 @@
       {
         "json_class": "Chef::Resource::Link",
         "instance_vars": {
-          "name": "/etc/init.d/cluster_chef_dashboard",
+          "name": "/etc/init.d/ironfan_dashboard",
           "noop": null,
           "before": null,
           "params": {
@@ -10279,7 +10279,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10287,7 +10287,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": null,
           "allowed_actions": [
@@ -10314,8 +10314,8 @@
           "resource_name": "link",
           "to": null,
           "link_type": "symbolic",
-          "target_file": "/etc/init.d/cluster_chef_dashboard",
-          "cookbook_name": "cluster_chef",
+          "target_file": "/etc/init.d/ironfan_dashboard",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "source_file": "/usr/bin/sv"
@@ -10324,7 +10324,7 @@
       {
         "json_class": "Chef::Resource::Link",
         "instance_vars": {
-          "name": "/etc/service/cluster_chef_dashboard",
+          "name": "/etc/service/ironfan_dashboard",
           "noop": null,
           "before": null,
           "params": {
@@ -10338,7 +10338,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10346,7 +10346,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": null,
           "allowed_actions": [
@@ -10373,17 +10373,17 @@
           "resource_name": "link",
           "to": null,
           "link_type": "symbolic",
-          "target_file": "/etc/service/cluster_chef_dashboard",
-          "cookbook_name": "cluster_chef",
+          "target_file": "/etc/service/ironfan_dashboard",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
-          "source_file": "/etc/sv/cluster_chef_dashboard"
+          "source_file": "/etc/sv/ironfan_dashboard"
         }
       },
       {
         "json_class": "Chef::Resource::RubyBlock",
         "instance_vars": {
-          "name": "supervise_cluster_chef_dashboard_sleep",
+          "name": "supervise_ironfan_dashboard_sleep",
           "noop": null,
           "before": null,
           "params": {
@@ -10397,7 +10397,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10405,7 +10405,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": null,
           "allowed_actions": [
@@ -10429,7 +10429,7 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "ruby_block",
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null,
           "block": "#<Proc:0x00000002c07540@/var/chef/cache/cookbooks/runit/definitions/runit_service.rb:135>"
@@ -10438,7 +10438,7 @@
       {
         "json_class": "Chef::Resource::Service",
         "instance_vars": {
-          "name": "cluster_chef_dashboard",
+          "name": "ironfan_dashboard",
           "noop": null,
           "before": null,
           "params": {
@@ -10452,7 +10452,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10460,7 +10460,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": "Chef::Provider::Service::Init",
           "allowed_actions": [
@@ -10493,18 +10493,18 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "service",
-          "service_name": "cluster_chef_dashboard",
+          "service_name": "ironfan_dashboard",
           "enabled": null,
           "running": null,
-          "pattern": "cluster_chef_dashboard",
-          "start_command": "/usr/bin/chpst -u root /usr/bin/sv start /etc/service/cluster_chef_dashboard",
-          "stop_command": "/usr/bin/chpst -u root /usr/bin/sv stop /etc/service/cluster_chef_dashboard",
-          "status_command": "/usr/bin/chpst -u root service cluster_chef_dashboard status",
-          "restart_command": "/usr/bin/chpst -u root /usr/bin/sv restart /etc/service/cluster_chef_dashboard",
+          "pattern": "ironfan_dashboard",
+          "start_command": "/usr/bin/chpst -u root /usr/bin/sv start /etc/service/ironfan_dashboard",
+          "stop_command": "/usr/bin/chpst -u root /usr/bin/sv stop /etc/service/ironfan_dashboard",
+          "status_command": "/usr/bin/chpst -u root service ironfan_dashboard status",
+          "restart_command": "/usr/bin/chpst -u root /usr/bin/sv restart /etc/service/ironfan_dashboard",
           "reload_command": null,
           "priority": null,
           "startup_type": "automatic",
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null
         }
@@ -10512,7 +10512,7 @@
       {
         "json_class": "Chef::Resource::Service",
         "instance_vars": {
-          "name": "cluster_chef_dashboard",
+          "name": "ironfan_dashboard",
           "noop": null,
           "before": null,
           "params": {
@@ -10526,7 +10526,7 @@
             "active_directory": "/etc/service",
             "owner": "root",
             "group": "root",
-            "template_name": "cluster_chef_dashboard",
+            "template_name": "ironfan_dashboard",
             "start_command": "start",
             "stop_command": "stop",
             "restart_command": "restart",
@@ -10534,7 +10534,7 @@
             "env": {
             },
             "run_state": "start",
-            "name": "cluster_chef_dashboard"
+            "name": "ironfan_dashboard"
           },
           "provider": "Chef::Provider::Service::Init",
           "allowed_actions": [
@@ -10565,18 +10565,18 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "service",
-          "service_name": "cluster_chef_dashboard",
+          "service_name": "ironfan_dashboard",
           "enabled": null,
           "running": null,
-          "pattern": "cluster_chef_dashboard",
-          "start_command": "/usr/bin/chpst -u root /usr/bin/sv start /etc/service/cluster_chef_dashboard",
-          "stop_command": "/usr/bin/chpst -u root /usr/bin/sv stop /etc/service/cluster_chef_dashboard",
-          "status_command": "/usr/bin/chpst -u root service cluster_chef_dashboard status",
-          "restart_command": "/usr/bin/chpst -u root /usr/bin/sv restart /etc/service/cluster_chef_dashboard",
+          "pattern": "ironfan_dashboard",
+          "start_command": "/usr/bin/chpst -u root /usr/bin/sv start /etc/service/ironfan_dashboard",
+          "stop_command": "/usr/bin/chpst -u root /usr/bin/sv stop /etc/service/ironfan_dashboard",
+          "status_command": "/usr/bin/chpst -u root service ironfan_dashboard status",
+          "restart_command": "/usr/bin/chpst -u root /usr/bin/sv restart /etc/service/ironfan_dashboard",
           "reload_command": null,
           "priority": null,
           "startup_type": "automatic",
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "dashboard",
           "enclosing_provider": null
         }
@@ -13098,7 +13098,7 @@
           "not_if": "grep -q -e '^export HADOOP_LOGFILE.*HADOOP_NODENAME' '/usr/lib/hadoop/bin/hadoop-daemon.sh'",
           "not_if_args": {
           },
-          "only_if": "#<Proc:0x00000004824868@/var/chef/cache/cookbooks/cluster_chef/libraries/munge_one_line.rb:16>",
+          "only_if": "#<Proc:0x00000004824868@/var/chef/cache/cookbooks/ironfan/libraries/munge_one_line.rb:16>",
           "only_if_args": {
           },
           "immediate_notifications": [],
@@ -13144,7 +13144,7 @@
           "not_if": "grep -q -e '^export _HADOOP_DAEMON_OUT.*HADOOP_NODENAME' '/usr/lib/hadoop/bin/hadoop-daemon.sh'",
           "not_if_args": {
           },
-          "only_if": "#<Proc:0x00000004823198@/var/chef/cache/cookbooks/cluster_chef/libraries/munge_one_line.rb:16>",
+          "only_if": "#<Proc:0x00000004823198@/var/chef/cache/cookbooks/ironfan/libraries/munge_one_line.rb:16>",
           "only_if_args": {
           },
           "immediate_notifications": [],
@@ -20090,7 +20090,7 @@
       {
         "json_class": "Chef::Resource::File",
         "instance_vars": {
-          "name": "/etc/cluster_chef/chef_node-el_ridiculoso-aqui-0.json",
+          "name": "/etc/ironfan/chef_node-el_ridiculoso-aqui-0.json",
           "noop": null,
           "before": null,
           "params": {
@@ -20122,9 +20122,9 @@
           "immediate_notifications": [],
           "delayed_notifications": [],
           "resource_name": "file",
-          "path": "/etc/cluster_chef/chef_node-el_ridiculoso-aqui-0.json",
+          "path": "/etc/ironfan/chef_node-el_ridiculoso-aqui-0.json",
           "backup": 5,
-          "cookbook_name": "cluster_chef",
+          "cookbook_name": "ironfan",
           "recipe_name": "pickle_node",
           "enclosing_provider": null,
           "content": "",

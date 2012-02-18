@@ -20,7 +20,7 @@ define(:daemon_user,
   ) do
 
   sys, subsys = params[:name].to_s.split(".", 2).map(&:to_sym)
-  component = ClusterChef::Component.new(node, sys, subsys)
+  component = Ironfan::Component.new(node, sys, subsys)
 
   params[:user]         ||= component.node_attr(:user, :required)
   params[:group]        ||= component.node_attr(:group) || params[:user]

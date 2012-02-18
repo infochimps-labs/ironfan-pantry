@@ -31,7 +31,7 @@ default[:hbase][:regionserver][:gc_log_opts]            = "-verbose:gc -XX:+Prin
 # !!!NOTE!!!!
 #
 # The slightly-humanized names below are under review and subject to
-# modification until cluster_chef v3 is released. We may change them
+# modification until ironfan v3 is released. We may change them
 # until then but won't change them after
 #
 #

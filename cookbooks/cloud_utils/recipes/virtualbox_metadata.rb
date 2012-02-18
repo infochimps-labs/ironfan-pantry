@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-class Chef::Recipe ; include ClusterChef::VagrantUtils ; end
+class Chef::Recipe ; include Ironfan::VagrantUtils ; end
 
 get_virtualbox_network_info
 get_cloud_from_virtualbox

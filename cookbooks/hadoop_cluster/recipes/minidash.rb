@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       hadoop_cluster
 # Description::         Simple Dashboard
-# Recipe::              simple_dashboard
+# Recipe::              minidash-hadoop
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
 # Copyright 2011, Philip (flip) Kromer - Infochimps, Inc
@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'dashpot'
+include_recipe 'minidash'
 
 #
 # Register dashboard
@@ -28,14 +28,14 @@ include_recipe 'dashpot'
 hadoop_services.each do |component|
   next unless node[:hadoop][component] && node[:hadoop][component][:dash_port]
   hsh = { "addr" => private_ip_of(node) }.merge(node[:hadoop][component])
-  add_dashboard_link("hadoop.#{component}", hsh)
+  add_minidash_link("hadoop.#{component}", hsh)
 end
 
 #
 # Drop in our mini-dashboard
 #
 
-dashpot_dashboard(:hadoop_cluster) do
+minidash_dashboard(:hadoop_cluster) do
   summary_keys = %w[
   ==Daemons
     hadoop.namenode.addr   hadoop.namenode.port hadoop.jobtracker.addr hadoop.jobtracker.port

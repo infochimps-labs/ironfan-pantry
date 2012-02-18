@@ -1,9 +1,9 @@
 require File.expand_path('silverware.rb', File.dirname(__FILE__))
 
-module ClusterChef
+module Ironfan
 
   #
-  # ClusterChef::Discovery --
+  # Ironfan::Discovery --
   #
   # Allow nodes to discover the location for a given component at runtime, adapting
   # when new components announce.
@@ -47,16 +47,16 @@ module ClusterChef
     #   discover_all(:cassandra, :seeds)           # all cassandra seeds for current cluster
     #   discover_all(:cassandra, :seeds, 'bukkit') # all cassandra seeds for 'bukkit' cluster
     #
-    # @return [ClusterChef::Component] component from server to most recently-announce
+    # @return [Ironfan::Component] component from server to most recently-announce
     def discover_all(sys, subsys, realm=nil)
       realm ||= discovery_realm(sys,subsys)
-      component_name = ClusterChef::Component.fullname(realm, sys, subsys)
+      component_name = Ironfan::Component.fullname(realm, sys, subsys)
       #
       servers = discover_all_nodes(component_name)
       servers.map do |server|
         hsh = server[:announces][component_name]
         hsh[:realm] = realm
-        ClusterChef::Component.new(server, sys, subsys, hsh)
+        Ironfan::Component.new(server, sys, subsys, hsh)
       end
     end
 
@@ -66,7 +66,7 @@ module ClusterChef
     #   discover(:redis, :server)             # redis server for current cluster
     #   discover(:redis, :server, 'uploader') # redis server for 'uploader' realm
     #
-    # @return [ClusterChef::Component] component from server to most recently-announce
+    # @return [Ironfan::Component] component from server to most recently-announce
     def discover(sys, subsys, realm=nil)
       discover_all(sys, subsys, realm).last
     end
@@ -86,7 +86,7 @@ module ClusterChef
       server[:announces].map do |name, hsh|
         realm, sys, subsys = name.split("-", 3)
         hsh[:realm] = realm
-        ClusterChef::Component.new(server, sys, subsys, hsh)
+        Ironfan::Component.new(server, sys, subsys, hsh)
       end
     end
 
@@ -119,6 +119,6 @@ module ClusterChef
   end
 end
 
-class Chef::ResourceDefinition ; include ClusterChef::Discovery ; end
-class Chef::Resource           ; include ClusterChef::Discovery ; end
-class Chef::Recipe             ; include ClusterChef::Discovery ; end
+class Chef::ResourceDefinition ; include Ironfan::Discovery ; end
+class Chef::Resource           ; include Ironfan::Discovery ; end
+class Chef::Recipe             ; include Ironfan::Discovery ; end

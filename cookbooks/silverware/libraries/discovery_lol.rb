@@ -1,5 +1,5 @@
-module ClusterChef
-  ::ClusterChef::Discovery.class_eval do
+module Ironfan
+  ::Ironfan::Discovery.class_eval do
     # --------------------------------------------------------------------------
     #
     # Alternate syntax

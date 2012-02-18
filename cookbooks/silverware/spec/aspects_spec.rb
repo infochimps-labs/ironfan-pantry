@@ -12,13 +12,13 @@ describe 'aspect' do
   let(:harvested){ harvest_klass(component) }
   let(:subject){   harvested.values.first   }
 
-  describe ClusterChef::PortAspect do
+  describe Ironfan::PortAspect do
     it 'harvests any "*_port" attributes' do
       harvested.should == Mash.new({
-          :dash_port     => ClusterChef::PortAspect.new(component, "dash_port",      :dash,     "50075"),
-          :ipc_port      => ClusterChef::PortAspect.new(component, "ipc_port",       :ipc,      "50020"),
-          :jmx_dash_port => ClusterChef::PortAspect.new(component, "jmx_dash_port", :jmx_dash,  "8006"),
-          :port          => ClusterChef::PortAspect.new(component, "port",           :port,     "50010"),
+          :dash_port     => Ironfan::PortAspect.new(component, "dash_port",      :dash,     "50075"),
+          :ipc_port      => Ironfan::PortAspect.new(component, "ipc_port",       :ipc,      "50020"),
+          :jmx_dash_port => Ironfan::PortAspect.new(component, "jmx_dash_port", :jmx_dash,  "8006"),
+          :port          => Ironfan::PortAspect.new(component, "port",           :port,     "50010"),
         })
     end
 
@@ -35,21 +35,21 @@ describe 'aspect' do
     # end
   end
 
-  describe ClusterChef::DashboardAspect do
+  describe Ironfan::DashboardAspect do
     it 'harvests any "dash_port" attributes' do
       harvested.should == Mash.new({
-          :dash     => ClusterChef::DashboardAspect.new(component, "dash",     :http_dash, "http://33.33.33.12:50075/"),
-          :jmx_dash => ClusterChef::DashboardAspect.new(component, "jmx_dash", :jmx_dash,  "http://33.33.33.12:8006/"),
+          :dash     => Ironfan::DashboardAspect.new(component, "dash",     :http_dash, "http://33.33.33.12:50075/"),
+          :jmx_dash => Ironfan::DashboardAspect.new(component, "jmx_dash", :jmx_dash,  "http://33.33.33.12:8006/"),
         })
     end
     it 'by default harvests the url from the private_ip and dash_port'
     it 'lets me set the URL with an explicit template'
   end
 
-  describe ClusterChef::DaemonAspect do
+  describe Ironfan::DaemonAspect do
     it 'harvests its associated service resource' do
       harvested.should == Mash.new({
-          :hadoop_datanode => ClusterChef::DaemonAspect.new(component, "hadoop_datanode", "hadoop_datanode", "hadoop_datanode", 'start'),
+          :hadoop_datanode => Ironfan::DaemonAspect.new(component, "hadoop_datanode", "hadoop_datanode", "hadoop_datanode", 'start'),
         })
     end
 
@@ -85,11 +85,11 @@ describe 'aspect' do
     # end
   end
 
-  describe ClusterChef::LogAspect do
+  describe Ironfan::LogAspect do
     let(:component){ flume_node_component }
     it 'harvests any "log_dir" attributes' do
       harvested.should == Mash.new({
-          :log => ClusterChef::LogAspect.new(component, "log", :log, ["/var/log/flume"]),
+          :log => Ironfan::LogAspect.new(component, "log", :log, ["/var/log/flume"]),
         })
     end
     # context '#flavor' do
@@ -97,39 +97,39 @@ describe 'aspect' do
     # end
   end
 
-  describe ClusterChef::DirectoryAspect do
+  describe Ironfan::DirectoryAspect do
     let(:component){ flume_node_component }
     it 'harvests attributes ending with "_dir"' do
       harvested.should == Mash.new({
-          :conf => ClusterChef::DirectoryAspect.new(component, "conf", :conf, ["/etc/flume/conf"]),
-          :data => ClusterChef::DirectoryAspect.new(component, "data", :data, ["/data/db/flume"]),
-          :home => ClusterChef::DirectoryAspect.new(component, "home", :home, ["/usr/lib/flume"]),
-          :log  => ClusterChef::DirectoryAspect.new(component, "log",  :log,  ["/var/log/flume"]),
-          :pid  => ClusterChef::DirectoryAspect.new(component, "pid",  :pid,  ["/var/run/flume"]),
+          :conf => Ironfan::DirectoryAspect.new(component, "conf", :conf, ["/etc/flume/conf"]),
+          :data => Ironfan::DirectoryAspect.new(component, "data", :data, ["/data/db/flume"]),
+          :home => Ironfan::DirectoryAspect.new(component, "home", :home, ["/usr/lib/flume"]),
+          :log  => Ironfan::DirectoryAspect.new(component, "log",  :log,  ["/var/log/flume"]),
+          :pid  => Ironfan::DirectoryAspect.new(component, "pid",  :pid,  ["/var/run/flume"]),
         })
     end
     it 'harvests non-standard dirs' do
       chef_node[:flume][:foo_dirs] = ['/var/foo/flume', '/var/bar/flume']
       directory_aspects = harvest_klass(flume_node_component)
       directory_aspects.should == Mash.new({
-          :conf => ClusterChef::DirectoryAspect.new(component, "conf", :conf, ["/etc/flume/conf"]),
-          :data => ClusterChef::DirectoryAspect.new(component, "data", :data, ["/data/db/flume"]),
-          :foo  => ClusterChef::DirectoryAspect.new(component, "foo",  :foo,  ["/var/foo/flume", "/var/bar/flume"]),
-          :home => ClusterChef::DirectoryAspect.new(component, "home", :home, ["/usr/lib/flume"]),
-          :log  => ClusterChef::DirectoryAspect.new(component, "log",  :log,  ["/var/log/flume"]),
-          :pid  => ClusterChef::DirectoryAspect.new(component, "pid",  :pid,  ["/var/run/flume"]),
+          :conf => Ironfan::DirectoryAspect.new(component, "conf", :conf, ["/etc/flume/conf"]),
+          :data => Ironfan::DirectoryAspect.new(component, "data", :data, ["/data/db/flume"]),
+          :foo  => Ironfan::DirectoryAspect.new(component, "foo",  :foo,  ["/var/foo/flume", "/var/bar/flume"]),
+          :home => Ironfan::DirectoryAspect.new(component, "home", :home, ["/usr/lib/flume"]),
+          :log  => Ironfan::DirectoryAspect.new(component, "log",  :log,  ["/var/log/flume"]),
+          :pid  => Ironfan::DirectoryAspect.new(component, "pid",  :pid,  ["/var/run/flume"]),
         })
     end
     it 'harvests plural directory sets ending with "_dirs"' do
       component = hadoop_namenode_component
       directory_aspects = harvest_klass(component)
       directory_aspects.should == Mash.new({
-          :conf => ClusterChef::DirectoryAspect.new(component, "conf", :conf, ["/etc/hadoop/conf"]),
-          :data => ClusterChef::DirectoryAspect.new(component, "data", :data, ["/mnt1/hadoop/hdfs/name", "/mnt2/hadoop/hdfs/name"]),
-          :home => ClusterChef::DirectoryAspect.new(component, "home", :home, ["/usr/lib/hadoop"]),
-          :log  => ClusterChef::DirectoryAspect.new(component, "log",  :log,  ["/hadoop/log"]),
-          :pid  => ClusterChef::DirectoryAspect.new(component, "pid",  :pid,  ["/var/run/hadoop"]),
-          :tmp  => ClusterChef::DirectoryAspect.new(component, "tmp",  :tmp,  ["/hadoop/tmp"]),
+          :conf => Ironfan::DirectoryAspect.new(component, "conf", :conf, ["/etc/hadoop/conf"]),
+          :data => Ironfan::DirectoryAspect.new(component, "data", :data, ["/mnt1/hadoop/hdfs/name", "/mnt2/hadoop/hdfs/name"]),
+          :home => Ironfan::DirectoryAspect.new(component, "home", :home, ["/usr/lib/hadoop"]),
+          :log  => Ironfan::DirectoryAspect.new(component, "log",  :log,  ["/hadoop/log"]),
+          :pid  => Ironfan::DirectoryAspect.new(component, "pid",  :pid,  ["/var/run/hadoop"]),
+          :tmp  => Ironfan::DirectoryAspect.new(component, "tmp",  :tmp,  ["/hadoop/tmp"]),
         })
     end
 
@@ -147,13 +147,13 @@ describe 'aspect' do
     # end
   end
 
-  describe ClusterChef::ExportedAspect do
+  describe Ironfan::ExportedAspect do
     # context '#files' do
     #   let(:component){ hbase_master_component }
     #   it 'harvests attributes beginning with "exported_"' do
     #     harvested.should == Mash.new({
-    #         :confs => ClusterChef::ExportedAspect.new(component, "confs", :confs, ["/etc/hbase/conf/hbase-default.xml", "/etc/hbase/conf/hbase-site.xml"]),
-    #         :jars  => ClusterChef::ExportedAspect.new(component, "jars",  :jars,  ["/usr/lib/hbase/hbase-0.90.1-cdh3u0.jar", "/usr/lib/hbase/hbase-0.90.1-cdh3u0-tests.jar"])
+    #         :confs => Ironfan::ExportedAspect.new(component, "confs", :confs, ["/etc/hbase/conf/hbase-default.xml", "/etc/hbase/conf/hbase-site.xml"]),
+    #         :jars  => Ironfan::ExportedAspect.new(component, "jars",  :jars,  ["/usr/lib/hbase/hbase-0.90.1-cdh3u0.jar", "/usr/lib/hbase/hbase-0.90.1-cdh3u0-tests.jar"])
     #       })
     #   end
     # end
@@ -164,10 +164,10 @@ describe 'aspect' do
     end
   end
 
-  # describe ClusterChef::CookbookAspect do
+  # describe Ironfan::CookbookAspect do
   # end
   #
-  # describe ClusterChef::CronAspect do
+  # describe Ironfan::CronAspect do
   # end
 
 end

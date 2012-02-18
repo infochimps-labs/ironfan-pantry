@@ -1,9 +1,9 @@
 require 'cgi'
 
-module ClusterChef
-  module Dashpot
+module Ironfan
+  module Minidash
 
-    def add_dashboard_link(component, url_parts)
+    def add_minidash_link(component, url_parts)
       if    url_parts.respond_to?(:each_pair) && url_parts["url"]
         url = url_parts["url"]
       elsif url_parts.respond_to?(:each_pair) && url_parts["addr"]
@@ -14,7 +14,7 @@ module ClusterChef
       else
         url = nil
       end
-      node[:dashpot][:links][component] = url
+      node[:minidash][:links][component] = url
     end
 
     # Index into a (potentially deep) hash, using each key in turn. The key can
@@ -71,8 +71,8 @@ module ClusterChef
   end
 end
 
-class Chef::Recipe              ; include ClusterChef::Dashpot ; end
-class Chef::Resource::Directory ; include ClusterChef::Dashpot ; end
-class Chef::Resource::Execute   ; include ClusterChef::Dashpot ; end
-class Chef::Resource::Template  ; include ClusterChef::Dashpot ; end
-class Erubis::Context           ; include ClusterChef::Dashpot ; end
+class Chef::Recipe              ; include Ironfan::Minidash ; end
+class Chef::Resource::Directory ; include Ironfan::Minidash ; end
+class Chef::Resource::Execute   ; include Ironfan::Minidash ; end
+class Chef::Resource::Template  ; include Ironfan::Minidash ; end
+class Erubis::Context           ; include Ironfan::Minidash ; end

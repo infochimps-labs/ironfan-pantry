@@ -12,20 +12,20 @@
 # robots than sub-optimal data scientists.
 #
 # You will need the role definitions from
-# [cluster_chef-homebase](https://github.com/infochimps-labs/cluster_chef-homebase)
+# [ironfan-homebase](https://github.com/infochimps-labs/ironfan-homebase)
 # to use this cluster.
 #
 # To use this, please update the snapshot_id (and volume size) in the volume
 # stanza at the end.
 #
-ClusterChef.cluster 'science' do
+Ironfan.cluster 'science' do
   cloud(:ec2) do
     defaults
     availability_zones ['us-east-1d']
     flavor              'm1.xlarge'
     backing             'ebs'
     image_name          'natty'
-    bootstrap_distro    'ubuntu10.04-cluster_chef'
+    bootstrap_distro    'ubuntu10.04-ironfan'
     chef_client_script  'client.rb'
     mount_ephemerals(:tags => { :hadoop_scratch => true })
   end
@@ -37,7 +37,7 @@ ClusterChef.cluster 'science' do
   role                  :ssh
   role                  :nfs_client
   role                  :volumes
-  role                  :dashboard
+  role                  :minidash
 
   role                  :hadoop
   role                  :hadoop_s3_keys

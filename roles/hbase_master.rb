@@ -5,6 +5,6 @@ run_list %w[
   role[hadoop]
   zookeeper::client
   hbase::master
-  hbase::dashboard
-  dashpot::server
+  hbase::minidash
+  minidash::server
 ]

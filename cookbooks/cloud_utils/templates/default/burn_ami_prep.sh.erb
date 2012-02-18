@@ -17,7 +17,7 @@ echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nupdatedb so you can find files:
 updatedb ;
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nmove away anything tied to the identity of this machine. Don't sweat it if some are missing\n"
-mv /etc/hostname /etc/node*name /etc/dashpot "$away_dir"
+mv /etc/hostname /etc/node*name /etc/minidash "$away_dir"
 # move away chef junk
 mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ "$away_dir"
 
@@ -53,7 +53,7 @@ perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!
  
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nmake a nice bland motd\n"
 . /etc/lsb-release 
-img_info="  cluster_chef-$DISTRIB_CODENAME-`uname -i`-`ruby --version | cut -d' '  -f2`-`date +"%Y%m%d-%H"`"
+img_info="  ironfan-$DISTRIB_CODENAME-`uname -i`-`ruby --version | cut -d' '  -f2`-`date +"%Y%m%d-%H"`"
 rm /etc/motd ;
 echo "CHIMP CHIMP CHIMP CRUNCH CRUNCH CRUNCH (image burned at `date`): $img_info" > /etc/motd;
 

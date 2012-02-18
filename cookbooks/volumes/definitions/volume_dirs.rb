@@ -51,7 +51,7 @@ define(:volume_dirs,
   else
     raise "Please provide a system and an aspect (eg 'redis.log'), or system.subsystem.aspect (eg 'hadoop.namenode.data'): got #{params[:name]}"
   end
-  component = ClusterChef::Component.new(node, sys, subsys)
+  component = Ironfan::Component.new(node, sys, subsys)
 
   params[:selects] ||= :all
   raise "Please select either :all or :single" unless ['all', 'single'].include?(params[:selects].to_s)

@@ -1,5 +1,5 @@
 
-module ClusterChef
+module Ironfan
   module VagrantUtils
 
     # Fill cloud hash with virtualbox heuristics

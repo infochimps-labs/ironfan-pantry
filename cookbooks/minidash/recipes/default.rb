@@ -1,5 +1,5 @@
 #
-# Cookbook Name::       dashpot
+# Cookbook Name::       minidash
 # Description::         Dashboard for this machine: index of services and their dashboard snippets
 # Recipe::              default
 # Author::              Philip (flip) Kromer - Infochimps, Inc
@@ -21,7 +21,7 @@
 
 include_recipe  'silverware'
 
-standard_dirs('dashpot.server') do
+standard_dirs('minidash.server') do
   directories  :home_dir, :log_dir, :conf_dir
 end
 
@@ -29,9 +29,9 @@ end
 # Dashboard Dashboard
 #
 
-dashpot_dashboard(:dashpot) do
+minidash_dashboard(:minidash) do
   template_name 'index'
   action        :create
   summary_keys = %w[]
-  variables     :summary_keys => summary_keys, :dashpot => node[:dashpot]
+  variables     :summary_keys => summary_keys, :minidash => node[:minidash]
 end

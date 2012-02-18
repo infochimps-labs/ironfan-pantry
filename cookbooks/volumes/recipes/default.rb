@@ -21,4 +21,4 @@
 
 include_recipe 'silverware'
 
-dashpot_dashboard('volumes') if defined?(dashpot_dashboard)
+minidash_dashboard('volumes') if defined?(minidash_dashboard)

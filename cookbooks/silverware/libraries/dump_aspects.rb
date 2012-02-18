@@ -1,4 +1,4 @@
-module ClusterChef
+module Ironfan
   module Discovery
     module_function
 

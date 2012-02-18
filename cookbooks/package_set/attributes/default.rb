@@ -75,10 +75,10 @@ default[:package_set][:pkgs][:text]      = %w[ libidn11-dev libxml2-dev libxml2-
 default[:package_set][:gems][:text]      = %w[ nokogiri erubis i18n ]
 
 default[:package_set][:pkgs][:ec2]       = %w[ s3cmd ec2-ami-tools ec2-api-tools ]
-default[:package_set][:gems][:ec2]       = %w[ fog right_aws cluster_chef ]
+default[:package_set][:gems][:ec2]       = %w[ fog right_aws ironfan ]
 
 default[:package_set][:pkgs][:vagrant]   = %w[ ifstat htop tree chkconfig sysstat nmap ]
-default[:package_set][:gems][:vagrant]   = %w[ vagrant veewee cluster_chef ]
+default[:package_set][:gems][:vagrant]   = %w[ vagrant veewee ironfan ]
 
 default[:package_set][:pkgs][:python]    = %w[python-dev python-setuptools python-simplejson]
 

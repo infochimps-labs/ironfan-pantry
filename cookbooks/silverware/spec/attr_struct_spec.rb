@@ -1,10 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require SILVERWARE_DIR("libraries/silverware.rb")
 
-describe ClusterChef::AttrStruct do
+describe Ironfan::AttrStruct do
   let(:car_class) do
     Class.new do
-      include ClusterChef::AttrStruct
+      include Ironfan::AttrStruct
       dsl_attr :name
       dsl_attr :model
       dsl_attr :doors, :kind_of => Integer
@@ -13,7 +13,7 @@ describe ClusterChef::AttrStruct do
   end
   let(:engine_class) do
     Class.new do
-      include ClusterChef::AttrStruct
+      include Ironfan::AttrStruct
       dsl_attr :name
       dsl_attr :displacement
       dsl_attr :cylinders, :kind_of => Integer

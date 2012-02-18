@@ -2,14 +2,14 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 require SILVERWARE_DIR("libraries/silverware")
 require SILVERWARE_DIR("libraries/aspects")
 
-describe ClusterChef::Discovery do
+describe Ironfan::Discovery do
   include_context 'dummy_chef'
 
   context '.announce' do
 
     context 'populates the node[:announces] tree' do
       before(:each) do
-        ClusterChef::NodeUtils.stub!(:timestamp){ '20090102030405' }
+        Ironfan::NodeUtils.stub!(:timestamp){ '20090102030405' }
       end
       subject{ recipe.node[:announces]['el_ridiculoso-chef-server'] }
 
@@ -18,7 +18,7 @@ describe ClusterChef::Discovery do
         recipe.node[:announces].should include('el_ridiculoso-chef-server')
       end
       it 'sets a timestamp' do
-        ClusterChef::NodeUtils.should_receive(:timestamp).and_return('20010101223344')
+        Ironfan::NodeUtils.should_receive(:timestamp).and_return('20010101223344')
         recipe.announce(:chef, :server)
         subject[:timestamp].should == '20010101223344'
       end
@@ -49,7 +49,7 @@ describe ClusterChef::Discovery do
 
     it 'returns the announced component' do
       component = recipe.announce(:chef, :server)
-      component.should be_a(ClusterChef::Component)
+      component.should be_a(Ironfan::Component)
       component.fullname.should == 'el_ridiculoso-chef-server'
     end
 

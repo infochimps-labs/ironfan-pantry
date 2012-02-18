@@ -3,7 +3,7 @@
 # * add a jenkins plugin to the plugins list
 #
 module JenkinsHelpers
-  include ClusterChef::NodeUtils
+  include Ironfan::NodeUtils
 
   module_function # call JenkinsHelpers.foo, or include and call #foo
 

@@ -14,7 +14,7 @@ done
 source ${CASSANDRA_HOME}/conf/cassandra-env.sh
 
 JMX_PORT=<%= @cassandra[:jmx_dash_port] %>
-JMX_ADDR=<%= ClusterChef::NodeUtils.private_ip_of(node) %>
+JMX_ADDR=<%= Ironfan::NodeUtils.private_ip_of(node) %>
 
 # bump number of open files allowed way way up
 ulimit -n 65535

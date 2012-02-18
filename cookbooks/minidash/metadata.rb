@@ -9,39 +9,39 @@ description      "Creates and serves a lightweight pluggable dashboard for a mac
 depends          "runit"
 depends          "silverware"
 
-recipe           "dashpot::default",                   "Dashboard for this machine: index of services and their dashboard snippets"
-recipe           "dashpot::server",                    "Lightweight thttpd server to render dashpot dashboards"
+recipe           "minidash::default",                   "Dashboard for this machine: index of services and their dashboard snippets"
+recipe           "minidash::server",                    "Lightweight thttpd server to render minidash dashboards"
 
 %w[ debian ubuntu ].each do |os|
   supports os
 end
 
-attribute "dashpot/conf_dir",
+attribute "minidash/conf_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/etc/dashpot"
+  :default               => "/etc/minidash"
 
-attribute "dashpot/log_dir",
+attribute "minidash/log_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/var/log/dashpot"
+  :default               => "/var/log/minidash"
 
-attribute "dashpot/home_dir",
+attribute "minidash/home_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/var/lib/dashpot"
+  :default               => "/var/lib/minidash"
 
-attribute "dashpot/user",
+attribute "minidash/user",
   :display_name          => "",
   :description           => "",
   :default               => "root"
 
-attribute "dashpot/port",
+attribute "minidash/port",
   :display_name          => "",
   :description           => "",
   :default               => "6789"
 
-attribute "dashpot/run_state",
+attribute "minidash/run_state",
   :display_name          => "",
   :description           => "",
   :default               => "start"

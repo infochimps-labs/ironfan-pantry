@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       hbase
 # Description::         Simple dashboard for HBase config and state
-# Recipe::              dashboard
+# Recipe::              minidash
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
 # Copyright 2011, Philip (flip) Kromer - Infochimps, Inc
@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'dashpot'
+include_recipe 'minidash'
 
 #
 # Register dashboard
@@ -29,14 +29,14 @@ include_recipe 'dashpot'
   info = node[:hbase][component]
   next unless info && (info[:run_state].to_s == 'start') && info[:dash_port]
   hsh = { "addr" => private_ip_of(node) }.merge(info)
-  add_dashboard_link("hbase.#{component}", hsh)
+  add_minidash_link("hbase.#{component}", hsh)
 end
 
 #
 # Drop in our mini-dashboard
 #
 
-dashpot_dashboard(:hbase) do
+minidash_dashboard(:hbase) do
   summary_keys = %w[
   ==Daemons
     hadoop.namenode.addr    hadoop.namenode.port     hadoop.jobtracker.addr hadoop.jobtracker.port

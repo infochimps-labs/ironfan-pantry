@@ -66,7 +66,7 @@ end
 
 ruby_block('dump aspects') do
   block do
-    ClusterChef::Discovery.dump_aspects(self.run_context)
+    Ironfan::Discovery.dump_aspects(self.run_context)
   end
 end
 

@@ -1,5 +1,5 @@
 require File.expand_path('silverware.rb', File.dirname(__FILE__))
-module ClusterChef
+module Ironfan
 
   #
   # * scope[:run_state]

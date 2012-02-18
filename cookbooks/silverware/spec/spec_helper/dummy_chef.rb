@@ -21,8 +21,8 @@ shared_context 'dummy_chef' do
   end
 
   class DummyRecipe
-    include ClusterChef::Discovery ; public :discover_all_nodes
-    include ClusterChef::NodeUtils
+    include Ironfan::Discovery ; public :discover_all_nodes
+    include Ironfan::NodeUtils
     #
     attr_accessor :name, :node, :run_context
     def initialize(name, run_context)
@@ -99,12 +99,12 @@ shared_context 'dummy_chef' do
   let(:recipe){       DummyRecipe.new(:hadoop, chef_context) }
   let(:dummy_recipe){ DummyRecipe.new(:hadoop, dummy_context) }
 
-  let(:chef_server_component){ ClusterChef::Component.new(dummy_node, :chef, :server) }
-  let(:chef_webui_component ){ ClusterChef::Component.new(dummy_node, :chef, :webui)  }
+  let(:chef_server_component){ Ironfan::Component.new(dummy_node, :chef, :server) }
+  let(:chef_webui_component ){ Ironfan::Component.new(dummy_node, :chef, :webui)  }
 
-  let(:hadoop_namenode_component  ){ ClusterChef::Component.new(chef_node, :hadoop,    :namenode)  }
-  let(:hadoop_datanode_component  ){ ClusterChef::Component.new(chef_node, :hadoop,    :datanode)  }
-  let(:zookeeper_server_component ){ ClusterChef::Component.new(chef_node, :zookeeper, :server)  }
-  let(:flume_node_component       ){ ClusterChef::Component.new(chef_node, :flume,     :node)  }
-  let(:hbase_master_component     ){ ClusterChef::Component.new(chef_node, :hbase,     :master)  }
+  let(:hadoop_namenode_component  ){ Ironfan::Component.new(chef_node, :hadoop,    :namenode)  }
+  let(:hadoop_datanode_component  ){ Ironfan::Component.new(chef_node, :hadoop,    :datanode)  }
+  let(:zookeeper_server_component ){ Ironfan::Component.new(chef_node, :zookeeper, :server)  }
+  let(:flume_node_component       ){ Ironfan::Component.new(chef_node, :flume,     :node)  }
+  let(:hbase_master_component     ){ Ironfan::Component.new(chef_node, :hbase,     :master)  }
 end

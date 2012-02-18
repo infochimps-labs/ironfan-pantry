@@ -100,10 +100,10 @@ attribute "package_set/gems/ec2",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["fog", "right_aws", "cluster_chef"]
+  :default               => ["fog", "right_aws", "ironfan"]
 
 attribute "package_set/gems/vagrant",
   :display_name          => "",
   :description           => "",
   :type                  => "array",
-  :default               => ["vagrant", "veewee", "cluster_chef"]
+  :default               => ["vagrant", "veewee", "ironfan"]

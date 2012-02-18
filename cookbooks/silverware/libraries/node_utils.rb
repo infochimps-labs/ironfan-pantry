@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 
-module ClusterChef
+module Ironfan
   #
   # Useful methods for node metadata:
   # * best guess for node's private interface / public interface

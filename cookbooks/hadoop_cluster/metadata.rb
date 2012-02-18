@@ -12,7 +12,7 @@ depends          "runit"
 depends          "volumes"
 depends          "tuning"
 depends          "silverware"
-depends          "dashpot"
+depends          "minidash"
 
 recipe           "hadoop_cluster::default",            "Base configuration for hadoop_cluster"
 recipe           "hadoop_cluster::add_cloudera_repo",  "Add Cloudera repo to package manager"
@@ -25,7 +25,7 @@ recipe           "hadoop_cluster::namenode",           "Installs Hadoop Namenode
 recipe           "hadoop_cluster::doc",                "Installs Hadoop documentation"
 recipe           "hadoop_cluster::hdfs_fuse",          "Installs Hadoop HDFS Fuse service (regular filesystem access to HDFS files)"
 recipe           "hadoop_cluster::wait_on_hdfs_safemode", "Wait on HDFS Safemode -- insert between cookbooks to ensure HDFS is available"
-recipe           "hadoop_cluster::simple_dashboard",   "Simple Dashboard"
+recipe           "hadoop_cluster::minidash-hadoop",   "Simple Dashboard"
 recipe           "hadoop_cluster::fake_topology",      "Pretend that groups of machines are on different racks so you can execute them without guilt"
 
 %w[ debian ubuntu ].each do |os|

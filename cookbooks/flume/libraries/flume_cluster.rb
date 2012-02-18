@@ -28,21 +28,21 @@ module FlumeCluster
       'null'
     end
   end
-  
+
   # given: s3://bucket-name/path/to/file => returns: [ "bucket-name", "path/to/file" ]
   def parse_s3path path
     bucket = path.match(/^s3:\/\/([^\/]*)\//)[1]      rescue ""
     key    = path.match(/^s3:\/\/#{bucket}\/(.*)/)[1] rescue ""
     [ bucket, key ]
   end
-  
+
   def flume_master
     flume_masters.first
   end
 
   # returns the index of the current host in the list of flume masters
   def flume_master_id
-    flume_masters.find_index( ClusterChef::NodeUtils.private_ip_of( node ) )
+    flume_masters.find_index( Ironfan::NodeUtils.private_ip_of( node ) )
   end
 
   # returns true if this flume is managed by an external zookeeper

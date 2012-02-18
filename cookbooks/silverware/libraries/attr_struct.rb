@@ -1,4 +1,4 @@
-module ClusterChef
+module Ironfan
   module AttrStruct
     include Chef::Mixin::ParamsValidate
 

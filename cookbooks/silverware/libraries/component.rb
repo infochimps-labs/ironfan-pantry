@@ -1,14 +1,14 @@
 require File.expand_path('silverware.rb', File.dirname(__FILE__))
 
-module ClusterChef
+module Ironfan
   #
   #
   #
   #
   #
   class Component
-    include ClusterChef::AttrStruct
-    include ClusterChef::NodeUtils
+    include Ironfan::AttrStruct
+    include Ironfan::NodeUtils
     attr_reader(:node)
     dsl_attr(:sys,       :kind_of => Symbol, :coerce => :to_sym)
     dsl_attr(:subsys,    :kind_of => Symbol, :coerce => :to_sym)
@@ -23,15 +23,15 @@ module ClusterChef
       super(sys, subsys)
       merge!(hsh)
       self.name      subsys.to_s.empty? ? sys.to_sym : "#{sys}_#{subsys}".to_sym
-      self.timestamp ClusterChef::NodeUtils.timestamp
+      self.timestamp Ironfan::NodeUtils.timestamp
       self.info      hsh
     end
 
     # A segmented name for the component
     # @example
-    #   ClusterChef::Component.new(rc, :redis, :server, :realm => 'krypton').fullname
+    #   Ironfan::Component.new(rc, :redis, :server, :realm => 'krypton').fullname
     #   # => 'krypton-redis-server'
-    #   ClusterChef::Component.new(rc, :nfs, nil, :realm => 'krypton').fullname
+    #   Ironfan::Component.new(rc, :nfs, nil, :realm => 'krypton').fullname
     #   # => 'krypton-nfs'
     #
     # @return [String] the component's dotted name
