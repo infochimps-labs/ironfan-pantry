@@ -7,7 +7,6 @@ run_list([
     "zabbix::server",
     "zabbix::database",
     "zabbix::web",
-    "zabbix::create_hosts"
 ])
 
 override_attributes({

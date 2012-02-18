@@ -32,7 +32,7 @@ default[:zabbix][:server][:log_dir]           = '/var/log/zabbix_server'
 # Database
 default[:zabbix][:database][:host]            = "localhost"
 default[:zabbix][:database][:port]            = "3306"
-default[:zabbix][:database][:root_user]       = ""
+default[:zabbix][:database][:root_user]       = "root"
 default[:zabbix][:database][:root_password]   = nil
 default[:zabbix][:database][:user]            = "zabbix"
 default[:zabbix][:database][:password]        = nil
@@ -48,6 +48,7 @@ default[:zabbix][:web][:install_method] = 'apache'
 default[:zabbix][:web][:timezone]       = 'Europe/London' # UTC
 
 # API
-default[:zabbix][:api][:path]     = 'api_jsonrpc.php'
-default[:zabbix][:api][:username] = ''
-default[:zabbix][:api][:password] = ''
+default[:zabbix][:api][:path]       = 'api_jsonrpc.php'
+default[:zabbix][:api][:username]   = 'chef'
+default[:zabbix][:api][:password]   = 'fixme'
+default[:zabbix][:api][:user_group] = 'chefs'
