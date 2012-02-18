@@ -28,9 +28,9 @@ From the client machine,
 
 ## Recipes 
 
-* `client`                   - NFS client: uses metachef to discover its server, and mounts the corresponding NFS directory
+* `client`                   - NFS client: uses silverware to discover its server, and mounts the corresponding NFS directory
 * `default`                  - Base configuration for nfs
-* `server`                   - NFS server: exports directories via NFS; announces using metachef.
+* `server`                   - NFS server: exports directories via NFS; announces using silverware.
 
 ## Integration
 
@@ -38,7 +38,7 @@ Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
 
-* metachef
+* silverware
 
 
 ## Attributes
@@ -47,7 +47,7 @@ Cookbook dependencies:
   - Describes the volumes to export. Supply a list of pairs: <path-to-export, hash-of-NFS-options>. For example, 
        default[:nfs][:exports] = [[ '/home', { :nfs_options => '*.internal(rw,no_root_squash,no_subtree_check)' }]]
 * `[:nfs][:mounts]`                   - NFS Mounts
-  - The foreign volumes to mount. Uses metachef discovery to find the NFS server for that volume. Supply a list of pairs: <path-to-export, hash-of-NFS-options>.
+  - The foreign volumes to mount. Uses silverware discovery to find the NFS server for that volume. Supply a list of pairs: <path-to-export, hash-of-NFS-options>.
 * `[:nfs][:portmap_port]`             -  (default: "111")
 * `[:nfs][:nfsd_port]`                -  (default: "2049")
 * `[:nfs][:mountd_port]`              -  (default: "45560")

@@ -1,6 +1,6 @@
 #
 # Author:: Philip (flip) Kromer for Infochimps.org
-# Cookbook Name:: metachef
+# Cookbook Name:: silverware
 # Library:: node_utils
 #
 # Description::

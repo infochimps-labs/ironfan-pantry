@@ -9,6 +9,6 @@
 # (no license specified)
 #
 
-include_recipe "metachef"
+include_recipe "silverware"
 
 package "nfs-common"

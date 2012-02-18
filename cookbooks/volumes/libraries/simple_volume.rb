@@ -1,4 +1,4 @@
-module Metachef
+module Silverware
   class SimpleVolume < Mash
     attr_reader :node
 

@@ -7,7 +7,7 @@ version          "3.0.4"
 description      "Creates and serves a lightweight pluggable dashboard for a machine"
 
 depends          "runit"
-depends          "metachef"
+depends          "silverware"
 
 recipe           "dashpot::default",                   "Dashboard for this machine: index of services and their dashboard snippets"
 recipe           "dashpot::server",                    "Lightweight thttpd server to render dashpot dashboards"

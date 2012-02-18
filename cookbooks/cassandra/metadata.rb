@@ -12,7 +12,7 @@ depends          "runit"
 depends          "thrift"
 depends          "iptables"
 depends          "volumes"
-depends          "metachef"
+depends          "silverware"
 depends          "install_from"
 
 recipe           "cassandra::autoconf",                "Automatically configure nodes from chef-server information."

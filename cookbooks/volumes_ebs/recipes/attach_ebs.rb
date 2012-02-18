@@ -20,7 +20,7 @@
 #
 
 include_recipe "aws"
-include Metachef
+include Silverware
 
 aws  = mntvol_aws_credentials
 

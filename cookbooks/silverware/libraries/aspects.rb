@@ -1,4 +1,4 @@
-require File.expand_path('metachef.rb', File.dirname(__FILE__))
+require File.expand_path('silverware.rb', File.dirname(__FILE__))
 module ClusterChef
 
   #

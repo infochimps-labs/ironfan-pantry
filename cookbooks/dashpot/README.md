@@ -22,7 +22,7 @@ Supports platforms: debian and ubuntu
 Cookbook dependencies:
 
 * runit
-* metachef
+* silverware
 
 
 ## Attributes

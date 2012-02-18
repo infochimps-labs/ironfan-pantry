@@ -11,7 +11,7 @@ depends          "runit"
 depends          "aws"
 depends          "volumes"
 depends          "tuning"
-depends          "metachef"
+depends          "silverware"
 depends          "install_from"
 
 recipe           "elasticsearch::client",              "Client"

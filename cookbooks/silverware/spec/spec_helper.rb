@@ -1,7 +1,7 @@
 require 'rspec'
 
-METACHEF_DIR = File.expand_path(File.dirname(__FILE__)+'/..') unless defined?(METACHEF_DIR)
-def METACHEF_DIR(*paths) File.join(METACHEF_DIR, *paths); end
+SILVERWARE_DIR = File.expand_path(File.dirname(__FILE__)+'/..') unless defined?(SILVERWARE_DIR)
+def SILVERWARE_DIR(*paths) File.join(SILVERWARE_DIR, *paths); end
 
 require 'chef/node'
 require 'chef/resource_collection'
@@ -23,7 +23,7 @@ class Chef
 end
 
 
-Dir[METACHEF_DIR("spec/spec_helper/*.rb")].each {|f| require f}
+Dir[SILVERWARE_DIR("spec/spec_helper/*.rb")].each {|f| require f}
 
 # Configure rspec
 RSpec.configure do |config|

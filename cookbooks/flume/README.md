@@ -46,7 +46,7 @@ Cookbook dependencies:
 * apt
 * runit
 * volumes
-* metachef
+* silverware
 * hadoop_cluster
 
 

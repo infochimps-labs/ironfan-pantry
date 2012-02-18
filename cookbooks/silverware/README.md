@@ -1,8 +1,8 @@
-# metachef chef cookbook
+# silverware chef cookbook
 
 Cluster orchestration -- coordinates discovery, integration and decoupling of cookbooks
 
-* Cookbook source:   [http://github.com/infochimps-cookbooks/metachef](http://github.com/infochimps-cookbooks/metachef)
+* Cookbook source:   [http://github.com/infochimps-cookbooks/silverware](http://github.com/infochimps-cookbooks/silverware)
 * ClusterChef tools: [http://github.com/infochimps/cluster_chef](http://github.com/infochimps/cluster_chef)
 * Homebase (shows cookbook in use): [http://github.com/infochimps-labs/cluster_chef-homebase](http://github.com/infochimps-labs/cluster_chef-homebase)
 
@@ -65,7 +65,7 @@ Nodes register a service by calling `announce`, which sets a hash containing
 
 ## Recipes 
 
-* `default`                  - Base configuration for metachef
+* `default`                  - Base configuration for silverware
 
 ## Integration
 
@@ -75,10 +75,10 @@ Supports platforms: debian and ubuntu
 
 ## Attributes
 
-* `[:metachef][:conf_dir]`            -  (default: "/etc/metachef")
-* `[:metachef][:log_dir]`             -  (default: "/var/log/metachef")
-* `[:metachef][:home_dir]`            -  (default: "/etc/metachef")
-* `[:metachef][:user]`                -  (default: "root")
+* `[:silverware][:conf_dir]`            -  (default: "/etc/silverware")
+* `[:silverware][:log_dir]`             -  (default: "/var/log/silverware")
+* `[:silverware][:home_dir]`            -  (default: "/etc/silverware")
+* `[:silverware][:user]`                -  (default: "root")
 * `[:users][:root][:primary_group]`   -  (default: "root")
 
 ## License and Author

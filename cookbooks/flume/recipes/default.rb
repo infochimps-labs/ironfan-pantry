@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "metachef"
+include_recipe "silverware"
 
 include_recipe "java::sun"
 include_recipe "apt"

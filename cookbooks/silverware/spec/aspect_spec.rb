@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require METACHEF_DIR("libraries/metachef")
-require METACHEF_DIR("libraries/aspects")
+require SILVERWARE_DIR("libraries/silverware")
+require SILVERWARE_DIR("libraries/aspects")
 
 describe ClusterChef::Aspect do
   include_context 'dummy_chef'

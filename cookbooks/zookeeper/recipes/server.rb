@@ -20,7 +20,7 @@
 #
 
 include_recipe 'runit'
-include_recipe 'metachef'
+include_recipe 'silverware'
 include_recipe "zookeeper::default"
 
 # === User

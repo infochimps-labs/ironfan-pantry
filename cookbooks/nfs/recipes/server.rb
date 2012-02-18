@@ -1,6 +1,6 @@
 #
 # Cookbook Name::       nfs
-# Description::         NFS server: exports directories via NFS; announces using metachef.
+# Description::         NFS server: exports directories via NFS; announces using silverware.
 # Recipe::              server
 # Author::              37signals
 #

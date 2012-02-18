@@ -100,7 +100,7 @@ Cookbook dependencies:
 * aws
 * volumes
 * tuning
-* metachef
+* silverware
 * install_from
 
 

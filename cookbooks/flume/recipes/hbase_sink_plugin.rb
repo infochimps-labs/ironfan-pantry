@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'metachef'
+include_recipe 'silverware'
 
 cookbook_file "/usr/lib/flume/plugins/hbase-sink.jar" do
   source "hbase-sink.jar"
@@ -29,8 +29,8 @@ end
 
 # Load Attr2HbaseEventSink as a plugin
 node[:flume][:plugins][:hbase_sink]  ||= {}
-node[:flume][:plugins][:hbase_sink][:classes] =  [ "com.cloudera.flume.hbase.Attr2HBaseEventSink", 
-					           "com.cloudera.flume.hbase.HBaseSink" ]
+node[:flume][:plugins][:hbase_sink][:classes] =  [ "com.cloudera.flume.hbase.Attr2HBaseEventSink",
+                                                   "com.cloudera.flume.hbase.HBaseSink" ]
 
 # Make sure that hbase-sink.jar and hbase-site.xml can be located on the
 # classpath

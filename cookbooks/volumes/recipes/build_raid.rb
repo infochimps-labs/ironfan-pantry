@@ -29,7 +29,7 @@ package('mdadm'){ action :nothing }.run_action(:install)
 #
 # Assemble raid groups using volumes defined in node metadata -- see volumes/libraries/volumes.rb
 #
-Metachef.raid_groups(node).each do |rg_name, rg|
+Silverware.raid_groups(node).each do |rg_name, rg|
 
   sub_vols = sub_volumes(node, rg)
 

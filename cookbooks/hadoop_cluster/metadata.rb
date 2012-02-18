@@ -11,7 +11,7 @@ depends          "apt"
 depends          "runit"
 depends          "volumes"
 depends          "tuning"
-depends          "metachef"
+depends          "silverware"
 depends          "dashpot"
 
 recipe           "hadoop_cluster::default",            "Base configuration for hadoop_cluster"

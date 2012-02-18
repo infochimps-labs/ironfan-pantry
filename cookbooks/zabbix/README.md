@@ -173,7 +173,7 @@ Cookbook dependencies:
 * database, >= 1.0.0
 * mysql, >= 1.2.0
 * ufw, >= 0.6.1
-* metachef
+* silverware
 
 
 ## Attributes

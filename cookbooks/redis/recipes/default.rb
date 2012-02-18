@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'metachef'
+include_recipe 'silverware'
 
 standard_dirs('redis.server') do
   directories   :conf_dir

@@ -87,7 +87,7 @@ Cookbook dependencies:
 * runit
 * volumes
 * tuning
-* metachef
+* silverware
 * dashpot
 
 

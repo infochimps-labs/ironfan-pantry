@@ -1,5 +1,5 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
-require METACHEF_DIR("libraries/metachef.rb")
+require SILVERWARE_DIR("libraries/silverware.rb")
 
 describe ClusterChef::AttrStruct do
   let(:car_class) do

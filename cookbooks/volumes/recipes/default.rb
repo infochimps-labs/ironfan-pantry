@@ -19,6 +19,6 @@
 # limitations under the License.
 #
 
-include_recipe 'metachef'
+include_recipe 'silverware'
 
 dashpot_dashboard('volumes') if defined?(dashpot_dashboard)

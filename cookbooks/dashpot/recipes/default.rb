@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe  'metachef'
+include_recipe  'silverware'
 
 standard_dirs('dashpot.server') do
   directories  :home_dir, :log_dir, :conf_dir

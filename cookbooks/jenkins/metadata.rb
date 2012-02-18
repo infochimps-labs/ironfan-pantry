@@ -8,7 +8,7 @@ description      "Installs and configures Jenkins CI server & workers"
 
 depends          "apt"
 depends          "java"
-depends          "metachef"
+depends          "silverware"
 depends          "volumes"
 depends          "git"
 

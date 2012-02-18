@@ -10,7 +10,7 @@ depends          "java"
 depends          "apt"
 depends          "runit"
 depends          "volumes"
-depends          "metachef"
+depends          "silverware"
 depends          "hadoop_cluster"
 
 recipe           "zookeeper::client",                  "Installs Zookeeper client libraries"

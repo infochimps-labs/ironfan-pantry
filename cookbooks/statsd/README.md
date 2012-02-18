@@ -24,7 +24,7 @@ Cookbook dependencies:
 * runit
 * nodejs
 * graphite
-* metachef
+* silverware
 
 
 ## Attributes

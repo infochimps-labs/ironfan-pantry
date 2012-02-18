@@ -25,7 +25,7 @@ Cookbook dependencies:
 * java
 * runit
 * volumes
-* metachef
+* silverware
 
 
 ## Attributes

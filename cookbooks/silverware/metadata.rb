@@ -7,28 +7,28 @@ version          "3.0.4"
 description      "Cluster orchestration -- coordinates discovery, integration and decoupling of cookbooks"
 
 
-recipe           "metachef::default",                  "Base configuration for metachef"
+recipe           "silverware::default",                  "Base configuration for silverware"
 
 %w[ debian ubuntu ].each do |os|
   supports os
 end
 
-attribute "metachef/conf_dir",
+attribute "silverware/conf_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/etc/metachef"
+  :default               => "/etc/silverware"
 
-attribute "metachef/log_dir",
+attribute "silverware/log_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/var/log/metachef"
+  :default               => "/var/log/silverware"
 
-attribute "metachef/home_dir",
+attribute "silverware/home_dir",
   :display_name          => "",
   :description           => "",
-  :default               => "/etc/metachef"
+  :default               => "/etc/silverware"
 
-attribute "metachef/user",
+attribute "silverware/user",
   :display_name          => "",
   :description           => "",
   :default               => "root"

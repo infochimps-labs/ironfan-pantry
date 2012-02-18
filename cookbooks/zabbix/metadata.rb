@@ -11,7 +11,7 @@ depends          "nginx"
 depends          "database", ">= 1.0.0"
 depends          "mysql", ">= 1.2.0"
 depends          "ufw", ">= 0.6.1"
-depends          "metachef"
+depends          "silverware"
 
 recipe           "zabbix::default",                    "Sets up Zabbix directory structure & user."
 recipe           "zabbix::agent_prebuild",             "Downloads, configures, & launches pre-built Zabbix agent"

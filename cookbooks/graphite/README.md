@@ -44,7 +44,7 @@ Cookbook dependencies:
 * runit
 * ganglia
 * install_from
-* metachef
+* silverware
 
 
 ## Attributes

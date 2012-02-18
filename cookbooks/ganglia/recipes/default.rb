@@ -19,6 +19,6 @@
 # limitations under the License.
 #
 
-include_recipe "metachef"
+include_recipe "silverware"
 include_recipe "java"
 complain_if_not_sun_java(:ganglia)

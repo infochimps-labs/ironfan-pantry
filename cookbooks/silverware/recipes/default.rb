@@ -1,6 +1,6 @@
 #
-# Cookbook Name::       metachef
-# Description::         Base configuration for metachef
+# Cookbook Name::       silverware
+# Description::         Base configuration for silverware
 # Recipe::              default
 # Author::              Philip (flip) Kromer
 #
@@ -18,5 +18,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-

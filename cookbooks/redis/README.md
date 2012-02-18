@@ -26,7 +26,7 @@ Cookbook dependencies:
 
 * runit
 * install_from
-* metachef
+* silverware
 
 
 ## Attributes

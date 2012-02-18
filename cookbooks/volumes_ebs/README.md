@@ -25,7 +25,7 @@ Cookbook dependencies:
 
 * aws
 * volumes
-* metachef
+* silverware
 
 
 ## Attributes

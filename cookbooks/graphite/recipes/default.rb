@@ -20,7 +20,7 @@
 #
 
 include_recipe "python"
-include_recipe 'metachef'
+include_recipe 'silverware'
 
 daemon_user(:graphite)
 

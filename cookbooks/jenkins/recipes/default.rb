@@ -21,7 +21,7 @@
 #
 
 include_recipe "java"
-include_recipe "metachef"
+include_recipe "silverware"
 include_recipe "volumes"
 
 jenkins_server = discover(:jenkins, :server)

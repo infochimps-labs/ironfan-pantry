@@ -19,5 +19,5 @@
 # limitations under the License.
 #
 
-include_recipe 'metachef'
+include_recipe 'silverware'
 include_recipe 'volumes'

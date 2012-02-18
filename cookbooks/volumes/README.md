@@ -253,7 +253,7 @@ Supports platforms: debian and ubuntu
 
 Cookbook dependencies:
 
-* metachef
+* silverware
 * xfs
 
 
@@ -295,9 +295,9 @@ Cookbook dependencies:
     
     If the `node[:virtualization][:system]` is 'xen' **and** there are no /dev/sdXX devices at all **and** there are /dev/xvdXX devices present, volumes will internally convert any device point of the form `/dev/sdXX` to `/dev/xvdXX`. If the example above is a Xen box, the values for :device will instead be `"/dev/xvdb"`, `"/dev/xvdc"`, `"/dev/xvdj"` and `"/dev/xvdk"`.
     
-* `[:metachef][:aws_credential_source]` -  (default: "data_bag")
+* `[:silverware][:aws_credential_source]` -  (default: "data_bag")
   - where should we get the AWS keys?
-* `[:metachef][:aws_credential_handle]` -  (default: "main")
+* `[:silverware][:aws_credential_handle]` -  (default: "main")
   - the key within that data bag
 
 ## License and Author

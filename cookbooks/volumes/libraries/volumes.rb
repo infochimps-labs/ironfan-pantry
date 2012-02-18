@@ -1,5 +1,5 @@
 require File.expand_path('simple_volume.rb', File.dirname(__FILE__))
-module Metachef
+module Silverware
   module_function
 
   # mountable volume mapping for this node
@@ -17,7 +17,7 @@ module Metachef
     return {} unless node[:volumes]
     vols = Mash.new
     node[:volumes].each do |vol_name, vol_hsh|
-      vols[vol_name] = Metachef::SimpleVolume.new(vol_name, node, vol_hsh.to_hash)
+      vols[vol_name] = Silverware::SimpleVolume.new(vol_name, node, vol_hsh.to_hash)
       vols[vol_name].fix_for_xen!
     end
     vols
@@ -50,6 +50,6 @@ module Metachef
 
 end
 
-class Chef::Recipe              ; include Metachef ; end
-class Chef::Resource::Directory ; include Metachef ; end
-class Chef::Resource            ; include Metachef ; end
+class Chef::Recipe              ; include Silverware ; end
+class Chef::Resource::Directory ; include Silverware ; end
+class Chef::Resource            ; include Silverware ; end

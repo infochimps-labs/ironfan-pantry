@@ -31,7 +31,7 @@ Cookbook dependencies:
 * apt
 * runit
 * volumes
-* metachef
+* silverware
 * dashpot
 * hadoop_cluster
 * zookeeper
