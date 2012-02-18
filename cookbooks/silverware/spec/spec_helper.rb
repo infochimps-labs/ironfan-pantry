@@ -1,6 +1,6 @@
 require 'rspec'
 
-SILVERWARE_DIR = File.expand_path(File.dirname(__FILE__)+'/..') unless defined?(SILVERWARE_DIR)
+SILVERWARE_DIR = File.expand_path("..", File.realdirpath(File.dirname(__FILE__))) unless defined?(SILVERWARE_DIR)
 def SILVERWARE_DIR(*paths) File.join(SILVERWARE_DIR, *paths); end
 
 require 'chef/node'
