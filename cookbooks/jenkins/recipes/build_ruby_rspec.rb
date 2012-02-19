@@ -25,4 +25,4 @@
   gem_package(pkg){ action :install }
 end
 
-JenkinsHelpers.jenkins_plugins('rake')
+jenkins_plugins('rake')

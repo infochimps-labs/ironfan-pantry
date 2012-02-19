@@ -21,4 +21,4 @@
 
 include_recipe 'git'
 
-JenkinsHelpers.jenkins_plugins('git', 'github', 'github-api')
+jenkins_plugins('git', 'github', 'github-api')

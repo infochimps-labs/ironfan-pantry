@@ -22,68 +22,74 @@ include_recipe 'route53'
 # aws = data_bag_item("aws", "route53")
 aws = node[:aws]
 
-public_hostname    =  node.name
-public_fqdn        = [public_hostname, node[:route53][:zone]].compact.join(".")
+if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key]
 
-# point "gordo-datanode-3.awesomeco.com" => the cloud public_hostname
-route53_rr(public_hostname) do
-  zone          node[:route53][:zone]
+  public_hostname    =  node.name
+  public_fqdn        = [public_hostname, node[:route53][:zone]].compact.join(".")
 
-  fqdn          public_fqdn
-  type          "CNAME"
-  values        ["#{node[:cloud][:public_hostname]}."]
-  ttl           node[:route53][:ttl]
+  # point "gordo-datanode-3.awesomeco.com" => the cloud public_hostname
+  route53_rr(public_hostname) do
+    zone          node[:route53][:zone]
 
-  action        :update
-  aws_access_key_id     aws["aws_access_key_id"]
-  aws_secret_access_key aws["aws_secret_access_key"]
+    fqdn          public_fqdn
+    type          "CNAME"
+    values        ["#{node[:cloud][:public_hostname]}."]
+    ttl           node[:route53][:ttl]
+
+    action        :update
+    aws_access_key_id     aws[:aws_access_key_id]
+    aws_secret_access_key aws[:aws_secret_access_key]
+  end
+
+  private_hostname    =  "#{node.name}-internal"
+  private_fqdn        = [private_hostname, node[:route53][:zone]].compact.join(".")
+
+  # point "gordo-datanode-3-internal.awesomeco.com" => the cloud local_hostname
+  route53_rr(private_hostname) do
+    zone          node[:route53][:zone]
+
+    fqdn          private_fqdn
+    type          "CNAME"
+    values        ["#{node[:cloud][:local_hostname]}."]
+    ttl           node[:route53][:ttl]
+
+    action        :update
+    aws_access_key_id     aws[:aws_access_key_id]
+    aws_secret_access_key aws[:aws_secret_access_key]
+  end
+
+  # node.automatic_attrs["hostname"] = private_hostname
+  # node.automatic_attrs["fqdn"]     = private_fqdn
+  #
+  # ruby_block "edit etc hosts" do
+  #   block do
+  #     rc = Chef::Util::FileEdit.new("/etc/hosts")
+  #     rc.search_file_replace_line(
+  #       /^127\.0\.0\.1(.*)localhost.localdomain localhost$/,
+  #        "127.0.0.1 #{private_hostname} #{private_fqdn} \\1 localhost")
+  #     rc.write_file
+  #   end
+  # end
+  #
+  # execute("hostname --file /etc/hostname"){ action(:nothing) }
+  # file "/etc/hostname" do
+  #   content       private_fqdn
+  #   notifies      :run, resources(:execute => "hostname --file /etc/hostname"), :immediately
+  # end
+
+  # service "network" do
+  #   supports      :status => true, :restart => true, :reload => true
+  #   action        :nothing
+  # end
+  #
+  # template "/etc/dhcp/dhclient.conf" do
+  #   source        "dhclient.conf.erb"
+  #   owner         "root"
+  #   group         "root"
+  #   mode          0644
+  #   notifies      :restart, resources(:service => "network"), :immediately
+  # end
+
+else
+  Chef::Log.warn("Cannot set hostname, because we have no AWS credentials: set node[:aws][:aws_access_key_id] and node[:aws][:aws_secret_access_key]")
 end
-
-private_hostname    =  "#{node.name}-internal"
-private_fqdn        = [private_hostname, node[:route53][:zone]].compact.join(".")
-
-# point "gordo-datanode-3-internal.awesomeco.com" => the cloud local_hostname
-route53_rr(private_hostname) do
-  zone          node[:route53][:zone]
-
-  fqdn          private_fqdn
-  type          "CNAME"
-  values        ["#{node[:cloud][:local_hostname]}."]
-  ttl           node[:route53][:ttl]
-
-  action        :update
-  aws_access_key_id     aws["aws_access_key_id"]
-  aws_secret_access_key aws["aws_secret_access_key"]
-end
-
-# node.automatic_attrs["hostname"] = private_hostname
-# node.automatic_attrs["fqdn"]     = private_fqdn
-#
-# ruby_block "edit etc hosts" do
-#   block do
-#     rc = Chef::Util::FileEdit.new("/etc/hosts")
-#     rc.search_file_replace_line(
-#       /^127\.0\.0\.1(.*)localhost.localdomain localhost$/,
-#        "127.0.0.1 #{private_hostname} #{private_fqdn} \\1 localhost")
-#     rc.write_file
-#   end
-# end
-#
-# execute("hostname --file /etc/hostname"){ action(:nothing) }
-# file "/etc/hostname" do
-#   content       private_fqdn
-#   notifies      :run, resources(:execute => "hostname --file /etc/hostname"), :immediately
-# end
-
-# service "network" do
-#   supports      :status => true, :restart => true, :reload => true
-#   action        :nothing
-# end
-#
-# template "/etc/dhcp/dhclient.conf" do
-#   source        "dhclient.conf.erb"
-#   owner         "root"
-#   group         "root"
-#   mode          0644
-#   notifies      :restart, resources(:service => "network"), :immediately
-# end

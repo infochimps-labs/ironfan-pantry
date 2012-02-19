@@ -16,3 +16,7 @@ module JenkinsHelpers
     end
   end
 end
+
+Chef::Recipe.class_eval do
+  include JenkinsHelpers
+end
