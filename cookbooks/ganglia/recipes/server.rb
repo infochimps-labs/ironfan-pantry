@@ -27,6 +27,7 @@ daemon_user('ganglia.server')
 
 package "ganglia-webfrontend"
 package "gmetad"
+package "ganglia-monitor"
 
 #
 # Create service
@@ -37,6 +38,7 @@ standard_dirs('ganglia.server') do
 end
 
 kill_old_service('gmetad')
+kill_old_service('ganglia-monitor'){ pattern 'gmond' }
 
 runit_service "ganglia_server" do
   run_state     node[:ganglia][:server][:run_state]
