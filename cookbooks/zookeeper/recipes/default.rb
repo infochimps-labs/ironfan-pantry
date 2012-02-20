@@ -26,14 +26,21 @@ include_recipe "java" ; complain_if_not_sun_java(:cassandra)
 
 include_recipe "hadoop_cluster::add_cloudera_repo"
 
+# === User
+
+daemon_user(:zookeeper) do
+  home          node[:zookeeper][:data_dir]
+  manage_home   false
+end
+
 #
-# Install package
+# === Install package
 #
 
 package "hadoop-zookeeper"
 
 #
-# Configuration files
+# === Configuration files
 #
 
 standard_dirs('zookeeper.server') do

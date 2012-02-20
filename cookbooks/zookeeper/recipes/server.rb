@@ -23,12 +23,6 @@ include_recipe 'runit'
 include_recipe 'silverware'
 include_recipe "zookeeper::default"
 
-# === User
-
-daemon_user(:zookeeper) do
-  home          node[:zookeeper][:data_dir]
-end
-
 # === Locations
 
 # Zookeeper snapshots on a single persistent drive
