@@ -18,3 +18,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+standard_dirs('silverware') do
+  directories   :conf_dir, :log_dir, :home_dir
+end

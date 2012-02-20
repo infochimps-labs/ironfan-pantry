@@ -64,10 +64,10 @@ file "#{node[:silverware][:conf_dir]}/chef_resources-#{node.name}.json" do
   mode          "0600" # only readable by root
 end
 
-ruby_block('dump aspects') do
-  block do
-    Ironfan::Discovery.dump_aspects(self.run_context)
-  end
-end
+# ruby_block('dump aspects') do
+#   block do
+#     Ironfan::Discovery.dump_aspects(self.run_context)
+#   end
+# end
 
 # rr = run_context.resource_collection.select{|r| r.is_a?(Chef::Resource::File) }.map(&:dup).each{|r| r.content '' }
