@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       elasticsearch
 # Description::         Install Plugins
-# Recipe::              install_plugins
+# Recipe::              plugins
 # Author::              GoTime, modifications by Infochimps
 #
 # Copyright 2011, GoTime, modifications by Infochimps

@@ -21,8 +21,8 @@ recipe           "hbase::master",                      "HBase Master"
 recipe           "hbase::regionserver",                "HBase Regionserver"
 recipe           "hbase::stargate",                    "HBase Stargate: HTTP frontend to HBase"
 recipe           "hbase::thrift",                      "HBase Thrift Listener"
-recipe           "hbase::minidash",                   "Simple dashboard for HBase config and state"
-recipe           "hbase::config",                      "Finalizes the config, writes out the config files"
+recipe           "hbase::minidash",                    "Simple dashboard for HBase config and state"
+recipe           "hbase::config_files",                "Finalizes the config, writes out the config files"
 
 %w[ debian ubuntu ].each do |os|
   supports os
