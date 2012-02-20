@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe "pig::default"
-include_recipe "install_from"
+include_recipe 'pig'
+include_recipe 'install_from'
 
 package "sun-java6-jdk"
 package "sun-java6-bin"

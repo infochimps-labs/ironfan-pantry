@@ -30,7 +30,7 @@ for a week, and every 10 minutes for 5 years.
 * `carbon`                   - Carbon
 * `default`                  - Base configuration for graphite
 * `ganglia`                  - Ganglia
-* `web`                      - Web
+* `dashboard`                - Web Dashboard
 * `whisper`                  - Whisper
 
 ## Integration

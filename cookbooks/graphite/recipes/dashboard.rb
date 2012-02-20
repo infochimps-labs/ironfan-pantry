@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       graphite
-# Description::         Web
-# Recipe::              web
+# Description::         Web Dashboard
+# Recipe::              dashboard
 # Author::              Heavy Water Software Inc.
 #
 # Copyright 2011, Heavy Water Software Inc.
@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe "apache2::mod_python"
-include_recipe "runit"
+include_recipe 'apache2::mod_python'
+include_recipe 'runit'
 include_recipe 'install_from'
 
 package "python-cairo-dev"
@@ -37,7 +37,11 @@ install_from_release('dashboard') do
 end
 
 dashboard_version = node[:graphite][:dashboard][:version]
-dashboard_dir = node[:graphite][:dashboard][:home_dir] ||  "/usr/local/share/graphite_dashboard"
+dashboard_dir     = node[:graphite][:dashboard][:home_dir]
+
+standard_dirs('graphite.dashboard') do
+  directories   :conf_dir, :home_dir, :log_dir, :pid_dir
+end
 
 execute "install graphite-web" do
   command       "python setup.py install"

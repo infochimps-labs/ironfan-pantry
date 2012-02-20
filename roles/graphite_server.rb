@@ -2,8 +2,8 @@ name        'graphite_server'
 description 'installs graphite and launches its web services'
 
 run_list *%w[
-  graphite
+  graphite::default
   graphite::carbon
-  graphite::web
+  graphite::dashboard
   graphite::whisper
   ]

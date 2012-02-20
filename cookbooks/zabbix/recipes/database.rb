@@ -19,6 +19,6 @@
 # limitations under the License.
 #
 
-include_recipe "database"
+include_recipe 'database'
 
 include_recipe "zabbix::database_#{node.zabbix.database.install_method}"

@@ -20,8 +20,8 @@
 #
 
 # Execute apache2 receipe + mod_php5 receipe
-include_recipe "apache2"
-include_recipe "apache2::mod_php5"
+include_recipe 'apache2'
+include_recipe 'apache2::mod_php5'
 
 if node[:zabbix][:web][:fqdn] != nil
   #install vhost for zabbix frontend
@@ -29,5 +29,5 @@ if node[:zabbix][:web][:fqdn] != nil
     server_name node.zabbix.web.fqdn
     server_aliases "zabbix"
     docroot "/opt/zabbix/web"
-  end  
+  end
 end

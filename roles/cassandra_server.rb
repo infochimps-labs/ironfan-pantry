@@ -3,9 +3,12 @@ description 'Part of a cassandra database'
 
 run_list *%w[
   ntp
-  cassandra
+  cassandra::default
   cassandra::install_from_release
-  cassandra::autoconf
+  cassandra::bintools
+
+  cassandra::config_from_data_bag
+  cassandra::authentication
   cassandra::server
   cassandra::jna_support
   cassandra::config_files

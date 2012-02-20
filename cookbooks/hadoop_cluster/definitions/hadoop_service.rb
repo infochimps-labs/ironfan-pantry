@@ -9,9 +9,10 @@ define(:hadoop_service, :service_name => nil, :package_name => nil) do
   # Set up service
   runit_service "hadoop_#{name}" do
     run_state     node[:hadoop][name][:run_state]
-    options       Mash.new(:service_name => service_name
-      ).merge(node[:hadoop]
-      ).merge(node[:hadoop][name])
+    options       Mash.new().
+      merge(node[:hadoop]).
+      merge(node[:hadoop][name]).
+      merge(:service_name => service_name, :component_name => name)
   end
   kill_old_service("#{node[:hadoop][:handle]}-#{name}") do
     only_if{ File.exists?("/etc/init.d/#{node[:hadoop][:handle]}-#{name}") }

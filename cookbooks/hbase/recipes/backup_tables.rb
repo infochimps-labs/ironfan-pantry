@@ -19,11 +19,10 @@
 # limitations under the License.
 #
 
-include_recipe "hbase"
+include_recipe 'hbase'
 
 template "/etc/cron.weekly/backup_hbase_tables" do
   source        "export_hbase_tables.rb.erb"
   mode          "0744"
   variables(    :hbase  => node[:hbase] )
 end
-

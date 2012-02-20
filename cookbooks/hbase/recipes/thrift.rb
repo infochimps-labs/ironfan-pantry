@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe "hbase"
-include_recipe "runit"
+include_recipe 'hbase'
+include_recipe 'runit'
 
 # Install
 package "hadoop-hbase-thrift"

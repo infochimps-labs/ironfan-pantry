@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe  'silverware'
+include_recipe 'silverware'
 
 standard_dirs('minidash') do
   directories  :home_dir, :log_dir, :conf_dir

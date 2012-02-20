@@ -19,12 +19,10 @@
 # limitations under the License.
 #
 
+include_recipe 'cassandra'
+
 home_dir        = node[:cassandra][:home_dir]
 cassandra_install_dir = home_dir + '-git'
-
-include_recipe "java"
-package 'sun-java6-jdk'
-package 'sun-java6-bin'
 
 standard_dirs('cassandra') do
   directories   :home_dir

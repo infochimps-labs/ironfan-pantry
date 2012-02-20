@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe  'minidash'
-include_recipe  'runit'
+include_recipe 'minidash'
+include_recipe 'runit'
 
 #
 # Lightweight THTTPD server

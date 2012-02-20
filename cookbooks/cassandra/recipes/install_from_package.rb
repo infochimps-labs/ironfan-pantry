@@ -19,31 +19,4 @@
 # limitations under the License.
 #
 
-include_recipe "apt" 
-
-apt_repository "apache-cassandra" do
-  uri "http://www.apache.org/dist/cassandra/debian"
-  distribution "10x"
-  components ["main"]
-  action :add
-  keyserver "pgp.mit.edu"
-  key "F758CE318D77295D"
-end
-
-# According to http://wiki.apache.org/cassandra/DebianPackaging
-# 2 keys need to be added.  This extra repo, which is a duplicate of the above,
-# is to add the second key
-apt_repository "apache-cassandra-extrakey" do
-  uri "http://www.apache.org/dist/cassandra/debian"
-  distribution "10x"
-  components ["main"]
-  action :add
-  keyserver "pgp.mit.edu"
-  key "2B5C1B00"
-end
-
-
-
-package "cassandra" do
-  action :install
-end
+package "cassandra"

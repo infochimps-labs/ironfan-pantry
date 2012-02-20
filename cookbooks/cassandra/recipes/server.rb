@@ -19,15 +19,13 @@
 # limitations under the License.
 #
 
-include_recipe "runit"
+include_recipe 'runit'
 
 directory('/etc/sv/cassandra/env'){ owner 'root' ; action :create ; recursive true }
 runit_service "cassandra" do
   options       node[:cassandra]
   run_state     node[:cassandra][:run_state]
 end
-
-include_recipe("cassandra::authentication")
 
 # have some fraction of the nodes announce as a seed
 if ( node[:cassandra][:seed_node] || (node[:facet_index].to_i % 3 == 0) )

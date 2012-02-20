@@ -34,7 +34,7 @@ else
   Chef::Log.debug("RVM gem was installed, so installation skipped")
 end
 
-include_recipe "rvm::system"
+include_recipe 'rvm::system'
 
 if node['rvm']['install_rubies'] == true || node['rvm']['install_rubies'] == "true"
   # set a default ruby

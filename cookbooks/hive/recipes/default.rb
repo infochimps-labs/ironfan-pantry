@@ -19,7 +19,11 @@
 # limitations under the License.
 #
 
-include_recipe "java::sun"
-include_recipe "hadoop_cluster::add_cloudera_repo"
+unless( %w[sun oracle].include?(node['java']['install_flavor'].to_s))
+  warn "Warning!! You are *strongly* recommended to use Sun Java for hive. Set node['java']['install_flavor'] = 'oracle' in a role -- right now it's '#{node['java']['install_flavor']}'"
+end
+
+include_recipe 'java'
+include_recipe 'hadoop_cluster::add_cloudera_repo'
 
 package "hadoop-hive"

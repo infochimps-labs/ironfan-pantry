@@ -19,12 +19,10 @@
 # limitations under the License.
 #
 
-include_recipe "runit"
+include_recipe 'runit'
 include_recipe 'install_from'
 
 package "python-twisted"
-
-carbon_dir = node[:graphite][:carbon][:home_dir] || "/usr/local/share/carbon"
 
 install_from_release('carbon') do
   version       node[:graphite][:carbon][:version]
@@ -54,7 +52,7 @@ template "#{node[:graphite][:conf_dir]}/storage-schemas.conf"
 template "/etc/init.d/carbon-cache" do
   source "init.d_carbon-cache.erb"
   mode 0755
-  variables :carbon_dir => carbon_dir
+  variables :carbon_dir => node[:graphite][:carbon][:home_dir]
 end
 
 # # execute "setup carbon sysvinit script" do

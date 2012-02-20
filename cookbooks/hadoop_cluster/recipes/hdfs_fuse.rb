@@ -22,7 +22,7 @@
 class Chef::Recipe; include HadoopCluster ; end
 
 hadoop_package "fuse"
-include_recipe "runit"
+include_recipe 'runit'
 
 directory "/hdfs" do
   owner         "hdfs"

@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "apache2"
+include_recipe 'apache2'
 
 package_provider = Chef::Provider::Package::Apt
 package "libapache2-mod-proxy-html"

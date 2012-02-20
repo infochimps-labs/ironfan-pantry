@@ -19,13 +19,13 @@
 # limitations under the License.
 #
 
-include_recipe "python"
+include_recipe 'python'
 include_recipe 'silverware'
 
 daemon_user(:graphite)
 
 standard_dirs('graphite') do
-  directories   :conf_dir, :data_dir, :home_dir, :log_dir
+  directories   :conf_dir, :data_dir, :log_dir, :pid_dir
 end
 
 # Data onto a bulk device

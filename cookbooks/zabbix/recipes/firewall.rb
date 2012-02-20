@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "ufw"
+include_recipe 'ufw'
 # enable platform default firewall
 firewall "ufw" do
   action :enable
@@ -42,7 +42,7 @@ if node.zabbix.server.install == true
   end if zabbix_clients
 
 end
- 
+
 # Search for some client
 zabbix_servers = search(:node ,'recipes:zabbix\:\:server')
 if zabbix_servers

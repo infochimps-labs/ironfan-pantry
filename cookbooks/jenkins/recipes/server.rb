@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "jenkins::default"
+include_recipe 'jenkins'
 
 announce(:jenkins, :server,
   :port => node[:jenkins][:server][:port],
@@ -46,7 +46,7 @@ end
 case node.platform
 when "ubuntu", "debian"
 
-  include_recipe "runit"
+  include_recipe 'runit'
   package        "daemon"
 
   template '/etc/default/jenkins' do

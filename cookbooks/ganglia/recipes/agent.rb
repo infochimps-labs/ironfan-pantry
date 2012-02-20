@@ -42,7 +42,7 @@ kill_old_service('ganglia-monitor'){ pattern 'gmond' }
 
 runit_service "ganglia_agent" do
   run_state     node[:ganglia][:agent][:run_state]
-  options       node[:ganglia]
+  options       Mash.new(node[:ganglia]).merge(node[:ganglia][:agent])
 end
 
 announce(:ganglia, :agent,

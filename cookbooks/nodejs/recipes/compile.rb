@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "python"
+include_recipe 'python'
 
 package "git"
 package "build-essential"

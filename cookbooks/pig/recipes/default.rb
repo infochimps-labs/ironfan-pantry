@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-unless( node['java']['install_flavor'] == 'sun')
-  warn "Warning!! You are *strongly* recommended to use Sun Java for pig. Set node['java']['install_flavor'] = 'sun' in a role -- right now it's '#{node['java']['install_flavor']}'"
+unless( %w[sun oracle].include?(node['java']['install_flavor'].to_s))
+  warn "Warning!! You are *strongly* recommended to use Sun Java for pig. Set node['java']['install_flavor'] = 'oracle' in a role -- right now it's '#{node['java']['install_flavor']}'"
 end
 
-include_recipe "java"
+include_recipe 'java'

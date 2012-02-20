@@ -9,6 +9,6 @@
 # (no license specified)
 #
 
-include_recipe "silverware"
+include_recipe 'silverware'
 
 package "nfs-common"

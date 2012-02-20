@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       cassandra
 # Description::         Automatically configure nodes from chef-server information.
-# Recipe::              autoconf
+# Recipe::              config_from_data_bag
 # Author::              Benjamin Black (<b@b3k.us>)
 #
 # Copyright 2010, Benjamin Black
@@ -50,26 +50,9 @@
 # Nodes are expected to be tagged with [:cassandra][:cluster_name] to indicate the cluster to which
 # they belong (nodes are in exactly 1 cluster in this version of the cookbook), and may optionally be
 # tagged with [:cassandra][:seed] set to true if a node is to act as a seed.
-clusters = data_bag_item('cassandra', 'clusters') rescue nil
-unless clusters.nil? || clusters[node[:cassandra][:cluster_name]].nil?
-  clusters[node[:cassandra][:cluster_name]].each_pair do |k, v|
+cassandra_config = data_bag_item('cassandra', 'clusters') rescue nil
+unless cassandra_config.nil? || cassandra_config[node[:cluster_name]].nil?
+  cassandra_config[node[:cassandra][:cluster_name]].each_pair do |k, v|
     node[:cassandra][k] = v
   end
 end
-
-# Configure the various addrs for binding
-node[:cassandra][:listen_addr] = private_ip_of(node)
-node[:cassandra][:rpc_addr]    = private_ip_of(node)
-# And find out who else provides cassandra in our cluster
-all_seeds  = discover_all(:elasticsearch, :seed).map(&:private_ip)
-all_seeds  = [private_ip_of(node), all_seeds] if (all_seeds.length < 2)
-node[:cassandra][:seeds] = all_seeds.flatten.compact.uniq.sort
-
-# Pull the initial token from the cassandra data bag if one is given
-if node[:cassandra][:initial_tokens] && (not node[:facet_index].nil?)
-  node[:cassandra][:initial_token] = node[:cassandra][:initial_tokens][node[:facet_index].to_i]
-end
-# If there is an initial token, force auto_bootstrap to false.
-node[:cassandra][:auto_bootstrap] = false if node[:cassandra][:initial_token]
-
-node_changed!

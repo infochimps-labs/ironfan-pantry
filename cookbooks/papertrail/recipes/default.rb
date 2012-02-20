@@ -23,7 +23,7 @@ return unless node[:papertrail][:logger] == "rsyslog"
 
 syslogger = "rsyslog"
 
-include_recipe "rsyslog"
+include_recipe 'rsyslog'
 package "rsyslog-gnutls"
 
 remote_file node[:papertrail][:cert_file] do

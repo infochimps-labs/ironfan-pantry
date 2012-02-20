@@ -4,6 +4,7 @@ description 'flume agent'
 run_list(*%w[
   flume
   flume::agent
-  flume::jruby_plugin
-  flume::hbase_sink_plugin
+  flume::plugin-hbase_sink
+  flume::plugin-jruby
+  flume::config_files
 ])

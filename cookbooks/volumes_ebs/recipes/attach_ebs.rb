@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "aws"
+include_recipe 'aws'
 include Silverware
 
 aws  = mntvol_aws_credentials

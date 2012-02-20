@@ -21,7 +21,7 @@
 
 include_recipe 'runit'
 include_recipe 'silverware'
-include_recipe "zookeeper::default"
+include_recipe 'zookeeper'
 
 # === Locations
 
@@ -60,7 +60,3 @@ runit_service "zookeeper_server" do
   run_state     node[:zookeeper][:server][:run_state]
   options       node[:zookeeper]
 end
-
-# === Finalize
-
-include_recipe 'zookeeper::config_files'

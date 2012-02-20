@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe "flume::default"
-include_recipe "runit"
+include_recipe 'flume'
+include_recipe 'runit'
 
 package "flume-master"
 

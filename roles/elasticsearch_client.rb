@@ -5,7 +5,8 @@ description "Client for an elasticsearch cluster: doesn't run daemons, just inst
 run_list(*%w[
   elasticsearch::default
   elasticsearch::install_from_release
-  elasticsearch::install_plugins
+  elasticsearch::plugins
 
   elasticsearch::client
+  elasticsearch::config_files
 ])

@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: mongodb
-# Recipe:: default
+# Recipe:: add_apt_repo
 #
-# Author:: Gerhard Lazu (<gerhard.lazu@papercavalier.com>)
+# Author:: Michael Shapiro (<koudelka@ryoukai.org>)
 #
-# Copyright 2010, Paper Cavalier, LLC
+# Copyright 2011, Active Prospect, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,4 +19,19 @@
 # limitations under the License.
 #
 
-# placeholder: see roles/mongodb_server.rb
+execute "apt-get update" do
+  action :nothing
+end
+
+execute "add 10gen apt key" do
+  command "apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10"
+  action :nothing
+end
+
+template "/etc/apt/sources.list.d/mongodb.list" do
+  owner "root"
+  mode "0644"
+  source "mongodb.list.#{node[:platform]}.erb"
+  notifies :run, resources(:execute => "add 10gen apt key"), :immediately
+  notifies :run, resources(:execute => "apt-get update"), :immediately
+end

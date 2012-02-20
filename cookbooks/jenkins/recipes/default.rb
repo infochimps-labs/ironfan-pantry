@@ -20,9 +20,9 @@
 # limitations under the License.
 #
 
-include_recipe "java"
-include_recipe "silverware"
-include_recipe "volumes"
+include_recipe 'java'
+include_recipe 'silverware'
+include_recipe 'volumes'
 
 jenkins_server = discover(:jenkins, :server)
 if jenkins_server

@@ -32,8 +32,8 @@ module Ironfan
     # Assert node state
     #
     def complain_if_not_sun_java(program)
-      unless( node['java']['install_flavor'] == 'sun')
-        warn "Warning!! You are *strongly* recommended to use Sun Java for #{program}. Set node['java']['install_flavor'] = 'sun' in a role -- right now it's '#{node['java']['install_flavor']}'"
+      unless( %w[sun oracle].include?(node['java']['install_flavor'].to_s))
+        warn "Warning!! You are *strongly* recommended to use Sun/Oracle Java for #{program}. Set node['java']['install_flavor'] = 'oracle' in a role -- right now it's '#{node['java']['install_flavor']}'"
       end
     end
 

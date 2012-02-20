@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       hbase
 # Description::         Finalizes the config, writes out the config files
-# Recipe::              config
+# Recipe::              config_files
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
 # Copyright 2011, Philip (flip) Kromer - Infochimps, Inc
@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "hbase"
+include_recipe 'hbase'
 
 #
 # Configuration files

@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "silverware"
+include_recipe 'silverware'
 
 # Create zabbix User
 daemon_user(:zabbix) do

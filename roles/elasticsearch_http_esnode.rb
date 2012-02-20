@@ -5,8 +5,9 @@ description "Elasticsearch HTTP esnode -- routes HTTP api requests to data nodes
 run_list(*%w[
   elasticsearch::default
   elasticsearch::install_from_release
-  elasticsearch::install_plugins
+  elasticsearch::plugins
 
   elasticsearch::server
   elasticsearch::load_balancer
+  elasticsearch::config_files
 ])

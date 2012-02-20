@@ -70,7 +70,7 @@ end
 
 service "mongodb" do
   supports :start => true, :stop => true, "force-stop" => true, :restart => true, "force-reload" => true, :status => true
-  action [:enable, :start]
+  action        node[:mongodb][:server][:run_state]
   subscribes :restart, resources(:template => node[:mongodb][:config])
   case init_system
   when "upstart"

@@ -7,7 +7,6 @@ version          "3.0.4"
 description      "HBase: a massively-scalable high-throughput datastore based on the Hadoop HDFS"
 
 depends          "java"
-depends          "apt"
 depends          "runit"
 depends          "volumes"
 depends          "silverware"

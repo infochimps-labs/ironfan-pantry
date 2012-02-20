@@ -5,7 +5,8 @@ description "Elasticsearch Data esnode (holds and indexes data) for elasticsearc
 run_list(*%w[
   elasticsearch::default
   elasticsearch::install_from_release
-  elasticsearch::install_plugins
+  elasticsearch::plugins
 
   elasticsearch::server
+  elasticsearch::config_files
 ])

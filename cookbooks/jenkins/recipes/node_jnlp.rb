@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 
-include_recipe "runit"
+include_recipe 'runit'
 
 package 'groovy'
 

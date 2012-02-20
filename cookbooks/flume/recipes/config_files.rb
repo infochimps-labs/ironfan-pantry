@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       flume
 # Description::         Finalizes the config, writes out the config files
-# Recipe::              config
+# Recipe::              config_files
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
 # Copyright 2011, Infochimps, Inc.

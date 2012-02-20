@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "nginx"
+include_recipe 'nginx'
 
 template "/etc/zabbix/php.ini" do
   source 'php.ini.erb'

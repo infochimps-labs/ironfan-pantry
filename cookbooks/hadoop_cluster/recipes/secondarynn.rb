@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe "hadoop_cluster"
-include_recipe "runit"
+include_recipe 'hadoop_cluster'
+include_recipe 'runit'
 
 hadoop_service(:secondarynn) do
   service_name :secondarynamenode

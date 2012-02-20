@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-include_recipe "runit"
-include_recipe "tuning"
+include_recipe 'runit'
+include_recipe 'tuning'
 
 #
 # Locations
@@ -61,5 +61,3 @@ announce(:elasticsearch, :httpnode)
 
 # JMX should listen on the public interface
 node[:elasticsearch][:jmx_dash_addr] = public_ip_of(node)
-
-include_recipe "elasticsearch::config"

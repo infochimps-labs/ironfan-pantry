@@ -20,7 +20,7 @@
 #
 
 if platform?("redhat","centos","debian","ubuntu")
-  include_recipe "iptables"
+  include_recipe 'iptables'
   iptables_rule "port_jenkins" do
     enable        (node[:jenkins][:iptables_allow] == "enable")
     variables     :jenkins => node[:jenkins]

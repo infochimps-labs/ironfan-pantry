@@ -19,10 +19,10 @@
 # limitations under the License.
 #
 
-include_recipe "aws"
-include_recipe "volumes"
-include_recipe "silverware"
-include_recipe "java" ; complain_if_not_sun_java(:elasticsearch)
+include_recipe 'aws'
+include_recipe 'volumes'
+include_recipe 'silverware'
+include_recipe 'java' ; complain_if_not_sun_java(:elasticsearch)
 
 daemon_user(:elasticsearch) do
   create_group  true

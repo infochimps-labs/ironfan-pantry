@@ -7,7 +7,6 @@ version          "3.0.4"
 description      "Pig: a data analysis program for hadoop. It's like SQL but with less suck and more scalable."
 
 depends          "java"
-depends          "apt"
 depends          "install_from"
 depends          "hadoop_cluster"
 

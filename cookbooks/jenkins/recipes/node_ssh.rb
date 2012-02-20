@@ -33,7 +33,7 @@
 #   http://rubydoc.info/gems/jenkins/0.6.1/file/README.md
 #
 
-include_recipe "jenkins::default"
+include_recipe 'jenkins'
 
 ssher = discover(:jenkins, :ssher)
 

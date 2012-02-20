@@ -26,5 +26,3 @@ end
 %w[rubberband tire].each do |gem_pkg|
   gem_package gem_pkg
 end
-
-include_recipe "elasticsearch::config"

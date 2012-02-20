@@ -20,7 +20,7 @@
 # limitations under the License.
 #
 
-include_recipe "apt"
+include_recipe 'apt'
 
 # Add jenkins-ci.org package repo
 apt_repository 'jenkins-ci' do

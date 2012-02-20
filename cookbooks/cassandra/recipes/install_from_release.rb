@@ -48,5 +48,3 @@ link "#{node[:cassandra][:home_dir]}/cassandra.in.sh" do
   to "#{node[:cassandra][:home_dir]}/bin/cassandra.in.sh"
   action        :create
 end
-
-include_recipe "cassandra::bintools"

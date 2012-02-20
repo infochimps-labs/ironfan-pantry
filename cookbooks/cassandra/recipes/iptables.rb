@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "iptables"
+include_recipe 'iptables'
 
 iptables_rule "10cassandra" do
   source "iptables.erb"

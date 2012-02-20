@@ -16,7 +16,7 @@ depends          "silverware"
 recipe           "graphite::carbon",                   "Carbon"
 recipe           "graphite::default",                  "Base configuration for graphite"
 recipe           "graphite::ganglia",                  "Ganglia"
-recipe           "graphite::web",                      "Web"
+recipe           "graphite::dashboard",                "Web Dashboard"
 recipe           "graphite::whisper",                  "Whisper"
 
 %w[ debian ubuntu ].each do |os|

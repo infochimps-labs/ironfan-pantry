@@ -20,8 +20,8 @@
 #
 
 include_recipe 'ganglia'
-include_recipe "runit"
-include_recipe "volumes"
+include_recipe 'runit'
+include_recipe 'volumes'
 
 daemon_user('ganglia.server')
 
@@ -40,7 +40,7 @@ kill_old_service('gmetad')
 
 runit_service "ganglia_server" do
   run_state     node[:ganglia][:server][:run_state]
-  options       node[:ganglia]
+  options       Mash.new(node[:ganglia]).merge(node[:ganglia][:server])
 end
 
 announce(:ganglia, :server)

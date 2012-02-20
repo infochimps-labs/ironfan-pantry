@@ -7,7 +7,6 @@ version          "3.0.4"
 description      "Zookeeper, a distributed high-availability consistent datastore"
 
 depends          "java"
-depends          "apt"
 depends          "runit"
 depends          "volumes"
 depends          "silverware"

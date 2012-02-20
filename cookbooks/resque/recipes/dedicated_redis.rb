@@ -21,7 +21,7 @@
 
 include_recipe 'redis'
 include_recipe 'resque'
-include_recipe "runit"
+include_recipe 'runit'
 
 #
 # Config

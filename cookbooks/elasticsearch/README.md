@@ -45,7 +45,7 @@ This cookbook makes a few assumptions about where files live:
 /var/log/elasticsearch: elasticsearch log directory
 
 Use elasticsearch::autoconf to automatically discover nodes in the cluster. Use 
-elasticsearch::default for a more static deployment.
+elasticsearch for a more static deployment.
 
 Both options will configure ElasticSearch and start the ElasticSearch runit 
 service.

@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "mysql::client"
+include_recipe 'mysql::client'
 
 # Establish root MySQL connection
 root_mysql_conn    = {:host => node.zabbix.database.host, :username => node.zabbix.database.root_user, :password => node.zabbix.database.root_password}
@@ -36,7 +36,7 @@ rescue LoadError
     Chef::Log.warn "No native MySQL client support for OS #{node[:platform]}"
   end
   gem_package("mysql") { action :nothing }.run_action(:install)
-  Gem.clear_paths  
+  Gem.clear_paths
   require 'mysql'
 end
 
@@ -60,7 +60,7 @@ if mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
     password   node.zabbix.database.password
     action     :create
   end
-  
+
   # Populate Zabbix database
   populate_command = "#{base_mysql_command} < /opt/zabbix-#{node.zabbix.server.version}"
   execute "zabbix_populate_schema" do
@@ -103,7 +103,7 @@ ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
     api_access = 1
 
     mysql_connection.query(%Q{USE #{node.zabbix.database.name}})
-    
+
     existing_users = mysql_connection.query(%Q{SELECT userid FROM users WHERE `alias`="#{username}"})
     if existing_users.num_rows == 0
       mysql_connection.query(%Q{INSERT INTO users (alias, name, surname, passwd, rows_per_page, type) VALUES ("#{username}", "#{first_name}", "#{last_name}", "#{md5}", #{rows}, #{type})})

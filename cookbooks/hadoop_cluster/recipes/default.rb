@@ -19,13 +19,13 @@
 # limitations under the License.
 #
 
-include_recipe "java"
-include_recipe "volumes"
+include_recipe 'java' ; complain_if_not_sun_java(:hadoop)
+include_recipe 'volumes'
 class Chef::Recipe; include HadoopCluster ; end
 
-include_recipe "silverware"
-include_recipe "tuning"
-include_recipe "hadoop_cluster::add_cloudera_repo"
+include_recipe 'silverware'
+include_recipe 'tuning'
+include_recipe 'hadoop_cluster::add_cloudera_repo'
 
 #
 # Hadoop users and group
