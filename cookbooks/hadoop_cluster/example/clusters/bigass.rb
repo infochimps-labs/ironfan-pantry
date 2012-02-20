@@ -44,7 +44,7 @@ Ironfan.cluster 'bigass' do
   role                  :tuning
   role                  :jruby
   role                  :pig
-  recipe                'hadoop_cluster::cluster_conf', :last
+  recipe                'hadoop_cluster::config_files', :last
 
   facet :namenode do
     instances           1
@@ -90,7 +90,7 @@ Ironfan.cluster 'bigass' do
   # Launch the cluster with all of the below set to 'stop'.
   #
   # After initial bootstrap,
-  # * set the run_state to 'start' in the lines below
+  # * set the run_state to :start in the lines below
   # * run `knife cluster sync bonobo-master` to push those values up to chef
   # * run `knife cluster kick bonobo-master` to re-converge
   #

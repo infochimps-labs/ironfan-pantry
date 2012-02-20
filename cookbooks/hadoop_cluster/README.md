@@ -63,7 +63,7 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 ## Recipes 
 
 * `add_cloudera_repo`        - Add Cloudera repo to package manager
-* `cluster_conf`             - Configure cluster
+* `config_files`             - Configure cluster
 * `datanode`                 - Installs Hadoop Datanode service
 * `default`                  - Base configuration for hadoop_cluster
 * `doc`                      - Installs Hadoop documentation

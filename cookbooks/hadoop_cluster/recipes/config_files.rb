@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       hadoop_cluster
 # Description::         Configure cluster
-# Recipe::              cluster_conf
+# Recipe::              config_files
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
 # Copyright 2011, Philip (flip) Kromer - Infochimps, Inc

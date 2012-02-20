@@ -44,7 +44,7 @@ Ironfan.cluster 'science' do
   role                  :tuning
   role                  :jruby
   role                  :pig
-  recipe                'hadoop_cluster::cluster_conf', :last
+  recipe                'hadoop_cluster::config_files', :last
 
   # We don't hold much data on our HDFS -- most of it goes in S3 -- so we can
   # afford to have the namenode and jobtracker on the same machine.  If your
@@ -88,7 +88,7 @@ Ironfan.cluster 'science' do
   # Launch the cluster with all of the below set to 'stop'.
   #
   # After initial bootstrap,
-  # * set the run_state to 'start' in the lines below
+  # * set the run_state to :start in the lines below
   # * run `knife cluster sync bonobo-master` to push those values up to chef
   # * run `knife cluster kick bonobo-master` to re-converge
   #
