@@ -11,7 +11,7 @@ module Ironfan
         [:cron,           :daemon],
         [:elasticsearch,  :datanode],
         [:elasticsearch,  :httpnode],
-        [:flume,          :client],
+        [:flume,          :agent],
         [:flume,          :master],
         [:ganglia,        :master],
         [:ganglia,        :monitor],

@@ -10,11 +10,11 @@ default[:flume][:data_dir] = "/data/db/flume"
 # Locations
 #
 
-default[:flume][:home_dir]              = '/usr/lib/flume'
-# default[:flume][:tmp_dir]               = '/mnt/flume/tmp'
-default[:flume][:conf_dir]              = '/etc/flume/conf'
-default[:flume][:log_dir]               = "/var/log/flume"
-default[:flume][:pid_dir]               = "/var/run/flume"
+default[:flume][:home_dir]             = '/usr/lib/flume'
+# default[:flume][:tmp_dir]            = '/mnt/flume/tmp'
+default[:flume][:conf_dir]             = '/etc/flume/conf'
+default[:flume][:log_dir]              = "/var/log/flume"
+default[:flume][:pid_dir]              = "/var/run/flume"
 
 # these are set by the recipes
 node[:flume][:exported_jars ] = []
@@ -24,8 +24,8 @@ node[:flume][:exported_confs] = []
 # Services
 #
 
-default[:flume][:master  ][:run_state] = :stop
-default[:flume][:node    ][:run_state] = :start
+default[:flume][:master][:run_state] = :stop
+default[:flume][:agent ][:run_state] = :start
 
 
 #

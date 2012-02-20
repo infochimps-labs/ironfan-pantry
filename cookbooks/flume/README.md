@@ -33,7 +33,7 @@ servers.
 * `hbase_sink_plugin`        - Hbase Sink Plugin
 * `jruby_plugin`             - Jruby Plugin
 * `master`                   - Configures Flume Master, installs and starts service
-* `node`                     - Configures Flume Node, installs and starts service
+* `agent`                    - Configures Flume Agent, installs and starts service
 * `test_flow`                - Test Flow
 
 ## Integration
@@ -92,7 +92,7 @@ Cookbook dependencies:
   - By default, flume installs its own zookeeper instance.  With :external_zookeeper to "true", the recipe will work out which machines are in the zookeeper quorum based on cluster membership; modify node[:discovers][:zookeeper_server] to have it use an external cluster
 * `[:flume][:master][:zookeeper_port]` - port to talk to zookeeper on (for external zookeeper) (default: "2181")
 * `[:flume][:master][:run_state]`     -  (default: "stop")
-* `[:flume][:node][:run_state]`       -  (default: "start")
+* `[:flume][:agent][:run_state]`      -  (default: "start")
 
 ## License and Author
 

@@ -1415,7 +1415,7 @@
     "ironfan::dedicated_server_tuning",
     "thrift",
     "flume::master",
-    "flume::node",
+    "flume::agent",
     "zookeeper::server",
     "hadoop_cluster",
     "hadoop_cluster::add_cloudera_repo",

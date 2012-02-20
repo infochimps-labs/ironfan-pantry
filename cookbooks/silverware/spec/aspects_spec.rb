@@ -86,7 +86,7 @@ describe 'aspect' do
   end
 
   describe Ironfan::LogAspect do
-    let(:component){ flume_node_component }
+    let(:component){ flume_agent_component }
     it 'harvests any "log_dir" attributes' do
       harvested.should == Mash.new({
           :log => Ironfan::LogAspect.new(component, "log", :log, ["/var/log/flume"]),
@@ -98,7 +98,7 @@ describe 'aspect' do
   end
 
   describe Ironfan::DirectoryAspect do
-    let(:component){ flume_node_component }
+    let(:component){ flume_agent_component }
     it 'harvests attributes ending with "_dir"' do
       harvested.should == Mash.new({
           :conf => Ironfan::DirectoryAspect.new(component, "conf", :conf, ["/etc/flume/conf"]),
@@ -110,7 +110,7 @@ describe 'aspect' do
     end
     it 'harvests non-standard dirs' do
       chef_node[:flume][:foo_dirs] = ['/var/foo/flume', '/var/bar/flume']
-      directory_aspects = harvest_klass(flume_node_component)
+      directory_aspects = harvest_klass(flume_agent_component)
       directory_aspects.should == Mash.new({
           :conf => Ironfan::DirectoryAspect.new(component, "conf", :conf, ["/etc/flume/conf"]),
           :data => Ironfan::DirectoryAspect.new(component, "data", :data, ["/data/db/flume"]),

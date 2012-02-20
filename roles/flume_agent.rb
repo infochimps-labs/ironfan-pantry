@@ -3,7 +3,7 @@ description 'flume agent'
 
 run_list(*%w[
   flume
-  flume::node
+  flume::agent
   flume::jruby_plugin
   flume::hbase_sink_plugin
 ])

@@ -105,6 +105,6 @@ shared_context 'dummy_chef' do
   let(:hadoop_namenode_component  ){ Ironfan::Component.new(chef_node, :hadoop,    :namenode)  }
   let(:hadoop_datanode_component  ){ Ironfan::Component.new(chef_node, :hadoop,    :datanode)  }
   let(:zookeeper_server_component ){ Ironfan::Component.new(chef_node, :zookeeper, :server)  }
-  let(:flume_node_component       ){ Ironfan::Component.new(chef_node, :flume,     :node)  }
+  let(:flume_agent_component      ){ Ironfan::Component.new(chef_node, :flume,     :agent)  }
   let(:hbase_master_component     ){ Ironfan::Component.new(chef_node, :hbase,     :master)  }
 end

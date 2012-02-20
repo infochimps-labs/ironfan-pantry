@@ -27,7 +27,7 @@ package "flume-node"
 service "flume-node" do
   supports      :restart => true, :start=>true, :stop => true
   subscribes    :restart,resources( :template => ["/usr/lib/flume/conf/flume-site.xml","/usr/lib/flume/bin/flume-env.sh"] )
-  action        node[:flume][:node][:run_state]
+  action        node[:flume][:agent][:run_state]
 end
 
 bash "Hack flume-node init script to name physical node after machine" do
@@ -35,4 +35,4 @@ bash "Hack flume-node init script to name physical node after machine" do
   not_if { File.read('/etc/init.d/flume-node') =~ Regexp.new("start node -n #{node.node_name}") }
 end
 
-announce(:flume, :node)
+announce(:flume, :agent)
