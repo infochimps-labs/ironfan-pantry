@@ -13,8 +13,8 @@ Installs/Configures ganglia
 ## Recipes 
 
 * `default`                  - Base configuration for ganglia
-* `monitor`                  - Ganglia monitor -- discovers and sends to its ganglia_server
-* `server`                   - Ganglia server -- contact point for all ganglia_monitors
+* `agent`                    - Ganglia agent -- discovers and sends to its `ganglia_server`
+* `server`                   - Ganglia server -- contact point for all `ganglia_agent`s
 
 ## Integration
 
@@ -38,7 +38,7 @@ Cookbook dependencies:
 * `[:ganglia][:user]`                 -  (default: "ganglia")
 * `[:ganglia][:send_port]`            -  (default: "8649")
 * `[:ganglia][:rcv_port]`             -  (default: "8649")
-* `[:ganglia][:monitor][:run_state]`  -  (default: "start")
+* `[:ganglia][:agent ][:run_state]`   -  (default: "start")
 * `[:ganglia][:server][:run_state]`   -  (default: "start")
 * `[:users][:ganglia][:uid]`          -  (default: "320")
 * `[:groups][:ganglia][:gid]`         -  (default: "320")

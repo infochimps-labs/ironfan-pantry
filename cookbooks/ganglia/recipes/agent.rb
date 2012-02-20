@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       ganglia
-# Description::         Ganglia monitor -- discovers and sends to its ganglia_server
-# Recipe::              monitor
+# Description::         Ganglia agent -- discovers and sends to its ganglia_server
+# Recipe::              agent
 # Author::              Chris Howe - Infochimps, Inc
 #
 # Copyright 2011, Chris Howe - Infochimps, Inc
@@ -22,7 +22,7 @@
 include_recipe 'ganglia'
 include_recipe 'runit'
 
-daemon_user('ganglia.monitor')
+daemon_user('ganglia.agent')
 
 package "ganglia-monitor"
 
@@ -30,7 +30,7 @@ package "ganglia-monitor"
 # Create service
 #
 
-standard_dirs('ganglia.monitor') do
+standard_dirs('ganglia.agent') do
   directories [:home_dir, :log_dir, :conf_dir, :pid_dir, :data_dir]
 end
 
@@ -39,6 +39,11 @@ kill_old_service('ganglia-monitor'){ pattern 'gmond' }
 #
 # Discover ganglia server, construct conf file
 #
+
+runit_service "ganglia_agent" do
+  run_state     node[:ganglia][:agent][:run_state]
+  options       node[:ganglia]
+end
 
 template "#{node[:ganglia][:conf_dir]}/gmond.conf" do
   source        "gmond.conf.erb"
@@ -54,14 +59,9 @@ template "#{node[:ganglia][:conf_dir]}/gmond.conf" do
       :send_port => node[:ganglia][:send_port],
       :rcv_port  => node[:ganglia][:rcv_port ],
     })
-  notifies      :restart, 'service[ganglia_monitor]' if startable?(node[:ganglia][:monitor])
+  notifies      :restart, 'service[ganglia_agent]' if startable?(node[:ganglia][:agent])
 end
 
-runit_service "ganglia_monitor" do
-  run_state     node[:ganglia][:monitor][:run_state]
-  options       node[:ganglia]
-end
-
-announce(:ganglia, :monitor,
+announce(:ganglia, :agent,
   :monitor_group => node[:cluster_name],
   :rcv_port      => node[:ganglia][:rcv_port ])

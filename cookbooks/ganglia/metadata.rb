@@ -12,8 +12,8 @@ depends          "volumes"
 depends          "silverware"
 
 recipe           "ganglia::default",                   "Base configuration for ganglia"
-recipe           "ganglia::server",                    "Ganglia server -- contact point for all ganglia_monitors"
-recipe           "ganglia::monitor",                   "Ganglia monitor -- discovers and sends to its ganglia_server"
+recipe           "ganglia::server",                    "Ganglia server -- contact point for all ganglia_agents"
+recipe           "ganglia::agent",                     "Ganglia agent  -- discovers and sends to its ganglia_server"
 
 %w[ debian ubuntu ].each do |os|
   supports os
@@ -59,7 +59,7 @@ attribute "ganglia/rcv_port",
   :description           => "",
   :default               => "8649"
 
-attribute "ganglia/monitor/run_state",
+attribute "ganglia/agent/run_state",
   :display_name          => "",
   :description           => "",
   :default               => "start"

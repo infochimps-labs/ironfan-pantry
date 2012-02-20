@@ -1,6 +1,6 @@
 #
 # Cookbook Name::       ganglia
-# Description::         Ganglia server -- contact point for all ganglia_monitors
+# Description::         Ganglia server -- contact point for all ganglia_agents
 # Recipe::              server
 # Author::              Chris Howe - Infochimps, Inc
 #
@@ -39,16 +39,16 @@ end
 kill_old_service('gmetad')
 
 #
-# Conf file -- auto-discovers ganglia monitors
+# Conf file -- auto-discovers ganglia agents
 #
 
 monitor_groups = Hash.new{|h,k| h[k] = [] }
-discover_all(:ganglia, :monitor).each do |svr|
+discover_all(:ganglia, :agent).each do |svr|
   monitor_groups[svr.name] << "#{svr.private_ip}:#{svr.node_info[:rcv_port]}"
 end
 
 # <%- servers.map{|svr| "#{svr[:private_ip]}:#{svr[:rcv_port]}" }.join(' ')  %>
-# <%- all_service_info("#{node[:cluster_name]}-ganglia_monitor").each{|svr| monitor_groups[svr[:name]] << svr } %>
+# <%- all_service_info("#{node[:cluster_name]}-ganglia_agent").each{|svr| monitor_groups[svr[:name]] << svr } %>
 
 template "#{node[:ganglia][:conf_dir]}/gmetad.conf" do
   source        "gmetad.conf.erb"
