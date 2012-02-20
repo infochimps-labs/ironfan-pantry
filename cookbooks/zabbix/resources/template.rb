@@ -22,6 +22,8 @@ attribute :update_graphs,    :equal_to => [true, false], :default => true
 attribute :add_graphs,       :equal_to => [true, false], :default => true
 attribute :update_templates, :equal_to => [true, false], :default => true
 
+attribute :creates,          :kind_of => Array, :default => []
+
 def initialize *args
   super
   @action = :update

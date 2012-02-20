@@ -1,13 +1,15 @@
 include Chef::RubixConnection
 
 action :create do
-  if connected_to_zabbix? && (new_resource.creates.empty? || new_resource.creates.all? { |template_name| Rubix::Template.find(:name => template_name) })
-    import_template
-  end
+  import_template if connected_to_zabbix? && need_to_create_templates?
 end
 
 action :update do
-  import_template
+  import_template if connected_to_zabbix?
+end
+
+def load_current_resource
+  return unless connect_to_zabbix_server(new_resource.server)
 end
                            
 # From chef/provider/cookbook_file.rb
@@ -35,9 +37,15 @@ def import_template
                                :update_templates => new_resource.update_templates,
                              })
     rescue Rubix::Error => e
-      Chef::Log.warn("could not import template #{new_resource.name}: #{e.messaage}")
+      Chef::Log.warn("could not import template #{new_resource.name}: #{e.message}")
     end
   end
 end
-
     
+def need_to_create_templates?
+  return true if new_resource.creates.empty?
+  new_resource.creates.each do |template_name|
+    return true if Rubix::Template.find(:name => template_name).nil?
+  end
+  false
+end
