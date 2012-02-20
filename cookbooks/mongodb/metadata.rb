@@ -2,7 +2,7 @@ maintainer        "Paper Cavalier"
 maintainer_email  "code@papercavalier.com"
 license           "Apache 2.0"
 description       "Installs and configures MongoDB 1.8.0"
-version           "0.2.6"
+version           "3.1.0"
 
 recipe "mongodb", "Default recipe simply includes the mongodb::source and mongodb::server recipes"
 recipe "mongodb::apt", "Installs MongoDB from 10Gen's apt source and includes init.d script"
