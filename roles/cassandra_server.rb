@@ -8,5 +8,5 @@ run_list *%w[
   cassandra::autoconf
   cassandra::server
   cassandra::jna_support
+  cassandra::config_files
   ]
-#  cassandra::mx4j
