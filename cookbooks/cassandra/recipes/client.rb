@@ -23,20 +23,4 @@
 # actually provide the service or start the daemon, or try to become a seed
 # or anything like that....
 
-directory('/etc/sv/cassandra/env'){ owner 'root' ; action :create ; recursive true }
-
-template "#{node[:cassandra][:conf_dir]}/cassandra.yaml" do
-  source        "cassandra.yaml.erb"
-  owner         "root"
-  group         "root"
-  mode          "0644"
-  variables     :cassandra => node[:cassandra]
-end
-
-template "#{node[:cassandra][:conf_dir]}/log4j-server.properties" do
-  source        "log4j-server.properties.erb"
-  owner         "root"
-  group         "root"
-  mode          "0644"
-  variables     :cassandra => node[:cassandra]
-end
+include_recipe 'cassandra::config_files'
