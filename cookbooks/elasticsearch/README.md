@@ -152,7 +152,7 @@ Cookbook dependencies:
 * `[:elasticsearch][:log_level][:cluster_service]` -  (default: "INFO")
 * `[:elasticsearch][:raid][:devices]` - 
 * `[:elasticsearch][:raid][:use_raid]` -  (default: "true")
-* `[:elasticsearch][:server][:run_state]` -  (default: "stop")
+* `[:elasticsearch][:run_state]` -  (default: "stop")
 * `[:users][:elasticsearch][:uid]`    -  (default: "61021")
 * `[:groups][:elasticsearch][:gid]`   -  (default: "61021")
 * `[:tuning][:ulimit][:@elasticsearch]` - 

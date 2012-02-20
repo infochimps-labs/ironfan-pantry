@@ -33,11 +33,11 @@ default[:elasticsearch][:release_url_checksum]    = nil
 default[:elasticsearch][:release_url]             = "https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-:version:.tar.gz"
 default[:elasticsearch][:git_repo]                = "https://github.com/elasticsearch/elasticsearch.git"
 default[:elasticsearch][:plugins]                 = ["cloud-aws"]
+
 #
 # Services
 #
-
-default[:elasticsearch][:server][:run_state] = :stop
+default[:elasticsearch][:run_state]               = :stop
 
 #
 # Tunables
