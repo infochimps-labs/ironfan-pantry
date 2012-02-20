@@ -108,22 +108,22 @@ attribute "graphite/whisper/release_url_checksum",
   :description           => "",
   :default               => "c6272ad6"
 
-attribute "graphite/graphite_web/user",
+attribute "graphite/dashboard/user",
   :display_name          => "",
   :description           => "",
   :default               => "www-data"
 
-attribute "graphite/graphite_web/version",
+attribute "graphite/dashboard/version",
   :display_name          => "",
   :description           => "",
   :default               => "0.9.7c"
 
-attribute "graphite/graphite_web/release_url",
+attribute "graphite/dashboard/release_url",
   :display_name          => "",
   :description           => "",
   :default               => "http://launchpadlibrarian.net/62379635/graphite-web-0.9.7c.tar.gz"
 
-attribute "graphite/graphite_web/release_url_checksum",
+attribute "graphite/dashboard/release_url_checksum",
   :display_name          => "",
   :description           => "",
   :default               => "a3e16265"

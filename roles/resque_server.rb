@@ -5,5 +5,5 @@ run_list *%w[
   redis::install_from_release
   redis::server
   resque
-  resque::server
+  resque::dashboard
   ]
