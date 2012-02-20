@@ -4,4 +4,5 @@ description 'Send Ganglia metrics'
 run_list *%w[
   ganglia
   ganglia::agent
+  ganglia::config_files
   ]
