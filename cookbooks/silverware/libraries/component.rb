@@ -18,11 +18,13 @@ module Ironfan
     dsl_attr(:info,      :kind_of => Mash)
 
     def initialize(node, sys, subsys, hsh={})
-      @node = node
-      hsh   = Mash.new(hsh.to_hash)
+      @node  = node
+      hsh    = Mash.new(hsh.to_hash)
+      sys    = sys.to_sym
+      subsys = (subsys.to_s == '') ? nil : subsys.to_sym
       super(sys, subsys)
       merge!(hsh)
-      self.name      subsys.to_s.empty? ? sys.to_sym : "#{sys}_#{subsys}".to_sym
+      self.name      [sys, subsys].compact.join('_').to_sym
       self.timestamp Ironfan::NodeUtils.timestamp
       self.info      hsh
     end
@@ -41,7 +43,11 @@ module Ironfan
 
     # A segmented name for the component
     def self.fullname(realm, sys, subsys=nil)
-      "#{realm}-#{sys}-#{subsys}".to_s
+      [realm, sys, subsys].compact.join('-')
+    end
+
+    def subsys?
+      not subsys.nil?
     end
 
     #
@@ -148,10 +154,8 @@ module Ironfan
     def node_info
       unless node[sys] then Chef::Log.warn("no system data in component '#{name}', node '#{node}'") ; return Mash.new ;  end
       hsh = Mash.new(node[sys].to_hash)
-      if     node[sys][subsys]
-        hsh.merge!(node[sys][subsys])
-      elsif (subsys.to_s != '') && (not node[sys].has_key?(subsys))
-        Chef::Log.warn("no subsystem data in component '#{name}', node '#{node}'")
+      if    subsys? && node[sys][subsys] then hsh.merge!(node[sys][subsys])
+      elsif subsys?                      then Chef::Log.warn("no subsystem data in component '#{name}', node '#{node}'")
       end
       hsh
     end

@@ -32,8 +32,7 @@ define(:standard_dirs,
   ) do
 
   sys, subsys = params[:name].to_s.split(".", 2)
-  # raise "Component name should be a system.subsystem pair, like 'cassandra.server' -- got '#{params[:name]}'" unless sys && subsys
-  component = Ironfan::Component.new(node, sys.to_sym, (subsys || 'none').to_sym)
+  component = Ironfan::Component.new(node, sys, subsys)
 
   params[:user]       ||= component.node_attr(:user, :required)
   params[:group]      ||= component.node_attr(:group) || params[:user]

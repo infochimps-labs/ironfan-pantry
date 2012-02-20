@@ -21,7 +21,7 @@
 
 include_recipe  'silverware'
 
-standard_dirs('minidash.server') do
+standard_dirs('minidash') do
   directories  :home_dir, :log_dir, :conf_dir
 end
 
