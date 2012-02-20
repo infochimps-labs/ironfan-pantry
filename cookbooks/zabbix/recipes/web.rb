@@ -21,6 +21,9 @@
 
 case node[:platform]
 when "ubuntu","debian"
+  bash "apt-get-y-update" do
+    code "apt-get -y update"
+  end
   %w[traceroute php5-cgi php5-mysql php5-gd].each { |name| package(name) }
 when "centos"
   log "No centos Support yet"
