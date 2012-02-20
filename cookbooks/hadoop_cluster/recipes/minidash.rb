@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       hadoop_cluster
 # Description::         Simple Dashboard
-# Recipe::              minidash-hadoop
+# Recipe::              minidash
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
 # Copyright 2011, Philip (flip) Kromer - Infochimps, Inc
