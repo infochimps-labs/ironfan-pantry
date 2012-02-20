@@ -85,7 +85,7 @@ limitations under the License.
 * `default`                  - Base configuration for elasticsearch
 * `install_from_git`         - Install From Git
 * `install_from_release`     - Install From Release
-* `install_plugins`          - Install Plugins
+* `plugins`          - Install Plugins
 * `load_balancer`            - Load Balancer
 * `server`                   - Server
 

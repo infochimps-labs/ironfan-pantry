@@ -14,12 +14,13 @@ depends          "silverware"
 depends          "hadoop_cluster"
 
 recipe           "flume::default",                     "Base configuration for flume"
-recipe           "flume::hbase_sink_plugin",           "Hbase Sink Plugin"
-recipe           "flume::jruby_plugin",                "Jruby Plugin"
 recipe           "flume::master",                      "Configures Flume Master, installs and starts service"
 recipe           "flume::agent",                       "Configures Flume Agent, installs and starts service"
+recipe           "flume::plugin-hbase_sink",           "Hbase Sink Plugin"
+recipe           "flume::plugin-jruby",                "Jruby Plugin"
 recipe           "flume::test_flow",                   "Test Flow"
-recipe           "flume::config",                      "Finalizes the config, writes out the config files"
+recipe           "flume::test_s3_source",              "Test S3 source"
+recipe           "flume::config_files",                "Finalizes the config, writes out the config files"
 
 %w[ debian ubuntu ].each do |os|
   supports os
