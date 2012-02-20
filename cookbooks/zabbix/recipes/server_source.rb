@@ -51,7 +51,7 @@ remote_file "/opt/zabbix-#{node.zabbix.server.version}.tar.gz" do
   source "http://freefr.dl.sourceforge.net/project/zabbix/#{node.zabbix.server.branch}/#{node.zabbix.server.version}/zabbix-#{node.zabbix.server.version}.tar.gz"
   mode "0644"
   action :create_if_missing
-  notifies :run, "script[install_zabbix_server]"
+  notifies :run, "script[install_zabbix_server]", :immediately
 end
 
 # Install Init script
