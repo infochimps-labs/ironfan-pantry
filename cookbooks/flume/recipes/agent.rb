@@ -31,8 +31,8 @@ service "flume-node" do
 end
 
 bash "Hack flume-node init script to name physical node after machine" do
-  code   "sed -i -r -e 's!^(.*)(flume-daemon.sh.*start node)(.*)$!\\1\\2 -n #{node.node_name}\\3!g' /etc/init.d/flume-node"
-  not_if { File.read('/etc/init.d/flume-node') =~ Regexp.new("start node -n #{node.node_name}") }
+  code   "sed -i -r -e 's!^(.*)(flume-daemon.sh.*start node)(.*)$!\\1\\2 -n #{node.name}\\3!g' /etc/init.d/flume-node"
+  not_if { File.read('/etc/init.d/flume-node') =~ Regexp.new("start node -n #{node.name}") }
 end
 
 announce(:flume, :agent)
