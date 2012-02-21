@@ -27,44 +27,31 @@ Similarly, announcing ports should mean
   - and pings the interfaces that it should *not* appear on to ensure the firewall is in place?
 
 Cluster chef make those aspects standardized and predictable, and provides integration and discovery hooks. The key is to make integration *inevitable*: No more forgetting to rotate or monitor a service, or having a config change over here screw up a dependent system over there.
-
-__________________________________________________________________________
-
-(*below is a planning document and may not perfectly reflect reality*)
-
-FIXME: **update for version_3 release**
+________________________________________________________________________
 
 Attributes are scoped by *cookbook* and then by *component*.
 
-* If I declare `announce('redis)`, it will look in `node[:redis]`.
-* If I declare `announce('hadoop-namenode')`, it will look in `node[:hadoop]` for cookbook-wide concerns and `node[:hadoop][:namenode]` for component-specific concerns.
-
-* The cookbook scope is always named for its cookbook. Its attributes live in`node[:cookbook_name]`.
-  - if everything in the cookbook shares a concern, it sits at cookbook level. So the hadoop log directory (shared by all its components) is at `(scratch_root)/hadoop/log`.
+* If I declare `announce(:redis)`, it will look in `node[:redis]`.
+* If I declare `announce(:hadoop, :namenode)`, it will look in `node[:hadoop]` for cookbook-wide concerns and `node[:hadoop][:namenode]` for component-specific concerns.
+* The cookbook scope is always named for its cookbook. Its attributes live in`node[:cookbook_name]`. If everything in the cookbook shares a concern, it sits at cookbook level. So the hadoop log directory (shared by all its components) is at `(scratch_root)/hadoop/log`.
 * If there is only one component, it can be implicitly named for its cookbook. In this case, it is omitted: the component attributes live in `node[:cookbook_name]` (which is the same as the component name).
-* If there are multiple components, they will live in `node[:cookbook_name][:component_name]` (eg `[:hadoop][:namenode]` or `[:flume][:master]`. In file names, these become `(whatever)/cookbook_name/component_name/(whatever)`; in other cases they are joined as `cookbook_name-component_name`.
-
-Allow nodes to discover the location for a given service at runtime, adapting when new services register.
+* If there are multiple components, they will live in `node[:cookbook_name][:component_name]` (eg `[:hadoop][:namenode]` or `[:flume][:master]`.
 
 ### Discovery
 
-Allow nodes to discover the location for a given service at runtime, adapting
-when new services register.
+Allow nodes to discover the location for a given service at runtime, adapting when new services register.
 
 #### Operations:
 
 * register for a service. A timestamp records the last registry.
 * discover all chef nodes that have registered for the given service.
 * discover the most recent chef node for that service.
-* get the 'public_ip' for a service -- the address that nodes in the larger
-  world should use
-* get the 'public_ip' for a service -- the address that nodes on the local
-  subnet / private cloud should use
+* get the 'public_ip' for a service -- the address that nodes in the larger world should use
+* get the 'private_ip' for a service -- the address that nodes on the local subnet / private cloud should use
 
 #### Implementation
 
-Nodes register a service by calling `announce`, which sets a hash containing
-'timestamp' (the time of registry) and other metadata passed in.
+Nodes register a service by calling `announce(<service>[,<component>])`, which adds a hash to node[:announces][<service>][<component>], containing 'timestamp' (the time of registry) and other metadata passed in. Nodes discover services by calling `discover(<service>[,<component>[,<realm>]])`, where realm is the scope of the discovery (the current cluster, by default).
 
 ## Recipes 
 
@@ -82,7 +69,7 @@ Supports platforms: debian and ubuntu
 * `[:silverware][:log_dir]`             -  (default: "/var/log/silverware")
 * `[:silverware][:home_dir]`            -  (default: "/etc/silverware")
 * `[:silverware][:user]`                -  (default: "root")
-* `[:users][:root][:primary_group]`   -  (default: "root")
+* `[:users][:root][:primary_group]`     -  (default: "root")
 
 ## License and Author
 
