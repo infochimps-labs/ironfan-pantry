@@ -1,8 +1,7 @@
 # nfs chef cookbook
 
-NFS: network shared filesystem
+*NFS* is the venerable Network File System that lets you share a directory across many machines. Its `server` component launches the processes that share a directory. The `client` component installs the right package, discovers the server and the volumes it provides, and mounts those volumes.
 
-* Cookbook source:   [http://github.com/infochimps-cookbooks/nfs](http://github.com/infochimps-cookbooks/nfs)
 * Ironfan tools: [http://github.com/infochimps-labs/ironfan](http://github.com/infochimps-labs/ironfan)
 * Homebase (shows cookbook in use): [http://github.com/infochimps-labs/ironfan-homebase](http://github.com/infochimps-labs/ironfan-homebase)
 

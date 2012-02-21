@@ -1,5 +1,5 @@
 
-default[:elasticsearch][:cluster_name]            = "default"
+default[:elasticsearch][:realm]            = node[:cluster_name]
 
 #
 # Locations
@@ -38,6 +38,11 @@ default[:elasticsearch][:plugins]                 = ["cloud-aws"]
 # Services
 #
 default[:elasticsearch][:run_state]               = :stop
+
+# set true to be a data esnode (stores, indexes data)
+default[:elasticsearch][:is_datanode]             = false # set to true in elasticsearch_datanode role
+# set true to be a query esnode (has http interface, dispatches/gathers queries)
+default[:elasticsearch][:is_httpnode]             = false # set to true in elasticsearch_httpnode role
 
 #
 # Tunables

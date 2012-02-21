@@ -32,11 +32,6 @@ attribute "elasticsearch/version",
   :description           => "",
   :default               => "0.18.5"
 
-attribute "elasticsearch/cluster_name",
-  :display_name          => "",
-  :description           => "",
-  :default               => "default"
-
 attribute "elasticsearch/data_root",
   :display_name          => "",
   :description           => "",

@@ -3,7 +3,7 @@
 #
 
 cluster:
-  name:                         <%= @elasticsearch[:cluster_name] %>
+  name:                         <%= @elasticsearch[:db_name] %>
 
   # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/439afb06f3e85aa7/431a8543811d7848?lnk=gst&q=configuration#431a8543811d7848    
   routing:
@@ -20,12 +20,12 @@ path:
 # http://www.elasticsearch.com/docs/elasticsearch/modules/node/
 node:
   # # node.data: is this a data esnode (stores, indexes data)? default true
-  data:                         true
+  data:                         <%= @elasticsearch[:is_datanode] %>
   
 # http://www.elasticsearch.com/docs/elasticsearch/modules/http/
 http:
   # # http.enabled: is this a query esnode (has http interface, dispatches/gathers queries)? Default true
-  enabled:                      true
+  enabled:                      <%= @elasticsearch[:is_httpnode] %>
   port:                         <%= @elasticsearch[:http_ports] %>
   max_content_length:           100mb
 
@@ -231,7 +231,7 @@ discovery:
   # #
   # ec2:
   #   # security groups used for discovery
-  #   groups:                   <%= @elasticsearch[:cluster_name] %>-data_esnode
+  #   groups:                   <%= @elasticsearch[:cluster_name] %>-datanode
   #   # require *all* (false) or *any* (true) of those groups?
   #   any_group:                true
   #   # private_ip, public_ip, private_dns, public_dns

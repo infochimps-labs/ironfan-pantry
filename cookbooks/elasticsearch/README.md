@@ -107,7 +107,7 @@ Cookbook dependencies:
 ## Attributes
 
 * `[:elasticsearch][:version]`        -  (default: "0.18.5")
-* `[:elasticsearch][:cluster_name]`   -  (default: "default")
+* `[:elasticsearch][:realm]`        -  (default: cluster name)
 * `[:elasticsearch][:data_root]`      -  (default: "/mnt/elasticsearch")
 * `[:elasticsearch][:java_home]`      -  (default: "/usr/lib/jvm/java-6-sun/jre")
 * `[:elasticsearch][:git_repo]`       -  (default: "https://github.com/elasticsearch/elasticsearch.git")

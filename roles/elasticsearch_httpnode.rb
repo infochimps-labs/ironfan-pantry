@@ -1,4 +1,4 @@
-name        "elasticsearch_http_esnode"
+name        "elasticsearch_httpnode"
 description "Elasticsearch HTTP esnode -- routes HTTP api requests to data nodes."
 
 # List of recipes and roles to apply
@@ -11,3 +11,5 @@ run_list(*%w[
   elasticsearch::load_balancer
   elasticsearch::config_files
 ])
+
+override_attributes({ :elasticsearch => { :is_datanode => true } })

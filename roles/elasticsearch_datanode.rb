@@ -1,5 +1,5 @@
-name        "elasticsearch_data_esnode"
-description "Elasticsearch Data esnode (holds and indexes data) for elasticsearch cluster."
+name        "elasticsearch_datanode"
+description "Elasticsearch Datanode (holds and indexes data) for elasticsearch cluster."
 
 # List of recipes and roles to apply
 run_list(*%w[
@@ -10,3 +10,5 @@ run_list(*%w[
   elasticsearch::server
   elasticsearch::config_files
 ])
+
+override_attributes({ :elasticsearch => { :is_datanode => true } })
