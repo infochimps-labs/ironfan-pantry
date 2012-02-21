@@ -11,7 +11,7 @@ Cluster orchestration -- coordinates discovery, integration and decoupling of co
 Cookbooks repeatably express these and other aspects:
 
 * "I launch these daemons: ..."
-* "I haz a bukkit, itz naem '/var/log/lol'"
+* "I have a collection of logs at '/var/log/lol'"
 * "I have a dashboard at 'http://....:...'"
 * ... and much more.
 
@@ -36,8 +36,8 @@ FIXME: **update for version_3 release**
 
 Attributes are scoped by *cookbook* and then by *component*.
 
-* If I declare `i_haz_a_service_itz('redis)`, it will look in `node[:redis]`.
-* If I declare `i_haz_a_service_itz('hadoop-namenode')`, it will look in `node[:hadoop]` for cookbook-wide concerns and `node[:hadoop][:namenode]` for component-specific concerns.
+* If I declare `announce('redis)`, it will look in `node[:redis]`.
+* If I declare `announce('hadoop-namenode')`, it will look in `node[:hadoop]` for cookbook-wide concerns and `node[:hadoop][:namenode]` for component-specific concerns.
 
 * The cookbook scope is always named for its cookbook. Its attributes live in`node[:cookbook_name]`.
   - if everything in the cookbook shares a concern, it sits at cookbook level. So the hadoop log directory (shared by all its components) is at `(scratch_root)/hadoop/log`.
