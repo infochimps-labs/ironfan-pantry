@@ -48,10 +48,10 @@ if mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
   mysql_database node.zabbix.database.name do
     connection root_mysql_conn
     action     :create
-    notifies   :run,    "execute[zabbix_populate_schema]"
-    notifies   :run,    "execute[zabbix_populate_data]"
-    notifies   :run,    "execute[zabbix_populate_image]"
-    notifies   :create, "template[/etc/zabbix/zabbix_server.conf]"
+    notifies   :run,    "execute[zabbix_populate_schema]",          :immediately
+    notifies   :run,    "execute[zabbix_populate_data]",            :immediately
+    notifies   :run,    "execute[zabbix_populate_image]",           :immediately
+    notifies   :create, "template[/etc/zabbix/zabbix_server.conf]", :immediately
   end
 
   # Create Zabbix database user

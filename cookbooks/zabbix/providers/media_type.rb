@@ -13,7 +13,7 @@ attr_accessor :zabbix_media_type
 def load_current_resource
   return unless connect_to_zabbix_server(new_resource.server)
   begin
-    self.zabbix_media_type             = (Rubix::MediaType.find(:description => new_resource.name) || Rubix::MediaType.new(:description => new_resource.name))
+    self.zabbix_media_type             = (Rubix::MediaType.find(:name => new_resource.name) || Rubix::MediaType.new(:name => new_resource.name))
     self.zabbix_media_type.type        = new_resource.type
     self.zabbix_media_type.path        = new_resource.path        if new_resource.path
     self.zabbix_media_type.smtp_server = new_resource.smtp_server if new_resource.smtp_server

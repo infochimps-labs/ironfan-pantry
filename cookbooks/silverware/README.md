@@ -9,12 +9,14 @@ Cluster orchestration -- coordinates discovery, integration and decoupling of co
 ## Overview
 
 Cookbooks repeatably express these and other aspects:
+
 * "I launch these daemons: ..."
 * "I haz a bukkit, itz naem '/var/log/lol'"
 * "I have a dashboard at 'http://....:...'"
 * ... and much more.
 
 Wouldn't it be nice if announcing a log directory caused...
+
   - my log rotation system to start rotating my logs?
   - a 'disk free space' gauge to be added to the monitoring dashboard for that service?
   - flume (or whatever) began picking up my logs and archiving them to a predictable location?
@@ -33,6 +35,7 @@ __________________________________________________________________________
 FIXME: **update for version_3 release**
 
 Attributes are scoped by *cookbook* and then by *component*.
+
 * If I declare `i_haz_a_service_itz('redis)`, it will look in `node[:redis]`.
 * If I declare `i_haz_a_service_itz('hadoop-namenode')`, it will look in `node[:hadoop]` for cookbook-wide concerns and `node[:hadoop][:namenode]` for component-specific concerns.
 
