@@ -35,4 +35,13 @@ bash "Hack flume-node init script to name physical node after machine" do
   not_if { File.read('/etc/init.d/flume-node') =~ Regexp.new("start node -n #{node.name}") }
 end
 
-announce(:flume, :agent)
+announce(:flume, :agent,
+         :logs    => {
+           :node => { :regexp => File.join(node[:flume][:log_dir], 'flume-flume-node*.log'), :logrotate => false }
+         },
+         :ports   => {
+           :status => { :port => 35862, :protocol => 'http', :dashboard => true }
+         },
+         :daemons => {
+           :java => { :name => 'java', :cmd => 'FlumeNode', :number => 2 }
+         })

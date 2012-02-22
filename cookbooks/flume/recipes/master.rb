@@ -30,4 +30,23 @@ service "flume-master" do
   action        node[:flume][:master][:run_state]
 end
 
-announce(:flume, :master)
+announce(:flume, :master,
+         :logs    => {
+           :master => { :regexp => File.join(node[:flume][:log_dir], 'flume-flume-master*.log'), :logrotate => false }
+         },
+         :ports   => {
+           :status    => { :port => 35871, :protocol => 'http', :dashboard => true },
+           :heartbeat => 35872,
+           :admin     => 35873,
+           :report    => 45678
+         }.tap do |ports|
+           ports[:zookeeper] = node[:flume][:master][:zookeeper_port] unless node[:flume][:master][:external_zookeeper]
+
+           # FIXME -- add the gossip port only if it's being used,
+           # i.e. - we have multiple masters?
+           # ports[:gossip] = 57890
+         end,
+         :daemons => {
+           :java => { :name => 'java', :cmd => 'FlumeMaster', :number => 2 }
+         }
+         )
