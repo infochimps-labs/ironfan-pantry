@@ -37,7 +37,7 @@ default[:flume][:agent ][:run_state] = :start
 # the zookeeper quorum based on cluster membership; modify
 # node[:discovers][:zookeeper_server] to have it use an external cluster
 default[:flume][:master][:external_zookeeper] = false
-default[:flume][:master][:zookeeper_port] = 2181
+default[:flume][:master][:zookeeper_port] = 3181
 
 # configuration data for plugins.
 # node[:flume][:plugins][:some_plugin][:classes]    = [ 'java.lang.String' ]
