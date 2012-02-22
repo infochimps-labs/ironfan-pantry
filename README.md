@@ -11,7 +11,7 @@ To jump right into using Ironfan, follow our [Installation Instructions](https:/
 
 ## Index
 
-ironfan-homebase works together with the full Ironfan toolset:
+ironfan-pantry works together with the full Ironfan toolset:
 
 ###Core Tools:
 
