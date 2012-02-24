@@ -85,53 +85,6 @@ The `fallback` tag has additional rules:
 * if any volumes are tagged `fallback`, return the full set of `fallback`s;
 * otherwise, raise an error.
 
-#### Examples:
-
-* Web server: in production, database lives on one volume, logs are written to another. On a cheaper test server, just
-  put them whereever.
-
-* Isolate different apps, each on their own volume
-
-* Hadoop has the following mountable volume concerns:
-
-  - Namenode metadata -- *must* be persistent. Physical clusters typically mirror to one NFS and two local volumes.
-  - Datanode blocks   -- typically persistent. In a cloud environment, one strategy would be:
-    - where available, permanent attachable drives (EBS volumes)
-    - where available, local volumes (ephemeral drives)
-    - as a last resort, whatever's present.
-  - Scratch space for jobs -- should be fast, no need for it to be persistent.  On an EC2 instance, ephemeral drives
-    would be preferred.
-
-* Similarly, a Cassandra installation will place the commitlog the fastest available volume, the data store on the most
-  persistent available volume. A Mongo or MySQL admin may allocate high-demand tables on an SSD, the rest on normal disks.
-
-You ask for volume_dirs with
-* a system
-* a component (optional)
-* a tag
-
-We will look as follows:
-
-* volumes tagged 'foo-
-* volumes tagged 'foo-scratch'
-* volumes tagged 'foo'
-* volumes tagged 'scratch'
-
-Write your recipes to request volumes
-
-
-Not doing this:
-
-        standard_dirs('lolcat.generator') do
-          conf_dir
-          log_dir       :mode => '0775'
-          pid_dir
-          cache_dir     :for => :img
-          cache_dir     :for => :html
-        end
-
-
-
 ### assigning labels
 
 Labels are assigned by a human using (we hope) good taste -- there's no effort,
@@ -154,17 +107,25 @@ helpers:
 
 You can explicitly override any of the above.
 
+#### Examples:
 
-### examples
+* Web server: in production, database lives on one volume, logs are written to another. On a cheaper test server, just
+  put them whereever.
 
+* Isolate different apps, each on their own volume
 
-* Hadoop namenode metadata:
-  - `:hadoop_namenode`
-  - `:hadoop`
-  - `[:persistent, :bulk]`
-  - `:bulk`
-  - `:fallback`
+* Hadoop has the following mountable volume concerns:
 
+  - Namenode metadata -- *must* be persistent. Physical clusters typically mirror to one NFS and two local volumes.
+  - Datanode blocks   -- typically persistent. In a cloud environment, one strategy would be:
+    - where available, permanent attachable drives (EBS volumes)
+    - where available, local volumes (ephemeral drives)
+    - as a last resort, whatever's present.
+  - Scratch space for jobs -- should be fast, no need for it to be persistent.  On an EC2 instance, ephemeral drives
+    would be preferred.
+
+* Similarly, a Cassandra installation will place the commitlog the fastest available volume, the data store on the most
+  persistent available volume. A Mongo or MySQL admin may allocate high-demand tables on an SSD, the rest on normal disks.
 
 
     System       	Component      	Type	Path           	Owner         	Mode 	Index 	attrs                          	Description
@@ -172,66 +133,30 @@ You can explicitly override any of the above.
 
 topline
 
-    hadoop      	dfs_name       	perm	hdfs/name      	hdfs:hadoop  	0700	all	[:hadoop][:namenode   ][:data_dirs]
-    hadoop      	dfs_2nn        	perm	hdfs/secondary 	hdfs:hadoop  	0700	all	[:hadoop][:secondarynn][:data_dirs]    	dfs.name.dir
-    hadoop      	dfs_data       	perm	hdfs/data      	hdfs:hadoop  	0755	all	[:hadoop][:datanode   ][:data_dirs]    	dfs.data.dir
-    hadoop      	mapred_local   	scratch	mapred/local   	mapred:hadoop	0775	all	[:hadoop][:tasktracker][:scratch_dirs] 	mapred.local.dir
-    hadoop      	log      	scratch	log      	hdfs:hadoop	0775	first	[:hadoop][:log_dir]                	mapred.local.dir
-    hadoop      	tmp      	scratch	tmp      	hdfs:hadoop	0777	first	[:hadoop][:tmp_dir]              	mapred.local.dir
+    hadoop      	dfs_name       	perm	hdfs/name      	hdfs:hadoop  	0700	all  	[:hadoop][:namenode   ][:data_dirs]
+    hadoop      	dfs_2nn        	perm	hdfs/secondary 	hdfs:hadoop  	0700	all  	[:hadoop][:secondarynn][:data_dirs]    	dfs.name.dir
+    hadoop      	dfs_data       	perm	hdfs/data      	hdfs:hadoop  	0755	all  	[:hadoop][:datanode   ][:data_dirs]    	dfs.data.dir
+    hadoop      	mapred_local   	scratch	mapred/local   	mapred:hadoop	0775	all  	[:hadoop][:tasktracker][:scratch_dirs] 	mapred.local.dir
+    hadoop      	log          	scratch	log          	hdfs:hadoop  	0775	first	[:hadoop][:log_dir]                  	mapred.local.dir
+    hadoop      	tmp          	scratch	tmp          	hdfs:hadoop  	0777	first	[:hadoop][:tmp_dir]                  	mapred.local.dir
 
-    hbase       	zk_data  	perm	zk/data  	hbase    	0755	first	[:hbase][:zk_data_dir]  	.
-    hbase          	tmp      	scratch	tmp      	hbase    	0755	first	[:hbase][:tmp_dir]       	.
+    hbase       	zk_data     	perm	zk/data      	hbase       	0755	first	[:hbase][:zk_data_dir]  	.
+    hbase          	tmp          	scratch	tmp          	hbase       	0755	first	[:hbase][:tmp_dir]       	.
 
-    zookeeper       	data     	perm	data     	zookeeper	0755	first	[:zookeeper][:data_dir]     	.
-    zookeeper       	journal  	perm	journal  	zookeeper	0755	first	[:zookeeper][:journal_dir]  	.
+    zookeeper     	data        	perm	data         	zookeeper   	0755	first	[:zookeeper][:data_dir]     	.
+    zookeeper     	journal     	perm	journal       	zookeeper   	0755	first	[:zookeeper][:journal_dir]  	.
 
-    elasticsearch 	data    	perm	data      	elasticsearch  	0755	first	[:elasticsearch][:data_root]	.
-    elasticsearch 	work    	scratch	work      	elasticsearch  	0755	first	[:elasticsearch][:work_root]  	.
+    elasticsearch 	data          	perm	data         	elasticsearch  	0755	first	[:elasticsearch][:data_root]	.
+    elasticsearch 	work          	scratch	work         	elasticsearch  	0755	first	[:elasticsearch][:work_root]  	.
 
-    cassandra       	data    	perm	data     	cassandra   	0755	all	[:cassandra][:data_dirs]
-    cassandra         	commitlog     	scratch	commitlog	cassandra   	0755	first	[:cassandra][:commitlog_dir]
-    cassandra         	saved_caches   	scratch	saved_caches	cassandra   	0755	first	[:cassandra][:saved_caches_dir]
+    cassandra     	data         	perm	data         	cassandra   	0755	all	[:cassandra][:data_dirs]
+    cassandra     	commitlog     	scratch	commitlog   	cassandra   	0755	first	[:cassandra][:commitlog_dir]
+    cassandra      	saved_caches   	scratch	saved_caches	cassandra   	0755	first	[:cassandra][:saved_caches_dir]
 
-    flume       	conf    	.
-    flume       	pid     	.
-    flume        	data     	perm	data         	flume
-    flume        	log      	scratch	data       	flume
-
-    zabbix
-    rundeck
-
-    nginx
-    mongodb
-
-    scrapers      	data_dir
-    api_stack    	.
-    web_stack
-
-hold
-
-    redis       	data_dir
-    redis          	work_dir
-    redis        	log_dir
-
-    statsd      	data_dir
-    statsd      	log _dir
-
-    graphite          	whisper  	perm
-    graphite          	carbon   	perm
-    graphite          	log_dir  	perm
-
-    mysql
-    sftp
-    varnish
-    ufw
-
-kill
-
-    tokyotyrant
-    openldap
-    nagios
-    apache2
-    rsyslog
+    flume       	conf         	.
+    flume       	pid          	.
+    flume        	data         	perm	data        	flume
+    flume        	log          	scratch	data          	flume
 
 ### Memoized
 
