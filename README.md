@@ -7,7 +7,7 @@ This repo holds Infochimps' battle-hardened collection of Chef cookbooks. Some a
 
 ## Getting Started
 
-To jump right into using Ironfan, follow our [Installation Instructions](https://github.com/infochimps-labs/ironfan/wiki/INSTALL). For an explanatory tour, check out our [Web Walkthrough](https://github.com/infochimps-labs/ironfan/wiki/INSTALL).  Please file all issues on [Ironfan Issues](https://github.com/infochimps-labs/ironfan/wiki/walkthrough-web).
+To jump right into using Ironfan, follow our [Installation Instructions](https://github.com/infochimps-labs/ironfan/wiki/INSTALL). For an explanatory tour, check out our [Web Walkthrough](https://github.com/infochimps-labs/ironfan/wiki/walkthrough-web).  Please file all issues on [Ironfan Issues](https://github.com/infochimps-labs/ironfan/issues)
 
 ## Index
 
