@@ -37,7 +37,7 @@ end
 
 announce(:flume, :agent,
          :logs    => {
-           :node => { :regexp => File.join(node[:flume][:log_dir], 'flume-flume-node*.log'), :logrotate => false }
+           :node => { :glob => File.join(node[:flume][:log_dir], 'flume-flume-node*.log'), :logrotate => false, :archive => false }
          },
          :ports   => {
            :status => { :port => 35862, :protocol => 'http', :dashboard => true }

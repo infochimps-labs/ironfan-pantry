@@ -32,7 +32,7 @@ end
 
 announce(:flume, :master,
          :logs    => {
-           :master => { :regexp => File.join(node[:flume][:log_dir], 'flume-flume-master*.log'), :logrotate => false }
+           :master => { :glob => File.join(node[:flume][:log_dir], 'flume-flume-master*.log'), :logrotate => false, :archive => false }
          },
          :ports   => {
            :status    => { :port => 35871, :protocol => 'http', :dashboard => true },
