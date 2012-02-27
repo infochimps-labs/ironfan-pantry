@@ -99,27 +99,42 @@ module Opscode
         zone.records.detect{|record| (record.name == "#{fqdn}.") && (record.type == type) }
       end
 
+      def safely(&block)
+        begin
+          yield
+        rescue StandardError => e
+          Chef::Log.warn "Error updating hostname: #{e}"
+        end
+      end
+      module_function :safely
+
       def update_resource_record(zone, fqdn, type, ttl, values, rr=nil)
-        Chef::Log.info(["update_resource_record", fqdn, type, ttl.to_s, values, rr].inspect)
-        rr ||= resource_record(zone, fqdn, type)
-        if rr.nil?
-          create_resource_record(zone, fqdn, type, ttl, values)
-        else
-          rr.update(values, ttl.to_s) && rr.wait{|cid,status| Chef::Log.info("Creating Resource Record for #{fqdn} (#{type}) - #{status}") }
+        safely do
+          Chef::Log.info(["update_resource_record", fqdn, type, ttl.to_s, values, rr].inspect)
+          rr ||= resource_record(zone, fqdn, type)
+          if rr.nil?
+            create_resource_record(zone, fqdn, type, ttl, values)
+          else
+            rr.update(values, ttl.to_s) && rr.wait{|cid,status| Chef::Log.info("Creating Resource Record for #{fqdn} (#{type}) - #{status}") }
+          end
         end
       end
 
       def create_resource_record(zone, fqdn, type, ttl, values)
-        Chef::Log.info(["create_resource_record", fqdn, type, ttl, values].inspect)
-        zone.records.create(:name => fqdn, :type => type, :ttl => ttl.to_s, :value => values)
+        safely do
+          Chef::Log.info(["create_resource_record", fqdn, type, ttl, values].inspect)
+          zone.records.create(:name => fqdn, :type => type, :ttl => ttl.to_s, :value => values)
+        end
       end
 
       def delete_resource_record(zone, fqdn, type, ttl, values)
-        rr = resource_record(zone, fqdn, type)
-        if rr.nil?
-          Chef::Log.warn("Tried to delete non-existent record #{fqdn} (#{type} #{values})")
-        else
-          rr.destroy
+        safely do
+          rr = resource_record(zone, fqdn, type)
+          if rr.nil?
+            Chef::Log.warn("Tried to delete non-existent record #{fqdn} (#{type} #{values})")
+          else
+            rr.destroy
+          end
         end
       end
 
