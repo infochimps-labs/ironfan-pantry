@@ -1,4 +1,4 @@
-# silverware chef cookbook
+# Silverware Chef Cookbook
 
 Cluster orchestration -- coordinates discovery, integration and decoupling of cookbooks
 
@@ -19,21 +19,21 @@ Wouldn't it be nice if announcing a log directory caused...
 
   - my log rotation system to start rotating my logs?
   - a 'disk free space' gauge to be added to the monitoring dashboard for that service?
-  - flume (or whatever) began picking up my logs and archiving them to a predictable location?
+  - Flume (or whatever) began picking up my logs and archiving them to a predictable location?
   - in the case of standard apache logs, a listener to start counting the rate of requests, 200s, 404s and so forth?
 Similarly, announcing ports should mean
   - the firewall and security groups configure themselves correspondingly
   - the monitor system starts regularly pinging the port for uptime and latency 
   - and pings the interfaces that it should *not* appear on to ensure the firewall is in place?
 
-Cluster chef make those aspects standardized and predictable, and provides integration and discovery hooks. The key is to make integration *inevitable*: No more forgetting to rotate or monitor a service, or having a config change over here screw up a dependent system over there.
+Ironfan makes those aspects standardized and predictable, and provides integration and discovery hooks. The key is to make integration *inevitable*: No more forgetting to rotate or monitor a service, or having a config change over here screw up a dependent system over there.
 ________________________________________________________________________
 
 Attributes are scoped by *cookbook* and then by *component*.
 
 * If I declare `announce(:redis)`, it will look in `node[:redis]`.
 * If I declare `announce(:hadoop, :namenode)`, it will look in `node[:hadoop]` for cookbook-wide concerns and `node[:hadoop][:namenode]` for component-specific concerns.
-* The cookbook scope is always named for its cookbook. Its attributes live in`node[:cookbook_name]`. If everything in the cookbook shares a concern, it sits at cookbook level. So the hadoop log directory (shared by all its components) is at `(scratch_root)/hadoop/log`.
+* The cookbook scope is always named for its cookbook. Its attributes live in`node[:cookbook_name]`. If everything in the cookbook shares a concern, it sits at cookbook level. So the Hadoop log directory (shared by all its components) is at `(scratch_root)/hadoop/log`.
 * If there is only one component, it can be implicitly named for its cookbook. In this case, it is omitted: the component attributes live in `node[:cookbook_name]` (which is the same as the component name).
 * If there are multiple components, they will live in `node[:cookbook_name][:component_name]` (eg `[:hadoop][:namenode]` or `[:flume][:master]`.
 
@@ -59,7 +59,7 @@ Nodes register a service by calling `announce(<service>[,<component>])`, which a
 
 ## Integration
 
-Supports platforms: debian and ubuntu
+Supports platforms: Debian and Ubuntu
 
 
 

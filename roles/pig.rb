@@ -7,7 +7,7 @@ default_attributes({
 
 run_list %w[
   pig
-  pig::install_from_package
+  pig::install_from_release
   pig::piggybank
   pig::integration
   zookeeper

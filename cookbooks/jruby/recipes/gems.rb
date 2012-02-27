@@ -25,7 +25,7 @@
     activesupport activemodel extlib
     json addressable cheat crack
     configliere gorillib wukong
-    pry hirb ap swineherd
+    pry hirb ap swineherd hackboxen
 
 ].each do |rubygem|
   gem_package rubygem do
