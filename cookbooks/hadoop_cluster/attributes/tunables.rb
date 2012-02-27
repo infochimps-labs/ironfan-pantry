@@ -112,4 +112,4 @@ Chef::Log.debug("Hadoop tunables: #{hadoop_performance_settings.inspect}")
 
 # (Mappers+Reducers)*ChildTaskHeap + DNheap + TTheap + 3GB + RSheap + OtherServices'
 
-hadoop_performance_settings.each{|k,v| set[:hadoop][k] = v }
+hadoop_performance_settings.each{|k,v| default[:hadoop][k] = v }
