@@ -1,8 +1,8 @@
-
-define(:hadoop_service, :service_name => nil, :package_name => nil, :logs => nil, :ports => nil, :daemons => nil) do
-  name         = params[:name].to_s
-  service_name = params[:service_name] || name
-  package_name = params[:package_name] || name
+define(:hadoop_service, :service_name => nil, :old_service_name => nil, :package_name => nil, :logs => nil, :ports => nil, :daemons => nil) do
+  name             = params[:name].to_s
+  old_service_name = "#{node[:hadoop][:handle]}-#{params[:old_service_name] || name}"
+  service_name     = params[:service_name]     || name
+  package_name     = params[:package_name]     || name
 
   hadoop_package package_name
 
@@ -14,8 +14,8 @@ define(:hadoop_service, :service_name => nil, :package_name => nil, :logs => nil
       merge(node[:hadoop][name]).
       merge(:service_name => service_name, :component_name => name)
   end
-  kill_old_service("#{node[:hadoop][:handle]}-#{name}") do
-    only_if{ File.exists?("/etc/init.d/#{node[:hadoop][:handle]}-#{name}") }
+  kill_old_service(old_service_name) do
+    only_if{ File.exists?("/etc/init.d/#{old_service_name}") }
   end
 
   if node[:hadoop][service_name.to_sym]
@@ -41,7 +41,7 @@ define(:hadoop_service, :service_name => nil, :package_name => nil, :logs => nil
       end
       h.merge!(params[:ports] || {})
     end
-    
+
     daemons = {}.tap do |h|
       # This isn't really the *same* thing as having a user but it's
       # lightweight enough until something better (more introspective)
@@ -58,7 +58,7 @@ define(:hadoop_service, :service_name => nil, :package_name => nil, :logs => nil
   else
     ports, daemons = {}, {}
   end
-    
+
   logs = {}.tap do |h|
     h[:main] = {
       :path      => File.join(node[:hadoop][:log_dir], "#{node[:cluster_name]}-hadoop-#{service_name}-#{node.name}.log"),
@@ -66,7 +66,7 @@ define(:hadoop_service, :service_name => nil, :package_name => nil, :logs => nil
     }
     h.merge!(params[:logs] || {})
   end
-  
+
   announce(:hadoop, name, :logs => logs, :ports => ports, :daemons => daemons)
-  
+
 end
