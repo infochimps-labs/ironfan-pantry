@@ -5,8 +5,6 @@
 # Global
 zabbix_home_dir                = '/opt/zabbix'
 default[:zabbix][:home_dir]    = zabbix_home_dir
-default[:zabbix][:templates]   = nil
-default[:zabbix][:host_groups] = nil
 
 # Agent
 default[:zabbix][:agent][:servers]                = []

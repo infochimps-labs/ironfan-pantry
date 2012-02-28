@@ -29,21 +29,14 @@ include_recipe "zabbix::agent_#{node.zabbix.agent.install_method}"
 
 # We can create a host in Zabbix corresponding to this agent.
 if node.zabbix.agent.create_host
-
   zabbix_server_ip = default_zabbix_server_ip
-
-  node_host_groups = ((node.zabbix.host_groups || []) rescue []).to_set
-  node_templates   = ((node.zabbix.templates   || []) rescue []).to_set
-
-  node_host_groups << 'All Nodes'
-  node_host_groups << node.cluster_name
-  node_host_groups << [node.cluster_name, node.facet_name].join('-')
-
+  node_host_groups = node_zabbix_host_groups
+  node_templates   = node_zabbix_templates
   node.save
   zabbix_host node[:node_name] do
     server      zabbix_server_ip
-    host_groups node_host_groups.to_a
-    templates   node_templates.to_a
+    host_groups node_host_groups
+    templates   node_templates
     monitored   true
   end
 end
