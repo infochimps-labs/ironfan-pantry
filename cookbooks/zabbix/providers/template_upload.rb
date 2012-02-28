@@ -1,11 +1,7 @@
 include Chef::RubixConnection
 
-action :create do
-  import_template if connected_to_zabbix? && need_to_create_templates?
-end
-
-action :update do
-  import_template if connected_to_zabbix?
+action :upload do
+  upload_template
 end
 
 def load_current_resource
@@ -16,16 +12,15 @@ end
 def file_cache_location
   @file_cache_location ||= begin
     cookbook = run_context.cookbook_collection[new_resource.cookbook || new_resource.cookbook_name]
-    cookbook.preferred_filename_on_disk_location(node, :files, new_resource.source)
+    cookbook.preferred_filename_on_disk_location(node, :files, new_resource.name)
   end
 end
 
-def import_template
-  Chef::Log.info("Attempting to import Zabbix template #{new_resource.name}...")
+def upload_template
+  Chef::Log.info("Attempting to upload Zabbix template #{new_resource.name}...")
   ::File.open(file_cache_location) do |f|
     begin 
       Rubix::Template.import(f, {
-                               # web application into resources in the database.
                                :update_hosts     => new_resource.update_hosts,
                                :add_hosts        => new_resource.add_hosts,
                                :update_items     => new_resource.update_items,
@@ -37,15 +32,7 @@ def import_template
                                :update_templates => new_resource.update_templates,
                              })
     rescue Rubix::Error => e
-      Chef::Log.warn("could not import template #{new_resource.name}: #{e.message}")
+      Chef::Log.warn("could not upload template #{new_resource.name}: #{e.message}")
     end
   end
-end
-    
-def need_to_create_templates?
-  return true if new_resource.creates.empty?
-  new_resource.creates.each do |template_name|
-    return true if Rubix::Template.find(:name => template_name).nil?
-  end
-  false
 end

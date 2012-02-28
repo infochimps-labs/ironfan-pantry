@@ -1,11 +1,7 @@
-actions :create, :update
+actions :upload
 
 # The IP of the Zabbix web application server.
 attribute :server, :kind_of => String, :default => 'localhost'
-
-# The name of the cookbook file the XML is contained in, a la
-# cookbook_file resource.
-attribute :source, :kind_of => String
 
 # The name of the cookbook to look in for the file
 attribute :cookbook, :kind_of => String
@@ -22,10 +18,8 @@ attribute :update_graphs,    :equal_to => [true, false], :default => true
 attribute :add_graphs,       :equal_to => [true, false], :default => true
 attribute :update_templates, :equal_to => [true, false], :default => true
 
-attribute :creates,          :kind_of => Array, :default => []
-
 def initialize *args
   super
-  @action = :update
+  @action = :nothing
   @source ||= ::File.basename(name)
 end
