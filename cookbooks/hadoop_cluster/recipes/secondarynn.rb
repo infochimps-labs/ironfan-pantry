@@ -23,6 +23,6 @@ include_recipe 'hadoop_cluster'
 include_recipe 'runit'
 
 hadoop_service(:secondarynn) do
-  service_name :secondarynamenode
-  package_name :secondarynamenode
+  old_service_name :secondarynamenode
+  package_name     :secondarynamenode
 end

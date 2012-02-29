@@ -12,4 +12,4 @@ run_list(*%w[
   elasticsearch::config_files
 ])
 
-override_attributes({ :elasticsearch => { :is_datanode => true } })
+override_attributes({ :elasticsearch => { :is_httpnode => true } })
