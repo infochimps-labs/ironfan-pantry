@@ -93,12 +93,12 @@ attribute "zabbix/agent/unmonitor_on_shutdown",
 
 attribute "zabbix/agent/unsafe_user_parameters",
   :display_name          => "",
-  :description           => "Whether to allow 'unsafe' (shell globbing, &c.) user parameters to be evaluated by the Zabbix agent."
+  :description           => "Whether to allow 'unsafe' (shell globbing, &c.) user parameters to be evaluated by the Zabbix agent.",
   :default               => "true"
 
 attribute "zabbix/agent/user_parameters",
   :display_name          => "",
-  :description           => "A hash of user parameters to define for the Zabbix agent.'
+  :description           => "A hash of user parameters to define for the Zabbix agent.",
   :default               => ""
 
 attribute "zabbix/server/version",
