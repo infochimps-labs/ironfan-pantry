@@ -91,6 +91,16 @@ attribute "zabbix/agent/unmonitor_on_shutdown",
   :description           => "Whether to unmonitor this node's Zabbix host when the node is shutdown or rebooted.",
   :default               => "false"
 
+attribute "zabbix/agent/unsafe_user_parameters",
+  :display_name          => "",
+  :description           => "Whether to allow 'unsafe' (shell globbing, &c.) user parameters to be evaluated by the Zabbix agent."
+  :default               => "true"
+
+attribute "zabbix/agent/user_parameters",
+  :display_name          => "",
+  :description           => "A hash of user parameters to define for the Zabbix agent.'
+  :default               => ""
+
 attribute "zabbix/server/version",
   :display_name          => "",
   :description           => "The version of the Zabbix server to install.",

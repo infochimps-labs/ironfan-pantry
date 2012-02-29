@@ -15,6 +15,7 @@ default[:zabbix][:agent][:install_method]         = "prebuild"
 default[:zabbix][:agent][:log_dir]                = '/var/log/zabbix_agent'
 default[:zabbix][:agent][:create_host]            = true
 default[:zabbix][:agent][:unmonitor_on_shutdown]  = false
+default[:zabbix][:agent][:unsafe_user_parameters] = true
 
 default[:zabbix][:user]  = "zabbix"
 default[:users ]['zabbix'][:uid]    = 447

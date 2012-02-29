@@ -32,7 +32,6 @@ if node.zabbix.agent.create_host
   zabbix_server_ip = default_zabbix_server_ip
   node_host_groups = node_zabbix_host_groups
   node_templates   = node_zabbix_templates
-  node.save
   zabbix_host node[:node_name] do
     server      zabbix_server_ip
     host_groups node_host_groups
