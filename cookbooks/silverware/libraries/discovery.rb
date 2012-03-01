@@ -98,8 +98,13 @@ module Ironfan
     # @example
     #   components_with(:log)
     #
-    def components_with(aspect)
-      node_components(self.node).select{|comp| not comp.send(aspect).empty? }
+    # Can also be passed a specific node
+    #
+    # @example
+    #   components_with(:ports, <CHEF NODE INSTANCE>)
+    #
+    def components_with(aspect, server=nil)
+      node_components(server || self.node).select{|comp| not comp.send(aspect).empty? }
     end
 
   protected
