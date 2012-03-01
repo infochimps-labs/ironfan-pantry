@@ -1,4 +1,4 @@
-rootLogger: DEBUG, console, file
+rootLogger: <%= node[:elasticsearch][:log_level][:default] %>, console, file
 
 #
 # Put the name of any module -- using its config path -- in the section below.

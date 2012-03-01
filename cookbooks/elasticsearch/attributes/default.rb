@@ -52,16 +52,16 @@ default[:elasticsearch][:java_home]               = "/usr/lib/jvm/java-6-sun/jre
 default[:elasticsearch][:java_heap_size_max]      = 1000
 default[:elasticsearch][:ulimit_mlock]            = nil  # locked memory limit -- set to unlimited to lock heap into memory on linux machines
 
-default[:elasticsearch][:default_replicas]        =  1   # replicas are in addition to the original, so 1 replica means 2 copies of each shard
-default[:elasticsearch][:default_shards]          =  6   # 6 shards per index * 2 replicas distributes evenly across 3, 4, 6 or 12 nodes
+default[:elasticsearch][:default_replicas]        = 1    # replicas are in addition to the original, so 1 replica means 2 copies of each shard
+default[:elasticsearch][:default_shards]          = 16   # 6 shards per index * 2 replicas distributes evenly across 3, 4, 6 or 12 nodes
 default[:elasticsearch][:flush_threshold]         = 5000
-default[:elasticsearch][:index_buffer_size]       = "10%"  # can be a percent ("10%") or a number ("128m")
-default[:elasticsearch][:merge_factor]            = 10
+default[:elasticsearch][:index_buffer_size]       = "512m"  # can be a percent ("10%") or a number ("128m")
+default[:elasticsearch][:merge_factor]            = 4
 default[:elasticsearch][:max_thread_count]        = 4    # Twice the recommended value, max allowed by max_merge_count = 4
-default[:elasticsearch][:term_index_interval]     = 128
+default[:elasticsearch][:term_index_interval]     = 1024
 default[:elasticsearch][:refresh_interval]        = "1s"
-default[:elasticsearch][:snapshot_interval]       = '-1'
-default[:elasticsearch][:snapshot_on_close]       = 'false'
+default[:elasticsearch][:snapshot_interval]       = "10s"
+default[:elasticsearch][:snapshot_on_close]       = "true"
 
 default[:elasticsearch][:seeds]                   = nil
 
