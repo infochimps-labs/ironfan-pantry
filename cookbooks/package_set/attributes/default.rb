@@ -82,6 +82,8 @@ default[:package_set][:gems][:vagrant]   = %w[ vagrant veewee ironfan ]
 
 default[:package_set][:pkgs][:python]    = %w[python-dev python-setuptools python-simplejson]
 
+default[:package_set][:gems][:wukong]   = %w[ log4r RedCloth guard htmlentities log4r log_buddy redcarpet simplecov multi_json ]
+
 default[:package_set][:pkgs][:datatools] = %w[
   r-base r-base-dev x11-apps eog texlive-common texlive-binaries dvipng
   ghostscript latex libfreetype6 python-gtk2 python-gtk2-dev python-wxgtk2.8
