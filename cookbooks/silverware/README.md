@@ -1,3 +1,8 @@
+## Overview
+
+The Silverware Cookbook is part of the [Ironfan Pantry](https://github.com/infochimps-labs/ironfan-pantry/) cookbooks. Silverware Cookbook coordinates discovery of services, for example "list all the machines for awesome_webapp, that I might load balance them", and aspects, for example, "list all components that write logs, that I might logrotate them, or that I might monitor the free space on their volumes". 
+
+________________________________________________________________________
 # Silverware Chef Cookbook
 
 Cluster orchestration -- coordinates discovery, integration and decoupling of cookbooks
@@ -6,28 +11,7 @@ Cluster orchestration -- coordinates discovery, integration and decoupling of co
 * Ironfan tools: [http://github.com/infochimps-labs/ironfan](http://github.com/infochimps-labs/ironfan)
 * Homebase (shows cookbook in use): [http://github.com/infochimps-labs/ironfan-homebase](http://github.com/infochimps-labs/ironfan-homebase)
 
-## Overview
 
-Cookbooks repeatably express these and other aspects:
-
-* "I launch these daemons: ..."
-* "I have a collection of logs at '/var/log/lol'"
-* "I have a dashboard at 'http://....:...'"
-* ... and much more.
-
-Wouldn't it be nice if announcing a log directory caused...
-
-  - my log rotation system to start rotating my logs?
-  - a 'disk free space' gauge to be added to the monitoring dashboard for that service?
-  - Flume (or whatever) began picking up my logs and archiving them to a predictable location?
-  - in the case of standard apache logs, a listener to start counting the rate of requests, 200s, 404s and so forth?
-Similarly, announcing ports should mean
-  - the firewall and security groups configure themselves correspondingly
-  - the monitor system starts regularly pinging the port for uptime and latency 
-  - and pings the interfaces that it should *not* appear on to ensure the firewall is in place?
-
-Ironfan makes those aspects standardized and predictable, and provides integration and discovery hooks. The key is to make integration *inevitable*: No more forgetting to rotate or monitor a service, or having a config change over here screw up a dependent system over there.
-________________________________________________________________________
 
 Attributes are scoped by *cookbook* and then by *component*.
 
