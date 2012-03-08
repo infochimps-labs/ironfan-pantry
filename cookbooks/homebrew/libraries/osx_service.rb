@@ -26,11 +26,11 @@ class Chef
       class Macosx < Chef::Provider::Service::Simple
         include Chef::Mixin::ShellOut
 
-        PLIST_DIRS = %w{~/Library/LaunchAgents
+        PLIST_DIRS = %w[~/Library/LaunchAgents
                          /Library/LaunchAgents
                          /Library/LaunchDaemons
                          /System/Library/LaunchAgents
-                         /System/Library/LaunchDaemons }
+                         /System/Library/LaunchDaemons ]
 
         def load_current_resource
           @current_resource = Chef::Resource::Service.new(@new_resource.name)
@@ -49,6 +49,13 @@ class Chef
           raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :disable"
         end
 
+        def launchctl(*args)
+          options = {}
+          options[:user]  = @owner_uid if @owner_uid
+          options[:group] = @owner_gid if @owner_gid
+          shell_out!("launchctl "+args.flatten.join(' '), options)
+        end
+
         def start_service
           if @current_resource.running
             Chef::Log.debug("#{@new_resource} already running, not starting")
@@ -56,7 +63,9 @@ class Chef
             if @new_resource.start_command
               super
             else
-              shell_out!("launchctl load -w '#{@plist}'", :user => @owner_uid, :group => @owner_gid)
+              launchctl "load -w '#{@plist}'"
+              launchctl "start   '#{@current_resource.name}'"
+              set_service_status
             end
           end
         end
@@ -68,7 +77,9 @@ class Chef
             if @new_resource.stop_command
               super
             else
-              shell_out!("launchctl unload '#{@plist}'", :user => @owner_uid, :group => @owner_gid)
+              launchctl "stop    '#{@current_resource.name}'"
+              launchctl "unload  '#{@plist}'"
+              set_service_status
             end
           end
         end
@@ -87,14 +98,17 @@ class Chef
           raise Chef::Exceptions::UnsupportedAction, "#{self.to_s} does not support :reload"
         end
 
+        def set_owner_from_plist_file
+          @owner_uid = ::File.stat(@plist).uid
+          @owner_gid = ::File.stat(@plist).gid
+        end
+
         def set_service_status
           @current_resource.enabled(!@plist.nil?)
 
           if @current_resource.enabled
-            @owner_uid = ::File.stat(@plist).uid
-            @owner_gid = ::File.stat(@plist).gid
-
-            shell_out!("launchctl list", :user => @owner_uid, :group => @owner_gid).stdout.each_line do |line|
+            @current_resource.running(false)
+            launchctl("list").stdout.each_line do |line|
               case line
               when /(\d+|-)\s+(?:\d+|-)\s+(.*\.?)#{@current_resource.service_name}/
                 pid = $1
