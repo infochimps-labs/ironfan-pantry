@@ -31,8 +31,8 @@ template "/etc/elasticsearch/elasticsearch.in.sh" do
 end
 
 node[:elasticsearch][:seeds] = discover_all(:elasticsearch, :datanode).map(&:private_ip)
-p "WARNING: No seeds!" if node[:elasticsearch][:seeds].empty?
-p node[:elasticsearch][:seeds] unless node[:elasticsearch][:seeds].empty?
+Chef::Log.warn("No elasticsearch seeds!") if node[:elasticsearch][:seeds].empty?
+# p node[:elasticsearch][:seeds] unless node[:elasticsearch][:seeds].empty?
 template "/etc/elasticsearch/elasticsearch.yml" do
   source        "elasticsearch.yml.erb"
   owner         "elasticsearch"
