@@ -12,4 +12,9 @@ run_list(*%w[
   elasticsearch::config_files
 ])
 
-override_attributes({ :elasticsearch => { :is_httpnode => true } })
+override_attributes({ :elasticsearch => { :is_httpnode => true },
+                      :zabbix        => {
+                        :templates   => { :elasticsearch => ["Template_Elasticsearch_Node"] },
+                        :host_groups => { :elasticsearch => ["Elasticsearch nodes"]         }
+                      }
+                    })
