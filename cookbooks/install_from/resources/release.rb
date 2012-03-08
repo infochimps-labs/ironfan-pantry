@@ -102,7 +102,7 @@ def assume_defaults!
     case release_ext
     when 'tar.gz'  then untar_cmd('xzf', release_file, install_dir)
     when 'tar.bz2' then untar_cmd('xjf', release_file, install_dir)
-    when 'zip'     then "unzip -q -u -o '#{release_file}'"
+    when 'zip'     then unzip_cmd(release_file, install_dir)
     else raise "Don't know how to expand #{release_url} which has extension '#{release_ext}'"
     end
 
@@ -111,6 +111,10 @@ end
 
 def untar_cmd(sub_cmd, release_file, install_dir)
   %Q{mkdir -p '#{install_dir}' ; tar #{sub_cmd} '#{release_file}' --strip-components=1 -C '#{install_dir}'}
+end
+
+def unzip_cmd(release_file, install_dir)
+  "unzip -q -u -o '#{release_file}'"
 end
 
 def set_release_url

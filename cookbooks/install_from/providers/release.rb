@@ -62,15 +62,15 @@ action :unpack do
     creates     new_resource.install_dir
     environment new_resource.environment
   end
+end
+
+action :configure do
+  action_unpack
 
   link new_resource.home_dir do
     to          new_resource.install_dir
     action      :create
   end
-end
-
-action :configure do
-  action_unpack
 end
 
 action :build do

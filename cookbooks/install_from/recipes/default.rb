@@ -21,6 +21,10 @@
 
 # FIXME -- these need to be done immediately
 
-package "unzip"
-
-package "tar"
+case node.platform
+when "ubuntu", "debian"
+  package "unzip"
+  package "tar"
+when /mac_os_x/
+  package "gnu-tar"
+end
