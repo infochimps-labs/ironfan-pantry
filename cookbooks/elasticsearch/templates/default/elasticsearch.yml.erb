@@ -238,7 +238,7 @@ discovery:
   #   host_type:                private_ip
   #   availability_zones:       us-east-1d
 
-<%- if (@aws && @aws[:secret_access_key]) %>
+<%- if @aws  %>
 # Necessary if you will use either of
 # * the ec2 discovery module: for finding peers
 # * the s3 gateway module, for pushing indices to an s3 mirror.
@@ -246,8 +246,8 @@ discovery:
 # 
 cloud:
   aws:
-    access_key:                 <%= @aws[:access_key] %>
-    secret_key:                 <%= @aws[:secret_access_key] %>
+    access_key:                 <%= @aws[:access_key]        || @aws[:aws_access_key]        %>
+    secret_key:                 <%= @aws[:secret_access_key] || @aws[:aws_secret_access_key] %>
 <%- end %>
 
 # thrift:

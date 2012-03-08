@@ -51,13 +51,35 @@ end
 
 runit_service "elasticsearch" do
   run_restart   false   # don't automatically start or restart daemons
-  run_state     node[:elasticsearch][:run_state]
+  run_state     node[:elasticsearch][:server][:run_state]
   options       node[:elasticsearch]
 end
 
 # TODO: split httpnode and datanode into separate components
-announce(:elasticsearch, :datanode)
-announce(:elasticsearch, :httpnode)
+announce(:elasticsearch, :datanode) if node[:elasticsearch][:is_datanode]
+announce(:elasticsearch, :httpnode) if node[:elasticsearch][:is_httpnode]
+
+announce(:elasticsearch, :server, {
+           :logs  => { :elasticsearch => node[:elasticsearch][:log_dir] },
+           :ports => {
+             :http => {
+               :port     => node[:elasticsearch][:http_ports].to_s.split('-').first.to_i,
+               :protocol => 'http'
+             },
+             :api  => node[:elasticsearch][:api_port].to_i,
+             :jmx  => {
+               :port      => node[:elasticsearch][:jmx_dash_port].to_s.split('-').first.to_i,
+               :dashboard => true
+             }
+           },
+           :daemons => {
+             :java => {
+               :name => 'java',
+               :user => node[:elasticsearch][:user],
+               :cmd  => 'elasticsearch'
+             }
+           }
+         })
 
 # JMX should listen on the public interface
 node[:elasticsearch][:jmx_dash_addr] = public_ip_of(node)

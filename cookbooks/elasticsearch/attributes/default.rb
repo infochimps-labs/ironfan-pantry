@@ -37,7 +37,7 @@ default[:elasticsearch][:plugins]                 = ["cloud-aws"]
 #
 # Services
 #
-default[:elasticsearch][:run_state]               = :stop
+default[:elasticsearch][:server][:run_state]      = :stop
 
 # set true to be a data esnode (stores, indexes data)
 default[:elasticsearch][:is_datanode]             = false # set to true in elasticsearch_datanode role

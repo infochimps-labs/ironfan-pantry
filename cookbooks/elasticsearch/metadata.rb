@@ -244,7 +244,7 @@ attribute "elasticsearch/raid/use_raid",
   :description           => "",
   :default               => "true"
 
-attribute "elasticsearch/run_state",
+attribute "elasticsearch/server/run_state",
   :display_name          => "",
   :description           => "",
   :default               => "stop"
