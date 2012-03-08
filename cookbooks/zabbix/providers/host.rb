@@ -30,7 +30,11 @@ def load_current_resource
 end
 
 def load_machine_fields
-  self.chef_node = search(:node, "name:#{zabbix_host.name}").first
+  if zabbix_host.name == node.name
+    self.chef_node = node
+  else
+    self.chef_node = search(:node, "name:#{zabbix_host.name}").first
+  end
   if self.chef_node
     self.zabbix_host.profile = (chef_node_profile rescue nil)
     self.zabbix_host.port    = 10050

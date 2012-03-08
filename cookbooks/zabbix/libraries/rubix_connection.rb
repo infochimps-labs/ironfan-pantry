@@ -3,7 +3,7 @@ class Chef
   module RubixConnection
 
     # The version of Rubix we expect to use.
-    RUBIX_VERSION = '0.5.2'
+    RUBIX_VERSION = '0.5.3'
 
     # For a pool of shared connections to Zabbix API servers.
     CONNECTIONS = {  }
