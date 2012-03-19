@@ -26,6 +26,7 @@
     json addressable cheat crack
     configliere gorillib wukong
     pry hirb ap swineherd hackboxen
+    swineherd-fs
 
 ].each do |rubygem|
   gem_package rubygem do
