@@ -1,9 +1,3 @@
-begin
-  require 'right_aws'
-rescue LoadError
-  Chef::Log.warn("Missing gem 'right_aws'")
-end
-
 module FlumeCluster
 
   # Returns the name of the cluster that this flume is playing with
