@@ -26,24 +26,24 @@ daemon_user('ganglia.agent')
 
 package "ganglia-monitor"
 
-#
-# Create service
-#
-
 standard_dirs('ganglia.agent') do
   directories [:home_dir, :log_dir, :conf_dir, :pid_dir, :data_dir]
 end
 
-kill_old_service('ganglia-monitor'){ pattern 'gmond' }
+#
+# Create service
+#
 
-#
-# Discover ganglia server, construct conf file
-#
+kill_old_service('ganglia-monitor'){ pattern 'gmond' }
 
 runit_service "ganglia_agent" do
   run_state     node[:ganglia][:agent][:run_state]
   options       Mash.new(node[:ganglia]).merge(node[:ganglia][:agent])
 end
+
+#
+# Discover ganglia server, construct conf file
+#
 
 announce(:ganglia, :agent,
   :monitor_group => node[:cluster_name],

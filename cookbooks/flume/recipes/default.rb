@@ -20,63 +20,36 @@
 #
 
 include_recipe 'silverware'
-
 include_recipe 'java' ; complain_if_not_sun_java(:flume)
 include_recipe 'volumes'
 include_recipe 'hadoop_cluster::add_cloudera_repo'
-
 class Chef::Resource::Template ; include FlumeCluster ; end
 
 #
 # Install package
 #
 
-package "flume"
+daemon_user('flume')
 
-template "/usr/lib/flume/conf/flume-site.xml" do
-  source "flume-site.xml.erb"
-  owner  "root"
-  group  "flume"
-  mode   "0644"
-  variables({
-      :masters            => flume_masters.join(","),
-      :plugin_classes     => flume_plugin_classes,
-      :classpath          => flume_classpath,
-      :master_id          => flume_master_id,
-      :external_zookeeper => flume_external_zookeeper,
-      :zookeepers         => flume_zookeeper_list,
-      :aws_access_key     => (node[:aws][:access_key] || node[:aws][:aws_access_key]),
-      :aws_secret_key     => (node[:aws][:secret_access_key] || node[:aws][:aws_secret_access_key]),
-      :collector_output_format => node[:flume][:collector][:output_format],
-      :collector_codec     => node[:flume][:collector][:codec],
-      :flume_data_dir      => node[:flume][:data_dir]
-    })
+package     'flume'
+
+# FIXME: the AWS part should be separated into its own recipe
+gem_package('right_aws'){ action :nothing }.run_action(:install)
+require 'right_aws'
+
+#
+# Install package
+#
+
+standard_dirs('flume') do
+  directories [:home_dir, :conf_dir, :pid_dir]
 end
 
-template "/usr/lib/flume/bin/flume-env.sh" do
-  source "flume-env.sh.erb"
-  owner  "root"
-  mode   "0744"
-  variables({
-      :classpath          => flume_classpath,
-      :java_opts          => flume_java_opts,
-    })
-end
-
-%w[commons-codec-1.4.jar commons-httpclient-3.0.1.jar jets3t-0.6.1.jar].each do |file|
-  cookbook_file "/usr/lib/flume/lib/#{file}" do
-    owner "root"
-    mode "644"
-  end
-end
-
-gem_package 'right_aws'
+volume_dirs('flume.collector.data' ){ path('flume/data/flume/collector') ; selects(:single) }
+volume_dirs('flume.agent.data'     ){ path('flume/data/flume/agent')     ; selects(:single) }
+volume_dirs('flume.zk.data'        ){ path('flume/data/flume/zk')        ; selects(:single) }
+volume_dirs('flume.data'           ){ path('flume/data')                 ; selects(:single) }
 
 directory "/usr/lib/flume/plugins" do
   owner "flume"
-end
-
-directory node[:flume][:data_dir] do
-  owner "flume"
-  recursive true
 end

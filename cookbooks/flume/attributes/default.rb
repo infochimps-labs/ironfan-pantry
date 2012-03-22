@@ -1,20 +1,25 @@
 
-
 #By default, flume plays as a part of the cluster the machine
 #belongs to.
 default[:flume][:cluster_name] = node[:cluster_name]
-
-default[:flume][:data_dir] = "/data/db/flume"
 
 #
 # Locations
 #
 
 default[:flume][:home_dir]             = '/usr/lib/flume'
-# default[:flume][:tmp_dir]            = '/mnt/flume/tmp'
 default[:flume][:conf_dir]             = '/etc/flume/conf'
-default[:flume][:log_dir]              = "/var/log/flume"
 default[:flume][:pid_dir]              = "/var/run/flume"
+
+default[:flume][:agent ][:log_dir]      = "/var/log/flume/agent"
+default[:flume][:master][:log_dir]      = "/var/log/flume/master"
+
+default[:flume][:zk]                    = Mash.new
+default[:flume][:collector]             = Mash.new
+
+default[:flume][:user]                 = 'flume'
+default[:users ]['flume'][:uid]        = 325
+default[:groups]['flume'][:gid]        = 325
 
 # these are set by the recipes
 node[:flume][:exported_jars ] = []
@@ -53,8 +58,6 @@ default[:flume][:classpath] = []
 
 # pass in extra options to the java virtual machine
 default[:flume][:java_opts] = []
-
-default[:flume][:collector] = {}
 
 # Set the following two attributes to allow writing to s3 buckets:
 default[:flume][:aws_access_key] = nil
