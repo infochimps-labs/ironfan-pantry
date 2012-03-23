@@ -30,7 +30,9 @@ module Ironfan
     #
     def announce(sys, subsys, opts={}, &block)
       opts           = Mash.new(opts)
-      opts[:realm] ||= node[:cluster_name]
+      opts[:realm] ||= node[sys][subsys][:announce_as] rescue nil
+      opts[:realm] ||= node[sys][:announce_as] rescue nil
+      opts[:realm] ||= node[:cluster_name] rescue nil
       component = Component.new(node, sys, subsys, opts)
       Chef::Log.info("Announcing component #{component.fullname}")
       #
