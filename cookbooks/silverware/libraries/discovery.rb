@@ -81,7 +81,9 @@ module Ironfan
     end
 
     def discovery_realm(sys, subsys=nil)
-      node[:discovers][sys][subsys] || node[:cluster_name] rescue node[:cluster_name]
+      realm   = (node[:discovers][sys][subsys] rescue nil) unless subsys.nil?
+      realm ||= (node[:discovers][sys] rescue nil) if (node[:discovers][sys].kind_of? String rescue false)
+      realm ||= node[:cluster_name]
     end
 
     def node_components(server)
