@@ -39,7 +39,7 @@ runit_service 'flume_agent' do
   subscribes    :restart, resources( :template => [ File.join(node[:flume][:conf_dir], "flume-site.xml"), File.join(node[:flume][:home_dir], "bin/flume-env.sh") ] )
   options       Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge({
       :service_command    => 'node',
-      :zookeeper_home_dir => node[:zookeeper][:home_dir],
+      # :zookeeper_home_dir => node[:zookeeper][:home_dir],
     })
 end
 

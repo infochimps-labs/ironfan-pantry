@@ -8,7 +8,7 @@ export FLUME_PID_DIR="<%=  @options[:pid_dir] %>"
 export FLUME_RUN="<%=      @options[:pid_dir] %>"
 export FLUME_IDENT_STRING="<%= @options[:user] %>"
 export SERVER_NAME="<%=   node.name.gsub(/[^\w\-]+/, '') %>"
-export ZOOKEEPER_HOME="<%= @options[:zookeeper_home_dir] %>"
+# export ZOOKEEPER_HOME=""
 
 command=<%= @options[:service_command] %>
 
