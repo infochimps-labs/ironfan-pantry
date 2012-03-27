@@ -24,24 +24,34 @@ include_recipe 'runit'
 
 package "flume-node"
 
-service "flume-node" do
-  supports      :restart => true, :start=>true, :stop => true
-  subscribes    :restart,resources( :template => ["/usr/lib/flume/conf/flume-site.xml","/usr/lib/flume/bin/flume-env.sh"] )
-  action        node[:flume][:agent][:run_state]
+standard_dirs('flume.agent') do
+  directories [:log_dir]
 end
 
-bash "Hack flume-node init script to name physical node after machine" do
-  code   "sed -i -r -e 's!^(.*)(flume-daemon.sh.*start node)(.*)$!\\1\\2 -n #{node.name}\\3!g' /etc/init.d/flume-node"
-  not_if { File.read('/etc/init.d/flume-node') =~ Regexp.new("start node -n #{node.name}") }
+#
+# Create service
+#
+
+kill_old_service('flume-node'){ only_if{ File.exists?("/etc/init.d/flume-node") } }
+
+runit_service 'flume_agent' do
+  run_state     node[:flume][:agent][:run_state]
+  subscribes    :restart, resources( :template => [ File.join(node[:flume][:conf_dir], "flume-site.xml"), File.join(node[:flume][:home_dir], "bin/flume-env.sh") ] )
+  options       Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge({
+      :service_command    => 'node',
+      :zookeeper_home_dir => node[:zookeeper][:home_dir],
+    })
 end
 
-announce(:flume, :agent,
-         :logs    => {
-           :node => { :glob => File.join(node[:flume][:log_dir], 'flume-flume-node*.log'), :logrotate => false, :archive => false }
-         },
-         :ports   => {
-           :status => { :port => 35862, :protocol => 'http', :dashboard => true }
-         },
-         :daemons => {
-           :java => { :name => 'java', :cmd => 'FlumeNode', :number => 2 }
-         })
+#
+# Announce flume agent capability
+#
+
+announce(:flume, :agent, {
+    :logs    => {
+      :node => { :glob => File.join(node[:flume][:agent][:log_dir], 'flume-flume-node*.log'), :logrotate => false, :archive => false } },
+    :ports   => {
+      :status => { :port => 35862, :protocol => 'http', :dashboard => true }  },
+    :daemons => {
+      :java => { :name => 'java', :cmd => 'FlumeNode', :number => 2 } },
+  })

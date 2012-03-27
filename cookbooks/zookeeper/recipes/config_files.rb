@@ -22,7 +22,13 @@
 #
 # Config files
 #
-zookeeper_hosts = discover_all(:zookeeper, :server).sort_by{|cp| cp.node[:facet_index] }.map(&:private_ip)
+
+# zookeeper_hosts = discover_all(:zookeeper, :server).sort_by{|cp| cp.node[:facet_index] }.map(&:private_ip)
+zookeeper_hosts = Hash.new
+discover_all(:zookeeper, :server).each do |s| 
+  index = s.node[:zookeeper][:zkid]
+  zookeeper_hosts[index] = s.node[:ipaddress]
+end
 
 # use explicit value if set, otherwise make the leader a server iff there are
 # four or more zookeepers kicking around
@@ -36,6 +42,9 @@ end
 # (if 'bink' nodes have zkid_offset 10, 'foo-bink-7' would get zkid 17)
 node[:zookeeper][:zkid]  = node[:facet_index]
 node[:zookeeper][:zkid] += node[:zookeeper][:zkid_offset].to_i if node[:zookeeper][:zkid_offset]
+
+# Make sure the current server shows up in the hosts
+zookeeper_hosts[ node[:zookeeper][:zkid] ] = node[:ipaddress]
 
 template_variables = {
   :zookeeper         => node[:zookeeper],

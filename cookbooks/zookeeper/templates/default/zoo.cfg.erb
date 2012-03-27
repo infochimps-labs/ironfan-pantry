@@ -3,7 +3,7 @@
 # I am server # <%= @myid %>
 
 <%- if @zookeeper_hosts %>
-<%- @zookeeper_hosts.each_with_index do |zk_addr, idx| %>
+<%- @zookeeper_hosts.each do |idx,zk_addr| %>
 server.<%= idx %>=<%= zk_addr %>:<%= @zookeeper[:leader_port] %>:<%= @zookeeper[:election_port] %>
 <%- end %>
 <%- end %>

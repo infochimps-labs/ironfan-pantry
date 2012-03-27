@@ -97,3 +97,7 @@ default[:mongodb][:mongos][:logfile]     = "/var/log/mongos.log"
 default[:mongodb][:mongos][:pidfile]     = "/var/run/mongos.pid"
 default[:mongodb][:mongos][:host]        = "localhost"
 default[:mongodb][:mongos][:port]        = 27017
+
+## SILVERWARE
+
+default[:mongodb][:server][:run_state] = :start
