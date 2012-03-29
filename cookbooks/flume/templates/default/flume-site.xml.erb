@@ -112,8 +112,15 @@
     </description>
   </property>
 
-
-
+  <% if node[:flume][:max_event_size] %>
+  <property>
+    <name>flume.event.max.size.bytes</name>
+    <value><%= node[:flume][:max_event_size] %></value>
+    <description>
+      Maximum size for an Event
+    </description>
+  </property>
+  <% end %>
 
 </configuration>
 

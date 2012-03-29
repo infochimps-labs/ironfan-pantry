@@ -62,3 +62,7 @@ default[:flume][:java_opts] = []
 # Set the following two attributes to allow writing to s3 buckets:
 default[:flume][:aws_access_key] = nil
 default[:flume][:aws_secret_key] = nil
+
+# The maximum size (in bytes) allowed for an event.  Will not be set
+# (Flume will use its default value) if set to 'nil' here.
+default[:flume][:max_event_size] = nil
