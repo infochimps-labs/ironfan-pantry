@@ -79,6 +79,8 @@
   <property> <name>zookeeper.znode.rootserver</name>                           <value><%= @hbase[:zookeeper   ][:znode_rootserver]       %></value> </property>
   <property> <name>hbase.zookeeper.property.maxClientCnxns</name>              <value><%= @hbase[:zookeeper   ][:max_client_connections] %></value> </property>
 
+  <property> <name>hbase.master.assignment.timeoutmonitor.timeout</name>       <value><%= @hbase[:master      ][:session_timeout]        %></value> </property>
+
   <!-- <property> <name>hbase.zookeeper.property.initLimit</name>                   <value> -->
   <!-- <property> <name>hbase.zookeeper.property.syncLimit</name>                   <value> -->
   <!-- <property> <name>hbase.zookeeper.property.dataDir</name>                     <value> -->

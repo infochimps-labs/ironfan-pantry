@@ -258,6 +258,11 @@ default[:hbase][:regionserver][:hash_type]              = "murmur"             #
 #
 default[:hbase][:zookeeper][:session_timeout]           = 180_000              ## 180_000
 
+# hbase.master.assignment.timeoutmonitor.timeout (default 3min) -- The timeout for assignment of
+#   a regionserver, which should be the same as the zookeeper timeout above. In milliseconds.
+default[:hbase][:master][:session_timeout]              = 180_000              ## 180_000
+
+
 # zookeeper.znode.parent (default "/hbase") -- Root ZNode for HBase in
 #   ZooKeeper. All of HBase's ZooKeeper files that are configured with a
 #   relative path will go under this node.  By default, all of HBase's ZooKeeper
