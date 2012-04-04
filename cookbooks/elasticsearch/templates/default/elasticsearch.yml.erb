@@ -211,7 +211,7 @@ discovery:
       multicast:
         enabled:                false
       unicast:
-        hosts:                  <%= @elasticsearch[:seeds].join(",") %>
+        hosts:                  <%= @elasticsearch[:seeds].compact.map(&:to_s).join(",") %>
       <%- end %>
     # There are two fault detection processes running. The first is by the
     # master, to ping all the other nodes in the cluster and verify that they
