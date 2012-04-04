@@ -1,4 +1,4 @@
-]#
+#
 # Cookbook Name::       flume
 # Description::         Finalizes the config, writes out the config files
 # Recipe::              config_files
