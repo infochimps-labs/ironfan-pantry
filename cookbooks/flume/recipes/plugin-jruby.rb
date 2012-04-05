@@ -33,7 +33,8 @@ end
 node[:flume][:plugins][:jruby_flume] ||= {}
 node[:flume][:plugins][:jruby_flume][:classes]    = [ "com.infochimps.flume.jruby.JRubySink",
                                                       "com.infochimps.flume.jruby.JRubySource",
-                                                      "com.infochimps.flume.jruby.JRubyDecorator", ]
+                                                      "com.infochimps.flume.jruby.JRubyDecorator", 
+						      "com.infochimps.flume.SQLSink", ]
 node[:flume][:plugins][:jruby_flume][:classpath]  = [ "#{node[:flume][:home_dir]}/plugins/jruby-flume-1.0.0.jar","#{node[:jruby][:home_dir]}/lib/jruby.jar" ]
 node[:flume][:plugins][:jruby_flume][:java_opts]  = [ "-Djruby.home=#{node[:jruby][:home_dir]}",
                                                       "-Djruby.lib=#{node[:jruby][:home_dir]}/lib",
