@@ -20,6 +20,7 @@
 #
 
 include_recipe 'pig'
+include_recipe 'ant'
 include_recipe 'install_from'
 
 package "sun-java6-jdk"
