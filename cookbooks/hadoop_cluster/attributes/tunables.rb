@@ -16,24 +16,76 @@ default[:hadoop][:namenode   ][:handler_count]       = 40
 default[:hadoop][:jobtracker ][:handler_count]       = 40
 default[:hadoop][:datanode   ][:handler_count]       =  8
 default[:hadoop][:tasktracker][:http_threads ]       = 32
+
+# Number of files the reducer will read in parallel during the copy (shuffle)
+# phase, and the threshold triggering the last stage of the shuffle
+# (`mapred.reduce.parallel.copies`). This is an important setting but one you
+# should not mess with until you have tuned the hell out of everything else.
+#
+# A reducer gets one file from every mapper, which it must merge sort in passes
+# until there are fewer than `:reducer_parallel_copies` merged files. At that
+# point, it does not need to perform the final merge-sort pass: it can stream
+# directly from each file lickety-split and do the merge on the fly. A higher
+# number costs more memory but can lead to fewer merge passes.
+#
+# The hadoop default is 5; we have increased it to 10.
 default[:hadoop][:reducer_parallel_copies    ]       = 10
 
-default[:hadoop][:compress_output      ]             = 'false'
-default[:hadoop][:compress_output_type ]             = 'BLOCK'
-default[:hadoop][:compress_output_codec]             = 'org.apache.hadoop.io.compress.DefaultCodec'
+# `mapred.compress.map.output`: If true, compresses the data during transport
+# from mapper to reducer. It is decompressed for you, so this is completely
+# transparent to your jobs. (Also note that ifd there are no reducers, this
+# setting is not applied.) There's a modest CPU cost, but as midflight data
+# often sees compression ratios of 5:1 or better, the typical result is
+# dramatically faster transfer. Leave this `'true'` and override on a per-job
+# basis in the rare case it's unhelpful.
 default[:hadoop][:compress_mapout      ]             = 'true'
-default[:hadoop][:compress_mapout_codec]             = 'org.apache.hadoop.io.compress.DefaultCodec' # try instead: 'org.apache.hadoop.io.compress.SnappyCodec'
+
+# `mapred.map.output.compression.codec`: We've left `compress_mapout_codec` at
+# the default `'org.apache.hadoop.io.compress.DefaultCodec'`, but almost all
+# jobs are improved by `'org.apache.hadoop.io.compress.SnappyCodec'`
+default[:hadoop][:compress_mapout_codec]             = 'org.apache.hadoop.io.compress.DefaultCodec'
+
+# Compress the job output (`mapred.output.compress`). The same benefits as
+# `:compress_mapout`, but also saves significant disk space. The downside is
+# that the compression is not transparent: `hadoop fs -cat` outputs the
+# compressed data, which is a minor pain when doing exploratory analysis. You'd
+# like best to use `snappy` compression, but the toolset for working with it is
+# not mature.
+#
+# In practice, we leave this set at `'false'` in the site configuration, and
+# have production jobs explicitly request gzip- or snappy-compressed output. (We
+# find those are always superior to `.bz2`, `lzo` or `default` codecs.)
+default[:hadoop][:compress_output      ]             = 'false'
+# Leave this set to `'BLOCK'` (`mapred.output.compression.type`)
+default[:hadoop][:compress_output_type ]             = 'BLOCK'
+# Codec to use for job output (`mapred.output.compression.codec`). If you're
+# going to flip this on, I wouldn't use anything but
+# `'org.apache.hadoop.io.compress.SnappyCodec'`
+default[:hadoop][:compress_output_codec]             = 'org.apache.hadoop.io.compress.DefaultCodec'
 
 # uses /etc/default/hadoop-0.20 to set the hadoop daemon's java_heap_size_max
 default[:hadoop][:java_heap_size_max]                = 1000
+
+# Namenode Java Heap size. Increase this if you have a lot of
+# objects on your HDFS.
 default[:hadoop][:namenode    ][:java_heap_size_max] = nil
+# Secondary Namenode Java Heap size. Set to the exact same value as the Namenode.
 default[:hadoop][:secondarynn ][:java_heap_size_max] = nil
+# Jobtracker Java Heap Size.
 default[:hadoop][:jobtracker  ][:java_heap_size_max] = nil
+# Datanode Java Heap Size. Increase if each node manages a large number of blocks.
+# Set this by observation: its value is fairly stable and 1GB will take you fairly far.
 default[:hadoop][:datanode    ][:java_heap_size_max] = nil
+# Tasktracker Java Heap Size. Set this by observation: its value is fairly
+# stable.  Note: this is *not* the amount of RAM given to the mapper and reducer
+# child processes -- see :java_child_opts (and :java_child_ulimit) below.
 default[:hadoop][:tasktracker ][:java_heap_size_max] = nil
 
-# bytes per second -- 1MB/s by default
-default[:hadoop][:balancer][:max_bandwidth]          = 1048576
+# Rate at which datanodes exchange blocks in a rebalancing operation. If you run
+# an elastic cluster, increase this value to more like 50_000_000 -- jobs will
+# run more slowly while the cluster rebalances, but your usage will be more
+# efficient overall. In bytes per second -- 1MB/s by default
+default[:hadoop][:balancer][:max_bandwidth]          = 1_048_576
 
 # how long to keep jobtracker logs around
 default[:hadoop][:log_retention_hours ]              = 24
