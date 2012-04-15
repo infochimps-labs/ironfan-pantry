@@ -15,7 +15,7 @@ default[:minidash][:home_dir] = '/var/lib/minidash'
 # Dashboard service -- lightweight THTTPD daemon
 #
 
-default[:minidash][:port]        = 6789
+default[:minidash][:port]        = 5678
 default[:minidash][:run_state]   = :start
 
 default[:minidash][:user]     = 'root'

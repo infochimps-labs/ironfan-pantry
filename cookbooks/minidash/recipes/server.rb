@@ -26,24 +26,13 @@ include_recipe 'runit'
 # Lightweight THTTPD server
 #
 
-package         'thttpd'
-package         'thttpd-util'
-
-template "#{node[:minidash][:conf_dir]}/dashboard-thttpd.conf" do
-  owner         "root"
-  mode          "0644"
-  source        "dashboard-thttpd.conf.erb"
-end
+package         'busybox-static'
 
 runit_service "minidash_dashboard" do
   run_state     node[:minidash][:run_state]
   options       node[:minidash]
 end
 
-link "#{node[:minidash][:log_dir]}/service" do
-  to "/etc/sv/minidash_dashboard/log/main"
-end
-
-link "#{node[:minidash][:log_dir]}/thttpd-dashboard.log" do
+link "#{node[:minidash][:log_dir]}/current" do
   to "#{node[:minidash][:home_dir]}/thttpd-dashboard.log"
 end

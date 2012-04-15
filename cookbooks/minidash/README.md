@@ -1,6 +1,6 @@
 # minidash chef cookbook
 
-Creates and serves a lightweight pluggable dashboard for a machine
+Creates and serves a lightweight pluggable dashboard for a machine. Requires only the busybox httpd that is typically pre-installed with your OS.
 
 * Cookbook source:   [http://github.com/infochimps-cookbooks/minidash](http://github.com/infochimps-cookbooks/minidash)
 * Ironfan tools: [http://github.com/infochimps-labs/ironfan](http://github.com/infochimps-labs/ironfan)
@@ -24,14 +24,13 @@ Cookbook dependencies:
 * runit
 * silverware
 
-
 ## Attributes
 
 * `[:minidash][:conf_dir]`             -  (default: "/etc/minidash")
 * `[:minidash][:log_dir]`              -  (default: "/var/log/minidash")
 * `[:minidash][:home_dir]`             -  (default: "/var/lib/minidash")
 * `[:minidash][:user]`                 -  (default: "root")
-* `[:minidash][:port]`                 -  (default: "6789")
+* `[:minidash][:port]`                 -  (default: "5678")
 * `[:minidash][:run_state]`            -  (default: "start")
 
 ## License and Author
