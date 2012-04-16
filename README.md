@@ -14,14 +14,14 @@ To jump right into using Ironfan, follow our [Installation Instructions](https:/
 ironfan-pantry works together with the full Ironfan toolset:
 
 
-###Tools:
+### Tools:
 
 * [ironfan-homebase](https://github.com/infochimps-labs/ironfan-homebase): Centralizes the cookbooks, roles and clusters. A solid foundation for any Chef user.
 * [ironfan gem](https://github.com/infochimps-labs/ironfan): The core Ironfan models, and Knife plugins to orchestrate machines and coordinate truth among your homebase, cloud and chef server. 
 * [ironfan-pantry](https://github.com/infochimps-labs/ironfan-pantry): Our collection of industrial-strength, cloud-ready recipes for Hadoop, HBase, Cassandra, Elasticsearch, Zabbix and more. 
 * [silverware cookbook](https://github.com/infochimps-labs/ironfan-pantry/tree/master/cookbooks/silverware): Helps you coordinate discovery of services ("list all the machines for `awesome_webapp`, that I might load balance them") and aspects ("list all components that write logs, that I might logrotate them, or that I might monitor the free space on their volumes"). Found within the [ironfan-pantry](https://github.com/infochimps-labs/ironfan-pantry).
 
-###Documentation:
+### Documentation:
 
 * [index of wiki pages](https://github.com/infochimps-labs/ironfan/wiki/_pages)
 * [ironfan wiki](https://github.com/infochimps-labs/ironfan/wiki): High-level documentation and install instructions.
@@ -29,6 +29,7 @@ ironfan-pantry works together with the full Ironfan toolset:
 * [ironfan gem docs](http://rdoc.info/gems/ironfan): Rdoc docs for Ironfan.
 * [Ironfan Screen Cast](http://vimeo.com/37279372)-- build a Hadoop cluster from scratch in 20 minutes.
 
+**Note**: Ironfan is [not compatible with Ruby 1.8](https://github.com/infochimps-labs/ironfan/issues/127). All versions later than 1.9.2-p136 should work fine.
 
 ## Credits
 
