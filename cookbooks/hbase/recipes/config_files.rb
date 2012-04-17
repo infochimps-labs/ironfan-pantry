@@ -49,7 +49,7 @@ hbase_config = Mash.new({
   # FIXME: this is brittle, but the best I can do. can you do better?
   Array(node[component][:exported_libs]).flatten.each do |export|
     pathsegs = export.gsub(%r{\A.*/native/([\w\.\-]+)/([^/]+)\z}, '\1/\2')
-    Chef::Log.info( [ 'hbase using hadoop native libs', pathsegs, node[:hadoop][:exported_libs], node[:hbase][:home_dir] ].inspect )
+    Chef::Log.debug( [ 'hbase using hadoop native libs', pathsegs, node[:hadoop][:exported_libs], node[:hbase][:home_dir] ].inspect )
     link "#{node[:hbase][:home_dir]}/lib/native/#{pathsegs}" do
       to  export
     end
