@@ -3,6 +3,7 @@ define(:hadoop_service, :service_name => nil, :old_service_name => nil, :package
   old_service_name = "#{node[:hadoop][:handle]}-#{params[:old_service_name] || name}"
   service_name     = params[:service_name]     || name
   package_name     = params[:package_name]     || name
+  jar_name         = params[:jar_name]         || name
 
   hadoop_package package_name
 
@@ -12,7 +13,7 @@ define(:hadoop_service, :service_name => nil, :old_service_name => nil, :package
     options       Mash.new().
       merge(node[:hadoop]).
       merge(node[:hadoop][name]).
-      merge(:service_name => service_name, :component_name => name)
+      merge(:service_name => service_name, :component_name => name, :jar_name => jar_name)
   end
   kill_old_service(old_service_name) do
     only_if{ File.exists?("/etc/init.d/#{old_service_name}") }
