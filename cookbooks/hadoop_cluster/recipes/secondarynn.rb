@@ -25,4 +25,5 @@ include_recipe 'runit'
 hadoop_service(:secondarynn) do
   old_service_name :secondarynamenode
   package_name     :secondarynamenode
+  jar_name         :secondarynamenode
 end

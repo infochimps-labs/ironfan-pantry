@@ -138,7 +138,7 @@ node[:hadoop][:exported_jars] = [
 
 node[:hadoop][:exported_libs] = Dir["#{node[:hadoop][:home_dir]}/lib/native/**/*.*"].sort.reject{|ff| File.directory?(ff) }
 
-Chef::Log.info( [ 'hadoop native libs', node[:hadoop][:exported_libs] ].inspect )
+Chef::Log.debug( [ 'hadoop native libs', node[:hadoop][:exported_libs] ].inspect )
 
 node[:hadoop][:exported_confs]  = [
   "#{node[:hadoop][:conf_dir]}/core-site.xml",

@@ -78,7 +78,7 @@ module Silverware
     # Use `file -s` to identify volume type: ohai doesn't seem to want to do so.
     def fstype
       return self['fstype'] if has_key?('fstype')
-      Chef::Log.info([
+      Chef::Log.debug([
           self['fstype'], current[:fstype],
           File.exists?(device) && `file -s '#{device}'`.chomp,
           self,

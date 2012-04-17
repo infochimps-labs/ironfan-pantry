@@ -1,7 +1,8 @@
 #!/bin/bash
 exec 2>&1
 
-command=<%= @options[:service_name] %>
+command="<%=  @options[:service_name] %>"
+jar_name="<%= @options[:jar_name] %>"
 
 # Include hadoop defaults if available
 if [ -f "/etc/default/hadoop-0.20" ] ; then
@@ -26,4 +27,4 @@ export HADOOP_ROOT_LOGGER="INFO,DRFA"
 export HADOOP_SECURITY_LOGGER="INFO,DRFAS"
 
 cd "$HADOOP_HOME"
-exec chpst -u <%= @options[:user] %> "$HADOOP_HOME"/bin/hadoop --config $HADOOP_CONF_DIR $command "$@" < /dev/null
+exec chpst -u <%= @options[:user] %> "$HADOOP_HOME"/bin/hadoop --config $HADOOP_CONF_DIR "$jar_name" "$@" < /dev/null
