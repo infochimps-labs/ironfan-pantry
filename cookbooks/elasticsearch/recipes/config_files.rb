@@ -32,7 +32,6 @@ end
 
 node[:elasticsearch][:seeds] = discover_all(:elasticsearch, :datanode).map(&:private_ip)
 Chef::Log.warn("No elasticsearch seeds!") if node[:elasticsearch][:seeds].empty?
-# p node[:elasticsearch][:seeds] unless node[:elasticsearch][:seeds].empty?
 template "/etc/elasticsearch/elasticsearch.yml" do
   source        "elasticsearch.yml.erb"
   owner         "elasticsearch"
@@ -42,4 +41,15 @@ template "/etc/elasticsearch/elasticsearch.yml" do
     :elasticsearch      => node[:elasticsearch],
     :aws                => node[:aws]
   })
+end
+
+# This should be in server as a subscription, but that isn't supported by
+#   the new syntax, and the old syntax requires that the subscription only
+#   occur after the declaration of its target (which will fail since config
+#   happens last.
+template "/etc/elasticsearch/elasticsearch.yml" do
+  notifies      :restart, "service[elasticsearch]"
+  only_if do
+    node.elasticsearch.is_datanode && (node.elasticsearch.server.run_state != 'stop')
+  end
 end

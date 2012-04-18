@@ -55,6 +55,11 @@ runit_service "elasticsearch" do
   options       node[:elasticsearch]
 end
 
+## FIXME: Cannot use this syntax currently, see http://tickets.opscode.com/browse/CHEF-1994
+# service "elasticsearch" do
+#   subscribes    "template[/etc/elasticsearch/elasticsearch.yml]"
+# end
+
 # TODO: split httpnode and datanode into separate components
 announce(:elasticsearch, :datanode) if node[:elasticsearch][:is_datanode]
 announce(:elasticsearch, :httpnode) if node[:elasticsearch][:is_httpnode]
