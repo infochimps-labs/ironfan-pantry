@@ -47,7 +47,6 @@ dfs_2nn_dirs="<%=      @hadoop[:secondarynn][:data_dirs].join(" ") %>"
 dfs_name_dir_root="<%= @hadoop[:namenode   ][:data_dirs].last      %>"
 hadoop_tmp_dir="<%=    @hadoop[:tmp_dir] %>"
 hadoop_log_dir="<%=    @hadoop[:log_dir] %>"
-namenode_daemon="hadoop_namenode"
 sentinel="$hadoop_tmp_dir/made_initial_dirs.log"
 
 make_hadoop_dir_if_not_exists() {
@@ -74,9 +73,12 @@ make_hadoop_dir_if_not_exists "$hadoop_tmp_dir" 777
 make_hadoop_dir_if_not_exists "$hadoop_log_dir" 777
 
 #
-echo "2/6: Stopping the $namenode_daemon daemon" ; echo -n "  "
+echo "2/6: Stopping daemons:" ; echo -n "  "
 #
-sudo service $namenode_daemon stop || sleep 3 ; true
+for daemon in namenode secondarynn jobtracker datanode tasktracker ; do
+  echo "        - $daemon"
+  sudo service "hadoop_${daemon}" stop || sleep 3 ; true
+done
 
 #
 echo "Formatting namenode in '$dfs_name_dirs'"
@@ -91,9 +93,9 @@ fi
 echo
 
 #
-echo "3/6: Restarting the namenode" ; echo -n "  "
+echo "3/6: Restarting the namenode (but none of the other ones)" ; echo -n "  "
 #
-sudo service $namenode_daemon start
+sudo service hadoop_namenode start
 
 #
 echo "4/6: Waiting for the namenode to come out of safemode" ; echo -n "  "
