@@ -43,13 +43,11 @@ template "/etc/elasticsearch/elasticsearch.yml" do
   })
 end
 
-# This should be in server as a subscription, but that isn't supported by
-#   the new syntax, and the old syntax requires that the subscription only
-#   occur after the declaration of its target (which will fail since config
-#   happens last.
-template "/etc/elasticsearch/elasticsearch.yml" do
-  notifies      :restart, "service[elasticsearch]"
-  only_if do
-    node.elasticsearch.is_datanode && (node.elasticsearch.server.run_state != 'stop')
+# FIXME: This should be in server as a subscription, but that isn't supported by the
+#   new syntax, and the old syntax requires that the subscription only occur after
+#   the declaration of its target (which will fail since config happens last.)
+if ( node.elasticsearch.is_datanode && ( node.elasticsearch.server.run_state != 'stop') )
+  template "/etc/elasticsearch/elasticsearch.yml" do
+    notifies      :restart, "service[elasticsearch]"
   end
 end
