@@ -1,12 +1,14 @@
 
 # Other hadoop settings
 
+megabyte = (1024 * 1024)
+
 # You may wish to set the following to the same as your HDFS block size, esp if
 # you're seeing issues with s3:// turning 1TB files into 30_000+ map tasks
 #
-default[:hadoop][:min_split_size]  = (128 * 1024 * 1024)
-default[:hadoop][:s3_block_size]   = (128 * 1024 * 1024)
-default[:hadoop][:hdfs_block_size] = (128 * 1024 * 1024)
+default[:hadoop][:min_split_size]  = (128 * megabyte)
+default[:hadoop][:s3_block_size]   = (128 * megabyte)
+default[:hadoop][:hdfs_block_size] = (128 * megabyte)
 default[:hadoop][:dfs_replication] =  3
 
 default[:hadoop][:namenode   ][:handler_count]       = 40
@@ -111,32 +113,44 @@ default[:hadoop][:fake_rack_size]                    = 4
 # mapred.max.maps.per.node and mapred.max.reduces.per.node, or by setting
 # java_child_opts.
 #
+# Memory-heavy machines are biased towards reduce efficiency; CPU-heavy machines
+# are biased towards mapper efficiency.
+#
 # It assumes EC2 instances with EBS-backed volumes
 # If your cluster is heavily used and has many cores/machine (almost always running a full # of maps and reducers) turn down the number of mappers.
 # If you typically run from S3 (fully I/O bound) increase the number of maps + reducers moderately.
 # In both cases, adjust the memory settings accordingly.
-#
 #
 # FIXME: The below parameters are calculated for each node.
 #   The max_map_tasks and max_reduce_tasks settings apply per-node, no problem here
 #   The remaining ones (java_child_opts, io_sort_mb, etc) are applied *per-job*:
 #   if you launch your job from an m2.xlarge on a heterogeneous cluster, all of
 #   the tasks will kick off with -Xmx4531m and so forth, regardless of the RAM
-#   on that machine.
+#   on that machine. Just set the right thing explicitly in your job conf.
 #
-# Also, make sure you're
+# The io.sort.mb should be marginally above (128 / (0.85 * 0.8)) to minimize
+# spill (If that didn't make sense, don't worry about it.)
+#
+# If you are using a tiny machine (t1.micro, m1.small, c1.medium), a) I hope
+# it's only for testing purposes; b) you should lower the block size to 64m
+# (from our default of 128m). If you're on a c1.xlarge, you are assumedly
+# running a massive number of map-side-only jobs; consider turning the block
+# size *up*.
+#
 #
 hadoop_performance_settings =
   case node[:ec2] && node[:ec2][:instance_type]
-  when 't1.micro'   then { :max_map_tasks =>  1, :max_reduce_tasks => 1, :java_child_opts =>  '-Xmx256m -Xss128k',                                                    :java_child_ulimit =>  2227200, :io_sort_factor => 10, :io_sort_mb =>  64, }
-  when 'm1.small'   then { :max_map_tasks =>  2, :max_reduce_tasks => 1, :java_child_opts =>  '-Xmx870m -Xss128k',                                                    :java_child_ulimit =>  2227200, :io_sort_factor => 10, :io_sort_mb => 100, }
-  when 'c1.medium'  then { :max_map_tasks =>  3, :max_reduce_tasks => 2, :java_child_opts =>  '-Xmx870m -Xss128k',                                                    :java_child_ulimit =>  2227200, :io_sort_factor => 10, :io_sort_mb => 100, }
-  when 'm1.large'   then { :max_map_tasks =>  3, :max_reduce_tasks => 2, :java_child_opts => '-Xmx2432m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit =>  7471104, :io_sort_factor => 25, :io_sort_mb => 250, }
-  when 'c1.xlarge'  then { :max_map_tasks => 10, :max_reduce_tasks => 4, :java_child_opts =>  '-Xmx870m -Xss128k',                                                    :java_child_ulimit =>  2227200, :io_sort_factor => 20, :io_sort_mb => 200, }
-  when 'm1.xlarge'  then { :max_map_tasks =>  6, :max_reduce_tasks => 3, :java_child_opts => '-Xmx1920m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit =>  5898240, :io_sort_factor => 25, :io_sort_mb => 250, }
-  when 'm2.xlarge'  then { :max_map_tasks =>  4, :max_reduce_tasks => 2, :java_child_opts => '-Xmx4531m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit => 13447987, :io_sort_factor => 32, :io_sort_mb => 250, }
-  when 'm2.2xlarge' then { :max_map_tasks =>  6, :max_reduce_tasks => 4, :java_child_opts => '-Xmx4378m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit => 13447987, :io_sort_factor => 32, :io_sort_mb => 256, }
-  when 'm2.4xlarge' then { :max_map_tasks => 12, :max_reduce_tasks => 4, :java_child_opts => '-Xmx4378m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit => 13447987, :io_sort_factor => 40, :io_sort_mb => 256, }
+  when 't1.micro'    then { :max_map_tasks =>  1, :max_reduce_tasks => 1, :java_child_opts =>  '-Xmx256m -Xss128k',                                                    :java_child_ulimit =>  2227200, :io_sort_factor => 10, :io_sort_mb =>   64, }
+  when 'm1.small'    then { :max_map_tasks =>  2, :max_reduce_tasks => 1, :java_child_opts =>  '-Xmx870m -Xss128k',                                                    :java_child_ulimit =>  2227200, :io_sort_factor => 10, :io_sort_mb =>  100, }
+  when 'c1.medium'   then { :max_map_tasks =>  3, :max_reduce_tasks => 2, :java_child_opts =>  '-Xmx870m -Xss128k',                                                    :java_child_ulimit =>  2227200, :io_sort_factor => 10, :io_sort_mb =>  100, }
+  when 'm1.large'    then { :max_map_tasks =>  4, :max_reduce_tasks => 2, :java_child_opts => '-Xmx2432m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit =>  7471104, :io_sort_factor => 25, :io_sort_mb =>  200, }
+  when 'c1.xlarge'   then { :max_map_tasks => 10, :max_reduce_tasks => 4, :java_child_opts =>  '-Xmx870m -Xss128k',                                                    :java_child_ulimit =>  2227200, :io_sort_factor => 20, :io_sort_mb =>  200, }
+  when 'm1.xlarge'   then { :max_map_tasks =>  6, :max_reduce_tasks => 3, :java_child_opts => '-Xmx1920m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit =>  5898240, :io_sort_factor => 25, :io_sort_mb =>  210, }
+  when 'm2.xlarge'   then { :max_map_tasks =>  3, :max_reduce_tasks => 2, :java_child_opts => '-Xmx4531m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit => 13447987, :io_sort_factor => 32, :io_sort_mb =>  210, }
+  when 'm2.2xlarge'  then { :max_map_tasks =>  6, :max_reduce_tasks => 4, :java_child_opts => '-Xmx4378m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit => 13447987, :io_sort_factor => 32, :io_sort_mb =>  210, }
+  when 'm2.4xlarge'  then { :max_map_tasks => 12, :max_reduce_tasks => 4, :java_child_opts => '-Xmx4378m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit => 13447987, :io_sort_factor => 40, :io_sort_mb =>  210, }
+  when 'cc1.4xlarge' then { :max_map_tasks =>  6, :max_reduce_tasks => 3, :java_child_opts => '-Xmx2000m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit => 13447987, :io_sort_factor => 40, :io_sort_mb =>  800, :hdfs_block_size => ( 512 * megabyte), }
+  when 'cc1.8xlarge' then { :max_map_tasks =>  6, :max_reduce_tasks => 3, :java_child_opts => '-Xmx6000m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server', :java_child_ulimit => 13447987, :io_sort_factor => 40, :io_sort_mb => 3100, :hdfs_block_size => (2048 * megabyte) , } # the 2GB block size, and this machine in general, are only appropriate if you're bringing some bigass data.
   else
     if node[:memory] && node[:cores]
       cores        = node[:cpu   ][:total].to_i

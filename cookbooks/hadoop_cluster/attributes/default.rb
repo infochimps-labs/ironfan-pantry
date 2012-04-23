@@ -34,20 +34,20 @@ default[:hadoop][:balancer    ][:run_state]  = :stop
 # These are handled by volumes, which imprints them on the node.
 # If you set an explicit value it will be used and no discovery is done.
 #
-# Chef Attr                    Owner           Permissions  Path                                     Hadoop Attribute
-# [:namenode   ][:data_dir]    hdfs:hadoop     drwx------   {persistent_vols}/hadoop/hdfs/name       dfs.name.dir
-# [:sec..node  ][:data_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/secondary  fs.checkpoint.dir
-# [:datanode   ][:data_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/data       dfs.data.dir
-# [:tasktracker][:scratch_dir] mapred:hadoop   drwxr-xr-x   {scratch_vols   }/hadoop/hdfs/name       mapred.local.dir
+# Chef Attr                        Owner           Permissions  Path                                     Hadoop Attribute
+# [:namenode   ][:data_dir]        hdfs:hadoop     drwx------   {persistent_vols}/hadoop/hdfs/name       dfs.name.dir
+# [:secondarynn][:data_dir]        hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/secondary  fs.checkpoint.dir
+# [:datanode   ][:data_dir]        hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/data       dfs.data.dir
+# [:tasktracker][:scratch_dir]     mapred:hadoop   drwxr-xr-x   {scratch_vols   }/hadoop/hdfs/name       mapred.local.dir
 # [:jobtracker ][:system_hdfsdir]  mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/system   mapred.system.dir
-# [:jobtracker ][:staging_hdfsdir] mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/staging  mapred.system.dir
+# [:jobtracker ][:staging_hdfsdir] mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/staging  mapreduce.jobtracker.staging.root.dir
 #
 # Important: In CDH3, the mapred.system.dir directory must be located inside a directory that is owned by mapred. For example, if mapred.system.dir is specified as /mapred/system, then /mapred must be owned by mapred. Don't, for example, specify /mrsystem as mapred.system.dir because you don't want / owned by mapred.
 #
 default[:hadoop][:namenode   ][:data_dirs]       = []
 default[:hadoop][:secondarynn][:data_dirs]       = []
-default[:hadoop][:jobtracker ][:system_hdfsdir]  = '/hadoop/mapred/system' # note: on the HDFS
-default[:hadoop][:jobtracker ][:staging_hdfsdir] = '/hadoop/mapred/system' # note: on the HDFS
+default[:hadoop][:jobtracker ][:system_hdfsdir]  = '/hadoop/mapred/system'  # note: on the HDFS
+default[:hadoop][:jobtracker ][:staging_hdfsdir] = '/hadoop/mapred/staging' # note: on the HDFS
 default[:hadoop][:datanode   ][:data_dirs]       = []
 default[:hadoop][:tasktracker][:scratch_dirs]    = []
 

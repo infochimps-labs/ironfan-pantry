@@ -21,8 +21,6 @@ fi
 export HADOOP_OPTS="$HADOOP_OPTS -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:$HADOOP_LOG_DIR/hadoop-$HADOOP_IDENT_STRING-$command-$HADOOP_NODENAME.gc.log"
 <%- end %>
 
-<%- if @options[:service_name] == 'jobtracker' %>sudo -u '<%= node[:hadoop][:user] %>' hadoop fs -chown -R '<%= node[:hadoop][:jobtracker][:user] %>' /hadoop/mapred/system<%- end %>
-
 # some variables
 export _HADOOP_DAEMON_OUT=$HADOOP_LOG_DIR/hadoop-$HADOOP_IDENT_STRING-$command-$HADOOP_NODENAME.out
 export _HADOOP_DAEMON_PIDFILE=$HADOOP_PID_DIR/hadoop-$HADOOP_IDENT_STRING-$command.pid
@@ -32,8 +30,10 @@ export HADOOP_LOGFILE=hadoop-$HADOOP_IDENT_STRING-$command-$HADOOP_NODENAME.log
 export HADOOP_ROOT_LOGGER="INFO,DRFA"
 export HADOOP_SECURITY_LOGGER="INFO,DRFAS"
 
-# show what our ulimits are, to make sure those settings got here
-chpst -u <%= @options[:user] %> bash -c 'ulimit -a'
+# Set the ulimit, then prove the new settings got there
+ulimit -H -n 65535 
+ulimit -S -n 65535 
+chpst -u <%= @options[:user] %> bash -c 'ulimit -S -a'
 
 cd "$HADOOP_HOME"
 exec chpst -u <%= @options[:user] %> "$HADOOP_HOME"/bin/hadoop --config $HADOOP_CONF_DIR "$jar_name" "$@" < /dev/null
