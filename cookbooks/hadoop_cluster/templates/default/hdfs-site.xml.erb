@@ -15,7 +15,7 @@
 <property><name>dfs.data.dir</name>                      <value><%= @hadoop[:datanode][:data_dirs].join(",") %></value><final>true</final></property>
 <property><name>dfs.permissions</name>                   <value>true</value><final>true</final></property>
 
-<property><name>dfs.block.size</name>                    <value><%= @hadoop[:hdfs_block_size] %></value><final>true</final></property>
+<property><name>dfs.block.size</name>                    <value><%= @hadoop[:hdfs_block_size] %></value></property>
 <property><name>dfs.datanode.du.reserved</name>          <value>4073741824</value><final>true</final></property>
 <property><name>dfs.replication</name>                   <value><%= @hadoop[:dfs_replication] %></value></property>
 

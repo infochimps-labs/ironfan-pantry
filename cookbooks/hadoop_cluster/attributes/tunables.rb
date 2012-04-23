@@ -1,9 +1,6 @@
 
 # Other hadoop settings
 
-# Make sure you define a cluster_size in roles/WHATEVER_cluster.rb
-default[:cluster_size] = 5
-
 # You may wish to set the following to the same as your HDFS block size, esp if
 # you're seeing issues with s3:// turning 1TB files into 30_000+ map tasks
 #
@@ -66,6 +63,9 @@ default[:hadoop][:compress_output_codec]             = 'org.apache.hadoop.io.com
 # uses /etc/default/hadoop-0.20 to set the hadoop daemon's java_heap_size_max
 default[:hadoop][:java_heap_size_max]                = 1000
 
+# if true, hadoop daemon JVMs will write verbose logs about garbage collection activity. Heaven help you.
+default[:hadoop][:java_gc_log]         = false
+
 # Namenode Java Heap size. Increase this if you have a lot of
 # objects on your HDFS.
 default[:hadoop][:namenode    ][:java_heap_size_max] = nil
@@ -88,7 +88,7 @@ default[:hadoop][:tasktracker ][:java_heap_size_max] = nil
 default[:hadoop][:balancer][:max_bandwidth]          = 1_048_576
 
 # how long to keep jobtracker logs around
-default[:hadoop][:log_retention_hours ]              = 24
+default[:hadoop][:log_retention_hours ]              = 240
 
 # define a rack topology? if false (default), all nodes are in the same 'rack'.
 default[:hadoop][:define_topology]                   = false
