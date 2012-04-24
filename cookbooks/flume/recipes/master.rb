@@ -61,5 +61,5 @@ announce(:flume, :master, {
       # ports[:gossip] = 57890
     end,
     :daemons => {
-      :java => { :name => 'java', :cmd => 'FlumeMaster', :number => 2 }, },
+      :java => { :name => 'java', :cmd => 'FlumeMaster' }, },
   })

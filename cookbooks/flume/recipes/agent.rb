@@ -53,5 +53,5 @@ announce(:flume, :agent, {
     :ports   => {
       :status => { :port => 35862, :protocol => 'http', :dashboard => true }  },
     :daemons => {
-      :java => { :name => 'java', :cmd => 'FlumeNode', :number => 2 } },
+      :java => { :name => 'java', :cmd => 'FlumeNode' } },
   })
