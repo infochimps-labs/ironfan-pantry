@@ -26,4 +26,9 @@ hadoop_service(:secondarynn) do
   old_service_name :secondarynamenode
   package_name     :secondarynamenode
   jar_name         :secondarynamenode
+  daemons :main => { 
+    :name       => 'java',
+    :user       => node[:hadoop][:secondarynn][:user],
+    :cmd        => "proc_secondarynamenode"
+  }
 end
