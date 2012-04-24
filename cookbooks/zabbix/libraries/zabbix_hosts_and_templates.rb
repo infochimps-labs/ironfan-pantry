@@ -28,7 +28,7 @@ class Chef
           case
           when the_node[:zabbix][:templates].respond_to?(:each_pair)
             the_node[:zabbix][:templates].each_pair do |service, templates|
-              templates.each { |t| ts << t }
+              (templates ||{}).each{ |t| ts << t }
             end
           # Supports deprecated usage
           when the_node[:zabbix][:templates].respond_to?(:each)
@@ -37,6 +37,6 @@ class Chef
         end
       end.to_a
     end
-    
+
   end
 end
