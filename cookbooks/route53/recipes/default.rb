@@ -25,8 +25,9 @@ gem_package("fog"          ){ action :nothing }.run_action(:install)
 gem_package("net-ssh-multi"){ action :nothing }.run_action(:install)
 gem_package("ghost"        ){ action :nothing }.run_action(:install)
 
-# Source the fog gem, forcing Gem to recognize new version if any
+# # Source the fog gem, forcing Gem to recognize new version if any
+# require 'rubygems' unless defined?(Gem)
+# Gem.clear_paths
 
-require 'rubygems' unless defined?(Gem)
-Gem.clear_paths
 require 'fog'
+load File.expand_path('../libraries/fog_monkeypatch.rb', File.dirname(__FILE__))

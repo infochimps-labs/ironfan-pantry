@@ -19,6 +19,9 @@
 
 include_recipe 'route53'
 
+require 'fog'
+load File.expand_path('../libraries/fog_monkeypatch.rb', File.dirname(__FILE__))
+
 # aws = data_bag_item("aws", "route53")
 aws = node[:aws]
 
@@ -26,6 +29,11 @@ if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key]
 
   public_hostname    =  node.name
   public_fqdn        = [public_hostname, node[:route53][:zone]].compact.join(".")
+  case
+  when node[:cloud] then machine_public = node[:cloud][:public_hostname] ; machine_private = node[:cloud][:local_hostname]
+  when node[:ec2]   then machine_public = node[:ec2  ][:public_hostname] ; machine_private = node[:ec2  ][:local_hostname]
+  else                   machine_public = machine_private = node[:fqdn] ; Chef::Log.warn("Can't reliably detect public hostname, going with public = private = #{machine_public}")
+  end
 
   # point "gordo-datanode-3.awesomeco.com" => the cloud public_hostname
   route53_rr(public_hostname) do
@@ -33,7 +41,7 @@ if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key]
 
     fqdn          public_fqdn
     type          "CNAME"
-    values        ["#{node[:cloud][:public_hostname]}."]
+    values        ["#{machine_public}."]
     ttl           node[:route53][:ttl]
 
     action        :update
@@ -50,7 +58,7 @@ if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key]
 
     fqdn          private_fqdn
     type          "CNAME"
-    values        ["#{node[:cloud][:local_hostname]}."]
+    values        ["#{machine_private}."]
     ttl           node[:route53][:ttl]
 
     action        :update
