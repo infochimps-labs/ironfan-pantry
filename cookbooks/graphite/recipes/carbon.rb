@@ -49,21 +49,31 @@ end
 
 template "#{node[:graphite][:conf_dir]}/storage-schemas.conf"
 
-template "/etc/init.d/carbon-cache" do
-  source "init.d_carbon-cache.erb"
-  mode 0755
-  variables :carbon_dir => node[:graphite][:carbon][:home_dir]
+link "#{node[:graphite][:carbon][:home_dir]}/conf/carbon.conf" do
+  to "#{node[:graphite][:conf_dir]}/carbon.conf"
+  action :create
 end
+
+link "#{node[:graphite][:carbon][:home_dir]}/conf/storage-schemas.conf" do
+  to "#{node[:graphite][:conf_dir]}/storage-schemas.conf"
+  action :create
+end
+
+#template "/etc/init.d/carbon-cache" do
+#  source "init.d_carbon-cache.erb"
+#  mode 0755
+#  variables :carbon_dir => node[:graphite][:carbon][:home_dir]
+#end
 
 # # execute "setup carbon sysvinit script" do
 # #   command "ln -nsf /opt/graphite/bin/carbon-cache.py /etc/init.d/carbon-cache"
 # #   creates "/etc/init.d/carbon-cache"
 # # end
 #
-# service "carbon-cache" do
-# #   running true
-# #   start_command "/opt/graphite/bin/carbon-cache.py start"
-# #   stop_command "/opt/graphite/bin/carbon-cache.py stop"
-#   action [ :enable, :start ]
-# #   action :start
-# end
+service "carbon-cache" do
+  running true
+  start_command "#{node[:graphite][:carbon][:home_dir]}/bin/carbon-cache.py start"
+  stop_command "#{node[:graphite][:carbon][:home_dir]}/bin/carbon-cache.py stop"
+  action [ :enable, :start ]
+  action :start
+end

@@ -51,7 +51,7 @@ attribute "graphite/pid_dir",
 attribute "graphite/user",
   :display_name          => "",
   :description           => "",
-  :default               => "graphite"
+  :default               => "www-data"
 
 attribute "graphite/carbon/line_rcvr_addr",
   :display_name          => "",
