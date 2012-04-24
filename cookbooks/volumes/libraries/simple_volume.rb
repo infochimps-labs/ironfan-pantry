@@ -123,10 +123,10 @@ module Silverware
     # **and** there are /dev/xvdXX devices, we relabel all the /dev/sdXX device
     # points to be /dev/xvdXX.
     def fix_for_xen!
-      return unless node[:virtualization] && (node[:virtualization][:system] == 'xen')
-      return unless (Dir['/dev/sd*'].empty?) && (not Dir['/dev/xvd*'].empty?)
-      return unless device
-      self['device'].gsub!(%r{^/dev/sd}, '/dev/xvd')
+      return unless device && node[:virtualization] && (node[:virtualization][:system] == 'xen')
+      new_device_name = device.gsub(%r{^/dev/sd}, '/dev/xvd')
+      return unless (Dir[device].empty?) && (not Dir[new_device_name].empty?)
+      self['device'] = new_device_name
     end
   end
 end
