@@ -112,7 +112,7 @@ module Ironfan
       # 'logs' method
       dsl_attr(klass.plural_handle, :kind_of => Mash, :dup_default => Mash.new)
       # 'log' method: this is just a slightly modified dsl_attr
-      define_method(klass.handle) do |name, val=nil, &block|
+      define_method(klass.handle) do |name, val, &block|
         hsh = self.send(klass.plural_handle)
         #
         hsh[name] = val if val
