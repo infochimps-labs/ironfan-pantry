@@ -18,7 +18,8 @@ module Ironfan
         coerce      = validation.delete(:coerce)
         dup_default = validation.delete(:dup_default)
         validation.delete(:doc)
-        define_method(name) do |val|
+        define_method(name) do |*args|
+          val = args[0]
           validation[:default] = dup_default.dup unless dup_default.nil?
           val = val.send(coerce) if val && coerce
           set_or_return(name, val, validation)
