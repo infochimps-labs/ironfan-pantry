@@ -57,4 +57,6 @@ volumes(node).each do |vol_name, vol|
   make_dir_rsrc.run_action(:create)
   vol_mount_rsrc.run_action(:mount)
 
+  # KLUDGE: tell subsequent actions the volume is mounted (the node metadata is now out of date)
+  vol.mounted!
 end

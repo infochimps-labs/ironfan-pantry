@@ -34,6 +34,7 @@ module Silverware
 
     # True if the volume is mounted
     def mounted?
+      return true if self[:mounted]
       !!( attached? && mount_point && File.exists?(mount_point) && current[:mount] == mount_point )
     end
 
@@ -101,6 +102,10 @@ module Silverware
       curr = Mash.new(node[:filesystem][ device ].to_hash)
       curr['fstype'] ||= curr['fs_type']
       curr
+    end
+
+    def mounted!
+      self[:mounted] = true
     end
 
     # volume was resized, so mark it as no longer needing resize
