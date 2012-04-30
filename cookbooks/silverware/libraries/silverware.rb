@@ -1,7 +1,7 @@
 #
 # Dependencies for silverware libraries
 #
-module ClusterChef
+module Ironfan
   module_dir = File.expand_path('..', __FILE__)
   autoload :Component, File.join(module_dir, 'attr_struct.rb')
   autoload :NodeUtils, File.join(module_dir, 'node_utils.rb')
