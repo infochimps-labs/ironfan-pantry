@@ -1,17 +1,15 @@
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-
-# $LOAD_PATH.unshift(File.expand_path('../../../lib'), File.dirname(__FILE__))
-# require 'ironfan/dsl_object'
-
 #
 # Dependencies for silverware libraries
 #
-require File.expand_path('attr_struct.rb', File.dirname(__FILE__))
-require File.expand_path('node_utils.rb',  File.dirname(__FILE__))
-require File.expand_path('component.rb',   File.dirname(__FILE__))
-require File.expand_path('aspect.rb',      File.dirname(__FILE__))
-require File.expand_path('discovery.rb',   File.dirname(__FILE__))
-
+module ClusterChef
+  module_dir = File.expand_path('..', __FILE__)
+  autoload :Component, File.join(module_dir, 'attr_struct.rb')
+  autoload :NodeUtils, File.join(module_dir, 'node_utils.rb')
+  autoload :Component, File.join(module_dir, 'component.rb')
+  autoload :Aspect, File.join(module_dir, 'aspect.rb')
+  autoload :Discovery, File.join(module_dir, 'discovery.rb')
+  autoload :AttrStruct, File.join(module_dir, 'attr_struct.rb')
+end
 # require File.expand_path('aspects.rb',     File.dirname(__FILE__))
 # require SILVERWARE_DIR("libraries/aspect")
 # require SILVERWARE_DIR("libraries/aspects")
