@@ -100,6 +100,7 @@ def assume_defaults!
   @release_file     ||= ::File.join(prefix_root, 'src',   "#{name}-#{version}.#{release_ext}")
   @expand_cmd ||=
     case release_ext
+    when 'tar'     then untar_cmd('xf', release_file, install_dir)
     when 'tar.gz'  then untar_cmd('xzf', release_file, install_dir)
     when 'tar.bz2' then untar_cmd('xjf', release_file, install_dir)
     when 'zip'     then unzip_cmd(release_file, install_dir)
