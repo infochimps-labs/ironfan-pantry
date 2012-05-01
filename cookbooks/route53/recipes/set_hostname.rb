@@ -58,7 +58,7 @@ if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key] && node[:cloud]
     aws_secret_access_key aws[:aws_secret_access_key]
   end
 elsif not node[:cloud]
-  Chef::Log.warn("Cannot set hostname, because the node[:cloud] attributes aren't set. On a cloud machine, ometimes this doesn't happen until the second run.")
+  Chef::Log.warn("Cannot set hostname, because the node[:cloud] attributes aren't set. On a cloud machine, sometimes this doesn't happen until the second run.")
 else
   Chef::Log.warn("Cannot set hostname, because we have no AWS credentials: set node[:aws][:aws_access_key_id] and node[:aws][:aws_secret_access_key]")
 end
