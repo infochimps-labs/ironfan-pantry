@@ -50,6 +50,8 @@ default[:flume][:master][:zookeeper_port] = 2181
 # node[:flume][:plugins][:some_plugin][:java_opts]  = [ "-Dsomething.special=1" ]
 default[:flume][:plugins] = {}
 
+default[:flume][:jars][:jruby_jar_version] = "1.0.0"
+
 # classes to include as plugins
 default[:flume][:classes] = []
 

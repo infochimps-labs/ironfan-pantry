@@ -19,8 +19,8 @@
 # limitations under the License.
 #
 
-cookbook_file "#{node[:flume][:home_dir]}/plugins/jruby-flume-1.0.0.jar" do
-  source "jruby-flume-1.0.0.jar"
+cookbook_file "#{node[:flume][:home_dir]}/plugins/jruby-flume-#{node[:flume][:jars][:jruby_jar_version]}.jar" do
+  source "jruby-flume-#{node[:flume][:jars][:jruby_jar_version]}.jar"
   owner "flume"
   mode "0644"
 end
@@ -35,13 +35,13 @@ node[:flume][:plugins][:jruby_flume][:classes]    = [ "com.infochimps.flume.jrub
                                                       "com.infochimps.flume.jruby.JRubySource",
                                                       "com.infochimps.flume.jruby.JRubyDecorator", 
 						      "com.infochimps.flume.SQLSink", ]
-node[:flume][:plugins][:jruby_flume][:classpath]  = [ "#{node[:flume][:home_dir]}/plugins/jruby-flume-1.0.0.jar","#{node[:jruby][:home_dir]}/lib/jruby.jar" ]
+node[:flume][:plugins][:jruby_flume][:classpath]  = [ "#{node[:flume][:home_dir]}/plugins/jruby-flume-#{node[:flume][:jars][:jruby_jar_version]}.jar","#{node[:jruby][:home_dir]}/lib/jruby.jar" ]
 node[:flume][:plugins][:jruby_flume][:java_opts]  = [ "-Djruby.home=#{node[:jruby][:home_dir]}",
                                                       "-Djruby.lib=#{node[:jruby][:home_dir]}/lib",
                                                       "-Djruby.script=jruby", ]
 
 node[:flume][:exported_jars] += [
-  "#{node[:flume][:home_dir]}/plugins/jruby-flume-1.0.0.jar",
+  "#{node[:flume][:home_dir]}/plugins/jruby-flume-#{node[:flume][:jars][:jruby_jar_version]}.jar",
 ]
 
 node_changed!
