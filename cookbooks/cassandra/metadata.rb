@@ -2,7 +2,7 @@ maintainer       "Benjamin Black"
 maintainer_email "b@b3k.us"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.1.0"
+version          "3.1.1"
 
 description      "Cassandra: a massively scalable high-performance distributed storage system"
 
@@ -138,7 +138,8 @@ attribute "cassandra/auto_bootstrap",
 
 attribute "cassandra/keyspaces",
   :display_name          => "Cassandra keyspaces",
-  :description           => "Make a databag called 'cassandra', with an element 'clusters'. Within that, define a hash named for your cluster:\n\n- keys_cached:        specifies the number of keys per sstable whose locations we keep in memory in \"mostly LRU\" order.  (JUST the key locations, NOT any column values.) Specify a fraction (value less than 1) or an absolute number of keys to cache.  Defaults to 200000 keys.\n- rows_cached:        specifies the number of rows whose entire contents we cache in memory. Do not use this on ColumnFamilies with large rows, or ColumnFamilies with high write:read ratios. Specify a fraction (value less than 1) or an absolute number of rows to cache. Defaults to 0. (i.e. row caching is off by default)\n- comment:            used to attach additional human-readable information about the column family to its definition.\n- read_repair_chance: specifies the probability with which read repairs should be invoked on non-quorum reads.  must be between 0 and 1. defaults to 1.0 (always read repair).\n- preload_row_cache:  If true, will populate row cache on startup. Defaults to false.\n- gc_grace_seconds:   specifies the time to wait before garbage collecting tombstones (deletion markers). defaults to 864000 (10 days). See http://wiki.apache.org/cassandra/DistributedDeletes\n",
+  :description           => "Make a databag called 'cassandra', with an element 'clusters'. Within that, define a hash named for your cluster:\n\n- keys_cached:        specifies the number of keys per sstable whose locations we keep in memory in \"mostly LRU\" order.  (JUST the key locations, NOT any column values.) Specify a fraction (value less than 1) or an absolute number of keys to cache.  Defaults to 200000 keys.\n- rows_cached:        specifies the number of rows whose entire contents we cache in memory. Do not use this on ColumnFamilies with large rows, or ColumnFamilies with high write:read ratios. Specify a fraction (value less than 1) or an absolute number of rows to cache. Defaults to 0. (i.e. row caching is off by default)\n- comment:            used to attach additional human-readable information about the column family to its definition.\n- read_repair_chance: specifies the probability with which read repairs should be invoked on non-quorum reads.  must be between 0 and 1. defaults to 1.0 (
+always read repair).\n- preload_row_cache:  If true, will populate row cache on startup. Defaults to false.\n- gc_grace_seconds:   specifies the time to wait before garbage collecting tombstones (deletion markers). defaults to 864000 (10 days). See http://wiki.apache.org/cassandra/DistributedDeletes\n",
   :type                  => "array",
   :default               => ""
 
