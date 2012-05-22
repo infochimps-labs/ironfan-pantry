@@ -145,3 +145,4 @@ node[:hadoop][:exported_confs]  = [
   "#{node[:hadoop][:conf_dir]}/hdfs-site.xml",
   "#{node[:hadoop][:conf_dir]}/mapred-site.xml",
 ]
+
