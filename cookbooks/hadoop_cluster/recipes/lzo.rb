@@ -35,6 +35,12 @@ execute "tar zxvf #{archive}.tar.gz" do
   creates "/usr/local/src/#{archive}"
 end
 
+# git_private_repo 'hadoop_lzo' do
+#   repository github
+#   branch version
+#   path "/usr/local/src/#{archive}"
+# end
+
 execute "ant compile-native jar" do
   cwd "/usr/local/src/#{archive}"
   environment( 'JAVA_HOME' => node[:java][:java_home] )

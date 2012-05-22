@@ -23,6 +23,12 @@ github  = node[:hadoop][:elephant_bird][:github]
 archive = node[:hadoop][:elephant_bird][:archive]
 version = node[:hadoop][:elephant_bird][:version]
 
+# git_private_repo 'elephant_bird' do
+#   repository github
+#   branch version
+#   path "/usr/local/src/#{archive}"
+# end
+
 remote_file "/usr/local/src/#{archive}.tar.gz" do
   source github
   mode "0644"
