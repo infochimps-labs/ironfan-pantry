@@ -13,7 +13,7 @@
 <property> <name>fs.trash.interval</name>            <value>1440</value> <final>true</final></property>
 <property> <name>io.file.buffer.size</name>          <value>65536</value> </property>
 
-<property> <name>io.compression.codecs</name> <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,com.hadoop.compression.lzo.LzoCodec,com.hadoop.compression.lzo.LzopCodec,org.apache.hadoop.io.compress.BZip2Codec</value> </property>
+<property> <name>io.compression.codecs</name> <value><%= @hadoop[:codecs].join "," %></value> </property>
 
 <property> <name>io.compression.codec.lzo.class</name> <value>com.hadoop.compression.lzo.LzoCodec</value> </property>
 

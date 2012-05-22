@@ -134,3 +134,6 @@ default[:tuning][:ulimit]['mapred'] = { :nofile => { :both => 32768 }, :nproc =>
 # Other recipes can add to this under their own special key, for instance
 #  node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'
 default[:hadoop][:extra_classpaths]  = { }
+default[:hadoop][:codecs] = %w[org.apache.hadoop.io.compress.GzipCodec
+                               org.apache.hadoop.io.compress.DefaultCodec
+                               org.apache.hadoop.io.compress.BZip2Codec]

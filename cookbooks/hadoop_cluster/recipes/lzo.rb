@@ -25,6 +25,9 @@ github  = node[:hadoop][:lzo][:github]
 archive = node[:hadoop][:lzo][:archive]
 version = node[:hadoop][:lzo][:version]
 
+node[:hadoop][:codecs] += %w[com.hadoop.compression.lzo.LzoCodec
+                             com.hadoop.compression.lzo.LzopCodec]
+
 remote_file "/usr/local/src/#{archive}.tar.gz" do
   source github
   mode "0644"
