@@ -17,9 +17,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-[:flume, :hadoop, :hbase, :zookeeper, :jruby].each do |component|
+# :hadoop, :hbase, :zookeeper, :jruby
+[:flume].each do |component|
   next if node[component].nil? || node[component].empty?
   Chef::Log.info( [ component, node[component][:exported_jars] ].inspect )
   [node[component][:exported_jars]].flatten.compact.each do |export|
