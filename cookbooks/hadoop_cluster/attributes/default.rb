@@ -112,6 +112,14 @@ default[:hadoop][:deb_version]          = '0.20.2+923.142-1~maverick-cdh3'
 default[:apt][:cloudera][:force_distro] = 'maverick'
 default[:apt][:cloudera][:release_name] = 'cdh3u2'
 
+default[:hadoop][:lzo][:github]  = "https://github.com/cloudera/hadoop-lzo/tarball/0.4.14"
+default[:hadoop][:lzo][:archive] = "cloudera-hadoop-lzo-8aa0605"
+default[:hadoop][:lzo][:version] = "0.4.14"
+
+default[:hadoop][:elephant_bird][:github]  = "https://github.com/kevinweil/elephant-bird/tarball/v2.2.2"
+default[:hadoop][:elephant_bird][:version] = "2.2.2"
+default[:hadoop][:elephant_bird][:archive] = "kevinweil-elephant-bird-ca8154e"
+
 #
 # System
 #
@@ -126,3 +134,6 @@ default[:tuning][:ulimit]['mapred'] = { :nofile => { :both => 32768 }, :nproc =>
 # Other recipes can add to this under their own special key, for instance
 #  node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'
 default[:hadoop][:extra_classpaths]  = { }
+default[:hadoop][:codecs] = %w[org.apache.hadoop.io.compress.GzipCodec
+                               org.apache.hadoop.io.compress.DefaultCodec
+                               org.apache.hadoop.io.compress.BZip2Codec]
