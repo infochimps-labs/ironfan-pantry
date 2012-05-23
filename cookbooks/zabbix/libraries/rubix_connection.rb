@@ -32,12 +32,14 @@ class Chef
       
       url = File.join(ip, node.zabbix.api.path)
       begin
-        connection = ::Rubix::Connection.new(url, node[:zabbix][:api][:username], node[:zabbix][:api][:password])
-        connection.authorize!
-        ::Chef::RubixConnection::CONNECTIONS[ip] = connection
-        Rubix.connection = ::Chef::RubixConnection::CONNECTIONS[ip] = connection
-        @connected_to_zabbix                     = true
-      rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED, Timeout::Error => e
+        timeout(5) do
+          connection = ::Rubix::Connection.new(url, node[:zabbix][:api][:username], node[:zabbix][:api][:password])
+          connection.authorize!
+          ::Chef::RubixConnection::CONNECTIONS[ip] = connection
+          Rubix.connection = ::Chef::RubixConnection::CONNECTIONS[ip] = connection
+          @connected_to_zabbix                     = true
+        end
+      rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED, Timeout::Error, Errno::ETIMEDOUT => e
         ::Chef::Log.warn("Could not connect to Zabbix API at #{url} as #{node.zabbix.api.username}: #{e.message}")
         false
       end
