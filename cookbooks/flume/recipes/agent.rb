@@ -22,8 +22,6 @@
 include_recipe 'flume'
 include_recipe 'runit'
 
-package "flume-node"
-
 standard_dirs('flume.agent') do
   directories [:log_dir]
 end
@@ -31,22 +29,17 @@ end
 #
 # Create service
 #
-
-kill_old_service('flume-node'){ only_if{ File.exists?("/etc/init.d/flume-node") } }
-
 runit_service 'flume_agent' do
   run_state     node[:flume][:agent][:run_state]
   subscribes    :restart, resources( :template => [ File.join(node[:flume][:conf_dir], "flume-site.xml"), File.join(node[:flume][:home_dir], "bin/flume-env.sh") ] )
   options       Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge({
       :service_command    => 'node',
-      # :zookeeper_home_dir => node[:zookeeper][:home_dir],
     })
 end
 
 #
 # Announce flume agent capability
 #
-
 announce(:flume, :agent, {
     :logs    => {
       :node => { :glob => File.join(node[:flume][:agent][:log_dir], 'flume-flume-node*.log'), :logrotate => false, :archive => false } },

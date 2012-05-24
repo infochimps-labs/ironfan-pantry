@@ -22,8 +22,6 @@
 include_recipe 'flume'
 include_recipe 'runit'
 
-package "flume-master"
-
 standard_dirs('flume.master') do
   directories [:log_dir]
 end
@@ -31,9 +29,6 @@ end
 #
 # Create service
 #
-
-kill_old_service('flume-master'){ only_if{ File.exists?("/etc/init.d/flume-master") } }
-
 runit_service 'flume_master' do
   run_state     node[:flume][:master][:run_state]
   subscribes    :restart, resources( :template => [ File.join(node[:flume][:conf_dir], "flume-site.xml"), File.join(node[:flume][:home_dir], "bin/flume-env.sh") ] )
@@ -57,9 +52,8 @@ announce(:flume, :master, {
       :report    => 45678
     }.tap do |ports|
       ports[:zookeeper] = node[:flume][:master][:zookeeper_port] unless node[:flume][:master][:external_zookeeper]
-      # FIXME -- add the gossip port only if it's being used, i.e. - we have multiple masters?
-      # ports[:gossip] = 57890
     end,
     :daemons => {
-      :java => { :name => 'java', :cmd => 'FlumeMaster' }, },
-  })
+      :java => { :name => 'java', :cmd => 'FlumeMaster' }, 
+           },
+         })
