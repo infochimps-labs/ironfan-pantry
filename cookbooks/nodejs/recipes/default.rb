@@ -21,10 +21,18 @@
 
 include_recipe 'python'
 
-package "python-software-properties"
+package "python-software-properties" if platform?('ubuntu')
 
-# execute "setup PPA for nodejs install" do
-#     command "add-apt-repository ppa:jerome-etienne/neoip && aptitude update"
-# end
+if platform?('centos')
+  execute "yum clean all" do
+    action :nothing
+  end
+
+  remote_file "/etc/yum.repos.d/nodejs-stable.repo" do
+    source "http://nodejs.tchol.org/repocfg/el/nodejs-stable.repo"
+    mode "0644"
+    notifies :run, resources(:execute => "yum clean all"), :immediately
+  end
+end
 
 package "nodejs"
