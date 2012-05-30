@@ -78,8 +78,6 @@ default[:hadoop][:datanode   ][:jmx_dash_port]     = 8006
 default[:hadoop][:tasktracker][:jmx_dash_port]     = 8009
 default[:hadoop][:balancer   ][:jmx_dash_port]     = 8007
 
-default[:java][:java_home] = '/usr/lib/jvm/java-6-sun/jre'
-
 #
 # Users
 #
