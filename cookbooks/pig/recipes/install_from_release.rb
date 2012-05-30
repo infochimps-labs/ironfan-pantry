@@ -27,7 +27,7 @@ package "sun-java6-jdk"
 package "sun-java6-bin"
 package "sun-java6-jre"
 
-package "ivy"
+package "ivy" if platform?('ubuntu')
 
 #
 # Install pig from latest release
