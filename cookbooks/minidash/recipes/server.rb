@@ -26,7 +26,12 @@ include_recipe 'runit'
 # Lightweight THTTPD server
 #
 
-package         'busybox-static'
+case node.platform
+when 'centos'
+  package       'busybox'
+else
+  package       'busybox-static'
+end
 
 runit_service "minidash_dashboard" do
   run_state     node[:minidash][:run_state]
