@@ -28,6 +28,7 @@ package "sun-java6-bin"
 package "sun-java6-jre"
 
 package "ivy" if platform?('ubuntu')
+package "subversion" if platform?('centos')
 
 #
 # Install pig from latest release
