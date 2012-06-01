@@ -11,4 +11,8 @@
 
 include_recipe 'silverware'
 
-package "nfs-common"
+nfs_package = case node[:platform]
+  when 'centos';  'nfs-utils'
+  else;           'nfs-common'
+end
+package(nfs_package){action :nothing}.run_action(:install)
