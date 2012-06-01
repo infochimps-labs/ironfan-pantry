@@ -17,14 +17,17 @@ class Chef
       end
 
       # Make sure Rubix is available to us.
+      retries = 0
       begin
         gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
         require 'rubix'
       rescue Gem::LoadError, LoadError => e
-        gem_package('rubix') { action :nothing ; version ::Chef::RubixConnection::RUBIX_VERSION }.run_action(:install)
-        Gem.clear_paths
-        gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
-        require 'rubix'
+        chef_gem 'configliere'
+        chef_gem 'rubix' do
+          version ::Chef::RubixConnection::RUBIX_VERSION
+        end
+        retries += 1
+        retry unless retries > 1
       end
 
       # Hook up Rubix's logger to Chef's logger.

@@ -23,9 +23,7 @@ case node[:platform]
 when "ubuntu","debian"
   # install some dependencies
   %w{ fping libcurl3 libiksemel-dev libiksemel3 libsnmp-dev libiksemel-utils libcurl4-openssl-dev }.each do |pck|
-    package "#{pck}" do
-      action :install
-    end
+    package "#{pck}"
   end
 when "centos"
   log "No centos Support yet"
@@ -79,5 +77,10 @@ end
 # Define zabbix_agentd service
 service "zabbix_agentd" do
   supports :status => true, :start => true, :stop => true
-  action [ :start, :enable ]
+  case node.platform
+  when 'centos'
+    action [ :start ]
+  else
+    action [ :start, :enable ]
+  end
 end
