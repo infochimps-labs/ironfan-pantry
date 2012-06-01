@@ -9,7 +9,11 @@
 # (no license specified)
 #
 
-package("nfs-common"){action :nothing}.run_action(:install)
+nfs_package = case node[:platform]
+  when 'centos';  'nfs-utils'
+  else;           'nfs-common'
+end
+package(nfs_package){action :nothing}.run_action(:install)
 
 bash "modprobe nfs" do
   user          'root'
