@@ -36,3 +36,4 @@ if platform?('centos')
 end
 
 package "nodejs"
+package "npm"
