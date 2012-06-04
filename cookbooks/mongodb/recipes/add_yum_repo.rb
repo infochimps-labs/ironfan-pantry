@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: mongodb
-# Recipe:: default
+# Recipe:: add_yum_repo
 #
-# Author:: Gerhard Lazu (<gerhard.lazu@papercavalier.com>)
+# Author:: Nathaniel Eliot (<temujin9@infochimps.org>)
 #
-# Copyright 2010, Paper Cavalier, LLC
+# Copyright 2011, Active Prospect, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,10 +19,13 @@
 # limitations under the License.
 #
 
-case node.platform
-when "centos"
-  package "mongo-10gen"
-  package "mongo-10gen-server"
-else
-  package "mongodb-10gen"
+execute "yum update" do
+  action :nothing
+end
+
+template "/etc/yum.repos.d/10gen.repo" do
+  owner "root"
+  mode "0644"
+  source "mongodb.list.#{node[:platform]}.erb"
+  notifies :run, resources(:execute => "yum update"), :immediately
 end

@@ -20,6 +20,12 @@
 #
 
 init_system = node[:mongodb][:init_system]
+case node.platform
+when 'centos'
+  mongo_user = mongo_group = 'mongod'
+else
+  mongo_user = mongo_group = 'mongodb'
+end
 server_init = Mash.new(
   :type     => "mongodb",
   :daemon   => "mongod",
@@ -27,15 +33,15 @@ server_init = Mash.new(
 )
 
 directory node[:mongodb][:datadir] do
-  owner "mongodb"
-  group "mongodb"
+  owner mongo_user
+  group mongo_group
   mode 0755
   recursive true
 end
 
 file node[:mongodb][:logfile] do
-  owner "mongodb"
-  group "mongodb"
+  owner mongo_user
+  group mongo_group
   mode 0644
   action :create_if_missing
   backup false
@@ -43,8 +49,8 @@ end
 
 template node[:mongodb][:config] do
   source "mongodb.conf.erb"
-  owner "mongodb"
-  group "mongodb"
+  owner mongo_user
+  group mongo_group
   mode 0644
   backup false
 end
@@ -66,6 +72,9 @@ when "sysv"
     backup false
     variables(:server_init => server_init)
   end
+else
+  # Do nothing, and assume the install_from cookbooks
+  #   put down a correctly formatted init script
 end
 
 service "mongodb" do
@@ -76,15 +85,15 @@ service "mongodb" do
   when "upstart"
     subscribes :restart, resources(:template => "/etc/init/mongodb.conf")
     provider Chef::Provider::Service::Upstart
-  else
+  when "sysv"
     subscribes :restart, resources(:template => "/etc/init.d/mongodb")
   end
 end
 
 template "/etc/logrotate.d/#{server_init[:basename]}" do
   source "mongodb.logrotate.erb"
-  owner "mongodb"
-  group "mongodb"
+  owner mongo_user
+  group mongo_group
   mode "0644"
   backup false
   variables(:logfile => node[:mongodb][:logfile])
