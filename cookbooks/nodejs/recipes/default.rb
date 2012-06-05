@@ -37,3 +37,5 @@ end
 
 package "nodejs"
 package "npm"
+
+link node[:nodejs][:bin_path] { to '/usr/bin/nodejs' } if platform?('centos')
