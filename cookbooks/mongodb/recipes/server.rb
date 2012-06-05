@@ -20,17 +20,18 @@
 #
 
 init_system = node[:mongodb][:init_system]
+server_init = Mash.new(
+  :type     => "mongodb",
+  :daemon   => "mongod"
+)
 case node.platform
 when 'centos'
   mongo_user = mongo_group = 'mongod'
+  server_init[:basename]   = 'mongod'
 else
   mongo_user = mongo_group = 'mongodb'
+  server_init[:basename]   = 'mongodb'
 end
-server_init = Mash.new(
-  :type     => "mongodb",
-  :daemon   => "mongod",
-  :basename => "mongodb"
-)
 
 directory node[:mongodb][:datadir] do
   owner mongo_user
@@ -77,7 +78,7 @@ else
   #   put down a correctly formatted init script
 end
 
-service "mongodb" do
+service server_init[:basename] do
   supports :start => true, :stop => true, "force-stop" => true, :restart => true, "force-reload" => true, :status => true
   action        node[:mongodb][:server][:run_state]
   subscribes :restart, resources(:template => node[:mongodb][:config])
