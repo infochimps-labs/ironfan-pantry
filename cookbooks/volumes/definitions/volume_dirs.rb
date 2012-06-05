@@ -71,7 +71,7 @@ define(:volume_dirs,
     volumes = volumes_tagged(node,
       "#{sys}_#{subsys}_#{aspect}", "#{sys}_#{aspect}", params[:type], 'fallback')
     # singularize if :single
-    volumes = [volumes.first] if (params[:selects] == :single)
+    volumes = Hash[*volumes.first] if (params[:selects] == :single)
     # slap path on the end of volume roots
     paths  = volumes.map{|vol, vol_info| ::File.expand_path(sub_path, vol_info[:mount_point]) }
   end
