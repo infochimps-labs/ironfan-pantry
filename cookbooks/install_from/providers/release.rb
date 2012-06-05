@@ -126,7 +126,7 @@ action :install_python do
   action_install
 
   bash "install #{new_resource.name} with python" do
-    command "python setup.py install"
+    code "python setup.py install"
     cwd           new_resource.install_dir
   end
 end
