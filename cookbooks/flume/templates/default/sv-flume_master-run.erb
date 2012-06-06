@@ -2,7 +2,6 @@
 exec 2>&1
 
 export JAVA_HOME="<%= node[:java][:java_home] %>"
-export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/*
 export FLUME_HOME="<%=     @options[:home_dir] %>"
 export FLUME_CONF_DIR="<%= @options[:conf_dir] %>"
 export FLUME_LOG_DIR="<%=  @options[:log_dir] %>"
@@ -10,6 +9,7 @@ export FLUME_PID_DIR="<%=  @options[:pid_dir] %>"
 export FLUME_RUN="<%=      @options[:pid_dir] %>"
 export FLUME_IDENT_STRING="<%= @options[:user] %>"
 export SERVER_NAME="<%=   node.name.gsub(/[^\w\-]+/, '') %>"
+export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib/*:$FLUME_HOME/plugins/*
 # export ZOOKEEPER_HOME=""
 
 command=<%= @options[:service_command] %>
