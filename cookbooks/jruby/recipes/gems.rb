@@ -33,7 +33,7 @@ Chef::Log.warn "Using jruby::gem in its current format is strongly discouraged. 
     json addressable cheat crack
     configliere gorillib wukong
     pry hirb ap swineherd hackboxen
-    swineherd-fs
+    swineherd-fs uuidtools
 
 ].each do |rubygem|
   gem_package rubygem do
