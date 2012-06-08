@@ -27,10 +27,6 @@ class Chef
         Gem.clear_paths
         gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
         require 'rubix'
-        chef_gem 'configliere'
-        chef_gem 'rubix' do
-          version ::Chef::RubixConnection::RUBIX_VERSION
-        end
         retries += 1
         retry unless retries > 1
       end
