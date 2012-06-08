@@ -7,6 +7,7 @@ run_list(*%w[
   flume::plugin-hbase_sink
   flume::agent
   flume::config_files
+  flume_integration::jruby
 ])
 
 override_attributes({
