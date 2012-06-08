@@ -22,6 +22,11 @@ class Chef
         gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
         require 'rubix'
       rescue Gem::LoadError, LoadError => e
+        gem_package('configliere') { action :nothing }.run_action(:install)
+        gem_package('rubix') { action :nothing ; version ::Chef::RubixConnection::RUBIX_VERSION }.run_action(:install)
+        Gem.clear_paths
+        gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
+        require 'rubix'
         chef_gem 'configliere'
         chef_gem 'rubix' do
           version ::Chef::RubixConnection::RUBIX_VERSION
