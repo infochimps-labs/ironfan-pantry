@@ -19,6 +19,13 @@
 # limitations under the License.
 #
 
+Chef::Log.warn "Using jruby::gem in its current format is strongly discouraged. See the recipe for more details."
+
+# TODO: FIXME: Because of how the gem_package resource works, this 
+#   overrides the gem_binary selection for all of these gems. This 
+#   breaks shit all over the place. Possible fix: manually run the
+#   chef-jgem commands, rather than using the resource.
+
 %w[
 
     bundler jruby-openssl erubis i18n
