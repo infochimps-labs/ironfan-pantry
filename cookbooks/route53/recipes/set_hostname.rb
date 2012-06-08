@@ -24,7 +24,9 @@ aws = node[:aws]
 
 if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key] && node[:cloud]
 
-  public_hostname    =  node.name.to_s.gsub(/[^a-zA-Z0-9\-]/, '-')
+  public_node_name   = (node[:route53][:node_name] || node.name).to_s
+
+  public_hostname    =  public_node_name.gsub(/[^a-zA-Z0-9\-]/, '-')
   public_fqdn        = [public_hostname, node[:route53][:zone]].compact.join(".")
 
   # point "gordo-datanode-3.awesomeco.com" => the cloud public_hostname
@@ -41,7 +43,7 @@ if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key] && node[:cloud]
     aws_secret_access_key aws[:aws_secret_access_key]
   end
 
-  private_hostname    =  "#{node.name}-internal".gsub(/[^a-zA-Z0-9\-]/, '-')
+  private_hostname    =  "#{public_node_name}-internal".gsub(/[^a-zA-Z0-9\-]/, '-')
   private_fqdn        = [private_hostname, node[:route53][:zone]].compact.join(".")
 
   # point "gordo-datanode-3-internal.awesomeco.com" => the cloud local_hostname
