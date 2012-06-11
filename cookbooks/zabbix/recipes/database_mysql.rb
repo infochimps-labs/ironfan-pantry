@@ -32,6 +32,8 @@ rescue LoadError
   case node[:platform]
   when 'ubuntu', 'debian'
     package("libmysqlclient16-dev") {action :nothing }.run_action(:install)
+  when 'centos'
+    package("mysql-devel") {action :nothing }.run_action(:install)
   else
     Chef::Log.warn "No native MySQL client support for OS #{node[:platform]}"
   end
@@ -80,10 +82,14 @@ end
 # Grant Zabbix user to connect from *this* node.  We do this even if
 # the database already exists to handle the situation in which this
 # node's IP changes (e.g. - during stop/start).
+mysql_client_address = case node.zabbix.database.host
+  when 'localhost'; 'localhost';
+  else ; node.fqdn
+end
 mysql_database_user node.zabbix.database.user do
   connection    root_mysql_conn
   password      node.zabbix.database.password
-  host          node.fqdn     # connections only allowed from *this* node
+  host          mysql_client_address     # connections only allowed from *this* node
   database_name node.zabbix.database.name
   privileges    [:select,:update,:insert,:create,:drop,:delete]
   action        :grant
@@ -129,4 +135,5 @@ ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
 
     mysql_connection.query(%Q{DELETE FROM users WHERE alias='admin'});
   end
+  notifies :restart, "service[zabbix_server]"
 end

@@ -26,7 +26,9 @@ when "ubuntu","debian"
     package "#{pck}"
   end
 when "centos"
-  log "No centos Support yet"
+  # do nothing special?
+else
+  log "No #{node.platform} support yet"
 end
 
 server_ips = all_zabbix_server_ips()
