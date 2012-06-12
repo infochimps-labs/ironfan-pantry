@@ -9,11 +9,16 @@
 # (no license specified)
 #
 
-unless File.exists?('/etc/init.d/nfs-kernel-server')
-  Chef::Log.warn "\n\n****\nYou may have to restart the machine after nfs-kernel-server is installed\n****\n"
+service_name = case node.platform
+when 'centos';  'nfs';
+else            'nfs-kernel-server'
 end
 
-package "nfs-kernel-server"
+unless File.exists?("/etc/init.d/#{service_name}")
+  Chef::Log.warn "\n\n****\nYou may have to restart the machine after #{service_name} is installed\n****\n"
+end
+
+package "nfs-kernel-server" unless platform?('centos')
 
 if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
 
@@ -24,7 +29,7 @@ if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
     announce(:nfs, :server,  :realm => node[:nfs][:exports].values.first[:realm])
   end
 
-  service "nfs-kernel-server" do
+  service service_name do
     action [ :enable, :start ]
     running true
     supports :status => true, :restart => true
@@ -35,7 +40,7 @@ if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
     owner       "root"
     group       "root"
     mode        "0644"
-    notifies    :restart, resources(:service => "nfs-kernel-server")
+    notifies    :restart, resources(:service => service_name)
   end
 else
   Chef::Log.warn "You included the NFS server recipe without defining nfs exports: set node[:nfs][:exports]."
