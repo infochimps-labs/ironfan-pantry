@@ -43,41 +43,48 @@ rescue LoadError
 end
 
 # Only execute if database is missing...
-mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
-if mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
-
-  # Create Zabbix database
-  mysql_database node.zabbix.database.name do
-    connection root_mysql_conn
-    action     :create
-    notifies   :run,    "execute[zabbix_populate_schema]",          :immediately
-    notifies   :run,    "execute[zabbix_populate_data]",            :immediately
-    notifies   :run,    "execute[zabbix_populate_image]",           :immediately
-    notifies   :create, "template[/etc/zabbix/zabbix_server.conf]", :immediately
-  end
-
-  # Create Zabbix database user
-  mysql_database_user node.zabbix.database.user do
-    connection root_mysql_conn
-    password   node.zabbix.database.password
-    action     :create
-  end
-
-  # Populate Zabbix database
-  populate_command = "#{base_mysql_command} < /opt/zabbix-#{node.zabbix.server.version}"
-  execute "zabbix_populate_schema" do
-    command "#{populate_command}/create/schema/mysql.sql"
-    action :nothing
-  end
-  execute "zabbix_populate_data" do
-    command "#{populate_command}/create/data/data.sql"
-    action :nothing
-  end
-  execute "zabbix_populate_image" do
-    command "#{populate_command}/create/data/images_mysql.sql"
-    action :nothing
+ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
+  block do
+    mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
+    if mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
+      resources(:mysql_database         => node.zabbix.database.name            ).run_action(:create)
+      resources(:mysql_database_user    => node.zabbix.database.user            ).run_action(:create)
+      resources(:execute                => "zabbix_populate_schema"             ).run_action(:run)
+      resources(:execute                => "zabbix_populate_data"               ).run_action(:run)
+      resources(:execute                => "zabbix_populate_image"              ).run_action(:run)
+      resources(:template               => "/etc/zabbix/zabbix_server.conf"     ).run_action(:create)
+    end
   end
 end
+
+# Create Zabbix database
+mysql_database node.zabbix.database.name do
+  connection root_mysql_conn
+  action :nothing
+end
+
+# Create Zabbix database user
+mysql_database_user node.zabbix.database.user do
+  connection root_mysql_conn
+  password   node.zabbix.database.password
+  action :nothing
+end
+
+# Populate Zabbix database
+populate_command = "#{base_mysql_command} < /opt/zabbix-#{node.zabbix.server.version}"
+execute "zabbix_populate_schema" do
+  command "#{populate_command}/create/schema/mysql.sql"
+  action :nothing
+end
+execute "zabbix_populate_data" do
+  command "#{populate_command}/create/data/data.sql"
+  action :nothing
+end
+execute "zabbix_populate_image" do
+  command "#{populate_command}/create/data/images_mysql.sql"
+  action :nothing
+end
+
 
 # Grant Zabbix user to connect from *this* node.  We do this even if
 # the database already exists to handle the situation in which this
@@ -108,6 +115,7 @@ ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
     grp_name   = node.zabbix.api.user_group
     api_access = 1
 
+    mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
     mysql_connection.query(%Q{USE #{node.zabbix.database.name}})
 
     existing_users = mysql_connection.query(%Q{SELECT userid FROM users WHERE `alias`="#{username}"})

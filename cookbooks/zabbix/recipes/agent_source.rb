@@ -54,26 +54,26 @@ directory "/opt/zabbix-agent-src" do
   action :create
 end
 
+# Download zabbix source code
+remote_file "/opt/zabbix-#{node.zabbix.agent.version}-agent.tar.gz" do
+  source "http://freefr.dl.sourceforge.net/project/zabbix/#{node.zabbix.agent.branch}/#{node.zabbix.agent.version}/zabbix-#{node.zabbix.agent.version}.tar.gz"
+  mode "0644"
+  action :create
+  not_if { File.exists?(self.path) }
+end
+
 # installation of zabbix bin
 script "install_zabbix_agent" do
   interpreter "bash"
   user "root"
   cwd "/opt"
-  action :nothing
   notifies :restart, "service[zabbix_agentd]"
   code <<-EOH
   tar xvfz zabbix-#{node.zabbix.agent.version}-agent.tar.gz -C /opt/zabbix-agent-src/
   (cd zabbix-agent-src/zabbix-#{node.zabbix.agent.version} && ./configure --enable-agent #{node.zabbix.agent.configure_options.join(" ")})
   (cd zabbix-agent-src/zabbix-#{node.zabbix.agent.version} && make install)
   EOH
-end
-
-# Download zabbix source code
-remote_file "/opt/zabbix-#{node.zabbix.agent.version}-agent.tar.gz" do
-  source "http://freefr.dl.sourceforge.net/project/zabbix/#{node.zabbix.agent.branch}/#{node.zabbix.agent.version}/zabbix-#{node.zabbix.agent.version}.tar.gz"
-  mode "0644"
-  action :create_if_missing
-  notifies :run, "script[install_zabbix_agent]", :immediately
+  not_if { File.exists?("/opt/zabbix-agent-src/") }
 end
 
 # Define zabbix_agentd service

@@ -31,11 +31,11 @@ end
 template "/etc/nginx/sites-available/zabbix.conf" do
   source 'zabbix_web.nginx.conf.erb'
   action :create
-  notifies :restart, 'service[nginx]', :delayed
 end
 
 nginx_site 'zabbix.conf' do
   action :enable
+  notifies :restart, 'service[nginx]', :immediate
 end
 
 nginx_site 'default' do
