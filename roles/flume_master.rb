@@ -6,6 +6,7 @@ run_list(*%w[
   flume::jars
   flume::plugin-hbase_sink
   flume::master
+  flume_integration::jruby_classpath
   flume::config_files
-  flume_integration::jruby
+  flume_integration::jruby_home
 ])
