@@ -44,6 +44,9 @@ default[:flume][:agent ][:run_state] = :start
 default[:flume][:master][:external_zookeeper] = false
 default[:flume][:master][:zookeeper_port] = 2181
 
+# If flume is not using the external_zookeeper, its internal zookeeper opens this port
+default[:flume][:zookeeper][:port] = 3181
+
 # configuration data for plugins.
 # node[:flume][:plugins][:some_plugin][:classes]    = [ 'java.lang.String' ]
 # node[:flume][:plugins][:some_plugin][:classpath]  = [ "/usr/lib/jruby/jruby.jar" ]

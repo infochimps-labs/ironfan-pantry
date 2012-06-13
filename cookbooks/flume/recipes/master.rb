@@ -51,7 +51,7 @@ announce(:flume, :master, {
       :admin     => 35873,
       :report    => 45678
     }.tap do |ports|
-      ports[:zookeeper] = node[:flume][:master][:zookeeper_port] unless node[:flume][:master][:external_zookeeper]
+      ports[:zookeeper] = node[:flume][:zookeeper][:port] unless node[:flume][:master][:external_zookeeper]
     end,
     :daemons => {
       :java => { :name => 'java', :cmd => 'FlumeMaster' }, 
