@@ -26,7 +26,7 @@ when "ubuntu","debian"
   end
   %w[traceroute php5-cgi php5-mysql php5-gd].each { |name| package(name) }
 when "centos"
-  %w[traceroute php php-mysql php-gd php-bcmath php-mbstring].each { |name| package(name) }
+  %w[traceroute php php-mysql php-gd php-bcmath php-mbstring php-xml].each { |name| package(name) }
 else
   log "No #{node.platform} support yet"
 end
