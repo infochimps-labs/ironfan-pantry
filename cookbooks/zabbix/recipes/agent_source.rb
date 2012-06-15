@@ -73,7 +73,7 @@ script "install_zabbix_agent" do
   (cd zabbix-agent-src/zabbix-#{node.zabbix.agent.version} && ./configure --enable-agent #{node.zabbix.agent.configure_options.join(" ")})
   (cd zabbix-agent-src/zabbix-#{node.zabbix.agent.version} && make install)
   EOH
-  not_if { File.exists?("/opt/zabbix-agent-src/") }
+  not_if { File.exists?("/opt/zabbix-agent-src/zabbix-#{node.zabbix.agent.version}") }
 end
 
 # Define zabbix_agentd service
