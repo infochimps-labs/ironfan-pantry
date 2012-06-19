@@ -13,13 +13,7 @@ default[:mongodb][:pidfile]     = "/var/run/mongodb.pid"
 default[:mongodb][:port]        = 27017
 default[:mongodb][:init_system] = "sysv"
 
-default[:mongodb][:bind_ip] = \
-  if node[:network][:interfaces][:eth0]
-    node[:network][:interfaces][:eth0][:addresses].select{|address, values| values['family'] == 'inet'}.first.first
-  else
-    "0.0.0.0"
-  end
-
+default[:mongodb][:bind_ip]     = "0.0.0.0"
 
 ### EXTRA
 default[:mongodb][:log_cpu_io]  = false
