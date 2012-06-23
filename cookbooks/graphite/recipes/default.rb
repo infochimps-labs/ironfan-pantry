@@ -25,13 +25,17 @@ include_recipe 'silverware'
 daemon_user(:graphite)
 
 standard_dirs('graphite') do
-  directories   :conf_dir, :data_dir, :log_dir, :pid_dir
+  directories   :conf_dir, :pid_dir, :home_dir
 end
 
 # Data onto a bulk device
-volume_dirs('graphite.whisper.data') do
+volume_dirs('graphite.data') do
   type          :persistent
-  selects       :all
-  path          'graphite/whisper/data'
+  selects       :single
   mode          "0700"
+  user          node[:graphite][:user]
+end
+
+%w[ lists rrd whisper ].each do |dir|
+  directory(File.join(node[:graphite][:data_dir], dir)){ action :create ; owner node[:graphite][:user]; group node[:graphite][:user] }
 end
