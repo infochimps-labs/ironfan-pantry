@@ -81,6 +81,9 @@ attribute :has_binaries,  :kind_of => Array,  :default => []
 # options to pass to the ./configure command for the configure_with_autoconf action
 attribute :autoconf_opts, :kind_of => Array, :default => []
 
+# Extra installer args -- a hash. Sorry, go look in install_from_release/providers/resource.rb to see how to use
+attribute :install_args,:kind_of => Hash,  :default => Hash.new
+
 def initialize(*args)
   super
   @action ||= :install

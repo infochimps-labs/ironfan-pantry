@@ -19,14 +19,8 @@
 # limitations under the License.
 #
 
-Chef::Log.warn "Using jruby::gem in its current format is strongly discouraged. See the recipe for more details."
-
-# TODO: FIXME: Because of how the gem_package resource works, this 
-#   overrides the gem_binary selection for all of these gems. This 
-#   breaks shit all over the place. Possible fix: manually run the
-#   chef-jgem commands, rather than using the resource.
-
-%w[
+jgem = File.join(node[:jruby][:home_dir], 'bin/chef-jgem')
+gems = %w[
 
     bundler jruby-openssl erubis i18n
     activesupport activemodel extlib
@@ -34,9 +28,17 @@ Chef::Log.warn "Using jruby::gem in its current format is strongly discouraged. 
     configliere gorillib wukong
     pry hirb ap swineherd hackboxen
     swineherd-fs uuidtools
-
-].each do |rubygem|
-  gem_package rubygem do
-    gem_binary File.join(node[:jruby][:home_dir], 'bin/chef-jgem')
-  end
+]
+# gem_package with gem_binary doesn't produce another resource, but
+#   instead overrides the settings of the existing resource. That
+#   breaks other cookbooks that try to install any of the above gems.
+# To avoid this, we run chef-jgem directly instead.
+execute "Install jruby gems #{gems}" do
+  command "#{jgem} install #{gems.join ' '}"
+  not_if "#{jgem} list | grep  #{gems.last}"
 end
+## gems.each do |rubygem|
+##   gem_package rubygem do
+##     gem_binary File.join(node[:jruby][:home_dir], 'bin/chef-jgem')
+##   end
+## end

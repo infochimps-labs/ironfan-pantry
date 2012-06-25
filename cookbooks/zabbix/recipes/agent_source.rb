@@ -73,7 +73,23 @@ script "install_zabbix_agent" do
   (cd zabbix-agent-src/zabbix-#{node.zabbix.agent.version} && ./configure --enable-agent #{node.zabbix.agent.configure_options.join(" ")})
   (cd zabbix-agent-src/zabbix-#{node.zabbix.agent.version} && make install)
   EOH
-  not_if { File.exists?("/opt/zabbix-agent-src/") }
+  not_if { File.exists?("/opt/zabbix-agent-src/zabbix-#{node.zabbix.agent.version}") }
+end
+
+case node.platform
+when 'debian','ubuntu'
+  init_template = "zabbix_agentd.init.erb"
+when 'centos'
+  init_template = "zabbix_agentd.init.centos.erb"
+else
+  log("No init.d for #{node.platform}, trying the Debian-style") { level :warn }
+  init_template = "zabbix_agentd.init.erb"
+end
+template "/etc/init.d/zabbix_agentd" do
+  source init_template
+  owner "root"
+  group "root"
+  mode "754"
 end
 
 # Define zabbix_agentd service

@@ -111,6 +111,7 @@ action :build_with_make do
     code        "make"
     environment new_resource.environment
   end
+  new_resource.updated_by_last_action(true)
 end
 
 action :install_binaries do
@@ -120,15 +121,16 @@ action :install_binaries do
       action    :create
     end
   end
+  new_resource.updated_by_last_action(true)
 end
 
 action :install_python do
-  action_install
-
+  action_unpack
   bash "install #{new_resource.name} with python" do
-    code "python setup.py install"
-    cwd           new_resource.install_dir
+    code        "python setup.py install #{new_resource.install_args[:python_install]}"
+    cwd         new_resource.install_dir
   end
+  new_resource.updated_by_last_action(true)
 end
 
 action :install_with_make do
@@ -140,4 +142,5 @@ action :install_with_make do
     code        "make install"
     environment new_resource.environment
   end
+  new_resource.updated_by_last_action(true)
 end
