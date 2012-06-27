@@ -28,16 +28,16 @@ cookbook_file "/usr/lib/flume/plugins/ics-helpers.jar" do
 end
 
 # Load HttpSource as a plugin
-node[:flume][:plugins][:http_source]  ||= {}
-node[:flume][:plugins][:http_source][:classes] =  [
+node[:flume][:plugins][:helper_plugins]  ||= {}
+node[:flume][:plugins][:helper_plugins][:classes] =  [
                                                    "com.infochimps.flume.handlers.ElasticSearchSink",
                                                    "com.infochimps.flume.handlers.HttpSource",
                                                   ]
 
 # Make sure that ics-helpers.jar and http-site.xml can be located on the classpath
-node[:flume][:plugins][:http_source][:classpath]  =  [ "/usr/lib/flume/plugins/ics-helpers.jar", "/etc/http/conf" ]
+node[:flume][:plugins][:helper_plugins][:classpath]  =  [ "/usr/lib/flume/plugins/ics-helpers.jar", "/etc/http/conf" ]
 
-node[:flume][:plugins][:http_source][:java_opts] =  []
+node[:flume][:plugins][:helper_plugins][:java_opts] =  []
 
 node[:flume][:exported_jars] += [
   "#{node[:flume][:home_dir]}/plugins/ics-helpers.jar",
