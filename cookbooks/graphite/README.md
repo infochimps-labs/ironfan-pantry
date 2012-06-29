@@ -1,6 +1,34 @@
 # graphite chef cookbook
 
-Installs/Configures graphite
+Installs/Configures graphite.
+
+To test, run the dashboard server locally:
+
+    sudo foreman start dashboard -f /etc/graphite/Procfile 
+
+Spin up a statsd (see the statsd cookbook, or run `cd $statsd_dir ; node stats.js exampleConfig.js`), and bombard it with metrics:
+
+    ruby -r /usr/local/share/statsd/examples/ruby_example.rb  -e 'PER_SEC=100 ; RESET= PER_SEC * 300 ; Statsd.configure("localhost", 8125); count = RESET/2; loop do ; cromulence = rand * 1.9 ; modacity = (50 * (count.to_f/RESET)) + 100*rand*((count.to_f/RESET)**2) ; puts [Time.now, count, modacity, cromulence].join("\t") if (count % PER_SEC) == 0; Statsd.increment("cromulence", cromulence) ; Statsd.timing("modacity", modacity) ; sleep(2 * rand / PER_SEC.to_f) ; count = (count + 1) % RESET ; end' > /tmp/cromulacity.log &
+    tail -f /var/log/{statsd,graphite/*}/current
+
+
+The results will appear in the dashboard metric panel on the left. You can set up your own dashboards by referring to the image on the page directly (modify the port/ip as appropriate):
+
+    http://33.33.33.30:5100/render/?from=-12minutes
+    &width=960&height=720
+    &yMin=&yMax=
+    &colorList=67A9CF,91CF60,1A9850,FC8D59,D73027
+    &bgcolor=FFFFF0
+    &fgcolor=808080
+    &target=stats.cromulence
+    &target=movingAverage(scale(nonNegativeDerivative(stats.timers.modacity.lower)%2C10)%2C3)
+    &target=stats.timers.modacity.lower
+    &target=movingAverage(scale(nonNegativeDerivative(stats.timers.modacity.upper)%2C10)%2C3)
+    &target=stats.timers.modacity.upper
+
+You'll see the cromulence is steady with slight wiggle; the lower-bound modacity ramps linearly, while its upper bound ramps quadratically, resetting every 5 minutes:
+
+![Example Graph -- colors by http://colorbrewer2.org/](example_graph.png)
 
 * Cookbook source:   [http://github.com/infochimps-cookbooks/graphite](http://github.com/infochimps-cookbooks/graphite)
 * Ironfan tools: [http://github.com/infochimps-labs/ironfan](http://github.com/infochimps-labs/ironfan)
@@ -46,32 +74,7 @@ Cookbook dependencies:
 * install_from
 * silverware
 
-
 ## Attributes
-
-* `[:graphite][:conf_dir]`            -  (default: "/etc/graphite/")
-* `[:graphite][:home_dir]`            -  (default: "/usr/local/share/graphite/")
-* `[:graphite][:data_dir]`            -  (default: "/var/lib/graphite/storage/")
-* `[:graphite][:log_dir]`             -  (default: "/var/log/graphite/")
-* `[:graphite][:pid_dir]`             -  (default: "/var/run/graphite")
-* `[:graphite][:user]`                -  (default: "graphite")
-* `[:graphite][:carbon][:line_rcvr_addr]` -  (default: "127.0.0.1")
-* `[:graphite][:carbon][:pickle_rcvr_addr]` -  (default: "127.0.0.1")
-* `[:graphite][:carbon][:cache_query_addr]` -  (default: "127.0.0.1")
-* `[:graphite][:carbon][:user]`       -  (default: "www-data")
-* `[:graphite][:carbon][:version]`    -  (default: "0.9.7")
-* `[:graphite][:carbon][:release_url]` -  (default: "http://launchpadlibrarian.net/61904798/carbon-0.9.7.tar.gz")
-* `[:graphite][:carbon][:release_url_checksum]` -  (default: "ba698aca")
-* `[:graphite][:whisper][:user]`      -  (default: "www-data")
-* `[:graphite][:whisper][:version]`   -  (default: "0.9.7")
-* `[:graphite][:whisper][:release_url]` -  (default: "http://launchpadlibrarian.net/61904764/whisper-0.9.7.tar.gz")
-* `[:graphite][:whisper][:release_url_checksum]` -  (default: "c6272ad6")
-* `[:graphite][:dashboard][:user]` -  (default: "www-data")
-* `[:graphite][:dashboard][:version]` -  (default: "0.9.7c")
-* `[:graphite][:dashboard][:release_url]` -  (default: "http://launchpadlibrarian.net/62379635/graphite-web-0.9.7c.tar.gz")
-* `[:graphite][:dashboard][:release_url_checksum]` -  (default: "a3e16265")
-* `[:users][:graphite][:uid]`         -  (default: "446")
-* `[:groups][:graphite][:gid]`        -  (default: "446")
 
 ## License and Author
 
