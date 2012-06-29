@@ -20,6 +20,7 @@
 #
 
 include_recipe 'silverware'
+include_recipe 'elasticsearch'
 
 cookbook_file "/usr/lib/flume/plugins/ics-helpers.jar" do
   source "ics-helpers.jar"
@@ -44,3 +45,28 @@ node[:flume][:exported_jars] += [
 ]
 
 node_changed!
+
+jars = %w[
+           plugins/cloud-aws/commons-logging-1.1.1.jar
+           plugins/cloud-aws/commons-codec-1.3.jar
+           plugins/cloud-aws/aws-java-sdk-1.2.7.jar
+           plugins/cloud-aws/elasticsearch-cloud-aws-0.17.10.jar
+           plugins/cloud-aws/httpclient-4.1.1.jar
+           plugins/cloud-aws/httpcore-4.1.jar
+           lib/jline-0.9.94.jar
+           lib/lucene-queries-3.4.0.jar
+           lib/elasticsearch-0.17.10.jar
+           lib/lucene-highlighter-3.4.0.jar
+           lib/lucene-memory-3.4.0.jar
+           lib/log4j-1.2.16.jar
+           lib/lucene-core-3.4.0.jar
+           lib/lucene-analyzers-3.4.0.jar
+           lib/jna-3.2.7.jar
+           lib/sigar/sigar-1.6.4.jar
+          ]
+
+jars.each do |jar|
+  link File.join(node[:flume]        [:home_dir], 'lib', File.basename(jar)) do
+    to File.join(node[:elasticsearch][:home_dir], jar)
+  end
+end
