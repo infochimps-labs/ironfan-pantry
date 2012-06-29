@@ -9,7 +9,6 @@ To test, run the dashboard server locally:
 Spin up a statsd (see the statsd cookbook, or run `cd $statsd_dir ; node stats.js exampleConfig.js`), and bombard it with metrics:
 
     ruby -r /usr/local/share/statsd/examples/ruby_example.rb  -e 'PER_SEC=100 ; RESET= PER_SEC * 300 ; Statsd.configure("localhost", 8125); count = RESET/2; loop do ; cromulence = rand * 1.9 ; modacity = (50 * (count.to_f/RESET)) + 100*rand*((count.to_f/RESET)**2) ; puts [Time.now, count, modacity, cromulence].join("\t") if (count % PER_SEC) == 0; Statsd.increment("cromulence", cromulence) ; Statsd.timing("modacity", modacity) ; sleep(2 * rand / PER_SEC.to_f) ; count = (count + 1) % RESET ; end' > /tmp/cromulacity.log &
-
     tail -f /var/log/{statsd,graphite/*}/current
 
 
@@ -17,14 +16,15 @@ The results will appear in the dashboard metric panel on the left. You can set u
 
     http://33.33.33.30:5100/render/?from=-12minutes
     &width=960&height=720
+    &yMin=&yMax=
+    &colorList=67A9CF,91CF60,1A9850,FC8D59,D73027
+    &bgcolor=FFFFF0
+    &fgcolor=808080
     &target=stats.cromulence
     &target=movingAverage(scale(nonNegativeDerivative(stats.timers.modacity.lower)%2C10)%2C3)
     &target=stats.timers.modacity.lower
     &target=movingAverage(scale(nonNegativeDerivative(stats.timers.modacity.upper)%2C10)%2C3)
     &target=stats.timers.modacity.upper
-    &colorList=67A9CF,91CF60,1A9850,FC8D59,D73027
-    &bgcolor=FFFFF0
-    &fgcolor=808080
 
 You'll see the cromulence is steady with slight wiggle; the lower-bound modacity ramps linearly, while its upper bound ramps quadratically, resetting every 5 minutes:
 
