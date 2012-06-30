@@ -9,39 +9,46 @@
 # (no license specified)
 #
 
-service_name = case node.platform
-when 'centos';  'nfs';
-else            'nfs-kernel-server'
+case node.platform
+when 'centos'
+  service_name = 'nfs'
+when 'mac_os_x'
+  # no package needed
+  service_name = false # no service needed
+when 'ubuntu', 'debian'
+  service_name = 'nfs-kernel-server'
+  package        "nfs-kernel-server"
 end
 
-unless File.exists?("/etc/init.d/#{service_name}")
+if (not File.exists?("/etc/init.d/#{service_name}")) && (service_name)
   Chef::Log.warn "\n\n****\nYou may have to restart the machine after #{service_name} is installed\n****\n"
 end
 
-package "nfs-kernel-server" unless platform?('centos')
-
 if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
 
-  Chef::Log.info node[:nfs][:exports].to_hash.inspect
-
-  # FIXME: nfs_client should look for things by mount. Everything is announced just as ':server' in each realm
-  node[:nfs][:exports].each do |exp_name, exp_info|
-    announce(:nfs, :server,  :realm => node[:nfs][:exports].values.first[:realm])
+  # Announce as an NFS server, and announce each share as a capability
+  announce(:nfs, :server, :addr  => private_ip_of(node), :realm => node[:nfs][:exports].values.first[:realm])
+  node[:nfs][:exports].each do |nfs_path, nfs_info|
+    nfs_info = nfs_info.merge(:addr  => private_ip_of(node), :path  => nfs_path)
+    announce(:nfs, nfs_info[:name], nfs_info)
   end
 
-  service service_name do
-    action [ :enable, :start ]
-    running true
-    supports :status => true, :restart => true
+  if service_name
+    service service_name do
+      action [ :enable, :start ]
+      running true
+      supports :status => true, :restart => true
+    end
   end
 
-  template "/etc/exports" do
+  template "#{node[:nfs][:conf_dir]}/exports" do
     source      "exports.erb"
-    owner       "root"
-    group       "root"
+    owner       node[:users]['root'][:primary_user]
+    group       node[:users]['root'][:primary_group]
     mode        "0644"
-    notifies    :restart, resources(:service => service_name)
+    notifies    :restart, resources(:service => service_name) if service_name
   end
+
 else
   Chef::Log.warn "You included the NFS server recipe without defining nfs exports: set node[:nfs][:exports]."
 end
@@ -50,12 +57,12 @@ end
 # For problems starting NFS server on ubuntu maverick systems: read, understand
 # and then run /tmp/fix_nfs_on_maverick_amis.sh
 #
-if (node[:lsb][:release].to_f == 10.10)
+if (platform?('ubuntu')) && (node[:lsb][:release].to_f == 10.10)
   template "/tmp/fix_nfs_on_maverick_amis.sh" do
-    source "fix_nfs_on_maverick_amis.sh"
-    owner "root"
-    group "root"
-    mode 0700
+    source      "fix_nfs_on_maverick_amis.sh"
+    owner       'root'
+    group       'root'
+    mode        "0700"
   end
   if (`service nfs-kernel-server status` =~ /not running/)
     Chef::Log.warn "\n\n****\nFor problems starting NFS server on ubuntu maverick systems: read, understand and then run /tmp/fix_nfs_on_maverick_amis.sh\n****\n"
