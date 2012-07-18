@@ -60,6 +60,7 @@ template File.join(node[:flume][:home_dir], "bin/flume-env.sh") do
       :flume              => node[:flume],
       :classpath          => flume_classpath,
       :java_opts          => flume_java_opts,
+      :rubylib            => node[:flume][:rubylib],
     })
 end
 
