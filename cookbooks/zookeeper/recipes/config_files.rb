@@ -48,7 +48,7 @@ zookeeper_hosts[ node[:zookeeper][:zkid] ] = node[:ipaddress]
 
 template_variables = {
   :zookeeper         => node[:zookeeper],
-  :zookeeper_hosts   => zookeeper_hosts,
+  :zookeeper_hosts   => Hash[zookeeper_hosts.sort],
   :myid              => node[:zookeeper][:zkid],
 }
 
