@@ -31,7 +31,7 @@ end
 # Load HttpSource as a plugin
 node[:flume][:plugins][:helper_plugins]  ||= {}
 node[:flume][:plugins][:helper_plugins][:classes] =  [
-                                                   "com.infochimps.flume.handlers.ElasticSearchSink",
+                                                   "com.infochimps.flume.handlers.ElasticsearchSink",
                                                    "com.infochimps.flume.handlers.HttpSource",
                                                   ]
 
