@@ -7,16 +7,29 @@ version          "0.0.1"
 
 recipe           "iron_cuke::default",                  "Base configuration for iron_cuke"
 
-#%w[ debian ubuntu ].each do |os|
-#    supports os
-#end
-
 attribute "iron_cuke/home_dir",
   :display_name          => "",
   :description           => "",
   :default               => "/etc/iron_cuke"
 
+attribute "iron_cuke/conf_dir",
+  :display_name          => "",
+  :description           => "",
+  :default               => "/etc/iron_cuke"
+
+attribute "iron_cuke/conf_dir",
+  :display_name          => "",
+  :description           => "",
+  :default               => "git://github.com/infochimps-labs/iron_cuke.git"
+
 attribute "iron_cuke/user",
   :display_name          => "",
   :description           => "",
   :default               => "root"
+
+attribute "iron_cuke/group",
+  :display_name          => "",
+  :description           => "",
+  :default               => "wheel"
+
+
