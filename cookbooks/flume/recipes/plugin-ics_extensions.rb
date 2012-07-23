@@ -37,5 +37,5 @@ bash "config_files" do
   # next step down the rabbit hole is to confirm that the get goal
   # doesn't install dependencies. If it does install them, the get
   # goal is absolutely what we want instead.
-  mvn -f node[:flume][:ics_extensions_pom] install
+  code "mvn -f node[:flume][:ics_extensions_pom] install"
 end
