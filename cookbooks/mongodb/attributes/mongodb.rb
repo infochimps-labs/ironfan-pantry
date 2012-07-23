@@ -4,6 +4,10 @@ default[:mongodb][:source]            = "http://fastdl.mongodb.org/linux/mongodb
 default[:mongodb][:i686][:checksum]   = "b0b4d98968960cc90d2900ab0135bc24"
 default[:mongodb][:x86_64][:checksum] = "d764d869f2a3984251cfea5335cc6c53"
 
+default[:mongodb][:user]              = (node.platform == 'centos' ? 'mongod' : 'mongodb')
+default[:users ]['mongodb'][:uid]     = 460
+default[:groups]['mongodb'][:gid]     = 460
+
 ### GENERAL
 default[:mongodb][:dir]         = "/opt/mongodb-#{mongodb[:version]}" # For install from source
 default[:mongodb][:datadir]     = "/var/db/mongodb"
