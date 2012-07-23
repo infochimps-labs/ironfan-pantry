@@ -20,7 +20,6 @@
 #
 
 bash "install_ics_extensions" do
-  node[:flume][:user]
   # "Why do it this way?" Certain maven goals, like the
   # copy-dependencies goal used in this pom, require projects to be
   # executed. I looked for a standalone goal that could be used
