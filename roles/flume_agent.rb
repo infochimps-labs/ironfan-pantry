@@ -6,10 +6,10 @@ run_list(*%w[
   flume::jars
   flume::plugin-hbase_sink
   role[maven]
-  flume::plugin-ics_extensions
   flume::agent
   flume_integration::jruby_classpath
   flume::config_files
+  flume::plugin-ics_extensions
   flume_integration::jruby_home
 ])
 

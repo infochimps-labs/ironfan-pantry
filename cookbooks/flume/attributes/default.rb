@@ -54,9 +54,10 @@ default[:flume][:zookeeper][:port] = 3181
 # node[:flume][:plugins][:some_plugin][:classpath]  = [ "/usr/lib/jruby/jruby.jar" ]
 # node[:flume][:plugins][:some_plugin][:java_opts]  = [ "-Dsomething.special=1" ]
 default[:flume][:plugins] = {}
-default[:flume][:ics_extensions_version]
 
 default[:flume][:jars][:jruby_jar_version] = "1.0.0"
+
+default[:flume][:ics_extensions_version]   = "1.0"
 
 # classes to include as plugins
 default[:flume][:classes] = []

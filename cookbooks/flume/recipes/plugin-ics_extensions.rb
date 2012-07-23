@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-bash "config_files" do
+bash "install_ics_extesnsions" do
   node[:flume][:user]
   # "Why do it this way?" Certain maven goals, like the
   # copy-dependencies goal used in this pom, require projects to be
@@ -37,5 +37,5 @@ bash "config_files" do
   # next step down the rabbit hole is to confirm that the get goal
   # doesn't install dependencies. If it does install them, the get
   # goal is absolutely what we want instead.
-  code "mvn -f node[:flume][:ics_extensions_pom] install"
+  code "mvn -f #{node[:flume][:ics_extensions_pom]} install"
 end
