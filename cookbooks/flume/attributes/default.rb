@@ -10,6 +10,8 @@ default[:flume][:cluster_name] = node[:cluster_name]
 default[:flume][:home_dir]             = '/usr/lib/flume'
 default[:flume][:conf_dir]             = '/etc/flume/conf'
 default[:flume][:pid_dir]              = "/var/run/flume"
+default[:flume][:lib_dir]              = File.join(default[:flume][:home_dir], 'lib')
+default[:flume][:ics_extensions_pom]   = File.join(default[:flume][:conf_dir], 'ics_extensions.pom.xml')
 
 default[:flume][:agent ][:log_dir]      = "/var/log/flume/agent"
 default[:flume][:master][:log_dir]      = "/var/log/flume/master"
@@ -52,6 +54,7 @@ default[:flume][:zookeeper][:port] = 3181
 # node[:flume][:plugins][:some_plugin][:classpath]  = [ "/usr/lib/jruby/jruby.jar" ]
 # node[:flume][:plugins][:some_plugin][:java_opts]  = [ "-Dsomething.special=1" ]
 default[:flume][:plugins] = {}
+default[:flume][:ics_extensions_version]
 
 default[:flume][:jars][:jruby_jar_version] = "1.0.0"
 
@@ -68,6 +71,6 @@ default[:flume][:java_opts] = []
 default[:flume][:aws_access_key] = nil
 default[:flume][:aws_secret_key] = nil
 
-# The maximum size (in bytes) allowed for an event.  Will not be set
+ # The maximum size (in bytes) allowed for an event.  Will not be set
 # (Flume will use its default value) if set to 'nil' here.
 default[:flume][:max_event_size] = nil
