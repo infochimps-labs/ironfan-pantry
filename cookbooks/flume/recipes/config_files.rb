@@ -60,6 +60,7 @@ template File.join(node[:flume][:home_dir], "bin/flume-env.sh") do
       :flume              => node[:flume],
       :classpath          => flume_classpath,
       :java_opts          => flume_java_opts,
+      :rubylib            => node[:flume][:rubylib],
     })
 end
 
@@ -68,4 +69,14 @@ end
     owner "root"
     mode "644"
   end
+end
+
+template node[:flume][:ics_extensions_pom] do
+  source 'ics_extensions.pom.xml.erb'
+  owner  'root'
+  mode   '0644'
+  variables({
+              :lib_dir                => node[:flume][:lib_dir],
+              :ics_extensions_version => node[:flume][:ics_extensions_version]
+            })
 end
