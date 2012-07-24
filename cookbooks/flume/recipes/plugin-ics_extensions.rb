@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       flume
-# Description::         Infochimps Helper Plugins
-# Recipe::              plugin-ics_helpers
+# Description::         Infochimps Extension Plugins
+# Recipe::              plugin-ics_extensions
 # Author::              Josh Bronson - Infochimps, Inc
 #
 # Copyright 2012, Infochimps, Inc.
