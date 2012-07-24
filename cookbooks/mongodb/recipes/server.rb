@@ -32,18 +32,10 @@ daemon_user(node[:mongodb][:user].to_sym)
 # Data onto a bulk device
 volume_dirs('mongodb.data') do
   type          :persistent
-  selects       :all
+  selects       :single
   path          'mongodb'
-  mode          "0700"
+  mode          "0755"
 end
-
-
-# directory node[:mongodb][:datadir] do
-#   owner mongo_user
-#   group mongo_group
-#   mode 0755
-#   recursive true
-# end
 
 file node[:mongodb][:logfile] do
   owner mongo_user
