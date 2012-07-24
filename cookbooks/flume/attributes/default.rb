@@ -20,6 +20,7 @@ default[:flume][:zk]                    = Mash.new
 default[:flume][:collector]             = Mash.new
 
 default[:flume][:user]                 = 'flume'
+default[:flume][:group]                 = 'flume'
 default[:users ]['flume'][:uid]        = 325
 default[:groups]['flume'][:gid]        = 325
 

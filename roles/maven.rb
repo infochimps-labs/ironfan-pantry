@@ -3,6 +3,6 @@ description 'Maven.'
 
 run_list *%w[
     java
+    maven::maven2
     maven::config_files
-    maven::install_from_package
 ]
