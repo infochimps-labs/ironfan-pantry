@@ -9,13 +9,6 @@
 include_recipe 'silverware'
 package "git"
 
-announce(:flume, :agent, {
-    :ports   => {
-      :status => { :port => 35862, :protocol => 'http', :dashboard => true }  },
-    :daemons => {
-      :java => { :name => 'java', :cmd => 'FlumeNode' } },
-  })
-
 directory node['iron_cuke']['conf_dir'] do
   owner node['iron_cuke']['user']
   group node['iron_cuke']['group']
