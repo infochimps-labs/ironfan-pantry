@@ -22,3 +22,5 @@
 standard_dirs('silverware') do
   directories   :conf_dir, :log_dir, :home_dir
 end
+
+announce(:silverware, :default)

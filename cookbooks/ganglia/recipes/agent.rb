@@ -38,13 +38,19 @@ kill_old_service('ganglia-monitor'){ pattern 'gmond' }
 
 runit_service "ganglia_agent" do
   run_state     node[:ganglia][:agent][:run_state]
-  options       Mash.new(node[:ganglia]).merge(node[:ganglia][:agent])
+  options       Mash.new(node[:ganglia].to_hash).merge(node[:ganglia][:agent].to_hash)
 end
 
 #
 # Discover ganglia server, construct conf file
 #
 
-announce(:ganglia, :agent,
+announce(:ganglia, :agent, {
   :monitor_group => node[:cluster_name],
-  :rcv_port      => node[:ganglia][:rcv_port ])
+  :ports => {
+    :send_port => { :port => node[:ganglia][:send_port], :protocol =>'http'},
+  },
+  :daemons => {
+    :gmond => { :name => 'gmond', :user =>node[:ganglia][:user]},
+  },
+})

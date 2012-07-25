@@ -24,20 +24,17 @@ server_init = Mash.new(
   :type     => "mongodb",
   :daemon   => "mongod"
 )
-case node.platform
-when 'centos'
-  mongo_user = mongo_group = 'mongod'
-  server_init[:basename]   = 'mongod'
-else
-  mongo_user = mongo_group = 'mongodb'
-  server_init[:basename]   = 'mongodb'
-end
 
-directory node[:mongodb][:datadir] do
-  owner mongo_user
-  group mongo_group
-  mode 0755
-  recursive true
+mongo_user = mongo_group = node[:mongodb][:user]
+server_init[:basename]   = node[:mongodb][:user]
+daemon_user(node[:mongodb][:user].to_sym)
+
+# Data onto a bulk device
+volume_dirs('mongodb.data') do
+  type          :persistent
+  selects       :single
+  path          'mongodb'
+  mode          "0755"
 end
 
 file node[:mongodb][:logfile] do

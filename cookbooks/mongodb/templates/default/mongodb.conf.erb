@@ -13,7 +13,7 @@ dbpath=<%= @node[:mongodb][:config_server][:datadir] %>
 logpath=<%= @node[:mongodb][:config_server][:logfile] %>
 port = <%= @node[:mongodb][:config_server][:port] %>
 <% else %>
-dbpath=<%= @node[:mongodb][:datadir] %>
+dbpath=<%= @node[:mongodb][:data_dir] %>
 logpath=<%= @node[:mongodb][:logfile] %>
 port = <%= @node[:mongodb][:port] %>
 <% end %>
