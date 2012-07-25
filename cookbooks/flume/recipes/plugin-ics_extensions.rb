@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       flume
-# Description::         Infochimps Helper Plugins
-# Recipe::              plugin-ics_helpers
+# Description::         Infochimps Extension Plugins
+# Recipe::              plugin-ics_extensions
 # Author::              Josh Bronson - Infochimps, Inc
 #
 # Copyright 2012, Infochimps, Inc.
@@ -20,7 +20,6 @@
 #
 
 bash "install_ics_extensions" do
-  node[:flume][:user]
   # "Why do it this way?" Certain maven goals, like the
   # copy-dependencies goal used in this pom, require projects to be
   # executed. I looked for a standalone goal that could be used
