@@ -58,7 +58,7 @@ default[:flume][:plugins] = {}
 
 default[:flume][:jars][:jruby_jar_version] = "1.0.0"
 
-default[:flume][:ics_extensions_version]   = "1.0"
+default[:flume][:ics_extensions_version]   = "0.0.2"
 
 # classes to include as plugins
 default[:flume][:classes] = []
