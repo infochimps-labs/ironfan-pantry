@@ -31,8 +31,8 @@ package "build-essential"
 #   creates "/usr/src/node"
 # end
 git "#{node[:nodejs][:install_dir]}" do
-  repository "#{node[:nodejs][:git_repo]}"
-  reference "master"
+  repository "#{node[:nodejs][:git_url]}"
+  reference "#{node[:nodejs][:deploy_version]}"
   action :sync
 end
 
