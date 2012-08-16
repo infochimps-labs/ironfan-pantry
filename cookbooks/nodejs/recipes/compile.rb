@@ -40,7 +40,7 @@ bash "install nodejs" do
   cwd "#{node[:nodejs][:install_dir]}"
   code <<-EOH
   export JOBS=#{node[:nodejs][:jobs]}
-  ./configure
+  ./configure --prefix=/usr/local
   make
   make install
   EOH
