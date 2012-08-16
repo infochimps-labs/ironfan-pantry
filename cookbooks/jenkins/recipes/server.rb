@@ -43,6 +43,8 @@ directory "#{node[:jenkins][:server][:home_dir]}/war" do
   action        :create
 end
 
+package "jenkins"
+
 case node.platform
 when "ubuntu", "debian"
 
