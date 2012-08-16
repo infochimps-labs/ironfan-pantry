@@ -58,8 +58,9 @@ when "ubuntu", "debian"
   end
 
   service "jenkins_server" do
-    run_state     node[:jenkins][:server][:run_state]
-    options       Mash.new(:service_name => 'jenkins_server').merge(node[:jenkins])
+    service_name  'jenkins'
+    action        node[:jenkins][:server][:run_state]
+    #options       Mash.new(:service_name => 'jenkins_server').merge(node[:jenkins])
   end
   # kill_old_service("jenkins") do
   #   only_if{ File.exists?("/etc/init.d/jenkins") }

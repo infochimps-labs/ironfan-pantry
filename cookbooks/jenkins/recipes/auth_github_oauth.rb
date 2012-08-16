@@ -21,4 +21,4 @@
 
 include_recipe 'jenkins::build_from_github'
 
-JenkinsHelpers.jenkins_plugins('github-oauth')
+jenkins_plugins('github-oauth')

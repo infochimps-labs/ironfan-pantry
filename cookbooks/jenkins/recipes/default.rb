@@ -32,4 +32,8 @@ if jenkins_server
   node.save
 end
 
+if platform?('ubuntu') and node[:platform_version] == "11.04"
+  include_recipe 'jenkins::add_apt_repo'
+end
+
 package "jenkins"

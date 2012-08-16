@@ -84,8 +84,7 @@ default[:jenkins][:worker][:name]       = node.name
 # working around: http://tickets.opscode.com/browse/CHEF-1848; set to true if you have the CHEF-1848 patch applied
 default[:jenkins][:server][:use_head]   = false
 
-# default[:jenkins][:mirror]            = "http://updates.jenkins-ci.org"
-default[:apt][:jenkins][:url]           = "http://pkg.jenkins-ci.org/debian"
+default[:jenkins][:apt_mirror]          = "http://pkg.jenkins-ci.org/debian"
 default[:jenkins][:plugins_mirror]      = "http://updates.jenkins-ci.org"
 
 #download the latest version of plugins, bypassing update center

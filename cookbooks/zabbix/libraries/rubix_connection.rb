@@ -25,6 +25,7 @@ class Chef
         gem_package('configliere') { action :nothing }.run_action(:install)
         gem_package('rubix') { action :nothing ; version ::Chef::RubixConnection::RUBIX_VERSION }.run_action(:install)
         Gem.clear_paths
+        pp "gem     'rubix', \">= #{::Chef::RubixConnection::RUBIX_VERSION}\""
         gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
         require 'rubix'
         retries += 1
