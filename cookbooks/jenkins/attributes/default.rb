@@ -48,6 +48,10 @@ when /mac_os_x/
   worker_username = "_jenkins"
   group_name      = "_jenkins"
 
+  default[:rbenv][:default_ruby]        = '1.9.3-p0'
+  default[:rbenv][:rubies]['1.9.3-p0']  = ''
+  default[:jenkins][:worker][:shell]    = '/usr/local/bin/bash'
+
 else
   default[:jenkins][:server][:home_dir] = "/var/lib/jenkins"
   default[:jenkins][:worker][:home_dir] = "/var/lib/jenkins_worker"
