@@ -79,6 +79,8 @@ default[:elasticsearch][:jmx_dash_port]           = '9400-9500'
 default[:elasticsearch][:proxy_port]              = "8200"
 default[:elasticsearch][:proxy_hostname]          = "elasticsearch.yourdomain.com"
 
+# For use with nginx. Block all ports except this one if using authentication.
+default[:elasticsearch][:auth_port]               = "9301"
 
 default[:tuning][:ulimit]['@elasticsearch'] = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
 
