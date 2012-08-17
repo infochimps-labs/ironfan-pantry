@@ -24,7 +24,10 @@ when 'centos'
 else
   package("libxml2-dev"      ){ action :nothing }.run_action(:install)
   package("libxslt1-dev"     ){ action :nothing }.run_action(:install)
-  gem_package("fog"          ){ action :nothing }.run_action(:install)
+  gem_package("fog") do
+    version '~> 1.5.0'
+    action :nothing
+  end.run_action(:install)
   gem_package("net-ssh-multi"){ action :nothing }.run_action(:install)
   gem_package("ghost"        ){ action :nothing }.run_action(:install)
 end
