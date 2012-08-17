@@ -1,7 +1,7 @@
 
 #By default, flume plays as a part of the cluster the machine
 #belongs to.
-default[:flume][:cluster_name] = node[:cluster_name]
+default[:flume][:cluster_name]        = node[:cluster_name]
 
 #
 # Locations
@@ -13,27 +13,30 @@ default[:flume][:pid_dir]              = "/var/run/flume"
 default[:flume][:lib_dir]              = File.join(default[:flume][:home_dir], 'lib')
 default[:flume][:ics_extensions_pom]   = File.join(default[:flume][:conf_dir], 'ics_extensions.pom.xml')
 
-default[:flume][:agent ][:log_dir]      = "/var/log/flume/agent"
-default[:flume][:master][:log_dir]      = "/var/log/flume/master"
 
-default[:flume][:zk]                    = Mash.new
-default[:flume][:collector]             = Mash.new
+default[:flume][:agent ][:log_dir]    = "/var/log/flume/agent"
+default[:flume][:master][:log_dir]    = "/var/log/flume/master"
 
-default[:flume][:user]                 = 'flume'
-default[:users ]['flume'][:uid]        = 325
-default[:groups]['flume'][:gid]        = 325
+default[:flume][:zk]                  = Mash.new
+default[:flume][:collector]           = Mash.new
+
+default[:flume][:user]                = 'flume'
+default[:users ]['flume'][:uid]       = 325
+default[:groups]['flume'][:gid]       = 325
 
 # these are set by the recipes
-node[:flume][:exported_jars ] = []
-node[:flume][:exported_confs] = []
+node[:flume][:exported_jars ]         = []
+node[:flume][:exported_confs]         = []
 
 #
 # Services
 #
 
-default[:flume][:master][:run_state] = :stop
-default[:flume][:agent ][:run_state] = :start
+default[:flume][:master][:run_state]  = :stop
+default[:flume][:agent ][:run_state]  = :start
 
+default[:flume][:multi_agent][:count]          = 2
+default[:flume][:multi_agent][:log_dir_prefix] = '/var/log/flume'
 
 #
 # Tunables
