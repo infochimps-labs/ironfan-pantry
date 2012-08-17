@@ -25,8 +25,8 @@ include_recipe 'apt'
 # Add jenkins-ci.org package repo
 apt_repository 'jenkins-ci' do
   uri             node[:jenkins][:apt_mirror]
-  components      ['binary']
-  key             "#{node[:apt][:jenkins][:url]}/jenkins-ci.org.key"
+  components      ['binary/']
+  key             "#{node[:jenkins][:apt_mirror]}/jenkins-ci.org.key"
   action          :add
 end
 

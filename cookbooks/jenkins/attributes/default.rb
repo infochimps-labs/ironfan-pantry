@@ -48,6 +48,10 @@ when /mac_os_x/
   worker_username = "_jenkins"
   group_name      = "_jenkins"
 
+  default[:rbenv][:default_ruby]        = '1.9.3-p0'
+  default[:rbenv][:rubies]['1.9.3-p0']  = ''
+  default[:jenkins][:worker][:shell]    = '/usr/local/bin/bash'
+
 else
   default[:jenkins][:server][:home_dir] = "/var/lib/jenkins"
   default[:jenkins][:worker][:home_dir] = "/var/lib/jenkins_worker"
@@ -84,8 +88,7 @@ default[:jenkins][:worker][:name]       = node.name
 # working around: http://tickets.opscode.com/browse/CHEF-1848; set to true if you have the CHEF-1848 patch applied
 default[:jenkins][:server][:use_head]   = false
 
-# default[:jenkins][:mirror]            = "http://updates.jenkins-ci.org"
-default[:apt][:jenkins][:url]           = "http://pkg.jenkins-ci.org/debian"
+default[:jenkins][:apt_mirror]          = "http://pkg.jenkins-ci.org/debian"
 default[:jenkins][:plugins_mirror]      = "http://updates.jenkins-ci.org"
 
 #download the latest version of plugins, bypassing update center

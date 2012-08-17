@@ -31,8 +31,8 @@ package "build-essential"
 #   creates "/usr/src/node"
 # end
 git "#{node[:nodejs][:install_dir]}" do
-  repository "#{node[:nodejs][:git_repo]}"
-  reference "master"
+  repository "#{node[:nodejs][:git_url]}"
+  reference "#{node[:nodejs][:deploy_version]}"
   action :sync
 end
 
@@ -40,7 +40,7 @@ bash "install nodejs" do
   cwd "#{node[:nodejs][:install_dir]}"
   code <<-EOH
   export JOBS=#{node[:nodejs][:jobs]}
-  ./configure
+  ./configure --prefix=/usr/local
   make
   make install
   EOH

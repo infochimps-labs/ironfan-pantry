@@ -42,7 +42,11 @@ kill_old_service('ganglia-monitor'){ pattern 'gmond' }
 
 runit_service "ganglia_server" do
   run_state     node[:ganglia][:server][:run_state]
-  options       Mash.new(node[:ganglia]).merge(node[:ganglia][:server])
+  options       Mash.new(node[:ganglia].to_hash).merge(node[:ganglia][:server].to_hash)
 end
 
-announce(:ganglia, :server)
+announce(:ganglia, :server, {
+  :daemons => {
+    :gmetad => { :name => 'gmetad', :user => node[:ganglia][:user] },
+  },
+})
