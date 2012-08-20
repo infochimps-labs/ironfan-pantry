@@ -29,26 +29,3 @@ apt_repository 'jenkins-ci' do
   key             "#{node[:jenkins][:apt_mirror]}/jenkins-ci.org.key"
   action          :add
 end
-
-# # FIXME: apt provider-ize
-# apt_key                = "/tmp/jenkins-ci.org.key"
-#
-# remote_file apt_key do
-#   source "#{node[:apt][:jenkins][:url]}/jenkins-ci.org.key"
-#   action :create
-# end
-#
-# execute "add-jenkins_repo-key" do
-#   command %Q{echo "Adding jenkins apt repo key" ; apt-key add #{apt_key}}
-#   action :nothing
-# end
-#
-# file "/etc/apt/sources.list.d/jenkins.list" do
-#   owner   "root"
-#   group   "root"
-#   mode    0644
-#   content "deb #{node[:jenkins][:apt_mirror]} binary/\n"
-#   action  :create
-#   notifies :run, "execute[add-jenkins_repo-key]",        :immediately
-#   notifies :run, resources(:execute => "apt-get update"), :immediately
-# end

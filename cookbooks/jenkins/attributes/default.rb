@@ -56,6 +56,7 @@ else
   default[:jenkins][:server][:home_dir] = "/var/lib/jenkins"
   default[:jenkins][:worker][:home_dir] = "/var/lib/jenkins_worker"
   default[:jenkins][:install_dir]       = "/usr/share/jenkins"
+  default[:jenkins][:worker][:shell]    = "/bin/bash"
 
   server_username = "jenkins"
   worker_username = "jenkins_worker"
@@ -63,17 +64,22 @@ else
 end
 
 
+[ :install_dir, :log_dir, :pid_dir, :conf_dir ].each do |dir|
+  default[:jenkins][:server][dir] = default[:jenkins][dir]
+  default[:jenkins][:worker][dir] = default[:jenkins][dir]
+end
+
 default[:jenkins][:server][:user]     = server_username
 default[:jenkins][:server][:group]    = group_name
 default[:jenkins][:worker][:user]     = worker_username
 default[:jenkins][:worker][:group]    = group_name
-default[:jenkins][:worker][:shell]    = "/bin/bash"
 
 default[:users ][worker_username][:uid] = 361
 default[:users ][server_username][:uid] = 360
 default[:groups][group_name     ][:gid] = 360
 
-
+# address for the host to bind to (default to all addresses)
+default[:jenkins][:server][:host]       = '0.0.0.0'
 # port for HTTP connector (default 8080; disable with -1)
 default[:jenkins][:server][:port]       = 8080
 # port for AJP connector (disabled by default)

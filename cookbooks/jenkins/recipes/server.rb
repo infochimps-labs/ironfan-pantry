@@ -33,7 +33,14 @@ daemon_user('jenkins.server') do
 end
 
 standard_dirs('jenkins.server') do
-  directories   :conf_dir, :pid_dir, :lib_dir, :log_dir
+  directories   :conf_dir, :pid_dir, :log_dir
+end
+
+directory node[:jenkins][:server][:home_dir] do
+  owner         node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  mode          "0755"
+  action        :create
 end
 
 directory "#{node[:jenkins][:server][:home_dir]}/war" do

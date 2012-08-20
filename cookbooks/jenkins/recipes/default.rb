@@ -25,6 +25,9 @@ include_recipe 'silverware'
 include_recipe 'volumes'
 
 jenkins_server = discover(:jenkins, :server)
+# FIXME: This step is unnecessary; both port and url should be received
+#   at run-time usage directly from the announcement, not cached into the
+#   current node
 if jenkins_server
   jenkins_node = jenkins_server.node
   node[:jenkins][:server][:url]  = "http://#{jenkins_node[:fqdn]}:#{jenkins_node[:jenkins][:server][:port]}"
@@ -35,3 +38,5 @@ end
 if platform?('ubuntu') and node[:platform_version] == "11.04"
   include_recipe 'jenkins::add_apt_repo'
 end
+
+
