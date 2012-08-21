@@ -28,11 +28,11 @@ default[:groups]['elasticsearch'][:gid]           = 61021
 # Install
 #
 
-default[:elasticsearch][:version]                 = "0.17.10"
+default[:elasticsearch][:version]                 = "0.19.8"
 default[:elasticsearch][:release_url_checksum]    = nil
 default[:elasticsearch][:release_url]             = "https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-:version:.tar.gz"
 default[:elasticsearch][:git_repo]                = "https://github.com/elasticsearch/elasticsearch.git"
-default[:elasticsearch][:plugins]                 = ["cloud-aws"]
+default[:elasticsearch][:plugins]                 = ["elasticsearch/elasticsearch-cloud-aws/1.8.0"]
 
 #
 # Services
