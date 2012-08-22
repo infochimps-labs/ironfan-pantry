@@ -1,7 +1,7 @@
 
 #By default, flume plays as a part of the cluster the machine
 #belongs to.
-default[:flume][:cluster_name] = node[:cluster_name]
+default[:flume][:cluster_name]        = node[:cluster_name]
 
 #
 # Locations
@@ -13,28 +13,30 @@ default[:flume][:pid_dir]              = "/var/run/flume"
 default[:flume][:lib_dir]              = File.join(default[:flume][:home_dir], 'lib')
 default[:flume][:ics_extensions_pom]   = File.join(default[:flume][:conf_dir], 'ics_extensions.pom.xml')
 
-default[:flume][:agent ][:log_dir]      = "/var/log/flume/agent"
-default[:flume][:master][:log_dir]      = "/var/log/flume/master"
 
-default[:flume][:zk]                    = Mash.new
-default[:flume][:collector]             = Mash.new
+default[:flume][:agent ][:log_dir]     = "/var/log/flume/agent"
+default[:flume][:master][:log_dir]     = "/var/log/flume/master"
 
+default[:flume][:zk]                   = Mash.new
+default[:flume][:collector]            = Mash.new
 default[:flume][:user]                 = 'flume'
-default[:flume][:group]                 = 'flume'
+
 default[:users ]['flume'][:uid]        = 325
 default[:groups]['flume'][:gid]        = 325
 
 # these are set by the recipes
-node[:flume][:exported_jars ] = []
-node[:flume][:exported_confs] = []
+node[:flume][:exported_jars ]          = []
+node[:flume][:exported_confs]          = []
 
 #
 # Services
 #
 
-default[:flume][:master][:run_state] = :stop
-default[:flume][:agent ][:run_state] = :start
+default[:flume][:master][:run_state]   = :stop
+default[:flume][:agent ][:run_state]   = :start
 
+default[:flume][:multi_agent][:count]          = 2
+default[:flume][:multi_agent][:log_dir_prefix] = '/var/log/flume'
 
 #
 # Tunables
@@ -45,10 +47,10 @@ default[:flume][:agent ][:run_state] = :start
 # the zookeeper quorum based on cluster membership; modify
 # node[:discovers][:zookeeper_server] to have it use an external cluster
 default[:flume][:master][:external_zookeeper] = false
-default[:flume][:master][:zookeeper_port] = 2181
+default[:flume][:master][:zookeeper_port]     = 2181
 
 # If flume is not using the external_zookeeper, its internal zookeeper opens this port
-default[:flume][:zookeeper][:port] = 3181
+default[:flume][:zookeeper][:port]            = 3181
 
 # configuration data for plugins.
 # node[:flume][:plugins][:some_plugin][:classes]    = [ 'java.lang.String' ]
@@ -56,9 +58,9 @@ default[:flume][:zookeeper][:port] = 3181
 # node[:flume][:plugins][:some_plugin][:java_opts]  = [ "-Dsomething.special=1" ]
 default[:flume][:plugins] = {}
 
-default[:flume][:jars][:jruby_jar_version] = "1.0.0"
+default[:flume][:jars][:jruby_jar_version]    = "1.0.0"
 
-default[:flume][:ics_extensions_version]   = "0.0.2"
+default[:flume][:ics_extensions_version]      = "0.0.2"
 
 # classes to include as plugins
 default[:flume][:classes] = []

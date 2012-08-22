@@ -33,7 +33,14 @@ daemon_user('jenkins.server') do
 end
 
 standard_dirs('jenkins.server') do
-  directories   :conf_dir, :pid_dir, :lib_dir, :log_dir
+  directories   :conf_dir, :pid_dir, :log_dir
+end
+
+directory node[:jenkins][:server][:home_dir] do
+  owner         node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  mode          "0755"
+  action        :create
 end
 
 directory "#{node[:jenkins][:server][:home_dir]}/war" do
@@ -42,6 +49,8 @@ directory "#{node[:jenkins][:server][:home_dir]}/war" do
   mode          "0755"
   action        :create
 end
+
+package "jenkins"
 
 case node.platform
 when "ubuntu", "debian"
@@ -58,8 +67,9 @@ when "ubuntu", "debian"
   end
 
   service "jenkins_server" do
-    run_state     node[:jenkins][:server][:run_state]
-    options       Mash.new(:service_name => 'jenkins_server').merge(node[:jenkins])
+    service_name  'jenkins'
+    action        node[:jenkins][:server][:run_state]
+    #options       Mash.new(:service_name => 'jenkins_server').merge(node[:jenkins])
   end
   # kill_old_service("jenkins") do
   #   only_if{ File.exists?("/etc/init.d/jenkins") }
