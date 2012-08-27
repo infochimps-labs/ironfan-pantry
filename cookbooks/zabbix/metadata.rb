@@ -2,7 +2,7 @@ maintainer       "Dhruv Bansal"
 maintainer_email "dhruv@infochimps.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.2.0"
+version          "3.2.1"
 
 description      "Installs/Configures Zabbix server, client, & web frontend."
 

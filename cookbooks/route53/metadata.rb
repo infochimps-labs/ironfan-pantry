@@ -3,7 +3,7 @@ maintainer_email "jamesc.000@gmail.com"
 license          "Apache 2.0"
 description      "Installs/Configures route53"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.2.0"
+version          "3.2.1"
 
 recipe "route53", "Installs the route53 RubyGem"
 recipe "route53::ec2", "Dynamically configures Route53 resource records for EC2 nodes based on instance ID and prepopulated attributes on the node"
