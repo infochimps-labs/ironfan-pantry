@@ -33,7 +33,7 @@ begin
             requires :name, :type, :zone
             #
             batch = []
-            old_records = zone.records.select{|record| (record.name == self.name) && (record.type == self.type) }
+            old_records = zone.records.all!.select{|record| (record.name == self.name) && (record.type == self.type) }
             Chef::Log.info(["update record model", old_records].inspect)
             old_records.each do |record|
               batch << { :action => 'DELETE', :name => record.name, :resource_records => [*record.value], :ttl => record.ttl.to_s, :type => record.type }
@@ -96,7 +96,7 @@ module Opscode
       end
 
       def resource_record(zone, fqdn, type)
-        zone.records.detect{|record| (record.name == "#{fqdn}.") && (record.type == type) }
+        zone.records.get(fqdn,type,nil)
       end
 
       def safely(&block)
