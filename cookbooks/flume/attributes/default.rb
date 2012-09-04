@@ -17,6 +17,9 @@ default[:flume][:ics_extensions_pom]   = File.join(default[:flume][:conf_dir], '
 default[:flume][:agent ][:log_dir]     = "/var/log/flume/agent"
 default[:flume][:master][:log_dir]     = "/var/log/flume/master"
 
+default[:flume][:agent ][:file_limit]  = 65536
+default[:flume][:master][:file_limit]  = 65536
+
 default[:flume][:zk]                   = Mash.new
 default[:flume][:collector]            = Mash.new
 default[:flume][:user]                 = 'flume'
