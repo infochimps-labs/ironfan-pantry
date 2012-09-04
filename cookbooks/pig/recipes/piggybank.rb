@@ -19,10 +19,6 @@
 # limitations under the License.
 #
 
-package "sun-java6-jdk"
-package "sun-java6-bin"
-package "sun-java6-jre"
-
 package "ivy"
 
 bash 'build piggybank' do

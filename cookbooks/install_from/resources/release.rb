@@ -28,6 +28,7 @@ actions(
   :configure_with_autoconf,
   :build_with_make,
   :build_with_ant,
+  :build_with_sbt,
   :install_with_make,
   :install_binaries,
   :install_python
@@ -95,7 +96,7 @@ def assume_defaults!
   # the release_url 'http://apache.org/pig/pig-0.8.0.tar.gz' has
   # release_basename 'pig-0.8.0' and release_ext 'tar.gz'
   release_basename = ::File.basename(release_url.gsub(/\?.*\z/, '')).gsub(/-bin\b/, '')
-  release_basename =~ %r{^(.+?)\.(tar\.gz|tar\.bz2|zip)}
+  release_basename =~ %r{^(.+?)\.(tar\.gz|tar\.bz2|zip|tgz)}
   @release_ext      ||= $2
 
   @home_dir         ||= ::File.join(prefix_root, 'share', name)
@@ -105,6 +106,7 @@ def assume_defaults!
     case release_ext
     when 'tar'     then untar_cmd('xf', release_file, install_dir)
     when 'tar.gz'  then untar_cmd('xzf', release_file, install_dir)
+    when 'tgz'     then untar_cmd('xzf', release_file, install_dir)
     when 'tar.bz2' then untar_cmd('xjf', release_file, install_dir)
     when 'zip'     then unzip_cmd(release_file, install_dir)
     else raise "Don't know how to expand #{release_url} which has extension '#{release_ext}'"
