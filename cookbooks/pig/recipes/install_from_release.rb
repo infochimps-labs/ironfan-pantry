@@ -23,10 +23,6 @@ include_recipe 'pig'
 include_recipe 'ant'
 include_recipe 'install_from'
 
-package "sun-java6-jdk"
-package "sun-java6-bin"
-package "sun-java6-jre"
-
 package "ivy" if platform?('ubuntu')
 package "subversion" if platform?('centos')
 
