@@ -64,6 +64,12 @@ template File.join(node[:flume][:home_dir], "bin/flume-env.sh") do
     })
 end
 
+template File.join(node[:flume][:home_dir], "conf/log4j.properties") do
+  source        "log4j.properties.erb"
+  owner         "root"
+  mode          "0744"
+end
+
 %w[commons-codec-1.4.jar commons-httpclient-3.0.1.jar jets3t-0.6.1.jar].each do |file|
   cookbook_file "/usr/lib/flume/lib/#{file}" do
     owner "root"

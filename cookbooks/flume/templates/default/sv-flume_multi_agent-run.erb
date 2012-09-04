@@ -20,6 +20,8 @@ export FLUME_ROOT_LOGGER="INFO,DRFA"
 export ZOOKEEPER_ROOT_LOGGER="INFO,zookeeper"
 export WATCHDOG_ROOT_LOGGER="INFO,watchdog"
 
+ulimit -n <%= @options[:file_limit] %>
+
 cd "$FLUME_HOME"
 exec chpst -u "<%= @options[:user] %>" \
   "${FLUME_HOME}"/bin/flume ${command}_nowatch -n "$SERVER_NAME" "$@" < /dev/null
