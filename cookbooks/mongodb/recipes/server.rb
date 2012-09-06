@@ -27,7 +27,7 @@ server_init = Mash.new(
 
 mongo_user = mongo_group = node[:mongodb][:user]
 server_init[:basename]   = node[:mongodb][:user]
-daemon_user(node[:mongodb][:user].to_sym)
+daemon_user(:mongodb)
 
 # Data onto a bulk device
 volume_dirs('mongodb.data') do
