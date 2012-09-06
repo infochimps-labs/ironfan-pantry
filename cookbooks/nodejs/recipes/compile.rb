@@ -20,9 +20,9 @@
 #
 
 include_recipe 'python'
+include_recipe 'build-essential'
 
 package "git"
-package "build-essential"
 
 ## Replaced by git-specific invocation, below
 # execute "git clone nodejs" do

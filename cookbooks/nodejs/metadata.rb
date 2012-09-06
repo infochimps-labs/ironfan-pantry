@@ -7,6 +7,7 @@ version          "3.1.3"
 description      "Installs/Configures nodejs"
 
 depends          "python"
+depends          "build-essential"
 
 recipe           "nodejs::compile",                    "Compile"
 recipe           "nodejs::default",                    "Base configuration for nodejs"
