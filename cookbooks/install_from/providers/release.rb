@@ -114,6 +114,16 @@ action :build_with_make do
   new_resource.updated_by_last_action(true)
 end
 
+action :build_with_sbt do
+  action_build
+  bash "build #{new_resource.name} with sbt" do
+    user        new_resource.user
+    cwd         new_resource.install_dir
+    code        "./sbt update; ./sbt package"
+    environment new_resource.environment
+  end
+end
+
 action :install_binaries do
   new_resource.has_binaries.each do |bin|
     link ::File.join(new_resource.prefix_root, 'bin', ::File.basename(bin)) do

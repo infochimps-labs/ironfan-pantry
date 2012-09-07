@@ -21,11 +21,7 @@
 
 platform = node[:kernel][:machine]
 
-user "mongodb" do
-  comment "MongoDB Administrator"
-  system true
-  shell "/bin/false"
-end
+daemon_user('mongodb.server')
 
 [node[:mongodb][:dir], "#{node[:mongodb][:dir]}/bin"].each do |dir|
   directory dir do
