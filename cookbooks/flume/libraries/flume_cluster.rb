@@ -31,7 +31,7 @@ module FlumeCluster
   end
 
   def flume_master
-    flume_masters.first
+    discover(:flume, :master).private_ip
   end
 
   # returns the index of the current host in the list of flume masters
