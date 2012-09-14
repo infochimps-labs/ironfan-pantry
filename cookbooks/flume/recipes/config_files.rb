@@ -41,7 +41,7 @@ template File.join(node[:flume][:conf_dir], "flume-site.xml") do
   mode          "0644"
   variables({
       :flume              => node[:flume],
-      :masters            => flume_masters.join(","),
+      :masters            => flume_master,
       :plugin_classes     => flume_plugin_classes,
       :classpath          => flume_classpath,
       :master_id          => flume_master_id,
