@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       flume
-# Description::         Base configuration for flume
-# Recipe::              default
+# Description::         Install flume using package manager
+# Recipe::              install_from_package
 # Author::              Chris Howe - Infochimps, Inc
 #
 # Copyright 2011, Infochimps, Inc.
@@ -19,14 +19,15 @@
 # limitations under the License.
 #
 
-include_recipe 'silverware'
-include_recipe 'java' ; complain_if_not_sun_java(:flume)
-include_recipe 'volumes'
-include_recipe 'thrift'
-class Chef::Resource::Template ; include FlumeCluster ; end
+include_recipe 'flume::default'
+include_recipe 'hadoop_cluster::add_cloudera_repo'
 
 #
-# Common to all install methods
+# Install from package
 #
 
-daemon_user('flume')
+package     'flume'
+
+standard_dirs('flume') do
+  directories [:home_dir, :conf_dir]
+end

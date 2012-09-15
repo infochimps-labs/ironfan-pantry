@@ -2,7 +2,9 @@ name        'flume_master'
 description 'flume master'
 
 run_list(*%w[
-  flume	
+  flume
+  flume::install_from_release
+  flume::make_dirs
   flume::jars
   flume::plugin-hbase_sink
   role[maven]
