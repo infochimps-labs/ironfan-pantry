@@ -1,4 +1,4 @@
-<%= node.name %>	<%= @description %>
+<%= node.name %>	<%= @description %>	env: <%= node.chef_environment %>
 Provide	<%= (node[:announces] || {}).keys.sort.join(",") %>
 Roles	<%= @roles.sort.join(' ') %>
 IP	<%= [@ipaddress, @private_ips, @public_ips, @public_hostname].flatten.join("\t") %>
