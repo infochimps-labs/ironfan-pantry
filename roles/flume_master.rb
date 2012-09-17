@@ -9,6 +9,7 @@ run_list(*%w[
   flume::plugin-hbase_sink
   role[maven]
   flume::master
+  flume_integration::default
   flume_integration::jruby_classpath
   flume::config_files
   flume_integration::jruby_home
