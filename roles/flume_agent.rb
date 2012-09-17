@@ -8,6 +8,7 @@ run_list(*%w[
   role[maven]
   flume::agent
   flume_integration::jruby_classpath
+  flume_integration::default
   flume::config_files
   flume_integration::jruby_home
 ])
