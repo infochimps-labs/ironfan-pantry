@@ -31,7 +31,7 @@ end
 #
 runit_service 'flume_agent' do
   run_state     node[:flume][:agent][:run_state]
-  subscribes    :restart, resources( :template => [ File.join(node[:flume][:conf_dir], "flume-site.xml"), File.join(node[:flume][:home_dir], "bin/flume-env.sh") ] )
+  run_restart   false
   options       Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge({
       :service_command    => 'node',
     })
