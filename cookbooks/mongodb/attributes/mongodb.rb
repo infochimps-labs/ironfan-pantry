@@ -20,7 +20,7 @@ default[:mongodb][:dir]         = "/opt/mongodb-#{mongodb[:version]}" # For inst
 # Basically this cookbook is fucked.
 default[:mongodb][:datadir]     = "/var/db/mongodb"
 default[:mongodb][:pid_dir]     = '/var/run/mongodb'
-default[:mongodb][:config]      = "/etc/mongodb.conf"
+default[:mongodb][:config]      = "/etc/#{user}.conf"
 default[:mongodb][:logfile]     = "/var/log/mongodb.log"
 default[:mongodb][:pidfile]     = "/var/run/mongodb.pid"
 default[:mongodb][:port]        = 27017
