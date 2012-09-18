@@ -22,6 +22,8 @@ export WATCHDOG_ROOT_LOGGER="INFO,watchdog"
 
 ulimit -n <%= @options[:file_limit] %>
 
+export UOPTS=<%= @options[:uopts] %>
+
 cd "$FLUME_HOME"
 exec chpst -u "<%= @options[:user] %>" \
   "${FLUME_HOME}"/bin/flume ${command}_nowatch -n "$SERVER_NAME" "$@" < /dev/null

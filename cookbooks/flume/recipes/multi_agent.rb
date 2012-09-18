@@ -23,7 +23,7 @@ node[:flume][:multi_agent][:count].times.map do |index|
                                                         File.join(node[:flume][:conf_dir], "flume-site.xml"), 
                                                         File.join(node[:flume][:home_dir], "bin/flume-env.sh") 
                                                         ])
-    options           Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).
+    options           Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge(uopts: node[:flume][:uopts])
       merge({
               :service_command => 'node',
               :log_dir         => log_dir,

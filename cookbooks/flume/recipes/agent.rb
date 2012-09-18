@@ -34,6 +34,7 @@ runit_service 'flume_agent' do
   run_restart   false
   options       Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge({
       :service_command    => 'node',
+      :uopts              => node[:flume][:uopts],
     })
 end
 
