@@ -103,6 +103,17 @@ action :configure_with_autoconf do
   end
 end
 
+action :configure_with_autogen do
+  action_configure
+  bash "configure #{new_resource.name} with autogen" do
+    user        new_resource.user
+    cwd         new_resource.install_dir
+    code        "./autogen.sh && ./configure #{new_resource.autoconf_opts.join(' ')}"
+    environment new_resource.environment
+    not_if{     ::File.exists?(::File.join(new_resource.install_dir, 'config.status')) }
+  end
+end
+
 action :build_with_make do
   action_build
   bash "build #{new_resource.name} with make" do

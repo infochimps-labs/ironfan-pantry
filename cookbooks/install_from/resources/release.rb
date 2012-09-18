@@ -26,6 +26,7 @@ actions(
   :build,
   :install,
   :configure_with_autoconf,
+  :configure_with_autogen,
   :build_with_make,
   :build_with_ant,
   :build_with_sbt,
