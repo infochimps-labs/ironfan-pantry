@@ -22,7 +22,7 @@ export WATCHDOG_ROOT_LOGGER="INFO,watchdog"
 
 ulimit -n <%= @options[:file_limit] %>
 
-export UOPTS=<%= @options[:uopts] %>
+export UOPTS="<%= @options[:uopts] %>"
 
 cd "$FLUME_HOME"
 exec chpst -u "<%= @options[:user] %>" \
