@@ -23,6 +23,8 @@ export WATCHDOG_ROOT_LOGGER="INFO,watchdog"
 # log=$FLUME_LOG_DIR/flume-$FLUME_IDENT_STRING-$command-$SERVER_NAME.out
 # pid=$FLUME_PID_DIR/flume-$FLUME_IDENT_STRING-$command.pid
 
+export UOPTS=<%= @options[:uopts] %>
+
 cd "$FLUME_HOME"
 exec chpst -u "<%= @options[:user] %>" \
   "${FLUME_HOME}"/bin/flume ${command}_nowatch -n "$SERVER_NAME" "$@" < /dev/null

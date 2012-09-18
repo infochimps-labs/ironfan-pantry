@@ -18,14 +18,12 @@ node[:flume][:multi_agent][:count].times.map do |index|
   #
   runit_service "flume_agent_#{index}" do
     run_state         node[:flume][:agent][:run_state]
+    run_restart   false
     template_name     'flume_multi_agent'
     log_template_name 'flume_multi_agent'
-    subscribes        :restart, resources(
-      :template => [
-        File.join(node[:flume][:conf_dir], "flume-site.xml"),
-        File.join(node[:flume][:home_dir], "bin/flume-env.sh") ])
-    options Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).
-      merge({ :service_command => 'node',
+    options           Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge(uopts: node[:flume][:uopts])
+      merge({
+              :service_command => 'node',
               :log_dir         => log_dir,
               :daemon_index    => index, })
   end

@@ -31,7 +31,7 @@ end
 #
 runit_service 'flume_master' do
   run_state     node[:flume][:master][:run_state]
-  subscribes    :restart, resources( :template => [ File.join(node[:flume][:conf_dir], "flume-site.xml"), File.join(node[:flume][:home_dir], "bin/flume-env.sh") ] )
+  run_restart   false
   options       Mash.new().merge(node[:flume]).merge(node[:flume][:master]).merge({
       :service_command    => 'master',
       :zookeeper_home_dir => node[:zookeeper][:home_dir],
