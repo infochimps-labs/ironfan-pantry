@@ -54,6 +54,24 @@ kill_old_service('hadoop-zookeeper-server'){ pattern 'zookeeper' ; only_if{ File
 # JMX should listen on the public interface
 node[:zookeeper][:jmx_dash_addr] = public_ip_of(node)
 
+# * zkid auto-assigment happens in server file only; clients don't deserve zkids.
+# * preparation of zookeeper_host list happens in one place
+# * Note to all: don't rely on the zkid assignment. Set it in the cluster definition
+
+# Auto-assign zkid that is likely to be stable and predictable In
+# practice: don't rely on this. Just set the zkid in your cluster
+# definition before launch
+if ((not node[:zookeeper][:zkid]) || (node[:zookeeper][:zkid].to_s != ''))
+  # I apologize, future me and you, for what you see here. @mrflip
+  #
+  # So that node IDs are predictable, use the server's index (eg 'foo-bar-3' = zk id 3)
+  # If zookeeper servers span facets, give each a well-sized offset in facet_role
+  # (if 'bink' nodes have zkid_offset 10, 'foo-bink-7' would get zkid 17)
+  #
+  node[:zookeeper][:zkid]  = node[:facet_index]
+  node[:zookeeper][:zkid] += node[:zookeeper][:zkid_offset].to_i if node[:zookeeper][:zkid_offset]
+end
+
 announce(:zookeeper, :server)
 
 runit_service "zookeeper_server" do
