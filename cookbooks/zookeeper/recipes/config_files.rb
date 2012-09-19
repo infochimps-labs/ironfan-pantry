@@ -23,13 +23,6 @@
 # Config files
 #
 
-# zookeeper_hosts = discover_all(:zookeeper, :server).sort_by{|cp| cp.node[:facet_index] }.map(&:private_ip)
-zookeeper_hosts = Hash.new
-discover_all(:zookeeper, :server).each do |s| 
-  index = s.node[:zookeeper][:zkid]
-  zookeeper_hosts[index] = s.node[:ipaddress]
-end
-
 # use explicit value if set, otherwise make the leader a server iff there are
 # four or more zookeepers kicking around
 leader_is_also_server = node[:zookeeper][:leader_is_also_server]
@@ -37,18 +30,15 @@ if (leader_is_also_server.to_s == 'auto')
   leader_is_also_server = (zookeeper_hosts.length >= 4)
 end
 
-# So that node IDs are stable, use the server's index (eg 'foo-bar-3' = zk id 3)
-# If zookeeper servers span facets, give each a well-sized offset in facet_role
-# (if 'bink' nodes have zkid_offset 10, 'foo-bink-7' would get zkid 17)
-node[:zookeeper][:zkid]  = node[:facet_index]
-node[:zookeeper][:zkid] += node[:zookeeper][:zkid_offset].to_i if node[:zookeeper][:zkid_offset]
+# Sorting ensures the host list is stable so the chef run is idempotent
+# (otherwise the server will flap)
+zookeeper_hosts = discover_all(:zookeeper, :server).map{|svr| [ svr.node[:zookeeper][:zkid], svr.node[:ipaddress] ] }.sort
 
-# Make sure the current server shows up in the hosts
-zookeeper_hosts[ node[:zookeeper][:zkid] ] = node[:ipaddress]
+Chef::Log.info( ["Discovered Zookeeper hosts: ", zookeeper_hosts.inspect].join )
 
 template_variables = {
   :zookeeper         => node[:zookeeper],
-  :zookeeper_hosts   => Hash[zookeeper_hosts.sort],
+  :zookeeper_hosts   => zookeeper_hosts,
   :myid              => node[:zookeeper][:zkid],
 }
 
