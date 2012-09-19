@@ -32,8 +32,9 @@ end
 
 # Sorting ensures the host list is stable so the chef run is idempotent
 # (otherwise the server will flap)
-zookeeper_hosts = discover_all(:zookeeper, :server).map{|svr| [ svr.node[:zookeeper][:zkid], svr.node[:ipaddress] ] }.sort
-
+zookeeper_hosts = discover_all(:zookeeper, :server).map{|svr| [ svr.node[:zookeeper][:zkid], svr.node[:ipaddress] ] }
+Chef::Log.info( ["Unsorted Zookeeper hosts: ", zookeeper_hosts.inspect].join )
+zookeeper_hosts.sort!
 Chef::Log.info( ["Discovered Zookeeper hosts: ", zookeeper_hosts.inspect].join )
 
 template_variables = {
