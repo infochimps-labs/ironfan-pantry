@@ -20,6 +20,11 @@
 #
 
 include_recipe 'silverware'
+include_recipe 'chef_gem'
+
+chef_gem 'rubix' do
+  version ::Chef::RubixConnection::RUBIX_VERSION
+end
 
 # Create zabbix User
 daemon_user(:zabbix) do
