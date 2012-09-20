@@ -43,67 +43,84 @@ rescue LoadError
 end
 
 # Only execute if database is missing...
-ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
-  block do
-    mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
-    if mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
-      resources(:mysql_database         => node.zabbix.database.name            ).run_action(:create)
-      resources(:mysql_database_user    => node.zabbix.database.user            ).run_action(:create)
-      resources(:execute                => "zabbix_populate_schema"             ).run_action(:run)
-      resources(:execute                => "zabbix_populate_data"               ).run_action(:run)
-      resources(:execute                => "zabbix_populate_image"              ).run_action(:run)
-      resources(:template               => "/etc/zabbix/zabbix_server.conf"     ).run_action(:create)
-    end
+begin
+  mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
+rescue Mysql::Error => e
+  Chef::Log.error(e.message)
+  mysql_connection = nil
+end
+  
+if mysql_connection && mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
+
+  # Create Zabbix database
+  mysql_database node.zabbix.database.name do
+    connection root_mysql_conn
+    action     :create
+    notifies   :run,    "execute[zabbix_populate_schema]",          :immediately
+    notifies   :run,    "execute[zabbix_populate_data]",            :immediately
+    notifies   :run,    "execute[zabbix_populate_image]",           :immediately
+    notifies   :run,    "execute[zabbix_clean_db]",                 :immediately
+    notifies   :create, "template[/etc/zabbix/zabbix_server.conf]", :immediately
+  end
+
+  # Create Zabbix database user
+  mysql_database_user node.zabbix.database.user do
+    connection root_mysql_conn
+    password   node.zabbix.database.password
+    action     :create
+  end
+
+  # Grant Zabbix user to connect from *this* node.  We do this even if
+  # the database already exists to handle the situation in which this
+  # node's IP changes (e.g. - during stop/start).
+  mysql_client_address = case node.zabbix.database.host
+                         when 'localhost'; 'localhost';
+                         else ; node.fqdn
+                         end
+  
+  mysql_database_user node.zabbix.database.user do
+    connection    root_mysql_conn
+    password      node.zabbix.database.password
+    host          mysql_client_address     # connections only allowed from *this* node
+    database_name node.zabbix.database.name
+    privileges    [:select,:update,:insert,:create,:drop,:delete]
+    action        :grant
+  end
+  
+  # Populate Zabbix database
+  populate_command = "#{base_mysql_command} < /opt/zabbix-#{node.zabbix.server.version}"
+  execute "zabbix_populate_schema" do
+    command "#{populate_command}/create/schema/mysql.sql"
+    action :nothing
+  end
+  execute "zabbix_populate_data" do
+    command "#{populate_command}/create/data/data.sql"
+    action :nothing
+  end
+  execute "zabbix_populate_image" do
+    command "#{populate_command}/create/data/images_mysql.sql"
+    action :nothing
+  end
+
+  # Clean Zabbix database
+  # 
+  # - get rid of the default admin user
+  # - get rid of all the default hosts and templates
+  execute "zabbix_clean_db" do
+    command "#{base_mysql_command} -e 'DELETE FROM users WHERE `alias`=\"admin\"; DELETE FROM hosts;'"
+    action :nothing
   end
 end
 
-# Create Zabbix database
-mysql_database node.zabbix.database.name do
-  connection root_mysql_conn
-  action :nothing
-end
-
-# Create Zabbix database user
-mysql_database_user node.zabbix.database.user do
-  connection root_mysql_conn
-  password   node.zabbix.database.password
-  action :nothing
-end
-
-# Populate Zabbix database
-populate_command = "#{base_mysql_command} < /opt/zabbix-#{node.zabbix.server.version}"
-execute "zabbix_populate_schema" do
-  command "#{populate_command}/create/schema/mysql.sql"
-  action :nothing
-end
-execute "zabbix_populate_data" do
-  command "#{populate_command}/create/data/data.sql"
-  action :nothing
-end
-execute "zabbix_populate_image" do
-  command "#{populate_command}/create/data/images_mysql.sql"
-  action :nothing
-end
-
-
-# Grant Zabbix user to connect from *this* node.  We do this even if
-# the database already exists to handle the situation in which this
-# node's IP changes (e.g. - during stop/start).
-mysql_client_address = case node.zabbix.database.host
-  when 'localhost'; 'localhost';
-  else ; node.fqdn
-end
-mysql_database_user node.zabbix.database.user do
-  connection    root_mysql_conn
-  password      node.zabbix.database.password
-  host          mysql_client_address     # connections only allowed from *this* node
-  database_name node.zabbix.database.name
-  privileges    [:select,:update,:insert,:create,:drop,:delete]
-  action        :grant
-end
-
-# Create a Zabbix "Admin" user, an "API access" group, and ensure the
-# super user is in the API access group.  This lets us
+# Sets up the Zabbix database for downstream access by other LWRP
+# pairs.  This block will
+#
+# - create a Zabbix admin user
+# - an "API access" group
+# - put the "Admin" user in the group
+#
+# The created admin user will be used by other LWRP resources in this
+# cookbook.
 ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
   block do
     username   = node.zabbix.api.username
@@ -141,7 +158,6 @@ ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
       mysql_connection.query(%Q{INSERT INTO users_groups (usrgrpid, userid) VALUES (#{usrgrpid}, #{userid})})
     end
 
-    mysql_connection.query(%Q{DELETE FROM users WHERE alias='admin'});
   end
   notifies :restart, "service[zabbix_server]"
 end
