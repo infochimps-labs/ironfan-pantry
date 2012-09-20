@@ -41,8 +41,14 @@ rescue LoadError
 end
 
 # Only execute if database is missing...
-mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
-if mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
+begin
+  mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
+rescue Mysql::Error => e
+  Chef::Log.error(e.message)
+  mysql_connection = nil
+end
+  
+if mysql_connection && mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
 
   # Create Zabbix database
   mysql_database node.zabbix.database.name do
@@ -51,6 +57,7 @@ if mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
     notifies   :run,    "execute[zabbix_populate_schema]",          :immediately
     notifies   :run,    "execute[zabbix_populate_data]",            :immediately
     notifies   :run,    "execute[zabbix_populate_image]",           :immediately
+    notifies   :run,    "execute[zabbix_clean_db]",                 :immediately
     notifies   :create, "template[/etc/zabbix/zabbix_server.conf]", :immediately
   end
 
@@ -75,6 +82,15 @@ if mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
     command "#{populate_command}/create/data/images_mysql.sql"
     action :nothing
   end
+
+  # Clean Zabbix database
+  # 
+  # - get rid of the default admin user
+  # - get rid of all the default hosts and templates
+  execute "zabbix_clean_db" do
+    command "#{base_mysql_command} -e 'DELETE FROM users WHERE `alias`=\"admin\"; DELETE FROM hosts;'"
+    action :nothing
+  end
 end
 
 # Grant Zabbix user to connect from *this* node.  We do this even if
@@ -89,8 +105,15 @@ mysql_database_user node.zabbix.database.user do
   action        :grant
 end
 
-# Create a Zabbix "Admin" user, an "API access" group, and ensure the
-# super user is in the API access group.  This lets us
+# Sets up the Zabbix database for downstream access by other LWRP
+# pairs.  This block will
+#
+# - create a Zabbix admin user
+# - an "API access" group
+# - put the "Admin" user in the group
+#
+# The created admin user will be used by other LWRP resources in this
+# cookbook.
 ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
   block do
     username   = node.zabbix.api.username
@@ -127,6 +150,5 @@ ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
       mysql_connection.query(%Q{INSERT INTO users_groups (usrgrpid, userid) VALUES (#{usrgrpid}, #{userid})})
     end
 
-    mysql_connection.query(%Q{DELETE FROM users WHERE alias='admin'});
   end
 end
