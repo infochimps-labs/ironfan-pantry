@@ -25,10 +25,7 @@
 
 # Sorting ensures the host list is stable so the chef run is idempotent
 # (otherwise the server will flap)
-zookeeper_hosts = discover_all(:zookeeper, :server).map{|svr| [ svr.node[:zookeeper][:zkid], svr.node[:ipaddress] ] }
-Chef::Log.info( ["Discovered Zookeeper hosts: ", zookeeper_hosts.inspect].join )
-zookeeper_hosts.sort!
-Chef::Log.info( ["Discovered Zookeeper hosts: ", zookeeper_hosts.inspect].join )
+zookeeper_hosts = discover_all(:zookeeper, :server).map{|svr| [ svr.node[:zookeeper][:zkid], svr.node[:ipaddress] ] }.sort!
 
 # use explicit value if set, otherwise make the leader a server iff there are
 # four or more zookeepers kicking around
