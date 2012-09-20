@@ -29,25 +29,6 @@ when "centos"
   log "No centos Support yet"
 end
 
-server_ips = all_zabbix_server_ips()
-# Install configuration
-template "/etc/zabbix/zabbix_agentd.conf" do
-  source "zabbix_agentd.conf.erb"
-  owner "root"
-  group "root"
-  mode "644"
-  notifies :restart, "service[zabbix_agentd]", :delayed
-  variables :server_ips => server_ips
-end
-
-# Install Init script
-template "/etc/init.d/zabbix_agentd" do
-  source "zabbix_agentd.init.erb"
-  owner "root"
-  group "root"
-  mode "754"
-end
-
 directory "/opt/zabbix-agent-src" do
   action :create
 end
