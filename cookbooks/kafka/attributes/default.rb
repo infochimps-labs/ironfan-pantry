@@ -31,7 +31,10 @@ default[:kafka][:chroot_suffix] = "brokers"
 default[:kafka][:broker_id] = nil
 default[:kafka][:broker_host_name] = nil
 default[:kafka][:port] = 9092
+
+# Keep this nil to default to the number of cores on the machine.
 default[:kafka][:threads] = nil
+
 default[:kafka][:log_flush_interval] = 10000
 default[:kafka][:log_flush_time_interval] = 1000
 default[:kafka][:log_flush_scheduler_time_interval] = 1000
