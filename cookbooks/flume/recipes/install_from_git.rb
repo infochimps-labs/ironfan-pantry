@@ -28,7 +28,7 @@ include_recipe 'maven'
 
 git node[:flume][:deploy_dir] do
   repository    node[:flume][:deploy_url]
-  revision      "branch-#{node[:flume][:deploy_version]}"
+  revision      "branch-#{node[:flume][:version]}"
   action        :sync
   user          'root'
 end
@@ -37,7 +37,7 @@ end
 # build with maven
 #
 
-bash "build flume #{node[:flume][:deploy_version]} with maven" do
+bash "build flume #{node[:flume][:version]} with maven" do
   user          'root'
   cwd           node[:flume][:deploy_dir]
   code          "mvn package -D skipTests"
@@ -45,7 +45,7 @@ bash "build flume #{node[:flume][:deploy_version]} with maven" do
 end
 
 link node[:flume][:home_dir] do
-  to            File.join(node[:flume][:deploy_dir], "flume-distribution/target/flume-distribution-#{node[:flume][:deploy_version]}-SNAPSHOT-bin/flume-#{node[:flume][:deploy_version]}-SNAPSHOT")
+  to            File.join(node[:flume][:deploy_dir], "flume-distribution/target/flume-distribution-#{node[:flume][:version]}-SNAPSHOT-bin/flume-#{node[:flume][:version]}-SNAPSHOT")
   action        :create
 end
 
