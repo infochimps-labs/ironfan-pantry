@@ -42,7 +42,7 @@ action :download do
     source      new_resource.release_url
     mode        "0644"
     action      :create
-    checksum    new_resource.checksum if new_resource.checksum
+    checksum    new_resource.checksum unless (new_resource.checksum.nil? || new_resource.checksum.to_s.empty?)
     not_if{     ::File.exists?(new_resource.release_file) }
   end
 end
