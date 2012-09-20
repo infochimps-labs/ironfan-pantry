@@ -23,19 +23,19 @@
 # Config files
 #
 
+# Sorting ensures the host list is stable so the chef run is idempotent
+# (otherwise the server will flap)
+zookeeper_hosts = discover_all(:zookeeper, :server).map{|svr| [ svr.node[:zookeeper][:zkid], svr.node[:ipaddress] ] }
+Chef::Log.info( ["Discovered Zookeeper hosts: ", zookeeper_hosts.inspect].join )
+zookeeper_hosts.sort!
+Chef::Log.info( ["Discovered Zookeeper hosts: ", zookeeper_hosts.inspect].join )
+
 # use explicit value if set, otherwise make the leader a server iff there are
 # four or more zookeepers kicking around
 leader_is_also_server = node[:zookeeper][:leader_is_also_server]
 if (leader_is_also_server.to_s == 'auto')
   leader_is_also_server = (zookeeper_hosts.length >= 4)
 end
-
-# Sorting ensures the host list is stable so the chef run is idempotent
-# (otherwise the server will flap)
-zookeeper_hosts = discover_all(:zookeeper, :server).map{|svr| [ svr.node[:zookeeper][:zkid], svr.node[:ipaddress] ] }
-Chef::Log.info( ["Unsorted Zookeeper hosts: ", zookeeper_hosts.inspect].join )
-zookeeper_hosts.sort!
-Chef::Log.info( ["Discovered Zookeeper hosts: ", zookeeper_hosts.inspect].join )
 
 template_variables = {
   :zookeeper         => node[:zookeeper],

@@ -21,6 +21,10 @@
 
 class Chef::Resource::FlumeLogicalNode ; include FlumeCluster ; end
 
+# FIXME: the AWS part should be separated into its own recipe
+gem_package('right_aws'){ action :nothing }.run_action(:install)
+require 'right_aws'
+
 flume_logical_node "sample" do
   source        s3_source("s3://infochimps-data/test/twitter.json")
   sink          "console"

@@ -18,6 +18,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+include_recipe 'silverware'
+class Chef::Resource::Template ; include FlumeCluster ; end
+
 # :hadoop, :hbase, :zookeeper, :jruby
 [:flume].each do |component|
   next if node[component].nil? || node[component].empty?
@@ -37,7 +40,6 @@ end
 template File.join(node[:flume][:conf_dir], "flume-site.xml") do
   source        "flume-site.xml.erb"
   owner         "root"
-  group         "flume"
   mode          "0644"
   variables({
       :flume              => node[:flume],
@@ -48,31 +50,29 @@ template File.join(node[:flume][:conf_dir], "flume-site.xml") do
       :external_zookeeper => flume_external_zookeeper,
       :zookeepers         => flume_zookeeper_list,
       :aws_access_key     => node[:aws][:aws_access_key],
-      :aws_secret_key     => node[:aws][:aws_secret_access_key],
-    })
+      :aws_secret_key     => node[:aws][:aws_secret_access_key], })
 end
 
 template File.join(node[:flume][:home_dir], "bin/flume-env.sh") do
   source        "flume-env.sh.erb"
   owner         "root"
-  mode          "0744"
+  mode          "0755"
   variables({
       :flume              => node[:flume],
       :classpath          => flume_classpath,
       :java_opts          => flume_java_opts,
-      :rubylib            => node[:flume][:rubylib],
-    })
+      :rubylib            => node[:flume][:rubylib], })
 end
 
 template File.join(node[:flume][:home_dir], "conf/log4j.properties") do
   source        "log4j.properties.erb"
   owner         "root"
-  mode          "0744"
+  mode          "0644"
 end
 
 %w[commons-codec-1.4.jar commons-httpclient-3.0.1.jar jets3t-0.6.1.jar].each do |file|
   cookbook_file "/usr/lib/flume/lib/#{file}" do
-    owner "root"
-    mode "644"
+    owner       "root"
+    mode        "0644"
   end
 end

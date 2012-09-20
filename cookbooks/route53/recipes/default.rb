@@ -25,6 +25,7 @@ else
   package("libxml2-dev"      ){ action :nothing }.run_action(:install)
   package("libxslt1-dev"     ){ action :nothing }.run_action(:install)
   gem_package("fog") do
+    ignore_failure true
     version '~> 1.5.0'
     action :nothing
   end.run_action(:install)
