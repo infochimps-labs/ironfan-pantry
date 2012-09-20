@@ -4,22 +4,29 @@ default[:mongodb][:source]            = "http://fastdl.mongodb.org/linux/mongodb
 default[:mongodb][:i686][:checksum]   = "b0b4d98968960cc90d2900ab0135bc24"
 default[:mongodb][:x86_64][:checksum] = "d764d869f2a3984251cfea5335cc6c53"
 
+user = (node.platform == 'centos' ? 'mongod' : 'mongodb')
+default[:mongodb][:user]        = user
+default[:users ][user][:uid]    = 460
+default[:groups][user][:gid]    = 460
+
 ### GENERAL
 default[:mongodb][:dir]         = "/opt/mongodb-#{mongodb[:version]}" # For install from source
+
+# This is here for legacy reasons.  The templates should use
+# node[:mongodb][:data_dir] (note the additional underscore) which
+# will be dynamically populated by the volume_dirs helper based on
+# available volumes.
+#
+# Basically this cookbook is fucked.
 default[:mongodb][:datadir]     = "/var/db/mongodb"
-default[:mongodb][:config]      = "/etc/mongodb.conf"
+default[:mongodb][:pid_dir]     = '/var/run/mongodb'
+default[:mongodb][:config]      = "/etc/#{user}.conf"
 default[:mongodb][:logfile]     = "/var/log/mongodb.log"
 default[:mongodb][:pidfile]     = "/var/run/mongodb.pid"
 default[:mongodb][:port]        = 27017
 default[:mongodb][:init_system] = "sysv"
 
-default[:mongodb][:bind_ip] = \
-  if node[:network][:interfaces][:eth0]
-    node[:network][:interfaces][:eth0][:addresses].select{|address, values| values['family'] == 'inet'}.first.first
-  else
-    "0.0.0.0"
-  end
-
+default[:mongodb][:bind_ip]     = "0.0.0.0"
 
 ### EXTRA
 default[:mongodb][:log_cpu_io]  = false

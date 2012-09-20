@@ -1,6 +1,7 @@
 #! /bin/sh
 #
-# Zabbix daemon start/stop script.
+# chkconfig: 2345 20 80
+# description: Zabbix daemon start/stop script.
 #
 # Written by Alexei Vladishev <alexei.vladishev@zabbix.com>.
 #
@@ -26,6 +27,7 @@ case "$1" in
         ;;
   restart|force-reload)
         $0 stop
+        sleep 2
         $0 start
         ;;
   *)

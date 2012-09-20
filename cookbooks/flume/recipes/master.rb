@@ -31,7 +31,7 @@ end
 #
 runit_service 'flume_master' do
   run_state     node[:flume][:master][:run_state]
-  subscribes    :restart, resources( :template => [ File.join(node[:flume][:conf_dir], "flume-site.xml"), File.join(node[:flume][:home_dir], "bin/flume-env.sh") ] )
+  run_restart   false
   options       Mash.new().merge(node[:flume]).merge(node[:flume][:master]).merge({
       :service_command    => 'master',
       :zookeeper_home_dir => node[:zookeeper][:home_dir],
@@ -51,7 +51,7 @@ announce(:flume, :master, {
       :admin     => 35873,
       :report    => 45678
     }.tap do |ports|
-      ports[:zookeeper] = node[:flume][:master][:zookeeper_port] unless node[:flume][:master][:external_zookeeper]
+      ports[:zookeeper] = node[:flume][:zookeeper][:port] unless node[:flume][:master][:external_zookeeper]
     end,
     :daemons => {
       :java => { :name => 'java', :cmd => 'FlumeMaster' }, 

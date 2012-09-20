@@ -20,23 +20,21 @@
 #
 
 init_system = node[:mongodb][:init_system]
-case node.platform
-when 'centos'
-  mongo_user = mongo_group = 'mongod'
-else
-  mongo_user = mongo_group = 'mongodb'
-end
 server_init = Mash.new(
   :type     => "mongodb",
-  :daemon   => "mongod",
-  :basename => "mongodb"
+  :daemon   => "mongod"
 )
 
-directory node[:mongodb][:datadir] do
-  owner mongo_user
-  group mongo_group
-  mode 0755
-  recursive true
+mongo_user = mongo_group = node[:mongodb][:user]
+server_init[:basename]   = node[:mongodb][:user]
+daemon_user(:mongodb)
+
+# Data onto a bulk device
+volume_dirs('mongodb.data') do
+  type          :persistent
+  selects       :single
+  path          'mongodb'
+  mode          "0755"
 end
 
 file node[:mongodb][:logfile] do
@@ -77,7 +75,7 @@ else
   #   put down a correctly formatted init script
 end
 
-service "mongodb" do
+service server_init[:basename] do
   supports :start => true, :stop => true, "force-stop" => true, :restart => true, "force-reload" => true, :status => true
   action        node[:mongodb][:server][:run_state]
   subscribes :restart, resources(:template => node[:mongodb][:config])

@@ -103,12 +103,34 @@ action :configure_with_autoconf do
   end
 end
 
+action :configure_with_autogen do
+  action_configure
+  bash "configure #{new_resource.name} with autogen" do
+    user        new_resource.user
+    cwd         new_resource.install_dir
+    code        "./autogen.sh && ./configure #{new_resource.autoconf_opts.join(' ')}"
+    environment new_resource.environment
+    not_if{     ::File.exists?(::File.join(new_resource.install_dir, 'config.status')) }
+  end
+end
+
 action :build_with_make do
   action_build
   bash "build #{new_resource.name} with make" do
     user        new_resource.user
     cwd         new_resource.install_dir
     code        "make"
+    environment new_resource.environment
+  end
+  new_resource.updated_by_last_action(true)
+end
+
+action :build_with_sbt do
+  action_build
+  bash "build #{new_resource.name} with sbt" do
+    user        new_resource.user
+    cwd         new_resource.install_dir
+    code        "./sbt update; ./sbt package"
     environment new_resource.environment
   end
 end
@@ -120,15 +142,16 @@ action :install_binaries do
       action    :create
     end
   end
+  new_resource.updated_by_last_action(true)
 end
 
 action :install_python do
-  action_install
-
+  action_unpack
   bash "install #{new_resource.name} with python" do
-    command "python setup.py install"
-    cwd           new_resource.install_dir
+    code        "python setup.py install #{new_resource.install_args[:python_install]}"
+    cwd         new_resource.install_dir
   end
+  new_resource.updated_by_last_action(true)
 end
 
 action :install_with_make do
@@ -140,4 +163,5 @@ action :install_with_make do
     code        "make install"
     environment new_resource.environment
   end
+  new_resource.updated_by_last_action(true)
 end

@@ -31,13 +31,11 @@ end
 node[:motd]         ||= Mash.new
 node[:motd][:roles]   = node[:roles] || []
 
-if node[:cloud]
-  [ :private_ips, :public_ips ].each{|v| node[:motd][v] = (node[:cloud] || {})[v] || [] }
-end
-
 if node[:ec2]
   include_recipe 'motd::ec2'
 end
+
+node[:motd][:ipaddress] = node[:ipaddress]
 
 # FIXME: decouple
 [ :private_ips, :public_ips                       ].each{|v| node[:motd][v] = (node[:cloud] || {})[v] || [] }

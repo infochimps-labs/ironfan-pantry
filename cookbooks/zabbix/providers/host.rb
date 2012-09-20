@@ -23,7 +23,12 @@ def load_current_resource
     load_host_groups
     load_templates
     load_user_macros
-    load_machine_fields unless virtual? || new_resource.monitored == false
+    if virtual?
+      self.zabbix_host.use_ip = true
+      self.zabbix_host.ip     = '0.0.0.0'
+    else
+      load_machine_fields unless new_resource.monitored == false
+    end
   rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED => e
     ::Chef::Log.warn("Could not create Zabbix host #{new_resource.name}: #{e.message}")
   end

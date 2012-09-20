@@ -48,10 +48,15 @@ when /mac_os_x/
   worker_username = "_jenkins"
   group_name      = "_jenkins"
 
+  default[:rbenv][:default_ruby]        = '1.9.3-p0'
+  default[:rbenv][:rubies]['1.9.3-p0']  = ''
+  default[:jenkins][:worker][:shell]    = '/usr/local/bin/bash'
+
 else
   default[:jenkins][:server][:home_dir] = "/var/lib/jenkins"
   default[:jenkins][:worker][:home_dir] = "/var/lib/jenkins_worker"
   default[:jenkins][:install_dir]       = "/usr/share/jenkins"
+  default[:jenkins][:worker][:shell]    = "/bin/bash"
 
   server_username = "jenkins"
   worker_username = "jenkins_worker"
@@ -59,17 +64,22 @@ else
 end
 
 
+[ :install_dir, :log_dir, :pid_dir, :conf_dir ].each do |dir|
+  default[:jenkins][:server][dir] = default[:jenkins][dir]
+  default[:jenkins][:worker][dir] = default[:jenkins][dir]
+end
+
 default[:jenkins][:server][:user]     = server_username
 default[:jenkins][:server][:group]    = group_name
 default[:jenkins][:worker][:user]     = worker_username
 default[:jenkins][:worker][:group]    = group_name
-default[:jenkins][:worker][:shell]    = "/bin/bash"
 
 default[:users ][worker_username][:uid] = 361
 default[:users ][server_username][:uid] = 360
 default[:groups][group_name     ][:gid] = 360
 
-
+# address for the host to bind to (default to all addresses)
+default[:jenkins][:server][:host]       = '0.0.0.0'
 # port for HTTP connector (default 8080; disable with -1)
 default[:jenkins][:server][:port]       = 8080
 # port for AJP connector (disabled by default)
@@ -84,8 +94,7 @@ default[:jenkins][:worker][:name]       = node.name
 # working around: http://tickets.opscode.com/browse/CHEF-1848; set to true if you have the CHEF-1848 patch applied
 default[:jenkins][:server][:use_head]   = false
 
-# default[:jenkins][:mirror]            = "http://updates.jenkins-ci.org"
-default[:apt][:jenkins][:url]           = "http://pkg.jenkins-ci.org/debian"
+default[:jenkins][:apt_mirror]          = "http://pkg.jenkins-ci.org/debian"
 default[:jenkins][:plugins_mirror]      = "http://updates.jenkins-ci.org"
 
 #download the latest version of plugins, bypassing update center

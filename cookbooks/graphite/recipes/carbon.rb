@@ -24,46 +24,18 @@ include_recipe 'install_from'
 
 package "python-twisted"
 
-install_from_release('carbon') do
-  version       node[:graphite][:carbon][:version]
-  release_url   node[:graphite][:carbon][:release_url]
-  home_dir      node[:graphite][:carbon][:home_dir]
-  checksum      node[:graphite][:carbon][:release_url_checksum]
-  action        [:install_python]
-  not_if{ File.exists?("/usr/local/lib/python2.6/dist-packages/carbon-#{node[:graphite][:carbon][:version]}.egg-info") }
+standard_dirs('graphite.carbon'){ directories   :log_dir }
+
+runit_service "graphite_carbon" do
+  run_state     node[:graphite][:carbon][:run_state]
+  options       Mash.new(:subsys => :carbon).merge(node[:graphite]).merge(node[:graphite][:carbon])
 end
 
-# execute "install carbon" do
-#   command "python setup.py install"
-#   creates "/opt/graphite/lib/carbon-#{node[:graphite][:carbon][:version]}-py2.6.egg-info"
-#   cwd "/usr/src/carbon-#{node[:graphite][:carbon][:version]}"
-# end
-
-template "#{node[:graphite][:conf_dir]}/carbon.conf" do
-  variables( :storage_dir      => node[:graphite][:data_dir],
-             :line_rcvr_addr   => node[:graphite][:carbon][:line_rcvr_addr],
-             :pickle_rcvr_addr => node[:graphite][:carbon][:pickle_rcvr_addr],
-             :cache_query_addr => node[:graphite][:carbon][:cache_query_addr] )
-  notifies :restart, "service[carbon-cache]", :delayed if startable?(node[:graphite][:carbon])
-end
-
-template "#{node[:graphite][:conf_dir]}/storage-schemas.conf"
-
-template "/etc/init.d/carbon-cache" do
-  source "init.d_carbon-cache.erb"
-  mode 0755
-  variables :carbon_dir => node[:graphite][:carbon][:home_dir]
-end
-
-# # execute "setup carbon sysvinit script" do
-# #   command "ln -nsf /opt/graphite/bin/carbon-cache.py /etc/init.d/carbon-cache"
-# #   creates "/etc/init.d/carbon-cache"
-# # end
-#
-# service "carbon-cache" do
-# #   running true
-# #   start_command "/opt/graphite/bin/carbon-cache.py start"
-# #   stop_command "/opt/graphite/bin/carbon-cache.py stop"
-#   action [ :enable, :start ]
-# #   action :start
-# end
+announce(:graphite, :carbon,
+  :port             => node[:graphite][:carbon][:line_rcvr_port],
+  :pickle_rcvr_port => node[:graphite][:carbon][:pickle_rcvr_port],
+  :cache_rcvr_port  => node[:graphite][:carbon][:cache_rcvr_port],
+  :addr             => private_ip_of(node),
+  :pickle_rcvr_addr => private_ip_of(node),
+  :cache_rcvr_addr  => private_ip_of(node),
+  )

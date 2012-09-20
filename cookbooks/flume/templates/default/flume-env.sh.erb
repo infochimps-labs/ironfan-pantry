@@ -32,3 +32,7 @@ export FLUME_CLASSPATH=<%= @classpath.join(":") %>
 <% if @java_opts %>
 export UOPTS="<%= @java_opts.join(" ") %>"
 <% end %>
+
+<% if @rubylib %>
+export RUBYLIB="<%= @rubylib.join(":") %>"
+<% end %>

@@ -44,7 +44,14 @@ daemon_user('jenkins.worker') do
 end
 
 standard_dirs('jenkins.worker') do
-  directories   :conf_dir, :pid_dir, :lib_dir, :log_dir
+  directories   :conf_dir, :pid_dir, :log_dir
+end
+
+directory node[:jenkins][:worker][:home_dir] do
+  owner         node[:jenkins][:worker][:user]
+  group         node[:jenkins][:worker][:group]
+  mode          "0755"
+  action        :create
 end
 
 directory "#{node[:jenkins][:worker][:home_dir]}/.ssh" do

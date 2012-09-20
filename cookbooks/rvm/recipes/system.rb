@@ -62,14 +62,13 @@ end
 
 # Build the rvm group ahead of time, if it is set. This allows avoiding
 # collision with later processes which may set a guid explicitly
-if node['rvm']['group_id'] != 'default'
-  g = group 'rvm' do
-    group_name 'rvm'
-    gid        node['rvm']['group_id']
-    action     :nothing
-  end
-  g.run_action(:create)
+rvm_group_id = (node['rvm']['group_id'] == 'default') ? nil : node['rvm']['group_id']
+g = group 'rvm' do
+  group_name 'rvm'
+  gid        rvm_group_id
+  action     :nothing
 end
+g.run_action(:create)
 
 i = execute "install system-wide RVM" do
   user      "root"

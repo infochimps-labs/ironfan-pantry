@@ -2,7 +2,7 @@ maintainer       "Dhruv Bansal"
 maintainer_email "dhruv@infochimps.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.3.0"
+version          "3.3.1"
 
 description      "Installs/Configures Zabbix server, client, & web frontend."
 
@@ -12,6 +12,7 @@ depends          "database", ">= 1.0.0"
 depends          "mysql", ">= 1.2.0"
 depends          "ufw", ">= 0.6.1"
 depends          "silverware"
+depends          "chef_gem"
 
 recipe           "zabbix::default",                    "Sets up Zabbix directory structure & user."
 recipe           "zabbix::agent_prebuild",             "Downloads, configures, & launches pre-built Zabbix agent"

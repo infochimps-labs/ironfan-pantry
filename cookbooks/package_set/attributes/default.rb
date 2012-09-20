@@ -63,7 +63,7 @@ default[:package_set][:pkgs][:base]      =  \
     else
       %w[ tree git zip openssl wget curl runit libyaml-dev libxslt1-dev ]
   end
-default[:package_set][:gems][:base]      = %w[ bundler ]
+default[:package_set][:gems][:base]      = [ { name: "bundler", version: "1.1" } ]
 
 default[:package_set][:pkgs][:dev]       = \
     case node.platform

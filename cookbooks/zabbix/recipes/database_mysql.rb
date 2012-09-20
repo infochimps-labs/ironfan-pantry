@@ -32,6 +32,8 @@ rescue LoadError
   case node[:platform]
   when 'ubuntu', 'debian'
     package("libmysqlclient16-dev") {action :nothing }.run_action(:install)
+  when 'centos'
+    package("mysql-devel") {action :nothing }.run_action(:install)
   else
     Chef::Log.warn "No native MySQL client support for OS #{node[:platform]}"
   end
@@ -68,6 +70,23 @@ if mysql_connection && mysql_connection.list_dbs.include?(node.zabbix.database.n
     action     :create
   end
 
+  # Grant Zabbix user to connect from *this* node.  We do this even if
+  # the database already exists to handle the situation in which this
+  # node's IP changes (e.g. - during stop/start).
+  mysql_client_address = case node.zabbix.database.host
+                         when 'localhost'; 'localhost';
+                         else ; node.fqdn
+                         end
+  
+  mysql_database_user node.zabbix.database.user do
+    connection    root_mysql_conn
+    password      node.zabbix.database.password
+    host          mysql_client_address     # connections only allowed from *this* node
+    database_name node.zabbix.database.name
+    privileges    [:select,:update,:insert,:create,:drop,:delete]
+    action        :grant
+  end
+  
   # Populate Zabbix database
   populate_command = "#{base_mysql_command} < /opt/zabbix-#{node.zabbix.server.version}"
   execute "zabbix_populate_schema" do
@@ -93,18 +112,6 @@ if mysql_connection && mysql_connection.list_dbs.include?(node.zabbix.database.n
   end
 end
 
-# Grant Zabbix user to connect from *this* node.  We do this even if
-# the database already exists to handle the situation in which this
-# node's IP changes (e.g. - during stop/start).
-mysql_database_user node.zabbix.database.user do
-  connection    root_mysql_conn
-  password      node.zabbix.database.password
-  host          node.fqdn     # connections only allowed from *this* node
-  database_name node.zabbix.database.name
-  privileges    [:select,:update,:insert,:create,:drop,:delete]
-  action        :grant
-end
-
 # Sets up the Zabbix database for downstream access by other LWRP
 # pairs.  This block will
 #
@@ -125,6 +132,7 @@ ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
     grp_name   = node.zabbix.api.user_group
     api_access = 1
 
+    mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
     mysql_connection.query(%Q{USE #{node.zabbix.database.name}})
 
     existing_users = mysql_connection.query(%Q{SELECT userid FROM users WHERE `alias`="#{username}"})
@@ -151,4 +159,5 @@ ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
     end
 
   end
+  notifies :restart, "service[zabbix_server]"
 end

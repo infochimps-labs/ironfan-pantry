@@ -26,8 +26,10 @@ actions(
   :build,
   :install,
   :configure_with_autoconf,
+  :configure_with_autogen,
   :build_with_make,
   :build_with_ant,
+  :build_with_sbt,
   :install_with_make,
   :install_binaries,
   :install_python
@@ -81,6 +83,9 @@ attribute :has_binaries,  :kind_of => Array,  :default => []
 # options to pass to the ./configure command for the configure_with_autoconf action
 attribute :autoconf_opts, :kind_of => Array, :default => []
 
+# Extra installer args -- a hash. Sorry, go look in install_from_release/providers/resource.rb to see how to use
+attribute :install_args,:kind_of => Hash,  :default => Hash.new
+
 def initialize(*args)
   super
   @action ||= :install
@@ -92,7 +97,7 @@ def assume_defaults!
   # the release_url 'http://apache.org/pig/pig-0.8.0.tar.gz' has
   # release_basename 'pig-0.8.0' and release_ext 'tar.gz'
   release_basename = ::File.basename(release_url.gsub(/\?.*\z/, '')).gsub(/-bin\b/, '')
-  release_basename =~ %r{^(.+?)\.(tar\.gz|tar\.bz2|zip)}
+  release_basename =~ %r{^(.+?)\.(tar\.gz|tar\.bz2|zip|tgz)}
   @release_ext      ||= $2
 
   @home_dir         ||= ::File.join(prefix_root, 'share', name)
@@ -100,7 +105,9 @@ def assume_defaults!
   @release_file     ||= ::File.join(prefix_root, 'src',   "#{name}-#{version}.#{release_ext}")
   @expand_cmd ||=
     case release_ext
+    when 'tar'     then untar_cmd('xf', release_file, install_dir)
     when 'tar.gz'  then untar_cmd('xzf', release_file, install_dir)
+    when 'tgz'     then untar_cmd('xzf', release_file, install_dir)
     when 'tar.bz2' then untar_cmd('xjf', release_file, install_dir)
     when 'zip'     then unzip_cmd(release_file, install_dir)
     else raise "Don't know how to expand #{release_url} which has extension '#{release_ext}'"

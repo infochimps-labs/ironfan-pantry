@@ -22,34 +22,11 @@
 include_recipe 'silverware'
 include_recipe 'java' ; complain_if_not_sun_java(:flume)
 include_recipe 'volumes'
-include_recipe 'hadoop_cluster::add_cloudera_repo'
+include_recipe 'thrift'
 class Chef::Resource::Template ; include FlumeCluster ; end
 
 #
-# Install package
+# Common to all install methods
 #
 
 daemon_user('flume')
-
-package     'flume'
-
-# FIXME: the AWS part should be separated into its own recipe
-gem_package('right_aws'){ action :nothing }.run_action(:install)
-require 'right_aws'
-
-#
-# Install package
-#
-
-standard_dirs('flume') do
-  directories [:home_dir, :conf_dir, :pid_dir]
-end
-
-volume_dirs('flume.collector.data' ){ path('flume/data/flume/collector') ; selects(:single) }
-volume_dirs('flume.agent.data'     ){ path('flume/data/flume/agent')     ; selects(:single) }
-volume_dirs('flume.zk.data'        ){ path('flume/data/flume/zk')        ; selects(:single) }
-volume_dirs('flume.data'           ){ path('flume/data')                 ; selects(:single) }
-
-directory "/usr/lib/flume/plugins" do
-  owner "flume"
-end

@@ -22,8 +22,8 @@ define(:daemon_user,
   sys, subsys = params[:name].to_s.split(".", 2).map(&:to_sym)
   component = Ironfan::Component.new(node, sys, subsys)
 
-  params[:user]         ||= component.node_attr(:user, :required)
-  params[:group]        ||= component.node_attr(:group) || params[:user]
+  params[:user]         ||= (component.node_attr(:user, :required) || params[:name] )
+  params[:group]        ||= (component.node_attr(:group) || params[:user])
   params[:home]         ||= component.node_attr(:pid_dir, :required)
   params[:comment]      ||= "#{component.name} daemon"
   #
@@ -42,6 +42,21 @@ define(:daemon_user,
     group group_val do
       gid       gid_val
       action    params[:create_group]
+    end
+  end
+
+  #
+  # Make the home_dir
+  #
+  directory params[:home] do
+    action :create
+    recursive true
+    if params[:manage_home]
+      owner     user_val
+      group     group_val
+    else
+      owner     'root'
+      group     'root'
     end
   end
 

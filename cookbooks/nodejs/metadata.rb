@@ -2,11 +2,12 @@ maintainer       "Nathaniel Eliot - Infochimps, Inc"
 maintainer_email "coders@infochimps.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.1.2"
+version          "3.1.3"
 
 description      "Installs/Configures nodejs"
 
 depends          "python"
+depends          "build-essential"
 
 recipe           "nodejs::compile",                    "Compile"
 recipe           "nodejs::default",                    "Base configuration for nodejs"
