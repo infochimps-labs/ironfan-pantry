@@ -46,17 +46,14 @@ define(:daemon_user,
   end
 
   #
-  # Make the home_dir
+  # Make the home_dir's parent directory if we're managing home
   #
-  directory params[:home] do
-    action :create
-    recursive true
-    if params[:manage_home]
+  if params[:manage_home]
+    directory File.dirname(params[:home]) do
+      action    :create
+      recursive true
       owner     user_val
       group     group_val
-    else
-      owner     'root'
-      group     'root'
     end
   end
 
