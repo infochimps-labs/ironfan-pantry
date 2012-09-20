@@ -86,7 +86,7 @@ default[:tuning][:ulimit]['@elasticsearch'] = { :nofile => { :both => 32768 }, :
 
 # most of the log lines are manageable at level 'DEBUG'
 # the voluminous ones are broken out separately
-default[:elasticsearch][:log_level][:default]         = 'DEBUG'
+default[:elasticsearch][:log_level][:default]         = 'INFO'
 default[:elasticsearch][:log_level][:index_store]     = 'INFO'  # lots of output but might be useful
 default[:elasticsearch][:log_level][:action_shard]    = 'INFO'  # lots of output but might be useful
 default[:elasticsearch][:log_level][:cluster_service] = 'INFO'  # lots of output but might be useful
