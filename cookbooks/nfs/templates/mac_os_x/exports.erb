@@ -1,0 +1,11 @@
+# /etc/exports: the access control list for filesystems which may be exported
+# 		to NFS clients.  See exports(5).
+#
+# Example for OSX:
+#
+# "/Users/flip" -network 33.33.33 -mapall=0:80 -mask 255.255.255.0
+#
+
+<% node[:nfs][:exports].each do |mount_point, mount_info| -%>
+"<%= mount_point %>"  <%= mount_info[:nfs_options] %>
+<% end %>

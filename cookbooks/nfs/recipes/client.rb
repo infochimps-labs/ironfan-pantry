@@ -19,16 +19,20 @@ bash "modprobe nfs" do
   not_if("cat /proc/filesystems | grep -q nfs")
 end.run_action(:run)
 
-nfs_server_ip = discover(:nfs, :server).private_ip rescue nil
+if node[:nfs] && node[:nfs][:mounts] && (not node[:nfs][:mounts].empty?)
+  node[:nfs][:mounts].each do |target, config|
+    begin
+      nfs_name = config[:name]
+      nfs_server = discover(:nfs, nfs_name)
+      if nfs_server.nil?
+        Chef::Log.error("***************")
+        Chef::Log.error("Can't find the NFS server for #{nfs_name} (#{target}): check that chef ran successfully on that machine. You may need to restart it after initial install.")
+        Chef::Log.error("***************")
+        next
+      end
 
-if nfs_server_ip.nil?
-  Chef::Log.error("***************")
-  Chef::Log.error("Can't find the NFS server: check that chef ran successfully on that machine. You may need to restart it after initial install.")
-  Chef::Log.error("***************")
-else
-
-  if node[:nfs] && node[:nfs][:mounts]
-    node[:nfs][:mounts].each do |target, config|
+      nfs_server_ip = nfs_server.info[:addr] || nfs_server.private_ip
+      Chef::Log.debug("Processing mount of #{target} from #{nfs_server_ip} (#{nfs_server.info[:info]})")
       r = mount(target) do
         fstype      "nfs"
         options     %w(rw,soft,intr,nfsvers=3)
@@ -38,9 +42,13 @@ else
         action      :nothing
       end
       r.run_action(:mount) # do this immediately
+
+    rescue StandardError => err
+      Chef::Log.warn "Problem setting up NFS:"
+      Chef::Log.warn err
     end
-  else
-    Chef::Log.warn "You included the NFS client recipe without defining nfs mounts."
   end
 
+else
+  Chef::Log.warn "You included the NFS client recipe without defining nfs mounts: #{node[:nfs].to_hash}"
 end

@@ -6,6 +6,7 @@ default[:silverware][:home_dir] = '/etc/silverware'
 default[:silverware][:user]     = 'root'
 
 # Request user account properties here.
+default[:users]['root'][:primary_user] = 'root'
 default[:users]['root'][:primary_group] =
   case node[:platform]
   when "openbsd", "freebsd" then "wheel"

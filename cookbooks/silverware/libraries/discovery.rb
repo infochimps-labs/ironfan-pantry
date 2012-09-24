@@ -53,6 +53,7 @@ module Ironfan
     def discover_all(sys, subsys, realm=nil)
       realm ||= discovery_realm(sys,subsys)
       component_name = Ironfan::Component.fullname(realm, sys, subsys)
+      Chef::Log.debug("discovering #{component_name} for #{sys}-#{subsys} in #{realm} (#{Mash.new(node[:discovers].to_hash)})")
       #
       servers = discover_all_nodes(component_name)
       servers.map do |server|
