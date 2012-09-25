@@ -4,9 +4,11 @@ license           "Apache 2.0"
 description       "Sets up Kafka"
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
 version           "1.0.8"
-depends	"java"
-depends	"runit"
-depends	"zookeeper"
+
+depends "java"
+depends "runit"
+depends "zookeeper"
+depends "install_from"
 
 recipe	"kafka::default",		"Base configuration for kafka"
 
