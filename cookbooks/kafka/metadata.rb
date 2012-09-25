@@ -1,9 +1,9 @@
-maintainer        "Webtrends, Inc."
-maintainer_email  "ivan.vonnagy@webtrends.com"
+maintainer        "Infochimps, Inc."
+maintainer_email  "coders@infochimps.com"
 license           "Apache 2.0"
-description       "Sets up Kafka"
+description       "Sets up Kafka -- Originally from the Webtrends recipe."
 long_description  IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version           "1.0.8"
+version           "1.1"
 
 depends "java"
 depends "runit"
