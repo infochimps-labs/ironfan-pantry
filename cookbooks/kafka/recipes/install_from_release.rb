@@ -1,4 +1,3 @@
-include_recipe 'java'
 include_recipe 'install_from'
 
 # pull the remote file only if we create the directory
