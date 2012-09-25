@@ -22,7 +22,7 @@ include_recipe "java"
 include_recipe "runit"
 
 if node[:kafka][:broker_id].nil? || node[:kafka][:broker_id].empty?
-    node[:kafka][:broker_id] = node[:ipaddress].gsub(".","")
+    node[:kafka][:broker_id] = node[:ipaddress].gsub(".","")[0...9]
 end
 
 if node[:kafka][:broker_host_name].nil? || node[:kafka][:broker_host_name].empty?
