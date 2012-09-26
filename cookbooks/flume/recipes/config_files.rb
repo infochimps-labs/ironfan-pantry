@@ -53,6 +53,16 @@ template File.join(node[:flume][:conf_dir], "flume-site.xml") do
       :aws_secret_key     => node[:aws][:aws_secret_access_key], })
 end
 
+template File.join(node[:flume][:conf_dir], "flume-conf.xml") do
+  source        "flume-conf.xml.erb"
+  owner         "root"
+  group         "flume"
+  mode          "0644"
+  variables({
+      :compression => node[:flume][:hdfs_output]
+    })
+end
+
 template File.join(node[:flume][:home_dir], "bin/flume-env.sh") do
   source        "flume-env.sh.erb"
   owner         "root"

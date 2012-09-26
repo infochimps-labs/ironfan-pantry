@@ -21,7 +21,7 @@ node[:flume][:multi_agent][:count].times.map do |index|
     run_restart   false
     template_name     'flume_multi_agent'
     log_template_name 'flume_multi_agent'
-    options           Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge(uopts: node[:flume][:uopts])
+    options           Mash.new().merge(node[:flume]).merge(node[:flume][:agent]).merge(uopts: node[:flume][:uopts]).
       merge({
               :service_command => 'node',
               :log_dir         => log_dir,

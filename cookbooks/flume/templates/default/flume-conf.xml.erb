@@ -154,12 +154,12 @@ configuration values placed in flume-site.xml.  -->
   </property>  
 
   <property>
-    <name>flume.collector.dfs.compress.gzip</name>
-    <value>false</value>
-    <description>Writes compressed output in gzip format to dfs. value is boolean type, i.e. true/false    </description>
+    <name>flume.collector.dfs.compress.codec</name>
+    <value><%= @compression %></value>
+    <description>Writes formatted data compressed in specified codec to
+    dfs. Value is None, GzipCodec, DefaultCodec (deflate), BZip2Codec,
+    or any other Codec Hadoop is aware of</description>
   </property>
-
-
 
   <property>
     <name>flume.collector.roll.millis</name>
@@ -169,7 +169,6 @@ configuration values placed in flume-site.xml.  -->
     (rolled).
     </description>
   </property>  
-
 
   <property>
     <name>flume.collector.output.format</name>
@@ -261,3 +260,4 @@ configuration values placed in flume-site.xml.  -->
     <description>The base directory in which the ZBCS stores data.</description>
   </property>
 
+</configuration>

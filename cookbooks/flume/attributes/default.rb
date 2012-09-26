@@ -89,6 +89,11 @@ default[:flume][:java_opts] = []
 default[:flume][:aws_access_key] = nil
 default[:flume][:aws_secret_key] = nil
 
- # The maximum size (in bytes) allowed for an event.  Will not be set
+# The maximum size (in bytes) allowed for an event.  Will not be set
 # (Flume will use its default value) if set to 'nil' here.
 default[:flume][:max_event_size] = nil
+
+# Writes formatted data compressed in specified codec to
+# dfs. Value are None, GzipCodec, DefaultCodec (deflate), BZip2Codec,
+# or any other Codec Hadoop is aware of
+default[:flume][:hdfs_output]    = 'None'
