@@ -1,3 +1,5 @@
+include_recipe 'install_from'
+
 # pull the remote file only if we create the directory
 tarball = "kafka-#{node[:kafka][:version]}-src.tgz"
 download_file = File.join("#{node[:kafka][:download_url]}", "#{tarball}")
