@@ -21,6 +21,12 @@
 
 include_recipe 'silverware'
 
+directory File.join(node[:flume][:home_dir], 'plugins') do
+  owner node[:flume][:user]
+  group node[:flume][:user]
+  mode  '0755'
+end 
+
 cookbook_file "/usr/lib/flume/plugins/hbase-sink.jar" do
   source "hbase-sink.jar"
   owner "flume"

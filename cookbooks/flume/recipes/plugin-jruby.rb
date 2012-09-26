@@ -19,6 +19,12 @@
 # limitations under the License.
 #
 
+directory File.join(node[:flume][:home_dir], 'plugins') do
+  owner node[:flume][:user]
+  group node[:flume][:user]
+  mode  '0755'
+end 
+
 cookbook_file "#{node[:flume][:home_dir]}/plugins/jruby-flume-#{node[:flume][:jars][:jruby_jar_version]}.jar" do
   source "jruby-flume-#{node[:flume][:jars][:jruby_jar_version]}.jar"
   owner "flume"
