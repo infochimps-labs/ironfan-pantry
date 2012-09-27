@@ -32,12 +32,13 @@
 #
 # (set config options to match your system settings) 
 
+NAME=zabbix_agentd
 # base zabbix dir
 BASEDIR=/opt/zabbix
 # pid file (as of 1.0 beta 10)
-PIDFILE=/var/tmp/zabbix_agentd.pid
+PIDFILE=/tmp/$NAME.pid
 # binary file
-ZABBIX_AGENTD=$BASEDIR/sbin/zabbix_agentd
+ZABBIX_AGENTD=$BASEDIR/sbin/$NAME
 
 
 # **************
