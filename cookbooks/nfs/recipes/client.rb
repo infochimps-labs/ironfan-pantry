@@ -22,11 +22,13 @@ end.run_action(:run)
 if node[:nfs] && node[:nfs][:mounts] && (not node[:nfs][:mounts].empty?)
   node[:nfs][:mounts].each do |target, config|
     begin
-      nfs_name = config[:name]
+      nfs_name = config[:name] || 'server'
       nfs_server = discover(:nfs, nfs_name)
       if nfs_server.nil?
         Chef::Log.error("***************")
-        Chef::Log.error("Can't find the NFS server for #{nfs_name} (#{target}): check that chef ran successfully on that machine. You may need to restart it after initial install.")
+        Chef::Log.error("Can't find the NFS server for 'nfs-#{nfs_name}' (#{target})")
+        Chef::Log.error("If it's a new server, check that chef ran successfully on that machine. Depending on your kernel, you may need to reboot it once after initial install for the NFS server to work.")
+        Chef::Log.error("It might also be a discovery problem: check the 'nfs' setting in node[:discovers] --  '#{node[:discovers] && node[:discovers].to_hash.inspect}'")
         Chef::Log.error("***************")
         next
       end
