@@ -45,8 +45,10 @@ end
 
 # === Install
 
-package "hadoop-zookeeper-server"
+# Only install the software, not the hadoop-zookeeper-server (which runs automatically)
+package "hadoop-zookeeper"
 
+# Here to clean up the old version that installed hadoop-zookeeper-server
 kill_old_service('hadoop-zookeeper-server'){ pattern 'zookeeper' ; only_if{ File.exists?("/etc/init.d/hadoop-zookeeper-server") } }
 
 # === Announce
