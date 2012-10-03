@@ -100,7 +100,7 @@ def assume_defaults!
   release_basename =~ %r{^(.+?)\.(tar\.gz|tar\.bz2|zip|tgz)}
   @release_ext      ||= $2
 
-  @home_dir         ||= ::File.join(prefix_root, 'share', name)
+  @home_dir         ||= ::File.join(prefix_root, 'share', name.to_s)
   @install_dir      ||= ::File.join(prefix_root, 'share', "#{name}-#{version}")
   @release_file     ||= ::File.join(prefix_root, 'src',   "#{name}-#{version}.#{release_ext}")
   @expand_cmd ||=
