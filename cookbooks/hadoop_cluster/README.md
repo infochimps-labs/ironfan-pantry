@@ -54,6 +54,15 @@ Who says your workers should also be datanodes? Sure, "bring the compute to the 
 
 This lets you blow up the size of your cluster and not have to wait later for nodes to decommission. Non-local map tasks obviously run slower-than-optimal, but we'd rather have sub-optimal robots than sub-optimal data scientists.
 
+### Initial Cluster Setup
+
+Follow these simple steps to set Hadoop up as painlessly as possible on a new cluster.
+
+  1. Set all the hadoop daemons to default to the "stop" state in the master facet definition before you first launch the master node.
+  2. Run the "/etc/hadoop/conf/bootstrap\_hadoop\_namenode" as root.
+  3. Set all the hadoop daemons except tasktracker to the "start" state in the master facet definition, run a knife cluster sync, and then run chef-client on the master.
+  4. Set the hadoop\_datanode daemon to "stop" on the worker nodes (or whatever facet is running the datanodes.) Launch the datanodes, edit the cluster definition to set all of the datanode daemons to default to the "start" state. Then rerun chef-client on all of the datanodes.
+
 ### Author:
       
 Author:: Joshua Timberman (<joshua@opscode.com>), Flip Kromer (<flip@infochimps.org>), much code taken from Tom White (<tom@cloudera.com>)'s hadoop-ec2 scripts and Robert Berger (http://blog.ibd.com)'s blog posts.
@@ -62,19 +71,19 @@ Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 
 ## Recipes 
 
-* `add_cloudera_repo`        - Add Cloudera repo to package manager
-* `config_files`             - Configure cluster
+* `add\_cloudera_repo`        - Add Cloudera repo to package manager
+* `config\_files`             - Configure cluster
 * `datanode`                 - Installs Hadoop Datanode service
-* `default`                  - Base configuration for hadoop_cluster
+* `default`                  - Base configuration for hadoop\_cluster
 * `doc`                      - Installs Hadoop documentation
-* `fake_topology`            - Pretend that groups of machines are on different racks so you can execute them without guilt
-* `hdfs_fuse`                - Installs Hadoop HDFS Fuse service (regular filesystem access to HDFS files)
+* `fake\_topology`            - Pretend that groups of machines are on different racks so you can execute them without guilt
+* `hdfs\_fuse`                - Installs Hadoop HDFS Fuse service (regular filesystem access to HDFS files)
 * `jobtracker`               - Installs Hadoop Jobtracker service
 * `namenode`                 - Installs Hadoop Namenode service
 * `secondarynn`              - Installs Hadoop Secondary Namenode service
 * `minidash-hadoop`         - Simple Dashboard
 * `tasktracker`              - Installs Hadoop Tasktracker service
-* `wait_on_hdfs_safemode`    - Wait on HDFS Safemode -- insert between cookbooks to ensure HDFS is available
+* `wait\_on_hdfs_safemode`    - Wait on HDFS Safemode -- insert between cookbooks to ensure HDFS is available
 
 ## Integration
 
@@ -93,115 +102,115 @@ Cookbook dependencies:
 
 ## Attributes
 
-* `[:cluster_size]`                   - Number of machines in the cluster (default: "5")
+* `[:cluster\_size]`                   - Number of machines in the cluster (default: "5")
   - Number of machines in the cluster. This is used to size things like handler counts, etc.
-* `[:apt][:cloudera][:force_distro]`  - Override the distro name apt uses to look up repos (default: "maverick")
+* `[:apt][:cloudera][:force\_distro]`  - Override the distro name apt uses to look up repos (default: "maverick")
   - Typically, leave this blank. However if (as is the case in Nov 2011) you are on natty but Cloudera's repo only has packages up to maverick, use this to override.
-* `[:apt][:cloudera][:release_name]`  - Release identifier (eg cdh3u2) of the cloudera repo to use. See also hadoop/deb_version (default: "cdh3u2")
+* `[:apt][:cloudera][:release\_name]`  - Release identifier (eg cdh3u2) of the cloudera repo to use. See also hadoop/deb_version (default: "cdh3u2")
 * `[:hadoop][:handle]`                - Version prefix for the daemons and other components (default: "hadoop-0.20")
   - Cloudera distros have a prefix most (but not all) things with. This helps isolate the times they say 'hadoop-0.20' vs. 'hadoop'
-* `[:hadoop][:deb_version]`           - Apt revision identifier (eg 0.20.2+923.142-1~maverick-cdh3) of the specific cloudera apt to use. See also apt/release_name (default: "0.20.2+923.142-1~maverick-cdh3")
-* `[:hadoop][:dfs_replication]`       - Default HDFS replication factor (default: "3")
+* `[:hadoop][:deb\_version]`           - Apt revision identifier (eg 0.20.2+923.142-1~maverick-cdh3) of the specific cloudera apt to use. See also apt/release_name (default: "0.20.2+923.142-1~maverick-cdh3")
+* `[:hadoop][:dfs\_replication]`       - Default HDFS replication factor (default: "3")
   - HDFS blocks are by default reproduced to this many machines.
-* `[:hadoop][:reducer_parallel_copies]` -  (default: "10")
-* `[:hadoop][:compress_output]`       -  (default: "false")
-* `[:hadoop][:compress_output_type]`  -  (default: "BLOCK")
-* `[:hadoop][:compress_output_codec]` -  (default: "org.apache.hadoop.io.compress.DefaultCodec")
-* `[:hadoop][:compress_mapout]`       -  (default: "true")
-* `[:hadoop][:compress_mapout_codec]` -  (default: "org.apache.hadoop.io.compress.DefaultCodec")
-* `[:hadoop][:log_retention_hours]`   -  (default: "24")
+* `[:hadoop][:reducer\_parallel_copies]` -  (default: "10")
+* `[:hadoop][:compress\_output]`       -  (default: "false")
+* `[:hadoop][:compress\_output_type]`  -  (default: "BLOCK")
+* `[:hadoop][:compress\_output_codec]` -  (default: "org.apache.hadoop.io.compress.DefaultCodec")
+* `[:hadoop][:compress\_mapout]`       -  (default: "true")
+* `[:hadoop][:compress\_mapout_codec]` -  (default: "org.apache.hadoop.io.compress.DefaultCodec")
+* `[:hadoop][:log\_retention_hours]`   -  (default: "24")
   - See [Hadoop Log Location and Retention](http://www.cloudera.com/blog/2010/11/hadoop-log-location-and-retention) for more.
-* `[:hadoop][:java_heap_size_max]`    -  (default: "1000")
-  - uses /etc/default/hadoop-0.20 to set the hadoop daemon's java_heap_size_max
-* `[:hadoop][:min_split_size]`        -  (default: "134217728")
+* `[:hadoop][:java\_heap_size_max]`    -  (default: "1000")
+  - uses /etc/default/hadoop-0.20 to set the hadoop daemon's java\_heap_size_max
+* `[:hadoop][:min\_split_size]`        -  (default: "134217728")
   - You may wish to set the following to the same as your HDFS block size, esp if
-    you're seeing issues with s3:// turning 1TB files into 30_000+ map tasks
-* `[:hadoop][:s3_block_size]`         - fs.s3n.block.size (default: "134217728")
+    you're seeing issues with s3:// turning 1TB files into 30\_000+ map tasks
+* `[:hadoop][:s3\_block_size]`         - fs.s3n.block.size (default: "134217728")
   - Block size to use when reading files using the native S3 filesystem (s3n: URIs).
-* `[:hadoop][:hdfs_block_size]`       - dfs.block.size (default: "134217728")
+* `[:hadoop][:hdfs\_block_size]`       - dfs.block.size (default: "134217728")
   - The default block size for new files
-* `[:hadoop][:max_map_tasks]`         -  (default: "3")
-* `[:hadoop][:max_reduce_tasks]`      -  (default: "2")
-* `[:hadoop][:java_child_opts]`       -  (default: "-Xmx2432m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server")
-* `[:hadoop][:java_child_ulimit]`     -  (default: "7471104")
-* `[:hadoop][:io_sort_factor]`        -  (default: "25")
-* `[:hadoop][:io_sort_mb]`            -  (default: "250")
-* `[:hadoop][:extra_classpaths]`      - 
+* `[:hadoop][:max\_map_tasks]`         -  (default: "3")
+* `[:hadoop][:max\_reduce_tasks]`      -  (default: "2")
+* `[:hadoop][:java\_child_opts]`       -  (default: "-Xmx2432m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server")
+* `[:hadoop][:java\_child_ulimit]`     -  (default: "7471104")
+* `[:hadoop][:io\_sort_factor]`        -  (default: "25")
+* `[:hadoop][:io\_sort_mb]`            -  (default: "250")
+* `[:hadoop][:extra\_classpaths]`      - 
   - Other recipes can add to this under their own special key, for instance
-    node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'
-* `[:hadoop][:home_dir]`              -  (default: "/usr/lib/hadoop")
-* `[:hadoop][:conf_dir]`              -  (default: "/etc/hadoop/conf")
-* `[:hadoop][:pid_dir]`               -  (default: "/var/run/hadoop")
-* `[:hadoop][:log_dir]`               - 
-* `[:hadoop][:tmp_dir]`               - 
+    node[:hadoop][:extra\_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'
+* `[:hadoop][:home\_dir]`              -  (default: "/usr/lib/hadoop")
+* `[:hadoop][:conf\_dir]`              -  (default: "/etc/hadoop/conf")
+* `[:hadoop][:pid\_dir]`               -  (default: "/var/run/hadoop")
+* `[:hadoop][:log\_dir]`               - 
+* `[:hadoop][:tmp\_dir]`               - 
 * `[:hadoop][:user]`                  -  (default: "hdfs")
-* `[:hadoop][:define_topology]`       - 
+* `[:hadoop][:define\_topology]`       - 
   - define a rack topology? if false (default), all nodes are in the same 'rack'.
-* `[:hadoop][:jobtracker][:handler_count]` -  (default: "40")
-* `[:hadoop][:jobtracker][:run_state]` -  (default: "stop")
-* `[:hadoop][:jobtracker][:java_heap_size_max]` - 
-* `[:hadoop][:jobtracker][:system_hdfsdir]` -  (default: "/hadoop/mapred/system")
-* `[:hadoop][:jobtracker][:staging_hdfsdir]` -  (default: "/hadoop/mapred/system")
+* `[:hadoop][:jobtracker][:handler\_count]` -  (default: "40")
+* `[:hadoop][:jobtracker][:run\_state]` -  (default: "stop")
+* `[:hadoop][:jobtracker][:java\_heap_size_max]` - 
+* `[:hadoop][:jobtracker][:system\_hdfsdir]` -  (default: "/hadoop/mapred/system")
+* `[:hadoop][:jobtracker][:staging\_hdfsdir]` -  (default: "/hadoop/mapred/system")
 * `[:hadoop][:jobtracker][:port]`     -  (default: "8021")
-* `[:hadoop][:jobtracker][:dash_port]` -  (default: "50030")
+* `[:hadoop][:jobtracker][:dash\_port]` -  (default: "50030")
 * `[:hadoop][:jobtracker][:user]`     -  (default: "mapred")
-* `[:hadoop][:jobtracker][:jmx_dash_port]` -  (default: "8008")
-* `[:hadoop][:namenode][:handler_count]` -  (default: "40")
-* `[:hadoop][:namenode][:run_state]`  -  (default: "stop")
+* `[:hadoop][:jobtracker][:jmx\_dash_port]` -  (default: "8008")
+* `[:hadoop][:namenode][:handler\_count]` -  (default: "40")
+* `[:hadoop][:namenode][:run\_state]`  -  (default: "stop")
   - What states to set for services.
     You want to bring the big daemons up deliberately on initial start.
     Override in your cluster definition when things are stable.
-* `[:hadoop][:namenode][:java_heap_size_max]` - 
+* `[:hadoop][:namenode][:java\_heap_size_max]` - 
 * `[:hadoop][:namenode][:port]`       -  (default: "8020")
-* `[:hadoop][:namenode][:dash_port]`  -  (default: "50070")
+* `[:hadoop][:namenode][:dash\_port]`  -  (default: "50070")
 * `[:hadoop][:namenode][:user]`       -  (default: "hdfs")
-* `[:hadoop][:namenode][:data_dirs]`  - 
+* `[:hadoop][:namenode][:data\_dirs]`  - 
   - These are handled by volumes, which imprints them on the node.
     If you set an explicit value it will be used and no discovery is done.
     Chef Attr                    Owner           Permissions  Path                                     Hadoop Attribute
-    [:namenode   ][:data_dir]    hdfs:hadoop     drwx------   {persistent_vols}/hadoop/hdfs/name       dfs.name.dir
-    [:sec..node  ][:data_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/secondary  fs.checkpoint.dir
-    [:datanode   ][:data_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/data       dfs.data.dir
-    [:tasktracker][:scratch_dir] mapred:hadoop   drwxr-xr-x   {scratch_vols   }/hadoop/hdfs/name       mapred.local.dir
-    [:jobtracker ][:system_hdfsdir]  mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/system   mapred.system.dir
-    [:jobtracker ][:staging_hdfsdir] mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/staging  mapred.system.dir
+    [:namenode   ][:data\_dir]    hdfs:hadoop     drwx------   {persistent_vols}/hadoop/hdfs/name       dfs.name.dir
+    [:sec..node  ][:data\_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/secondary  fs.checkpoint.dir
+    [:datanode   ][:data\_dir]    hdfs:hadoop     drwxr-xr-x   {persistent_vols}/hadoop/hdfs/data       dfs.data.dir
+    [:tasktracker][:scratch\_dir] mapred:hadoop   drwxr-xr-x   {scratch_vols   }/hadoop/hdfs/name       mapred.local.dir
+    [:jobtracker ][:system\_hdfsdir]  mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/system   mapred.system.dir
+    [:jobtracker ][:staging\_hdfsdir] mapred:hadoop   drwxr-xr-x   {!!HDFS!!       }/hadoop/mapred/staging  mapred.system.dir
     Important: In CDH3, the mapred.system.dir directory must be located inside a directory that is owned by mapred. For example, if mapred.system.dir is specified as /mapred/system, then /mapred must be owned by mapred. Don't, for example, specify /mrsystem as mapred.system.dir because you don't want / owned by mapred.
-* `[:hadoop][:namenode][:jmx_dash_port]` -  (default: "8004")
-* `[:hadoop][:datanode][:handler_count]` -  (default: "8")
-* `[:hadoop][:datanode][:run_state]`  -  (default: "start")
+* `[:hadoop][:namenode][:jmx\_dash_port]` -  (default: "8004")
+* `[:hadoop][:datanode][:handler\_count]` -  (default: "8")
+* `[:hadoop][:datanode][:run\_state]`  -  (default: "start")
   - You can just kick off the worker daemons, they'll retry. On a full-cluster
     stop/start (or any other time the main daemons' ip address changes) however
     you will need to converge chef and then restart them all.
-* `[:hadoop][:datanode][:java_heap_size_max]` - 
+* `[:hadoop][:datanode][:java\_heap_size_max]` - 
 * `[:hadoop][:datanode][:port]`       -  (default: "50010")
-* `[:hadoop][:datanode][:ipc_port]`   -  (default: "50020")
-* `[:hadoop][:datanode][:dash_port]`  -  (default: "50075")
+* `[:hadoop][:datanode][:ipc\_port]`   -  (default: "50020")
+* `[:hadoop][:datanode][:dash\_port]`  -  (default: "50075")
 * `[:hadoop][:datanode][:user]`       -  (default: "hdfs")
-* `[:hadoop][:datanode][:data_dirs]`  - 
-* `[:hadoop][:datanode][:jmx_dash_port]` -  (default: "8006")
-* `[:hadoop][:tasktracker][:http_threads]` -  (default: "32")
-* `[:hadoop][:tasktracker][:run_state]` -  (default: "start")
-* `[:hadoop][:tasktracker][:java_heap_size_max]` - 
-* `[:hadoop][:tasktracker][:dash_port]` -  (default: "50060")
+* `[:hadoop][:datanode][:data\_dirs]`  - 
+* `[:hadoop][:datanode][:jmx\_dash_port]` -  (default: "8006")
+* `[:hadoop][:tasktracker][:http\_threads]` -  (default: "32")
+* `[:hadoop][:tasktracker][:run\_state]` -  (default: "start")
+* `[:hadoop][:tasktracker][:java\_heap_size_max]` - 
+* `[:hadoop][:tasktracker][:dash\_port]` -  (default: "50060")
 * `[:hadoop][:tasktracker][:user]`    -  (default: "mapred")
-* `[:hadoop][:tasktracker][:scratch_dirs]` - 
-* `[:hadoop][:tasktracker][:jmx_dash_port]` -  (default: "8009")
-* `[:hadoop][:secondarynn][:run_state]` -  (default: "stop")
-* `[:hadoop][:secondarynn][:java_heap_size_max]` - 
-* `[:hadoop][:secondarynn][:dash_port]` -  (default: "50090")
+* `[:hadoop][:tasktracker][:scratch\_dirs]` - 
+* `[:hadoop][:tasktracker][:jmx\_dash_port]` -  (default: "8009")
+* `[:hadoop][:secondarynn][:run\_state]` -  (default: "stop")
+* `[:hadoop][:secondarynn][:java\_heap_size_max]` - 
+* `[:hadoop][:secondarynn][:dash\_port]` -  (default: "50090")
 * `[:hadoop][:secondarynn][:user]`    -  (default: "hdfs")
-* `[:hadoop][:secondarynn][:data_dirs]` - 
-* `[:hadoop][:secondarynn][:jmx_dash_port]` -  (default: "8005")
-* `[:hadoop][:hdfs_fuse][:run_state]` -  (default: "stop")
-* `[:hadoop][:balancer][:run_state]`  -  (default: "stop")
-* `[:hadoop][:balancer][:jmx_dash_port]` -  (default: "8007")
-* `[:hadoop][:balancer][:max_bandwidth]` -  (default: "1048576")
+* `[:hadoop][:secondarynn][:data\_dirs]` - 
+* `[:hadoop][:secondarynn][:jmx\_dash_port]` -  (default: "8005")
+* `[:hadoop][:hdfs\_fuse][:run_state]` -  (default: "stop")
+* `[:hadoop][:balancer][:run\_state]`  -  (default: "stop")
+* `[:hadoop][:balancer][:jmx\_dash_port]` -  (default: "8007")
+* `[:hadoop][:balancer][:max\_bandwidth]` -  (default: "1048576")
   - bytes per second -- 1MB/s by default
 * `[:groups][:hadoop][:gid]`          -  (default: "300")
 * `[:groups][:supergroup][:gid]`      -  (default: "301")
 * `[:groups][:hdfs][:gid]`            -  (default: "302")
 * `[:groups][:mapred][:gid]`          -  (default: "303")
-* `[:java][:java_home]`               -  (default: "/usr/lib/jvm/java-6-sun/jre")
+* `[:java][:java\_home]`               -  (default: "/usr/lib/jvm/java-6-sun/jre")
 * `[:users][:hdfs][:uid]`             -  (default: "302")
 * `[:users][:mapred][:uid]`           -  (default: "303")
 * `[:tuning][:ulimit][:hdfs]`         - 
@@ -224,4 +233,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-> readme generated by [ironfan](http://github.com/infochimps-labs/ironfan)'s cookbook_munger
+> readme generated by [ironfan](http://github.com/infochimps-labs/ironfan)'s cookbook\_munger
