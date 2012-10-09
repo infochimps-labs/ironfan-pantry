@@ -150,8 +150,6 @@ Cookbook dependencies:
 * `[:elasticsearch][:log_level][:index_store]` -  (default: "INFO")
 * `[:elasticsearch][:log_level][:action_shard]` -  (default: "INFO")
 * `[:elasticsearch][:log_level][:cluster_service]` -  (default: "INFO")
-* `[:elasticsearch][:raid][:devices]` - 
-* `[:elasticsearch][:raid][:use_raid]` -  (default: "true")
 * `[:elasticsearch][:server][:run_state]` -  (default: "stop")
 * `[:users][:elasticsearch][:uid]`    -  (default: "61021")
 * `[:groups][:elasticsearch][:gid]`   -  (default: "61021")
