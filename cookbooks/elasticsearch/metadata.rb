@@ -2,7 +2,7 @@ maintainer       "GoTime, modifications by Infochimps"
 maintainer_email "ops@gotime.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.1.1"
+version          "3.2.0"
 
 description      "Elasticsearch: a distributed full-text search database based on Lucene. You know, for search"
 
