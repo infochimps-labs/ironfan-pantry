@@ -46,13 +46,14 @@ default[:elasticsearch][:is_httpnode]             = false # set to true in elast
 #
 
 default[:elasticsearch][:java_home]               = "/usr/lib/jvm/java-6-sun/jre"     # sun java works way better for ES
-default[:elasticsearch][:java_heap_size_max]      = 1000
+default[:elasticsearch][:java_heap_size_max]      = 1000 # a NUMBER -- will be suffixed with 'm'
+default[:elasticsearch][:java_heap_newgen]        = nil  # JVM MaxNewSize (expert-level) a NUMBER -- will be suffixed with 'm'
 default[:elasticsearch][:ulimit_mlock]            = nil  # locked memory limit -- set to unlimited to lock heap into memory on linux machines
 
 default[:elasticsearch][:default_replicas]        = 1    # replicas are in addition to the original, so 1 replica means 2 copies of each shard
 default[:elasticsearch][:default_shards]          = 16   # 16 shards per index * 2 replicas distributes evenly across 2, 4, 8, 16 or 32 nodes
 default[:elasticsearch][:flush_threshold]         = 5000
-default[:elasticsearch][:cache_filter_size]       = "20%"  # can be a percent ("10%") or a number ("128m") 
+default[:elasticsearch][:cache_filter_size]       = "20%"  # can be a percent ("10%") or a number ("128m")
 default[:elasticsearch][:index_buffer_size]       = "10%"  # can be a percent ("10%") or a number ("128m") (changed 2012-10 to default 10%, same as es default)
 default[:elasticsearch][:merge_factor]            = 4
 default[:elasticsearch][:max_thread_count]        = nil    # Maximum value given that max_thread_count must be < max_merge_count (changed 2012-10 to default nil)
@@ -81,6 +82,8 @@ default[:elasticsearch][:proxy_hostname]          = "elasticsearch.yourdomain.co
 default[:elasticsearch][:auth_port]               = "9301"
 
 default[:tuning][:ulimit]['@elasticsearch'] = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
+
+default[:elasticsearch][:gc_logging]              = false  # useful for performance monitoring, but verbose -- watch the disk space
 
 # most of the log lines are manageable at level 'DEBUG'
 # the voluminous ones are broken out separately

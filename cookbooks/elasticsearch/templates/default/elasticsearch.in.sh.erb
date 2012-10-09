@@ -4,19 +4,24 @@ export ES_WORK_DIR=${ES_WORK_DIR-<%= @elasticsearch[:data_root] %>/work}
 
 export CLASSPATH=$ES_HOME/plugins/cloud-aws.zip
 CLASSPATH=$CLASSPATH:$ES_HOME/lib/elasticsearch-*.jar:$ES_HOME/lib/*:$ES_HOME/lib/sigar/*
+# CLASSPATH=$CLASSPATH:$ES_HOME/lib/${project.build.finalName}.jar:$ES_HOME/lib/*:$ES_HOME/lib/sigar/*
 export ES_CLASSPATH=$CLASSPATH
 
-if [ "x$ES_MIN_MEM" = "x" ]; then
-  ES_MIN_MEM=256m
-fi
-if [ "x$ES_MAX_MEM" = "x" ]; then
-  ES_MAX_MEM=1500m
-fi
+# Arguments to pass to the JVM. These come through from the
+# /etc/sv/elasticsearch/run file
 
-# Arguments to pass to the JVM
+if [ "x$ES_MIN_MEM" = "x" ]; then ES_MIN_MEM=256m  ; fi
+if [ "x$ES_MAX_MEM" = "x" ]; then ES_MAX_MEM=1500m ; fi
+
 JAVA_OPTS="$JAVA_OPTS -Xms${ES_MIN_MEM}"
 JAVA_OPTS="$JAVA_OPTS -Xmx${ES_MAX_MEM}"
-JAVA_OPTS="$JAVA_OPTS -Xss128k"
+JAVA_OPTS="$JAVA_OPTS -Xss256k" 
+if [ "x$ES_HEAP_NEWSIZE" != "x" ]; then
+  JAVA_OPTS="$JAVA_OPTS -Xmn${ES_HEAP_NEWSIZE}"
+fi
+
+JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"
+JAVA_OPTS="$JAVA_OPTS -Djava.net.preferIPv4Stack=true"
 
 JAVA_OPTS="$JAVA_OPTS -Djline.enabled=true"
 
@@ -25,24 +30,31 @@ JAVA_OPTS="$JAVA_OPTS -XX:+AggressiveOpts"
 JAVA_OPTS="$JAVA_OPTS -XX:+UseParNewGC"
 JAVA_OPTS="$JAVA_OPTS -XX:+UseConcMarkSweepGC"
 JAVA_OPTS="$JAVA_OPTS -XX:+CMSParallelRemarkEnabled"
+JAVA_OPTS="$JAVA_OPTS -XX:CMSInitiatingOccupancyFraction=75"
+JAVA_OPTS="$JAVA_OPTS -XX:+UseCMSInitiatingOccupancyOnly"
 JAVA_OPTS="$JAVA_OPTS -XX:SurvivorRatio=8"
 JAVA_OPTS="$JAVA_OPTS -XX:MaxTenuringThreshold=1"
 JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
 JAVA_OPTS="$JAVA_OPTS -XX:HeapDumpPath=$ES_WORK_DIR/heap"
+
+<%- if @elasticsearch[:gc_logging] %>
+JAVA_OPTS="$JAVA_OPTS -XX:+PrintGCDetails"
+JAVA_OPTS="$JAVA_OPTS -XX:+PrintGCTimeStamps"
+JAVA_OPTS="$JAVA_OPTS -XX:+PrintClassHistogram"
+JAVA_OPTS="$JAVA_OPTS -XX:+PrintTenuringDistribution"
+JAVA_OPTS="$JAVA_OPTS -XX:+PrintGCApplicationStoppedTime"
+JAVA_OPTS="$JAVA_OPTS -Xloggc:<%= @elasticsearch[:log_dir] %>/gc.log"
+<%- end %>
 
 <% if node[:kernel][:machine] == 'x86_64' -%>
 # run compressed pointers to save on heap
 JAVA_OPTS="$JAVA_OPTS -XX:+UseCompressedOops"
 <% end -%>
 
-# ensures JMX accessible from outside world
+# ensures JMX accessible from outside world. Port is set within elasticsearch.yml
 JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.ssl=false"
 JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
 JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=<%= @elasticsearch[:jmx_dash_addr] %>"
-
-# More options to consider LATER
-# java.net.preferIPv4Stack=true: Better OOTB experience, especially with jgroups
-#  -XX:CMSInitiatingOccupancyFraction=88 
 
 ES_JAVA_OPTS="$ES_JAVA_OPTS -Des.path.data=$ES_DATA_DIR -Des.path.work=$ES_WORK_DIR -Des.path.conf=$ES_CONF_DIR"
 
