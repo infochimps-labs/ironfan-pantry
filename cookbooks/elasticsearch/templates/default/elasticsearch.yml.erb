@@ -3,26 +3,32 @@
 # ElasticSearch config file
 #
 
-cluster:
-  name:                         <%= @elasticsearch[:cluster_name] %>
-
-  # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/439afb06f3e85aa7/431a8543811d7848?lnk=gst&q=configuration#431a8543811d7848    
-  routing:
-    allocation:
-      concurrent_recoveries:   5
+cluster.name:                  <%= @elasticsearch[:cluster_name] %>
 
 # File paths
 path:
   home:                         <%= @elasticsearch[:home_dir] %>
   conf:                         <%= @elasticsearch[:conf_dir] %>
   logs:                         <%= @elasticsearch[:log_dir] %>
-  # data dirs are set in in the elasticsearch.in.sh
-    
+  # data dir and work dir are set in in the elasticsearch.in.sh
+
+
 # http://www.elasticsearch.com/docs/elasticsearch/modules/node/
 node:
-  # # node.data: is this a data esnode (stores, indexes data)? default true
+  # Node names are generated dynamically on startup, but you can tie this node to a specific name:
+  # name:                       "<%= node.name %>-<%= @elasticsearch[:is_datanode] ? 'dn' - 'peer' %>"
+
+  # node.data: is this a data esnode (stores, indexes data)? default true
   data:                         <%= @elasticsearch[:is_datanode] %>
-  
+  # eligible for master election
+  # master:                     true
+
+  # tags for shard allocation, etc
+  ironfan_cluster:              <%= node[:cluster_name] %>
+  ironfan_facet:                <%= node[:facet_name]   %>
+  ironfan_facet_idx:            <%= node[:facet_index]  %>
+  ironfan_name:                 <%= node.name %>
+
 # http://www.elasticsearch.com/docs/elasticsearch/modules/http/
 http:
   # # http.enabled: is this a query esnode (has http interface, dispatches/gathers queries)? Default true
@@ -49,7 +55,20 @@ gateway:
   #
   # use with type: s3
   s3:
-    bucket:                     <%= @elasticsearch[:s3_gateway_bucket] %>         
+    bucket:                     <%= @elasticsearch[:s3_gateway_bucket] %>
+
+
+cluster:
+  # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/439afb06f3e85aa7/431a8543811d7848?lnk=gst&q=configuration#431a8543811d7848
+  routing:
+    allocation:
+      # initial recovery (eg full-cluster restart)
+      node_initial_primaries_recoveries: 4
+      # peer-to-peer recovery (from shard seed to shard peers)
+      concurrent_recoveries:   5
+# Concurrent streams when recovering a shard from a peer:
+# indices.recovery.concurrent_streams: 5
+
 
 # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/1f3001f43266879a/06d62ea3ceb4db30?lnk=gst&q=translog#06d62ea3ceb4db30
 indices:
@@ -73,22 +92,23 @@ cache:
     # direct:                         true
     # warm_cache:                     false
 
+<%- unless @options[:ulimit_mlock].nil? %>
 bootstrap:
   # For a node that is dedicated to elasticsearch, Setting this to true; and in
   # a parent shell set `ulimit -l unlimited`; and enabling JNA can make memory
   # allocation significantly more efficient. Be sure you understand the
   # ramifications of doing this, especially how it interacts with swappiness.
   mlockall:                     true
-    
+<%- end %>
+
 index:
   number_of_shards:             <%= @elasticsearch[:default_shards]   %>
   number_of_replicas:           <%= @elasticsearch[:default_replicas] %>
   #
   translog:
     # A shard is flushed to local disk (the lucene index is committed) once this
-    # number of operations accumulate in the translog. defaults to 5000
-    #
-    # If you have 
+    # number of operations accumulate in the translog. defaults to 5000.
+    # This may be worth increasing for a high-speed flow.
     flush_threshold_ops:        <%= @elasticsearch[:flush_threshold] %>
     # flush_threshold_size:     500mb
     # flush_threshold_period:   60m
@@ -142,7 +162,7 @@ index:
       # concurrent streams (index files) that can be recovered from a node
       # (globally on the node level). It defaults to 5.
       concurrent_streams:       7
-  
+
   engine:
     robin:
       # Set the interval between indexed terms. Large values cause less memory
@@ -150,7 +170,7 @@ index:
       # terms. Small values cause more memory to be used by a reader / searcher,
       # and speed random-access to terms. Defaults to 128.
       term_index_interval:      <%= @elasticsearch[:term_index_interval] %>
-      
+
   gateway:
     # The index.gateway.snapshot_interval is a time setting allowing to
     # configure the interval at which snapshotting of the index shard to the
@@ -163,7 +183,7 @@ index:
     # gateway snapshot should be performed. It defaults to true.
     snapshot_on_close:          <%= @elasticsearch[:snapshot_on_close] %>
 
-# http://www.elasticsearch.com/docs/elasticsearch/modules/node/network/      
+# http://www.elasticsearch.com/docs/elasticsearch/modules/node/network/
 network:
   bind_host:                    _local_
   publish_host:                 _local_
@@ -176,15 +196,19 @@ network:
   #   receive_buffer_size:      ~
   #   connect_timeout:          ~
 
+# http://www.elasticsearch.org/guide/reference/api/admin-cluster-nodes-shutdown.html
+action:
+  disable_shutdown:            false
+
 # http://www.elasticsearch.com/docs/elasticsearch/modules/transport/
 transport:
   tcp:
     port:                       9300-9400
-    # Set to 30 from >= v0.14.0 
+    # Set to 30 from >= v0.14.0
     connect_timeout:            2m
     # # enable lzf compression in esnode-esnode communication?
     compress:                   true
-    
+
 # http://www.elasticsearch.com/docs/elasticsearch/modules/jmx/
 jmx:
   # Create an RMI connector?
@@ -251,7 +275,7 @@ discovery:
 # * the ec2 discovery module: for finding peers
 # * the s3 gateway module, for pushing indices to an s3 mirror.
 # Read more: http://www.elasticsearch.com/docs/elasticsearch/cloud/
-# 
+#
 cloud:
   aws:
     access_key:                 <%= @aws[:access_key]        || @aws[:aws_access_key]        %>
@@ -259,6 +283,29 @@ cloud:
 <%- end %>
 
 # thrift:
-#   # port:                         
+#   # port:
 
-# monitor.jvm: gc_threshold, interval, enabled
+# ---- Logging -----
+
+# Uncomment to record slow queries, useful for improving your app responsiveness
+#
+# index.search.slowlog.level: TRACE
+# index.search.slowlog.threshold.query.warn: 10s
+# index.search.slowlog.threshold.query.info: 5s
+# index.search.slowlog.threshold.query.debug: 2s
+# index.search.slowlog.threshold.query.trace: 500ms
+#
+# index.search.slowlog.threshold.fetch.warn: 1s
+# index.search.slowlog.threshold.fetch.info: 800ms
+# index.search.slowlog.threshold.fetch.debug: 500ms
+# index.search.slowlog.threshold.fetch.trace: 200ms
+
+# GC Logging
+
+# Make a note in logs if GC pause times exceed these thresholds
+monitor.jvm.gc.ParNew.warn: 		  1000ms
+monitor.jvm.gc.ParNew.info: 		   700ms
+monitor.jvm.gc.ParNew.debug: 		   400ms
+monitor.jvm.gc.ConcurrentMarkSweep.warn:    10s
+monitor.jvm.gc.ConcurrentMarkSweep.info:     5s
+monitor.jvm.gc.ConcurrentMarkSweep.debug:    2s

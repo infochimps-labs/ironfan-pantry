@@ -51,7 +51,7 @@ default[:elasticsearch][:java_heap_newgen]        = nil  # JVM MaxNewSize (exper
 default[:elasticsearch][:ulimit_mlock]            = nil  # locked memory limit -- set to unlimited to lock heap into memory on linux machines
 
 default[:elasticsearch][:default_replicas]        = 1    # replicas are in addition to the original, so 1 replica means 2 copies of each shard
-default[:elasticsearch][:default_shards]          = 16   # 16 shards per index * 2 replicas distributes evenly across 2, 4, 8, 16 or 32 nodes
+default[:elasticsearch][:default_shards]          = 12   # 12 shards per index * 2 replicas distributes evenly across 2, 3, 4, 6, 8, 12 or 24 nodes
 default[:elasticsearch][:flush_threshold]         = 5000
 default[:elasticsearch][:cache_filter_size]       = "20%"  # can be a percent ("10%") or a number ("128m")
 default[:elasticsearch][:index_buffer_size]       = "10%"  # can be a percent ("10%") or a number ("128m") (changed 2012-10 to default 10%, same as es default)
@@ -87,7 +87,9 @@ default[:elasticsearch][:gc_logging]              = false  # useful for performa
 
 # most of the log lines are manageable at level 'DEBUG'
 # the voluminous ones are broken out separately
-default[:elasticsearch][:log_level][:default]         = 'INFO'
-default[:elasticsearch][:log_level][:index_store]     = 'INFO'  # lots of output but might be useful
-default[:elasticsearch][:log_level][:action_shard]    = 'INFO'  # lots of output but might be useful
-default[:elasticsearch][:log_level][:cluster_service] = 'INFO'  # lots of output but might be useful
+default[:elasticsearch][:log_level][:default]         = 'DEBUG'
+
+default[:elasticsearch][:log_level][:index_store]     = 'INFO'
+default[:elasticsearch][:log_level][:action_shard]    = 'INFO'
+default[:elasticsearch][:log_level][:cluster_service] = 'INFO'
+default[:elasticsearch][:log_level][:gateway]         = 'INFO' # spews information on every snapshot

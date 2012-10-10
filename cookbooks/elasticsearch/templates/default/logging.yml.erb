@@ -5,26 +5,40 @@ rootLogger: <%= node[:elasticsearch][:log_level][:default] %>, console, file
 #
 logger:
   # log action execution errors for easier debugging
-  action :      <%= node[:elasticsearch][:log_level][:default] %>
+  action:       <%= node[:elasticsearch][:log_level][:default] %>
+
+  indices:
+    recovery:   <%= node[:elasticsearch][:log_level][:default] %>
+  discovery:    <%= node[:elasticsearch][:log_level][:default] %>
+
+  additivity:
+    index.search.slowlog: false
 
   index:
+    search:
+      slowlog:  TRACE, index_search_slow_log_file
+    store:      <%= node[:elasticsearch][:log_level][:index_store] %>
+    gateway:    <%= node[:elasticsearch][:log_level][:gateway] %>
+    #
     shard:
       recovery: <%= node[:elasticsearch][:log_level][:default] %>
-    store:      <%= node[:elasticsearch][:log_level][:index_store] %>
-    gateway:    <%= node[:elasticsearch][:log_level][:default] %>
     engine:     <%= node[:elasticsearch][:log_level][:default] %>
     merge:      <%= node[:elasticsearch][:log_level][:default] %>
     translog:   <%= node[:elasticsearch][:log_level][:default] %>
+
   cluster:
     service:    <%= node[:elasticsearch][:log_level][:cluster_service] %>
     action:
       shard:    <%= node[:elasticsearch][:log_level][:action_shard] %>
+
   gateway:      <%= node[:elasticsearch][:log_level][:default] %>
-  discovery:    <%= node[:elasticsearch][:log_level][:default] %>
   jmx:          <%= node[:elasticsearch][:log_level][:default] %>
-  httpclient:   INFO
   node:         <%= node[:elasticsearch][:log_level][:default] %>
   plugins:      <%= node[:elasticsearch][:log_level][:default] %>
+
+  # Volume for these is insane if below the levels given:
+  httpclient:   INFO
+  com.amazonaws: WARN
 
 appender:
   console:
@@ -40,3 +54,11 @@ appender:
     layout:
       type: pattern
       conversionPattern: "[%d{ABSOLUTE}][%-5p][%-25c] %m%n"
+
+  index_search_slow_log_file:
+    type: dailyRollingFile
+    file: ${path.logs}/${cluster.name}_index_search_slowlog.log
+    datePattern: "'.'yyyy-MM-dd"
+    layout:
+      type: pattern
+      conversionPattern: "[%d{ISO8601}][%-5p][%-25c] %m%n"
