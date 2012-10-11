@@ -16,7 +16,7 @@ path:
 # http://www.elasticsearch.com/docs/elasticsearch/modules/node/
 node:
   # Node names are generated dynamically on startup, but you can tie this node to a specific name:
-  # name:                       "<%= node.name %>-<%= @elasticsearch[:is_datanode] ? 'dn' - 'peer' %>"
+  # name:                       "<%= node.name %>-<%= @elasticsearch[:is_datanode] ? 'dn' : 'peer' %>"
 
   # node.data: is this a data esnode (stores, indexes data)? default true
   data:                         <%= @elasticsearch[:is_datanode] %>
@@ -92,7 +92,7 @@ cache:
     # direct:                         true
     # warm_cache:                     false
 
-<%- unless @options[:ulimit_mlock].nil? %>
+<%- unless @elasticsearch[:ulimit_mlock].nil? %>
 bootstrap:
   # For a node that is dedicated to elasticsearch, Setting this to true; and in
   # a parent shell set `ulimit -l unlimited`; and enabling JNA can make memory
