@@ -15,9 +15,6 @@ path:
 
 # http://www.elasticsearch.com/docs/elasticsearch/modules/node/
 node:
-  # Node names are generated dynamically on startup, but you can tie this node to a specific name:
-  # name:                       "<%= node.name %>-<%= @elasticsearch[:is_datanode] ? 'dn' : 'peer' %>"
-
   # node.data: is this a data esnode (stores, indexes data)? default true
   data:                         <%= @elasticsearch[:is_datanode] %>
   # eligible for master election
