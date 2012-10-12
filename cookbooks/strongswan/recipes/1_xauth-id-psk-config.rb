@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
 # Description:: Installs and launches a StrongSwan server.
-# Recipe:: default
+# Recipe:: 1_xauth-id-psk-config
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps
@@ -19,15 +19,24 @@
 # limitations under the License.
 #
 
-# install strongswan from package
-package( "strongswan-ikev1"      ){ action :nothing }.run_action(:install)
-package( "strongswan-ikev2"      ){ action :nothing }.run_action(:install)
+include_recipe "strongswan::default"
+include_recipe "strongswan::2_service-ipsec"
+
+announce( :strongswan, :server )
+
+# manipulate config files to do our bidding
+%w{ ipsec.conf ipsec.secrets strongswan.conf }.each do |fname|
+	template "/etc/#{fname}" do
+		source "xauth-id-psk-config/#{fname}.erb"
+		notifies :reload, "service[ipsec]", :delayed
+	end
+end
 
 directory '/etc/ipsec.d/client'
-directory '/etc/ipsec.d/client/nat-rw-psk'
+directory '/etc/ipsec.d/client/xauth-id-psk-config'
 
 %w{ ipsec.conf ipsec.secrets }.each do |fname|
-	template "/etc/ipsec.d/client/nat-rw-psk/#{fname}" do
-		source "nat-rw-psk/#{fname}.erb"
+	template "/etc/ipsec.d/client/xauth-id-psk-config/#{fname}" do
+		source "xauth-id-psk-config/client.#{fname}.erb"
 	end
 end

@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
-# Description:: Activates service for StrongSwan(IPSEC).
-# Recipe:: masq
+# Description:: Activates service for xl2tpd (L2TP).
+# Recipe:: 2_service-xl2tpd
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps
@@ -19,8 +19,9 @@
 # limitations under the License.
 #
 
-# add iptables masquerading rule if it isn't already active
-execute 'strongswan_masq' do
-	command "iptables --table nat --append POSTROUTING --source <%= node[:strongswan][:server][:tunable][:ipsec][:right][:subnet] %> -j MASQUERADE"
-	action :nothing
+# xl2tpd service definition
+service "xl2tpd" do
+	service_name node[:strongswan][:server][:service_name][:l2tp]
+	supports :status => true, :restart => true, :reload => true
+	action [ :enable ]
 end

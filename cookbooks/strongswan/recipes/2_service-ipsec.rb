@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
 # Description:: Activates service for StrongSwan(IPSEC).
-# Recipe:: masq
+# Recipe:: 2_service-ipsec
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps
@@ -19,8 +19,9 @@
 # limitations under the License.
 #
 
-# add iptables masquerading rule if it isn't already active
-execute 'strongswan_masq' do
-	command "iptables --table nat --append POSTROUTING --source <%= node[:strongswan][:server][:tunable][:ipsec][:right][:subnet] %> -j MASQUERADE"
-	action :nothing
+# ipsec service definition
+service "ipsec" do
+  service_name node[:strongswan][:server][:service_name][:ipsec]
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable ]
 end

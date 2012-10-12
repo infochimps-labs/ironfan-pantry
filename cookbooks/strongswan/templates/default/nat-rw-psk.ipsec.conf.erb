@@ -1,0 +1,54 @@
+# ipsec.conf - strongSwan IPsec configuration file
+
+# basic configuration
+
+config setup
+    # nat_traversal=<%= node[:strongswan][:server][:tunable][:ipsec][:natt] %>
+    
+conn %default
+    ikelifetime=60m
+    keylife=20m
+    rekeymargin=3m
+    keyingtries=1
+    keyexchange=<%= node[:strongswan][:server][:tunable][:ipsec][:keyexchange] %>
+    pfs=no
+    authby=secret
+
+conn client
+    ike=<%= node[:strongswan][:server][:tunable][:ipsec][:ike] %>
+    esp=<%= node[:strongswan][:server][:tunable][:ipsec][:esp] %>
+    leftid=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:id] %>
+    # The "left" parameter is the gateway's private IP 
+    left=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:left] %>
+    # We are protecting the entire VPC, not just this subnet
+    leftsubnet=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:subnet] %>
+    leftfirewall=yes
+    right=<%= node[:strongswan][:server][:tunable][:ipsec][:right][:right] %>
+    # The virtual IP pool is outside the VPC!
+    rightsubnet=<%= node[:strongswan][:server][:tunable][:ipsec][:right][:subnet] %>
+    auto=add
+
+# Add connections here.
+
+# include /var/lib/strongswan/ipsec.conf.inc
+
+onn %default
+    ikelifetime=60m
+    keylife=20m
+    rekeymargin=3m
+    keyingtries=1
+    keyexchange=ikev2
+    ike=3des-sha256-modp1536
+    esp=3des-sha256
+    pfs=no
+    compress=no
+    authby=secret
+
+conn us-east-1-vpc
+    right=107.23.79.201
+    rightid=@us-east-1-vpc.chimpy.us
+    rightsubnet=10.107.0.0/24
+    left=%defaultroute
+    leftsubnet=10.107.9.0/24
+    leftid=jerry.w.jackson@gmail.com
+    auto=add

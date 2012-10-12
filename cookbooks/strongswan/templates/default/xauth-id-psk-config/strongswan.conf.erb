@@ -1,0 +1,40 @@
+# strongswan.conf - strongSwan configuration file
+
+charon {
+
+    # number of worker threads in charon
+    threads = 16
+
+    # plugins to load in charon
+    # load = aes des sha1 md5 sha2 hmac gmp random pubkey xcbc x509 stroke
+
+        filelog {
+            /var/log/charon.log {
+            # loggers to files also accept the append option to open files in
+            # append mode at startup (default is yes)
+            append = no
+            # the default loglevel for all daemon subsystems (defaults to 1).
+            default = 3
+            }
+
+            stderr {
+            # more detailed loglevel for a specific subsystem, overriding the
+            # default loglevel.
+            ike = 2
+            knl = 3i
+            }
+
+        }
+
+        syslog {
+            # default level to the LOG_DAEMON facility
+            daemon {
+            }
+            # very minimalistic IKE auditing logs to LOG_AUTHPRIV
+            auth {
+                default = -1
+                ike = 1
+                }
+        }
+  }
+}

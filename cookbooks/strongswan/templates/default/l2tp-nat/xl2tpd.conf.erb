@@ -1,0 +1,12 @@
+[global]
+ipsec saref = no
+
+[lns default]
+ip range = <%= node[:strongswan][:server][:tunable][:l2tp][:ip_min] %>-<%= node[:strongswan][:server][:tunable][:l2tp][:ip_max] %>
+local ip = <%= node[:strongswan][:server][:tunable][:ipsec][:left][:ip] %>
+refuse chap = yes
+refuse pap = yes
+require authentication = yes
+ppp debug = yes
+pppoptfile = /etc/ppp/options.xl2tpd
+length bit = yes

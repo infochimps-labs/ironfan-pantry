@@ -1,0 +1,32 @@
+# ipsec.conf - strongSwan IPsec configuration file
+
+# basic configuration
+
+config setup
+    nat_traversal=yes
+
+# Connections into AWS VPC
+conn %default
+    ikelifetime=60m
+    keylife=20m
+    rekeymargin=3m
+    keyingtries=1
+    keyexchange=ikev2
+    ike=3des-sha256-modp1536
+    esp=3des-sha256
+    pfs=no
+	compress=no
+    authby=secret
+
+conn us-east-1-vpc
+	right=107.23.79.201
+	rightid=@us-east-1-vpc.chimpy.us
+	rightsubnet=10.107.0.0/24
+    left=%defaultroute
+    leftsubnet=10.107.9.0/24
+	leftid=jerry.w.jackson@gmail.com
+	auto=add
+
+# Add connections here.
+
+# include /var/lib/strongswan/ipsec.conf.inc
