@@ -17,7 +17,7 @@ JAVA_OPTS="$JAVA_OPTS -Xms${ES_MIN_MEM}"
 JAVA_OPTS="$JAVA_OPTS -Xmx${ES_MAX_MEM}"
 JAVA_OPTS="$JAVA_OPTS -Xss256k" 
 if [ "x$ES_HEAP_NEWSIZE" != "x" ]; then
-  JAVA_OPTS="$JAVA_OPTS -Xmn${ES_HEAP_NEWSIZE}"
+  JAVA_OPTS="$JAVA_OPTS -XX:NewSize=${ES_HEAP_NEWSIZE} -XX:MaxNewSize=${ES_HEAP_NEWSIZE}"
 fi
 
 JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"
@@ -57,6 +57,8 @@ JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote.authenticate=false"
 JAVA_OPTS="$JAVA_OPTS -Djava.rmi.server.hostname=<%= @elasticsearch[:jmx_dash_addr] %>"
 
 ES_JAVA_OPTS="$ES_JAVA_OPTS -Des.path.data=$ES_DATA_DIR -Des.path.work=$ES_WORK_DIR -Des.path.conf=$ES_CONF_DIR"
+# # Tie data nodes to a specific name (while still letting clients set their own)
+# ES_JAVA_OPTS="-Des.node.name=<%= node.name %> $ES_JAVA_OPTS"
 
 export JAVA_OPTS ES_JAVA_OPTS ES_MAX_MEM ES_MIN_MEM
 
