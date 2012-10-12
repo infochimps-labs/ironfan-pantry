@@ -27,5 +27,5 @@ include_recipe "strongswan::masq"
 
 template( "/etc/rc.local" ) do
   source "finalize/rc.local.erb"
-  notifies :run, 'execute[strongswan_masq]', :immediate
+  notifies :run, 'execute[strongswan_masq]', :delayed
 end
