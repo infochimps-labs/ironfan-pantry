@@ -33,8 +33,8 @@ Names for template follow this format:
 
 	<recipename>/[client].<filename>.erb; for example:
 
-		`nat-psk/ipsec.conf.erb` or `nat-psk/client.ipsec.conf.erb` 
-		`nat-id-psk-config/ipsec.conf.erb` or `nat-id-psk-config/client.ipsec.conf.erb` 
+		nat-psk/ipsec.conf.erb or nat-psk/client.ipsec.conf.erb
+		nat-id-psk-config/ipsec.conf.erb` or nat-id-psk-config/client.ipsec.conf.erb
 	
 
 ## Requirements

@@ -17,41 +17,45 @@ default[:strongswan][:server][:tunable][:ipsec][:conf][:esp] = '3des-sha256'
 
 # [conn] section for file '/etc/ipsec.conf'
 # left is the local side from the view of this machine
-default[:strongswan][:server][:tunable][:ipsec][:left][:firewall] = 'yes'
-default[:strongswan][:server][:tunable][:ipsec][:left][:id] = '@us-east-1-vpc.chimpy.us'
-default[:strongswan][:server][:tunable][:ipsec][:left][:left] = '%defaultroute'
-default[:strongswan][:server][:tunable][:ipsec][:left][:leftauth] = 'psk'
-default[:strongswan][:server][:tunable][:ipsec][:left][:sourceip] = '10.107.9.0/24'
-default[:strongswan][:server][:tunable][:ipsec][:left][:subnet] = '10.107.9.0/24'
+[ default[:strongswan][:server][:tunable][:ipsec][:left] ].each do |section|
+	section[:firewall] = 'yes'
+	section[:id] = '@moon.strongswan.org'
+	section[:left] = '%defaultroute'
+	section[:leftauth] = 'psk'
+	section[:sourceip] = '10.107.9.0/24'
+	section[:subnet] = '10.107.9.0/24'
+end
 
-default[:strongswan][:client][:tunable][:ipsec][:left][:firewall] = 'yes'
-default[:strongswan][:client][:tunable][:ipsec][:left][:id] = '<Put your local private ip here>'
-default[:strongswan][:client][:tunable][:ipsec][:left][:left] = '%defaultroute'
-default[:strongswan][:client][:tunable][:ipsec][:left][:leftauth] = 'psk'
-default[:strongswan][:client][:tunable][:ipsec][:left][:sourceip] = '%config'
-default[:strongswan][:client][:tunable][:ipsec][:left][:subnet] = '10.107.9.0/24'
+[ default[:strongswan][:client][:tunable][:ipsec][:left] ].each do |section|
+	section[:firewall] = 'yes'
+	section[:id] = 'client@strongswan.org'
+	section[:left] = '%defaultroute'
+	section[:leftauth] = 'psk'
+	section[:sourceip] = '%config'
+	section[:subnet] = '10.107.0.0/24'
+end
 
 # right is the remote side from the view of this machine
-default[:strongswan][:server][:tunable][:ipsec][:right][:firewall] = 'no'
-default[:strongswan][:server][:tunable][:ipsec][:right][:right] = '%any'
-default[:strongswan][:server][:tunable][:ipsec][:right][:rightauth] = 'psk'
-default[:strongswan][:server][:tunable][:ipsec][:right][:rightauth2] = 'xauth'
-default[:strongswan][:server][:tunable][:ipsec][:right][:sourceip] = '10.107.9.0/24'
-default[:strongswan][:server][:tunable][:ipsec][:right][:subnet] = '10.107.0.0/24'
+[ default[:strongswan][:server][:tunable][:ipsec][:right] ].each do |section|
+	section[:firewall] = 'yes'
+	section[:id] = 'client@strongswan.org'
+	section[:right] = '%defaultroute'
+	section[:rightauth] = 'psk'
+	section[:rightauth2] = 'xauth'
+	section[:sourceip] = '%config'
+	section[:subnet] = '10.107.9.0/24'
+end
 
-default[:strongswan][:client][:tunable][:ipsec][:right][:firewall] = 'no'
-default[:strongswan][:client][:tunable][:ipsec][:right][:id] = '@us-east-1-vpc.chimpy.us'
-default[:strongswan][:client][:tunable][:ipsec][:right][:right] = '%defaultroute'
-default[:strongswan][:client][:tunable][:ipsec][:right][:rightauth] = 'psk'
-default[:strongswan][:client][:tunable][:ipsec][:right][:sourceip] = '10.107.9.0/24'
-default[:strongswan][:client][:tunable][:ipsec][:right][:subnet] = '10.107.9.0/24'
+[ default[:strongswan][:client][:tunable][:ipsec][:right] ].each do |section|
+	section[:firewall] = 'no'
+	section[:id] = '@moon.strongswan.org'
+	section[:right] = '%defaultroute'
+	section[:rightauth] = 'psk'
+	section[:sourceip] = '10.107.9.0/24'
+	section[:subnet] = '10.107.9.0/24'
+end
 
-=begin
-We change the default NAT-transversal in '/etc/ipsec.conf' to 'yes' to allow
-generic clients to connect to the strongswan server. If you have noone using 
-Windows or OS X clients and no connections from iPhone's, you may turn this 
-setting off again.
-=end
+# Ensure NAT-transversal is enabled in '/etc/ipsec.conf' 
 default[:strongswan][:server][:tunable][:ipsec][:conf][:natt] = "yes"
 
 # attributes needed for '/etc/ipsec.secrets'
@@ -61,8 +65,8 @@ default[:strongswan][:server][:tunable][:ipsec][:psk] = 'wehavenobananastoday'
 # default[:strongswan][:server][:tunable][:ipsec][:]
 
 # attributes needed for '/etc/xl2tpd/xl2tpd.conf'
-default[:strongswan][:server][:tunable][:l2tp][:ip_min] = '10.107.9.51'
-default[:strongswan][:server][:tunable][:l2tp][:ip_max] = '10.107.9.100'
+default[:strongswan][:server][:tunable][:l2tp][:ip_min] = '10.107.0.51'
+default[:strongswan][:server][:tunable][:l2tp][:ip_max] = '10.107.0.100'
 
 # attributes needed for '/etc/ppp/options.xl2tpd'
 # default[:strongswan][:server][:tunable][:l2tp][:]
