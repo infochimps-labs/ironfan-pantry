@@ -26,6 +26,7 @@ default[:strongswan][:server][:tunable][:ipsec][:conf][:esp] = '3des-sha256'
 	section[:subnet] = '10.107.9.0/24'
 end
 
+# left is the local side from the view of the client machine
 [ default[:strongswan][:client][:tunable][:ipsec][:left] ].each do |section|
 	section[:firewall] = 'yes'
 	section[:id] = 'client@strongswan.org'
@@ -46,6 +47,7 @@ end
 	section[:subnet] = '10.107.9.0/24'
 end
 
+# right is the remote side from the view of the client machine
 [ default[:strongswan][:client][:tunable][:ipsec][:right] ].each do |section|
 	section[:firewall] = 'no'
 	section[:id] = '@moon.strongswan.org'
