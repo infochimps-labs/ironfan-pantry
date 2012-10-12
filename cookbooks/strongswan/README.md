@@ -30,8 +30,11 @@ This layered approach can be explained thusly:
 Names for recipes in layer one are taken from the names of the suite of tests performed by the creators of StrongSwan itself which are listed at [ikev1](http://www.strongswan.org/uml/testresults/ikev1/) and [ikev2](http://www.strongswan.org/uml/testresults5/ikev2/). Our sanest default for layer one is `nat-psk`. I actually recommend using `xauth-id-psk-config` as it forces a virtual IP pool for the public computers from within StrongSwan.
 
 Names for template follow this format: 
-	<recipename>.[client].<filename>.erb => `nat-psk.ipsec.conf.erb` or
-											`nat-psk.client.ipsec.conf.erb` 
+
+	<recipename>/[client].<filename>.erb; for example:
+
+		`nat-psk/ipsec.conf.erb` or `nat-psk/client.ipsec.conf.erb` 
+		`nat-id-psk-config/ipsec.conf.erb` or `nat-id-psk-config/client.ipsec.conf.erb` 
 	
 
 ## Requirements
