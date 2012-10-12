@@ -13,21 +13,25 @@ I have broken down the installation of the StrongSwan IPSEC daemon into 4 sepera
 
 This layered approach can be explained thusly:
 
-	**Layer One** contains basic connection types; one, and only one, of these will be used for any specific VPN.
+	**Layer One** 
+		contains basic connection types; one, and only one, of these will be used for any specific VPN.
 
-	**Layer Two** enables a given service and makes it available to the other recipes.
+	**Layer Two** 
+		enables a given service and makes it available to the other recipes.
 
-	**Layer Three** is reserved for optional recipes which extend and/or add to recipes in Layer One.
+	**Layer Three** 
+		is reserved for optional recipes which extend and/or add to recipes in Layer One.
 
-	**Layer Four** is the final step and holds things such as generating client configs and final steps not performed by other recipes.
+	**Layer Four** 
+		is the final step and holds things such as generating client configs and final steps not performed by other recipes.
 
 Simplified Naming Convention 
 
-	Names for recipes in layer one are taken from the names of the suite of tests performed by the creators of StrongSwan itself which are listed at [ikev1](http://www.strongswan.org/uml/testresults/ikev1/) and [ikev2](http://www.strongswan.org/uml/testresults5/ikev2/). Our sanest default for layer one is `nat-psk`. I actually recommend using `xauth-id-psk-config` as it forces a virtual IP pool for the public computers from within StrongSwan.
+	Names for recipes in layer one are taken from the names of the suite of tests performed by the creators of StrongSwan itself which are listed at [ikev1](http://www.strongswan.org/uml/testresults/ikev1/) and [ikev2](http://www.strongswan.org/uml/testresults5/ikev2/). Our sanest default for layer one is 'nat-psk'. I actually recommend using 'xauth-id-psk-config' as it forces a virtual IP pool for the public computers from within StrongSwan.
 
 	Names for template follow this format: 
-		<recipename>.[client].<filename>.erb => `nat-psk.ipsec.conf.erb` or
-												`nat-psk.client.ipsec.conf.erb` 
+		<recipename>.[client].<filename>.erb => 'nat-psk.ipsec.conf.erb' or
+												'nat-psk.client.ipsec.conf.erb' 
 	
 
 ## Requirements
