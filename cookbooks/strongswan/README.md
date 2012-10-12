@@ -8,8 +8,8 @@ SO, on the server side left is local to the server and on the client left is loc
 =================
 
 I have broken down the installation of the StrongSwan IPSEC daemon into 4 seperate Layers to facilitate the widest range of VPN types. This modular approach makes VPN topologies a little easier to configure and ensures that this process is...
-	a) NOT cryptic and 
-	b) promotes rampant reuse of code, where possible
+		a) NOT cryptic and 
+		b) promotes rampant reuse of code, where possible
 
 This layered approach can be explained thusly:
 
