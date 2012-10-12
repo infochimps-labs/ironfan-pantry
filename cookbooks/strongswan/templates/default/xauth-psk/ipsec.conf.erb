@@ -3,7 +3,7 @@
 # basic configuration
 
 config setup
-    # nat_traversal=<%= node[:strongswan][:server][:tunable][:ipsec][:natt] %>
+    # nat_traversal=<%= node[:strongswan][:server][:tunable][:ipsec][:conf][:natt] %>
     
 conn %default
     ikelifetime=60m
@@ -11,16 +11,13 @@ conn %default
     rekeymargin=3m
     keyingtries=1
     keyexchange=<%= node[:strongswan][:server][:tunable][:ipsec][:keyexchange] %>
+    ike=<%= node[:strongswan][:server][:tunable][:ipsec][:conf][:ike] %>
+    esp=<%= node[:strongswan][:server][:tunable][:ipsec][:conf][:esp] %>
     pfs=no
-    authby=secret
-
+    
 conn client
-    ike=<%= node[:strongswan][:server][:tunable][:ipsec][:ike] %>
-    esp=<%= node[:strongswan][:server][:tunable][:ipsec][:esp] %>
-    # The "left" parameter is the gateway's private IP 
     left=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:left] %>
     leftid=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:id] %>
-    # We are protecting the entire VPC, not just this subnet
     leftsubnet=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:subnet] %>
     leftauth=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:leftauth] %>
     leftfirewall=yes

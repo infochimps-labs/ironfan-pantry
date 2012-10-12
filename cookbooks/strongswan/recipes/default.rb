@@ -20,8 +20,8 @@
 #
 
 # install strongswan from package
-package( "strongswan-ikev1"      ){ action :nothing }.run_action(:install)
-package( "strongswan-ikev2"      ){ action :nothing }.run_action(:install)
+package( "strongswan-ikev1" ){ action :nothing }.run_action(:install)
+package( "strongswan-ikev2" ){ action :nothing }.run_action(:install)
 
 directory '/etc/ipsec.d/client'
 directory '/etc/ipsec.d/client/nat-rw-psk'
