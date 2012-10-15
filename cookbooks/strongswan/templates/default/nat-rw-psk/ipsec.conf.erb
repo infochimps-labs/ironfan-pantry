@@ -3,16 +3,16 @@
 # basic configuration
 
 config setup
-    # nat_traversal=<%= node[:strongswan][:ipsec][:conf][:natt] %>
+    # nat_traversal=<%= node[:strongswan][:ipsec][:natt] %>
     
 conn %default
     ikelifetime=60m
     keylife=20m
     rekeymargin=3m
     keyingtries=1
-    keyexchange=<%= node[:strongswan][:ipsec][:conf][:keyexchange] %>
-    ike=<%= node[:strongswan][:ipsec][:conf][:ike] %>
-    esp=<%= node[:strongswan][:ipsec][:conf][:esp] %>
+    keyexchange=<%= node[:strongswan][:ipsec][:keyexchange] %>
+    ike=<%= node[:strongswan][:ipsec][:ike] %>
+    esp=<%= node[:strongswan][:ipsec][:esp] %>
     pfs=no
     authby=secret
 

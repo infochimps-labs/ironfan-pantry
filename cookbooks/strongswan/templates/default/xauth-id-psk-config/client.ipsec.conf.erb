@@ -11,20 +11,20 @@ conn %default
     rekeymargin=3m
     keyingtries=1
     keyexchange=<%= node[:strongswan][:ipsec][:keyexchange] %>
-    ike=<%= node[:strongswan][:client][ike] %>
-    esp=<%= node[:strongswan][:client][esp] %>
+    ike=<%= node[:strongswan][:client][:ike] %>
+    esp=<%= node[:strongswan][:client][:esp] %>
     pfs=no
 
 conn client
-    left=<%= node[:strongswan][:client][left][:left] %>
-    leftid=<%= node[:strongswan][:client][left][:id] %>
-    leftsubnet=<%= node[:strongswan][:client][left][:subnet] %>
-    leftauth=<%= node[:strongswan][:client][left][:auth] %>
+    left=<%= node[:strongswan][:client][:left][:route] %>
+    leftid=<%= node[:strongswan][:client][:left][:id] %>
+    leftsubnet=<%= node[:strongswan][:client][:left][:subnet] %>
+    leftauth=<%= node[:strongswan][:client][:left][:auth] %>
     leftfirewall=yes
-    right=<%= node[:strongswan][:client][right][:route] %>
-    rightsourceip=<%= node[:strongswan][:client][right][:route] %>
-    rightauth=<%= node[:strongswan][:client][right][:auth] %>
-    rightauth2=<%= node[:strongswan][:client][right][:auth2] %>
+    right=<%= node[:strongswan][:client][:right][:route] %>
+    rightsourceip=<%= node[:strongswan][:client][:right][:route] %>
+    rightauth=<%= node[:strongswan][:client][:right][:auth] %>
+    rightauth2=<%= node[:strongswan][:client][:right][:auth2] %>
     auto=add
 
 # Add connections here.
