@@ -34,9 +34,9 @@ template( "/etc/xl2tpd/xl2tpd.conf" ) do
 end
 
 %w{ options.xl2tpd chap-secrets }.each do |fname|
-	template "/etc/ppp/#{fname}" do
-		source "#{fname}.erb"
-	end
+  template "/etc/ppp/#{fname}" do
+    source "#{fname}.erb"
+  end
 end
 
 template( "/etc/sysctl.conf" ) do

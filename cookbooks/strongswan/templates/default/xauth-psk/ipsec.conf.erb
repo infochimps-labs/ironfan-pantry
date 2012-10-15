@@ -3,27 +3,27 @@
 # basic configuration
 
 config setup
-    # nat_traversal=<%= node[:strongswan][:server][:tunable][:ipsec][:conf][:natt] %>
+    # nat_traversal=<%= node[:strongswan][:ipsec][:conf][:natt] %>
     
 conn %default
     ikelifetime=60m
     keylife=20m
     rekeymargin=3m
     keyingtries=1
-    keyexchange=<%= node[:strongswan][:server][:tunable][:ipsec][:keyexchange] %>
-    ike=<%= node[:strongswan][:server][:tunable][:ipsec][:conf][:ike] %>
-    esp=<%= node[:strongswan][:server][:tunable][:ipsec][:conf][:esp] %>
+    keyexchange=<%= node[:strongswan][:ipsec][:keyexchange] %>
+    ike=<%= node[:strongswan][:ipsec][:conf][:ike] %>
+    esp=<%= node[:strongswan][:ipsec][:conf][:esp] %>
     pfs=no
     
 conn client
-    left=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:left] %>
-    leftid=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:id] %>
-    leftsubnet=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:subnet] %>
-    leftauth=<%= node[:strongswan][:server][:tunable][:ipsec][:left][:leftauth] %>
+    left=<%= node[:strongswan][:ipsec][:left][:route] %>
+    leftid=<%= node[:strongswan][:ipsec][:left][:id] %>
+    leftsubnet=<%= node[:strongswan][:ipsec][:left][:subnet] %>
+    leftauth=<%= node[:strongswan][:ipsec][:left][:auth] %>
     leftfirewall=yes
-    right=<%= node[:strongswan][:server][:tunable][:ipsec][:right][:right] %>
-    rightauth=<%= node[:strongswan][:server][:tunable][:ipsec][:right][:rightauth] %>
-    rightauth2=<%= node[:strongswan][:server][:tunable][:ipsec][:right][:rightauth2] %>
+    right=<%= node[:strongswan][:ipsec][:right][:route] %>
+    rightauth=<%= node[:strongswan][:ipsec][:right][:auth] %>
+    rightauth2=<%= node[:strongswan][:ipsec][:right][:auth2] %>
     auto=add
 
 # Add connections here.

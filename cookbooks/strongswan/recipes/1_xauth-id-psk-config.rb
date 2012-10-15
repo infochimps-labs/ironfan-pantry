@@ -26,17 +26,17 @@ announce( :strongswan, :server )
 
 # manipulate config files to do our bidding
 %w{ ipsec.conf ipsec.secrets strongswan.conf }.each do |fname|
-	template "/etc/#{fname}" do
-		source "xauth-id-psk-config/#{fname}.erb"
-		notifies :reload, "service[ipsec]", :delayed
-	end
+  template "/etc/#{fname}" do
+    source "xauth-id-psk-config/#{fname}.erb"
+    notifies :reload, "service[ipsec]", :delayed
+  end
 end
 
 directory '/etc/ipsec.d/client'
 directory '/etc/ipsec.d/client/xauth-id-psk-config'
 
 %w{ ipsec.conf ipsec.secrets }.each do |fname|
-	template "/etc/ipsec.d/client/xauth-id-psk-config/#{fname}" do
-		source "xauth-id-psk-config/client.#{fname}.erb"
-	end
+  template "/etc/ipsec.d/client/xauth-id-psk-config/#{fname}" do
+    source "xauth-id-psk-config/client.#{fname}.erb"
+  end
 end

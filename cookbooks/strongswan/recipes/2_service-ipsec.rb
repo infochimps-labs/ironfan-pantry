@@ -21,7 +21,7 @@
 
 # ipsec service definition
 service "ipsec" do
-  service_name node[:strongswan][:server][:service_name][:ipsec]
+  service_name node[:strongswan][:ipsec][:service_name]
   supports :status => true, :restart => true, :reload => true
   action [ :enable ]
 end

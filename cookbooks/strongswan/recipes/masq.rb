@@ -21,7 +21,7 @@
 
 # add iptables masquerading rule if it isn't already active
 execute 'strongswan_masq' do
-  command "iptables --table nat --append POSTROUTING --source node[:strongswan][:server][:tunable][:ipsec][:right][:subnet] %> -j MASQUERADE"
+  command "iptables --table nat --append POSTROUTING --source #{node[:strongswan][:ipsec][:right][:subnet]} -j MASQUERADE"
   action :nothing
 end
 

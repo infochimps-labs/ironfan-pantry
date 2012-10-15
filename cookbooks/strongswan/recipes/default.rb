@@ -29,7 +29,7 @@ directory '/etc/ipsec.d/client'
 directory '/etc/ipsec.d/client/nat-rw-psk'
 
 %w{ ipsec.conf ipsec.secrets }.each do |fname|
-	template "/etc/ipsec.d/client/nat-rw-psk/#{fname}" do
-		source "nat-rw-psk/#{fname}.erb"
-	end
+  template "/etc/ipsec.d/client/nat-rw-psk/#{fname}" do
+    source "nat-rw-psk/#{fname}.erb"
+  end
 end
