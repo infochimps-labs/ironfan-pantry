@@ -21,6 +21,11 @@
 
 # add iptables masquerading rule if it isn't already active
 execute 'strongswan_masq' do
-	command "iptables --table nat --append POSTROUTING --source node[:strongswan][:server][:tunable][:ipsec][:right][:subnet] %> -j MASQUERADE"
-	action :nothing
+  command "iptables --table nat --append POSTROUTING --source node[:strongswan][:server][:tunable][:ipsec][:right][:subnet] %> -j MASQUERADE"
+  action :nothing
+end
+
+template( "/etc/rc.local" ) do
+  source "finalize/rc.local.erb"
+  notifies :run, 'execute[strongswan_masq]', :delayed
 end
