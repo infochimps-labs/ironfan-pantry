@@ -1,4 +1,4 @@
-rootLogger: <%= node[:elasticsearch][:log_level][:default] %>, console, file
+rootLogger: INFO, console, file
 
 #
 # Put the name of any module -- using its config path -- in the section below.
@@ -31,7 +31,7 @@ logger:
     action:
       shard:    <%= node[:elasticsearch][:log_level][:action_shard] %>
 
-  gateway:      <%= node[:elasticsearch][:log_level][:default] %>
+  gateway:      <%= node[:elasticsearch][:log_level][:gateway] %>
   jmx:          <%= node[:elasticsearch][:log_level][:default] %>
   node:         <%= node[:elasticsearch][:log_level][:default] %>
   plugins:      <%= node[:elasticsearch][:log_level][:default] %>
