@@ -19,8 +19,19 @@
 # limitations under the License.
 #
 
-include_recipe "strongswan::2_service-ipsec"
-include_recipe "strongswan::2_service-xl2tpd"
+include_recipe "strongswan::ipsec"
+
+# install xl2tpd from package
+package "xl2tpd"
+
+# xl2tpd service definition
+service "xl2tpd" do
+  service_name node[:strongswan][:l2tp][:service_name]
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable ]
+end
+
+announce( :strongswan, :xl2tpd )
 
 # manipulate various config files to do our bidding
 template( "/etc/xl2tpd/xl2tpd.conf" ) do

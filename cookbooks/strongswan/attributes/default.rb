@@ -11,6 +11,9 @@ default[:strongswan][:client][:conf_dir] = '/etc/ipsec-clients.d'
 default[:strongswan][:ipsec][:service_name] = 'ipsec'
 default[:strongswan][:l2tp][:service_name] = 'xl2tpd'
 
+## scenario choice - currently, xauth-psk and xauth-id-psk-config are only ones
+default[:strongswan][:scenario] = 'xauth-id-psk-config'
+
 ## for '/etc/ipsec.conf' on server
 default[:strongswan][:ipsec][:keyexchange] = 'ikev1'
 default[:strongswan][:ipsec][:ike] = '3des-sha256-modp1536'

@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
-# Description:: Activates service for StrongSwan(IPSEC).
-# Recipe:: 2_service-ipsec
+# Description:: Installs and launches a StrongSwan server.
+# Recipe:: 1_xauth-id-psk-config
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps
@@ -36,3 +36,24 @@ service "ipsec" do
 end
 
 announce( :strongswan, :ipsec )
+
+scenario = node[:strongswan][:scenario]
+
+# manipulate config files to do our bidding
+%w{ ipsec.conf ipsec.secrets strongswan.conf }.each do |fname|
+  template "/etc/#{fname}" do
+    source "#{scenario}/#{fname}.erb"
+    notifies :reload, "service[ipsec]", :delayed
+  end
+end
+
+client_dir = "#{node[:strongswan][:client][:conf_dir]}/#{scenario}"
+directory client_dir do
+  recursive true
+end
+
+%w{ ipsec.conf ipsec.secrets }.each do |fname|
+  template "#{client_dir}/#{fname}" do
+    source "#{scenario}/client.#{fname}.erb"
+  end
+end
