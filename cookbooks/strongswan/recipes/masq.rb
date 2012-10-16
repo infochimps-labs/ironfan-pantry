@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: strongswan
-# Description:: Installs l2tp ipsec support for StrongSwan server.
+# Description:: Activates service for StrongSwan(IPSEC).
 # Recipe:: masq
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
@@ -18,12 +18,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-template( "/etc/rc.local" ) do
-  source "rc.local.erb"
-  notifies :run, 'execute[strongswan_masq]', :immediate
+
+# add iptables masquerading rule if it isn't already active
+execute 'strongswan_masq' do
+  command "iptables --table nat --append POSTROUTING --source #{node[:strongswan][:ipsec][:right][:subnet]} -j MASQUERADE"
+  action :nothing
 end
 
-execute 'strongswan_masq' do
-	command "iptables --table nat --append POSTROUTING --source #{node['strongswan']['ipsec']['tunable']['right']['subnet']} -j MASQUERADE"
-	action :nothing
+template( "/etc/rc.local" ) do
+  source "finalize/rc.local.erb"
+  notifies :run, 'execute[strongswan_masq]', :delayed
 end

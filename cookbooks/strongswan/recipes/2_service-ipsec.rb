@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
-# Description:: Installs l2tp ipsec support for StrongSwan server.
-# Recipe:: xl2tpd
+# Description:: Activates service for StrongSwan(IPSEC).
+# Recipe:: 2_service-ipsec
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps
@@ -19,26 +19,9 @@
 # limitations under the License.
 #
 
-include_recipe "strongswan::service-ipsec"
-
-announce( 'strongswan', 'l2tp' )
-
-# install xl2tpd from package
-package "xl2tpd" 
-
-include_recipe "strongswan::service-xl2tpd"
-
-# manipulate various config files to do our bidding
-template( "/etc/xl2tpd/xl2tpd.conf" ) do
-  source "xl2tpd.conf.erb"
-end
-
-%w{ options.xl2tpd chap-secrets }.each do |fname|
-  template "/etc/ppp/#{fname}" do
-    source "#{fname}.erb"
-  end
-end
-
-template( "/etc/sysctl.conf" ) do
-  source "sysctl.conf.erb"
+# ipsec service definition
+service "ipsec" do
+  service_name node[:strongswan][:ipsec][:service_name]
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable ]
 end

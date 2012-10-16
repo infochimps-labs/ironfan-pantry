@@ -42,7 +42,8 @@ if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key] && node[:cloud]
     aws_access_key_id     aws[:aws_access_key_id]
     aws_secret_access_key aws[:aws_secret_access_key]
   end
-
+  node[:route53][:fqdn] = public_fqdn
+  
   private_hostname    =  "#{public_node_name}-internal".gsub(/[^a-zA-Z0-9\-]/, '-')
   private_fqdn        = [private_hostname, node[:route53][:zone]].compact.join(".")
 

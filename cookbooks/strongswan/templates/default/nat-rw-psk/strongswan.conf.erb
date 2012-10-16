@@ -7,6 +7,31 @@ charon {
 
     # plugins to load in charon
     # load = aes des sha1 md5 sha2 hmac gmp random pubkey xcbc x509 stroke
+    
+    # Install  routes  into  a  separate routing table for established IPsec tunnels
+    charon.install_routes = yes
+    
+    # Install virtual IP addresses
+    charon.install_virtual_ip = yes
+
+    # NAT keep alive interval
+    charon.keep_alive = 30s
+
+    # Initiate CHILD_SA within existing IKE_SAs
+    charon.reuse_ikesa = yes
+    
+    # Numerical routing table to install routes to
+    charon.routing_table = <need route table>
+
+    # Priority of the routing table
+    charon.routing_table_prio = <need this set>
+
+    # DNS servers assigned to peer via configuration payload (CP)
+    charon.dns1 = <useful dns server ip1>
+    charon.dns2 = <useful dns server ip2>
+
+    # Enable multiple authentication exchanges (RFC 4739)
+    charon.multiple_authentication = yes
 
         filelog {
             /var/log/charon.log {
