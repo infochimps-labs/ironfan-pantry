@@ -19,9 +19,20 @@
 # limitations under the License.
 #
 
+# install strongswan from package
+package "strongswan-ikev1"      # the old pluto daemon
+package "strongswan-ikev2"      # the new charon daemon
+# Note: future versions will use the charon daemon only; watch out for
+#   changed package names and configuration formats on upgrade
+
+# package( "strongswan-ikev1" ){ action :nothing }.run_action(:install)
+# package( "strongswan-ikev2" ){ action :nothing }.run_action(:install)
+
 # ipsec service definition
 service "ipsec" do
   service_name node[:strongswan][:ipsec][:service_name]
   supports :status => true, :restart => true, :reload => true
   action [ :enable ]
 end
+
+announce( :strongswan, :ipsec )

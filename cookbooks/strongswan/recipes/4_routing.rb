@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
-# Description:: Installs and launches a StrongSwan server.
-# Recipe:: 1_nat-rw-psk
+# Description:: Installs l2tp ipsec support for StrongSwan server.
+# Recipe:: 4_masq-rule
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps
@@ -19,23 +19,18 @@
 # limitations under the License.
 #
 
-include_recipe "strongswan::2_service-ipsec"
-
-# manipulate config files to do our bidding
-%w{ ipsec.conf ipsec.secrets strongswan.conf }.each do |fname|
-  template "/etc/#{fname}" do
-    source "nat-rw-psk/#{fname}.erb"
-    notifies :reload, "service[ipsec]", :delayed
-  end
+# Add IP forwarding to sysctl
+template( "/etc/sysctl.conf" ) do
+  source "routing/sysctl.conf.erb"
 end
 
-client_dir = "#{node[:strongswan][:client][:conf_dir]}/nat-rw-psk"
-directory client_dir do
-  recursive true
+# add iptables masquerading rule if it isn't already active
+execute 'strongswan_masq' do
+  command "iptables --table nat --append POSTROUTING --source #{node[:strongswan][:ipsec][:right][:subnet]} -j MASQUERADE"
+  action :nothing
 end
 
-%w{ ipsec.conf ipsec.secrets }.each do |fname|
-  template "#{client_dir}/#{fname}" do
-    source "nat-rw-psk/client.#{fname}.erb"
-  end
+template( "/etc/rc.local" ) do
+  source "routing/rc.local.erb"
+  notifies :run, 'execute[strongswan_masq]', :delayed
 end

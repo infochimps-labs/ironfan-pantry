@@ -19,10 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe "strongswan::default"
 include_recipe "strongswan::2_service-ipsec"
-
-announce( :strongswan, :server )
 
 # manipulate config files to do our bidding
 %w{ ipsec.conf ipsec.secrets strongswan.conf }.each do |fname|
@@ -32,11 +29,13 @@ announce( :strongswan, :server )
   end
 end
 
-directory '/etc/ipsec.d/client'
-directory '/etc/ipsec.d/client/xauth-id-psk-config'
+client_dir = "#{node[:strongswan][:client][:conf_dir]}/xauth-id-psk-config"
+directory client_dir do
+  recursive true
+end
 
 %w{ ipsec.conf ipsec.secrets }.each do |fname|
-  template "/etc/ipsec.d/client/xauth-id-psk-config/#{fname}" do
+  template "#{client_dir}/#{fname}" do
     source "xauth-id-psk-config/client.#{fname}.erb"
   end
 end
