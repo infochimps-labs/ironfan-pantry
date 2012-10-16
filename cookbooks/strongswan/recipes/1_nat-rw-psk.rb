@@ -19,7 +19,6 @@
 # limitations under the License.
 #
 
-include_recipe "strongswan::default"
 include_recipe "strongswan::2_service-ipsec"
 
 # manipulate config files to do our bidding
@@ -30,11 +29,13 @@ include_recipe "strongswan::2_service-ipsec"
   end
 end
 
-directory '/etc/ipsec.d/client'
-directory '/etc/ipsec.d/client/nat-rw-psk'
+client_dir = "#{node[:strongswan][:client][:conf_dir]}/nat-rw-psk"
+directory client_dir do
+  recursive true
+end
 
 %w{ ipsec.conf ipsec.secrets }.each do |fname|
-  template "/etc/ipsec.d/client/nat-rw-psk/#{fname}" do
+  template "#{client_dir}/#{fname}" do
     source "nat-rw-psk/client.#{fname}.erb"
   end
 end
