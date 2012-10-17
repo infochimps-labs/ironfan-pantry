@@ -19,14 +19,19 @@
 # limitations under the License.
 #
 
-include_recipe "strongswan::2_service-ipsec"
-
-announce( :strongswan, :server )
+include_recipe "strongswan::ipsec"
 
 # install xl2tpd from package
-package "xl2tpd" 
+package "xl2tpd"
 
-include_recipe "strongswan::service-xl2tpd"
+# xl2tpd service definition
+service "xl2tpd" do
+  service_name node[:strongswan][:l2tp][:service_name]
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable ]
+end
+
+announce( :strongswan, :xl2tpd )
 
 # manipulate various config files to do our bidding
 template( "/etc/xl2tpd/xl2tpd.conf" ) do
@@ -39,11 +44,13 @@ end
   end
 end
 
-directory '/etc/ipsec.d/client'
-directory '/etc/ipsec.d/client/l2tp-nat'
+client_dir = "#{node[:strongswan][:client][:conf_dir]}/l2tp-nat"
+directory client_dir do
+  recursive true
+end
 
 %w{ ipsec.conf ipsec.secrets }.each do |fname|
-  template "/etc/ipsec.d/client/l2tp-nat/#{fname}" do
+  template "#{client_dir}/#{fname}" do
     source "l2tp-nat/client.#{fname}.erb"
   end
 end

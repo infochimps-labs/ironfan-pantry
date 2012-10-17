@@ -19,24 +19,41 @@
 # limitations under the License.
 #
 
-include_recipe "strongswan::default"
-include_recipe "strongswan::2_service-ipsec"
+# install strongswan from package
+package "strongswan-ikev1"      # the old pluto daemon
+package "strongswan-ikev2"      # the new charon daemon
+# Note: future versions will use the charon daemon only; watch out for
+#   changed package names and configuration formats on upgrade
 
-announce( :strongswan, :server )
+# package( "strongswan-ikev1" ){ action :nothing }.run_action(:install)
+# package( "strongswan-ikev2" ){ action :nothing }.run_action(:install)
+
+# ipsec service definition
+service "ipsec" do
+  service_name node[:strongswan][:ipsec][:service_name]
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable ]
+end
+
+announce( :strongswan, :ipsec )
+
+scenario = node[:strongswan][:scenario]
 
 # manipulate config files to do our bidding
 %w{ ipsec.conf ipsec.secrets strongswan.conf }.each do |fname|
   template "/etc/#{fname}" do
-    source "xauth-id-psk-config/#{fname}.erb"
+    source "#{scenario}/#{fname}.erb"
     notifies :reload, "service[ipsec]", :delayed
   end
 end
 
-directory '/etc/ipsec.d/client'
-directory '/etc/ipsec.d/client/xauth-id-psk-config'
+client_dir = "#{node[:strongswan][:client][:conf_dir]}/#{scenario}"
+directory client_dir do
+  recursive true
+end
 
 %w{ ipsec.conf ipsec.secrets }.each do |fname|
-  template "/etc/ipsec.d/client/xauth-id-psk-config/#{fname}" do
-    source "xauth-id-psk-config/client.#{fname}.erb"
+  template "#{client_dir}/#{fname}" do
+    source "#{scenario}/client.#{fname}.erb"
   end
 end

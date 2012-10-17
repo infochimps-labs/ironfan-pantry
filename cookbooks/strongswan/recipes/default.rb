@@ -18,18 +18,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-# install strongswan from package
-package( "strongswan-ikev1" ){ action :nothing }.run_action(:install)
-package( "strongswan-ikev2" ){ action :nothing }.run_action(:install)
-
-# remove everything below this line once the currently (10/12/2012) running machines are taken down
-# it is needed for the running machines as part of the original direction this cookbook was taking.
-directory '/etc/ipsec.d/client'
-directory '/etc/ipsec.d/client/nat-rw-psk'
-
-%w{ ipsec.conf ipsec.secrets }.each do |fname|
-  template "/etc/ipsec.d/client/nat-rw-psk/#{fname}" do
-    source "nat-rw-psk/#{fname}.erb"
-  end
-end

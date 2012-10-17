@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
 # Description:: Installs l2tp ipsec support for StrongSwan server.
-# Recipe:: xl2tpd
+# Recipe:: 4_masq-rule
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps
@@ -19,26 +19,18 @@
 # limitations under the License.
 #
 
-include_recipe "strongswan::service-ipsec"
-
-announce( 'strongswan', 'l2tp' )
-
-# install xl2tpd from package
-package "xl2tpd" 
-
-include_recipe "strongswan::service-xl2tpd"
-
-# manipulate various config files to do our bidding
-template( "/etc/xl2tpd/xl2tpd.conf" ) do
-  source "xl2tpd.conf.erb"
-end
-
-%w{ options.xl2tpd chap-secrets }.each do |fname|
-  template "/etc/ppp/#{fname}" do
-    source "#{fname}.erb"
-  end
-end
-
+# Add IP forwarding to sysctl
 template( "/etc/sysctl.conf" ) do
-  source "sysctl.conf.erb"
+  source "routing/sysctl.conf.erb"
+end
+
+# add iptables masquerading rule if it isn't already active
+execute 'strongswan_masq' do
+  command "iptables --table nat --append POSTROUTING --source #{node[:strongswan][:ipsec][:right][:subnet]} -j MASQUERADE"
+  action :nothing
+end
+
+template( "/etc/rc.local" ) do
+  source "routing/rc.local.erb"
+  notifies :run, 'execute[strongswan_masq]', :delayed
 end
