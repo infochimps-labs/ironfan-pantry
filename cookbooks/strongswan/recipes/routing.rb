@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
-# Description:: Installs l2tp ipsec support for StrongSwan server.
-# Recipe:: 4_masq-rule
+# Description:: Installs local NAT routing support for StrongSwan server.
+# Recipe:: routing
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps
@@ -26,7 +26,7 @@ end
 
 # add iptables masquerading rule if it isn't already active
 execute 'strongswan_masq' do
-  command "iptables --table nat --append POSTROUTING --source #{node[:strongswan][:ipsec][:right][:subnet]} -j MASQUERADE"
+  command "iptables --table nat --append POSTROUTING --source #{node[:strongswan][:ipsec][:local][:subnet]} -j MASQUERADE"
   action :nothing
 end
 

@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
 # Description:: Installs l2tp ipsec support for StrongSwan server.
-# Recipe:: 3_l2tp-nat
+# Recipe:: xl2tp
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps

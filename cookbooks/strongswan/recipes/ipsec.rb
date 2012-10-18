@@ -1,7 +1,7 @@
 #
 # Cookbook Name:: strongswan
 # Description:: Installs and launches a StrongSwan server.
-# Recipe:: 1_xauth-id-psk-config
+# Recipe:: ipsec
 # Author:: Jerry Jackson (<jerry.w.jackson@gmail.com>)
 #
 # Copyright 2012, Infochimps

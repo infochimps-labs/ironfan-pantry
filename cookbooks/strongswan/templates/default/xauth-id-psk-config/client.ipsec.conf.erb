@@ -1,32 +1,28 @@
 # ipsec.conf - strongSwan IPsec configuration file
 
-# basic configuration
-
 config setup
-    # nat_traversal=<%= node[:strongswan][:ipsec][:natt] %>
+    nat_traversal=<%=   node[:strongswan][:ipsec][:natt] %>
+    charonstart=no
+    plutostart=yes
     
 conn %default
     ikelifetime=60m
     keylife=20m
     rekeymargin=3m
     keyingtries=1
-    keyexchange=<%= node[:strongswan][:ipsec][:keyexchange] %>
-    ike=<%= node[:strongswan][:client][:ike] %>
-    esp=<%= node[:strongswan][:client][:esp] %>
+    keyexchange=<%=     node[:strongswan][:ipsec][:keyexchange] %>
+    ike=<%=             node[:strongswan][:ipsec][:ike] %>
+    esp=<%=             node[:strongswan][:ipsec][:esp] %>
     pfs=no
+    authby=secret
 
 conn client
-    left=<%= node[:strongswan][:client][:left][:route] %>
-    leftid=<%= node[:strongswan][:client][:left][:id] %>
-    leftsubnet=<%= node[:strongswan][:client][:left][:subnet] %>
-    leftauth=<%= node[:strongswan][:client][:left][:auth] %>
+    left=%defaultroute
+    leftsourceip=%config
+    leftid=<%=          node[:strongswan][:ipsec][:remote][:id] %>
     leftfirewall=yes
-    right=<%= node[:strongswan][:client][:right][:route] %>
-    rightsourceip=<%= node[:strongswan][:client][:right][:route] %>
-    rightauth=<%= node[:strongswan][:client][:right][:auth] %>
-    rightauth2=<%= node[:strongswan][:client][:right][:auth2] %>
-    auto=add
-
-# Add connections here.
-
-# include /var/lib/strongswan/ipsec.conf.inc
+    right=<%=           node[:strongswan][:ipsec][:public_ip] %>
+    rightsourceip=%any
+    rightsubnet=<%=     node[:strongswan][:ipsec][:local][:subnet] %>
+    rightid=<%=         node[:strongswan][:ipsec][:local][:id] %>
+    auto=start
