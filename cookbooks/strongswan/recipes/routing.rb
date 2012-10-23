@@ -19,18 +19,27 @@
 # limitations under the License.
 #
 
-# Add IP forwarding to sysctl
-template( "/etc/sysctl.conf" ) do
-  source "routing/sysctl.conf.erb"
+# FIXME: This is actually a whole separate concern from StrongSwan, and
+#   deserves its own cookbook.
+
+# Set up IPv4 packet forwarding
+execute "ipv4_forwarding" do
+  command "echo 1 > /proc/sys/net/ipv4/ip_forward"
+  action :nothing
 end
 
-# add iptables masquerading rule if it isn't already active
-execute 'strongswan_masq' do
+template( "/etc/sysctl.conf" ) do
+  source "routing/sysctl.conf.erb"
+  notifies :run, 'execute[ipv4_forwarding]', :delayed
+end
+
+# Add iptables masquerading rule
+execute 'iptables_masquerade' do
   command "iptables --table nat --append POSTROUTING --source #{node[:strongswan][:ipsec][:local][:subnet]} -j MASQUERADE"
   action :nothing
 end
 
 template( "/etc/rc.local" ) do
   source "routing/rc.local.erb"
-  notifies :run, 'execute[strongswan_masq]', :delayed
+  notifies :run, 'execute[iptables_masquerade]', :delayed
 end
