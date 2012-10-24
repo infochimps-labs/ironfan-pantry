@@ -2,7 +2,7 @@ maintainer       "Benjamin Black"
 maintainer_email "b@b3k.us"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.1.1"
+version          "3.1.2"
 
 description      "Redis: a fast, flexible datastore offering an extremely useful set of data structure primitives"
 
