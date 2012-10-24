@@ -20,13 +20,16 @@
 #
 
 include_recipe 'silverware'
-include_recipe 'chef_gem'
 
-chef_gem 'rubix' do
-  version ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
-end
-gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
-require 'rubix'
+# FLIP FIX THIS -- it breaks on new builds.  chef_gem is definitely
+# the future, but the code in libraries/rubix_connection.rb:21 used to
+# do a similar thing.  Please look ther
+# include_recipe 'chef_gem'
+# chef_gem 'rubix' do
+#   version ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
+# end
+# gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
+# require 'rubix'
 
 # Create zabbix User
 daemon_user(:zabbix) do
