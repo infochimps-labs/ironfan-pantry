@@ -7,7 +7,7 @@ lock
 hide-password
 modem
 debug
-hostname <%= (node[:route53][:node_name] || node.name).to_s %>
+hostname <%= (node[:strongswan][:ipsec][:local][:id] || node[:route53][:node_name] || node.name).to_s %>
 proxyarp
 lcp-echo-interval 30
 lcp-echo-failure 4

@@ -27,7 +27,6 @@ package "strongswan-ikev2"      # the new charon daemon
 
 # ipsec service definition
 service "ipsec" do
-  service_name node[:strongswan][:ipsec][:service_name]
   supports :status => true, :restart => true, :reload => true
   action [ :enable ]
 end
@@ -40,25 +39,3 @@ end
 end
 
 announce( :strongswan, :ipsec )
-
-# Set up the per-scenario connection configurations
-node[:strongswan][:scenarios].each do |scenario|
-
-  available = "/etc/ipsec.d/conn-available/"
-  enabled = "/etc/ipsec.d/conn-enabled/"
-  scenario_dir "#{available}/#{scenario}"
-
-  directory available
-  directory enabled
-  directory scenario_dir
-  link "#{enabled}/#{scenario}" { to scenario_dir }
-
-  %w{ server.ipsec.conf server.ipsec.secrets
-      client.ipsec.conf client.ipsec.secrets }.each do |fname|
-    template "#{scenario_dir}/#{fname}" do
-      source "#{scenario}/#{fname}.erb"
-      notifies :reload, "service[ipsec]", :delayed
-    end
-  end
-
-end

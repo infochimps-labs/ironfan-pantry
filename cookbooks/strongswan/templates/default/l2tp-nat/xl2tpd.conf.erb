@@ -3,7 +3,7 @@ ipsec saref = no
 
 [lns default]
 ip range = <%= node[:strongswan][:l2tp][:ip_min] %>-<%= node[:strongswan][:l2tp][:ip_max] %>
-local ip = <%= node[:strongswan][:ipsec][:left][:ip] %>
+local ip = <%= node[:strongswan][:ipsec][:private_ip] %>
 refuse chap = yes
 refuse pap = yes
 require authentication = yes

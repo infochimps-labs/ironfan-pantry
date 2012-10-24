@@ -2,19 +2,19 @@
 # Cookbook Name:: strongswan
 # Attributes:: default
 
-# set our config dir so it may be changed if the need ever does arise
-default[:strongswan][:ipsec][:conf_dir]         = '/etc'
-default[:strongswan][:l2tp][:conf_dir]          = '/etc'
-default[:strongswan][:client][:conf_dir]        = '/etc/ipsec-clients.d'
-
-# enable ipsec and xl2tpd services so that we can start, stop and reload them
-default[:strongswan][:ipsec][:service_name]     = 'ipsec'
-default[:strongswan][:l2tp][:service_name]      = 'xl2tpd'
-
-## scenario choice - xauth-id-psk-config is the only one currently implemented.
-##   visit http://www.strongswan.org/uml-testresults4.html for more options
-default[:strongswan][:scenarios]                = ['xauth-id-psk-config']
-#default[:strongswan][:scenario]                 = 'xauth-id-psk-config'
+# scenario choices:
+# - xauth-rsa-mode-config
+#   - authorize with RSA certificates and a user:password combo
+#   - the RSA shared out-of-band at the moment, since there's no real good way in-band
+# - xauth-id-psk-mode-config
+#   - authorize with a preshared key and a user:password combo
+#   - the preshared key is stored in Chef attributes, and is thus relatively insecure
+# - xl2tpd
+#   - configure masquerading via the xl2tp daemon, to allow easy Mac client access
+#   - probably going the out-of-band route for credentials
+# See http://www.strongswan.org/uml-testresults4.html for more options, but be
+#   aware that you're flying on your own there
+default[:strongswan][:scenarios]                = ['xauth-rsa-mode-config']
 
 # Enable NAT-transversal
 default[:strongswan][:ipsec][:natt]             = 'yes'

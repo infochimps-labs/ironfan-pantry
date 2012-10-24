@@ -26,31 +26,21 @@ package "xl2tpd"
 
 # xl2tpd service definition
 service "xl2tpd" do
-  service_name node[:strongswan][:l2tp][:service_name]
   supports :status => true, :restart => true, :reload => true
   action [ :enable ]
 end
 
+# manipulate various config files to do our bidding
+%w{ /etc/xl2tpd/xl2tpd.conf
+    /etc/ppp/options.xl2tpd
+    /etc/ppp/chap-secrets
+}.each do |fname|
+  template fname do
+    source "l2tp-nat/#{File.basename(fname)}.erb"
+    notifies :reload, "service[xl2tpd]", :delayed
+  end
+end
 announce( :strongswan, :xl2tpd )
 
-# manipulate various config files to do our bidding
-template( "/etc/xl2tpd/xl2tpd.conf" ) do
-  source "l2tp-nat/xl2tpd.conf.erb"
-end
-
-%w{ options.xl2tpd chap-secrets }.each do |fname|
-  template "/etc/ppp/#{fname}" do
-    source "l2tp-nat/#{fname}.erb"
-  end
-end
-
-client_dir = "#{node[:strongswan][:client][:conf_dir]}/l2tp-nat"
-directory client_dir do
-  recursive true
-end
-
-%w{ ipsec.conf ipsec.secrets }.each do |fname|
-  template "#{client_dir}/#{fname}" do
-    source "l2tp-nat/client.#{fname}.erb"
-  end
-end
+# set up the ipsec scenario
+node[:strongswan][:scenarios] << "l2tp-nat"
