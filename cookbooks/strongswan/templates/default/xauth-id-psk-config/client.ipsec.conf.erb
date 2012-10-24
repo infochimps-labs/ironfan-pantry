@@ -4,7 +4,8 @@ config setup
     nat_traversal=<%=   node[:strongswan][:ipsec][:natt] %>
     charonstart=no
     plutostart=yes
-    
+    plutostderrlog=/var/log/pluto.log
+
 conn %default
     ikelifetime=60m
     keylife=20m
@@ -14,15 +15,22 @@ conn %default
     ike=<%=             node[:strongswan][:ipsec][:ike] %>
     esp=<%=             node[:strongswan][:ipsec][:esp] %>
     pfs=no
-    authby=secret
 
 conn client
+    authby=xauthrsasig
+    auto=start
     left=%defaultroute
-    leftsourceip=%config
+    leftcert=clientCert.pem
     leftid=<%=          node[:strongswan][:ipsec][:remote][:id] %>
     leftfirewall=yes
+    leftrsasigkey=%cert
+    leftsourceip=%config
     right=<%=           node[:strongswan][:ipsec][:public_ip] %>
+    rightcert=serverCert.pem
+    rightid=<%=         node[:strongswan][:ipsec][:local][:id] %>
+    rightrsasigkey=%cert
     rightsourceip=%any
     rightsubnet=<%=     node[:strongswan][:ipsec][:local][:subnet] %>
-    rightid=<%=         node[:strongswan][:ipsec][:local][:id] %>
-    auto=start
+    xauth_identity=client
+    xauth=client
+

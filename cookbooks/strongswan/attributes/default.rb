@@ -13,7 +13,8 @@ default[:strongswan][:l2tp][:service_name]      = 'xl2tpd'
 
 ## scenario choice - xauth-id-psk-config is the only one currently implemented.
 ##   visit http://www.strongswan.org/uml-testresults4.html for more options
-default[:strongswan][:scenario]                 = 'xauth-id-psk-config'
+default[:strongswan][:scenarios]                = ['xauth-id-psk-config']
+#default[:strongswan][:scenario]                 = 'xauth-id-psk-config'
 
 # Enable NAT-transversal
 default[:strongswan][:ipsec][:natt]             = 'yes'

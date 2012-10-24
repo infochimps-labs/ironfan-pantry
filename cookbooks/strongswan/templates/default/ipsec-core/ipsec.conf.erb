@@ -4,7 +4,8 @@ config setup
     nat_traversal=<%=   node[:strongswan][:ipsec][:natt] %>
     charonstart=no
     plutostart=yes
-    
+    plutostderrlog=/var/log/pluto.log
+
 conn %default
     ikelifetime=60m
     keylife=20m
@@ -14,14 +15,5 @@ conn %default
     ike=<%=             node[:strongswan][:ipsec][:ike] %>
     esp=<%=             node[:strongswan][:ipsec][:esp] %>
     pfs=no
-    authby=secret
-    
-conn client
-    left=<%=            node[:strongswan][:ipsec][:private_ip] %>
-    leftid=<%=          node[:strongswan][:ipsec][:local][:id] %>
-    leftsubnet=<%=      node[:strongswan][:ipsec][:local][:subnet] %>
-    leftfirewall=yes
-    right=%any
-    rightsourceip=<%=   node[:strongswan][:ipsec][:remote][:sourceip] %>
-    auto=add
 
+include /etc/ipsec.d/conns-enabled/*/server.conf

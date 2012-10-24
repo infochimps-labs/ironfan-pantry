@@ -20,13 +20,10 @@
 #
 
 # install strongswan from package
-package "strongswan-ikev1"      # the old pluto daemon
-package "strongswan-ikev2"      # the new charon daemon
 # Note: future versions will use the charon daemon only; watch out for
 #   changed package names and configuration formats on upgrade
-
-# package( "strongswan-ikev1" ){ action :nothing }.run_action(:install)
-# package( "strongswan-ikev2" ){ action :nothing }.run_action(:install)
+package "strongswan-ikev1"      # the old pluto daemon
+package "strongswan-ikev2"      # the new charon daemon
 
 # ipsec service definition
 service "ipsec" do
@@ -35,25 +32,33 @@ service "ipsec" do
   action [ :enable ]
 end
 
-announce( :strongswan, :ipsec )
-
-scenario = node[:strongswan][:scenario]
-
-# manipulate config files to do our bidding
 %w{ ipsec.conf ipsec.secrets strongswan.conf }.each do |fname|
   template "/etc/#{fname}" do
-    source "#{scenario}/#{fname}.erb"
+    source "ipsec-core/#{fname}.erb"
     notifies :reload, "service[ipsec]", :delayed
   end
 end
 
-client_dir = "#{node[:strongswan][:client][:conf_dir]}/#{scenario}"
-directory client_dir do
-  recursive true
-end
+announce( :strongswan, :ipsec )
 
-%w{ ipsec.conf ipsec.secrets }.each do |fname|
-  template "#{client_dir}/#{fname}" do
-    source "#{scenario}/client.#{fname}.erb"
+# Set up the per-scenario connection configurations
+node[:strongswan][:scenarios].each do |scenario|
+
+  available = "/etc/ipsec.d/conn-available/"
+  enabled = "/etc/ipsec.d/conn-enabled/"
+  scenario_dir "#{available}/#{scenario}"
+
+  directory available
+  directory enabled
+  directory scenario_dir
+  link "#{enabled}/#{scenario}" { to scenario_dir }
+
+  %w{ server.ipsec.conf server.ipsec.secrets
+      client.ipsec.conf client.ipsec.secrets }.each do |fname|
+    template "#{scenario_dir}/#{fname}" do
+      source "#{scenario}/#{fname}.erb"
+      notifies :reload, "service[ipsec]", :delayed
+    end
   end
+
 end
