@@ -26,8 +26,8 @@ default[:strongswan][:ipsec][:esp]              = '3des-sha256'
 default[:strongswan][:ipsec][:psk]              = 'wehavenobananastoday'
 
 ## Hackity hack, don't talk back
-default[:strongswan][:ipsec][:public_ip]        = '107.21.17.6'
-default[:strongswan][:ipsec][:private_ip]       = '10.42.0.74'
+default[:strongswan][:ipsec][:public_ip]        = node[:cloud][:public_ips].first rescue '10.10.0.1'
+default[:strongswan][:ipsec][:private_ip]       = node[:cloud][:private_ips].first rescue '192.168.0.1'
 
 # When we refer to local here, we mean relative to the server itself.
 #   Inside strongswan configuration, the convention is to call the local
@@ -36,7 +36,7 @@ default[:strongswan][:ipsec][:private_ip]       = '10.42.0.74'
 #   can be somewhat confusing at first.
 default[:strongswan][:ipsec][:local][:id]       = 'server@strongswan.org'
 # We are protecting the entire VPC, not just this subnet
-default[:strongswan][:ipsec][:local][:subnet]   = '10.42.0.0/16'
+default[:strongswan][:ipsec][:local][:subnet]   = '10.10.0.0/16'
 default[:strongswan][:ipsec][:remote][:id]        = 'client@strongswan.org'
 # The virtual IP pool is outside the VPC
 default[:strongswan][:ipsec][:remote][:sourceip]  = '10.100.255.0/28'
