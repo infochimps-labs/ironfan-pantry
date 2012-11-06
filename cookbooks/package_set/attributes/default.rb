@@ -125,6 +125,5 @@ default[:package_set][:pkgs][:emacs]     = \
       when 'centos'
         %w[ emacs-nox emacs-el ]
       else
-        ruby_mode = (node[:languages][:ruby][:version] =~ /^1.9/ ? "ruby1.9.1-elisp" : "ruby") rescue nil
-        [ "emacs23-nox", "emacs23-el", "python-mode", ruby_mode, "org-mode" ].compact
+        %w[ emacs23-nox emacs23-el python-mode org-mode ]
     end
