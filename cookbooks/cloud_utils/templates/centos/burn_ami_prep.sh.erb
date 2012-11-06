@@ -36,7 +36,7 @@ mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ "$away_dir"
 # * [Sharing AMIs Safely](http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/AESDG-chapter-sharingamis.html)
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nCommandline history files:"
-find /root/.*history /home/*/.*history 
+find /root/.*history /home/*/.*history
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nSSH authorized_keys:"
 find / -name "authorized_keys*" -print -exec cat {} \;
@@ -49,10 +49,10 @@ egrep 'PasswordAuthentication|PubkeyAuthentication|PermitRootLogin' /etc/ssh/ssh
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nremove org-specific info from top of /etc/chef/client.rb\n"
 cp /etc/chef/client.rb  "$away_dir"
-perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb 
- 
+perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb
+
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nmake a nice bland motd\n"
-. /etc/lsb-release 
+. /etc/lsb-release
 img_info="  ironfan-$DISTRIB_CODENAME-`uname -i`-`ruby --version | cut -d' '  -f2`-`date +"%Y%m%d-%H"`"
 rm /etc/motd ;
 echo "CHIMP CHIMP CHIMP CRUNCH CRUNCH CRUNCH (image burned at `date`): $img_info" > /etc/motd;
@@ -97,3 +97,4 @@ echo ""
 echo "- Lastly, launch burninator-village-0."
 echo ""
 echo "If the new AMI fails with an 'Unauthorized' error, you will have to re-run this script and re-burn the AMI. (This happens when the snapshot takes a long time to prepare  -- an uncontrollable (by us) race condition in the Amazon AMI constructor can cause chef to re-run, putting the burninator's client key back in place.)"
+

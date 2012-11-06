@@ -23,7 +23,7 @@ mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ /etc/chef/cache/check
 
 # this should be in there but needs to be done carefully.
 # Also, with it gone the machine is unreachable if you log out.
-mv /home/ec2-user/.ssh/authorized_keys "$away_dir/ubuntu-authorized_keys"
+mv /home/ubuntu/.ssh/authorized_keys "$away_dir/ubuntu-authorized_keys"
 
 mkdir $away_dir/sshd_keys
 mv /etc/ssh/ssh_{host_dsa,host_rsa,host}_{key,key.pub} "$away_dir/sshd_keys"
@@ -35,7 +35,7 @@ mv /etc/ssh/ssh_{host_dsa,host_rsa,host}_{key,key.pub} "$away_dir/sshd_keys"
 # * [Sharing AMIs Safely](http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/AESDG-chapter-sharingamis.html)
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nCommandline history files:"
-find /root/.*history /home/*/.*history 
+find /root/.*history /home/*/.*history
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nSSH authorized_keys:"
 find / -name "authorized_keys*" -print -exec cat {} \;
@@ -48,8 +48,8 @@ egrep 'PasswordAuthentication|PubkeyAuthentication|PermitRootLogin' /etc/ssh/ssh
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nremove org-specific info from top of /etc/chef/client.rb\n"
 cp /etc/chef/client.rb  "$away_dir"
-perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb 
- 
+perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb
+
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nmake a nice bland motd\n"
 DISTRIB_CODENAME=`sed -r 's/(\w+) release ([^ ]+) .+/\1-\2/' /etc/system-release`
 DISTRIB_HARDWARE=`uname -i`

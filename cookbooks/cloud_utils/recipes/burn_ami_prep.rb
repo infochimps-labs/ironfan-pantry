@@ -22,10 +22,5 @@
 template "/tmp/burn_ami_prep.sh" do
   owner     "root"
   mode      "0700"
-  case node[:platform]
-  when 'centos'
-    source  "burn_ami_prep.centos.sh.erb"
-  else
-    source  "burn_ami_prep.sh.erb"
-  end
+  source  "burn_ami_prep.sh.erb"
 end
