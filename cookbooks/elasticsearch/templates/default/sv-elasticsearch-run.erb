@@ -24,9 +24,15 @@ ulimit -l <%= @options[:ulimit_mlock] %>
 ulimit -a
 
 # Force the heap size
-export ES_MIN_MEM=<%= @options[:java_heap_size_max] %>m
+<% if @options[:java_heap_size_min] || @options[:java_heap_size_max] %>
+export ES_MIN_MEM=<%= @options[:java_heap_size_min] || @options[:java_heap_size_max] %>m
+<% end %>
+<% if @options[:java_heap_size_max] %>
 export ES_MAX_MEM=<%= @options[:java_heap_size_max] %>m
+<% end %>
+<% if @options[:java_heap_newgen] %>
 export ES_HEAP_NEWSIZE=<%= @options[:java_heap_newgen] %>m
+<% end %>
 
 sleep 2 # ES will flap flap flap if it crashes on start. Slightly reduces chance that it fills your log dir.
 
