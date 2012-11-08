@@ -52,8 +52,6 @@ define(:daemon_user,
     directory File.dirname(params[:home]) do
       action    :create
       recursive true
-      owner     user_val
-      group     group_val
     end
   end
 
