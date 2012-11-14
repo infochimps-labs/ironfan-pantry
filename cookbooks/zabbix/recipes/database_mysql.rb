@@ -31,7 +31,7 @@ begin
 rescue LoadError
   case node[:platform]
   when 'ubuntu', 'debian'
-    package("libmysqlclient16-dev") {action :nothing }.run_action(:install)
+    package(node[:zabbix][:database][:debian_database]) {action :nothing }.run_action(:install)
   when 'centos'
     package("mysql-devel") {action :nothing }.run_action(:install)
   else

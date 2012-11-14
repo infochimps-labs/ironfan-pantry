@@ -38,6 +38,10 @@ default[:zabbix][:database][:password]        = nil
 default[:zabbix][:database][:name]            = "zabbix"
 default[:zabbix][:database][:install_method]  = 'mysql'
 
+# FIXME: need libmysqlclient-dev for Ubuntu 12.04
+
+default[:zabbix][:database][:debian_package]  = "libmysqlclient16-dev"
+
 # Web frontend
 default[:zabbix][:web][:fqdn]           = ""
 default[:zabbix][:web][:bind_ip]        = nil

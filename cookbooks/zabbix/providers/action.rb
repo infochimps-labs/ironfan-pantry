@@ -53,6 +53,6 @@ def load_current_resource
       end.compact
     end
   rescue ArgumentError, ::Rubix::Error, ::Errno::ECONNREFUSED => e
-    ::Chef::Log.warn("Could not create Zabbix action #{new_resource.name}: #{e.message}")
+    ::Chef::Log.warn("Could not initialize Zabbix action #{new_resource.name}: #{e.message}")
   end
 end
