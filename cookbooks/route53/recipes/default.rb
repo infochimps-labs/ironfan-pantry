@@ -26,7 +26,7 @@ else
   package("libxslt1-dev"     ){ action :nothing }.run_action(:install)
   gem_package("fog") do
     ignore_failure true
-    version '~> 1.5.0'
+    version '~> 1.9.0'
     action :nothing
   end.run_action(:install)
   gem_package("net-ssh-multi"){ action :nothing }.run_action(:install)

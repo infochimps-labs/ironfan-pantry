@@ -17,61 +17,6 @@
 # limitations under the License.
 #
 
-begin
-  require 'fog'
-
-  module Fog
-    module DNS
-      class AWS
-
-        class Record < Fog::Model
-
-          attribute :created_at,  :aliases => ['SubmittedAt']
-
-          def update(new_value, new_ttl)
-            Chef::Log.debug(["update record model", self].inspect)
-            requires :name, :type, :zone
-            #
-            batch = []
-            old_records = zone.records.all!.select{|record| (record.name == self.name) && (record.type == self.type) }
-            Chef::Log.debug(["update record model", old_records].inspect)
-            old_records.each do |record|
-              batch << { :action => 'DELETE', :name => record.name, :resource_records => [*record.value], :ttl => record.ttl.to_s, :type => record.type }
-            end
-            batch << { :action => 'CREATE', :name => name, :resource_records => [*new_value], :ttl => new_ttl.to_s, :type => type }
-            #
-            Chef::Log.debug(batch.inspect)
-            data = connection.change_resource_record_sets(zone.id, batch).body
-            merge_attributes(data)
-            @last_change_id     = data['Id']
-            @last_change_status = data['Status']
-            [@last_change_id, @last_change_status]
-          end
-
-          def wait
-            return unless @last_change_id
-            while @last_change_status != 'INSYNC'
-              sleep 2
-              response = connection.get_change(@last_change_id)
-              if response.status == 200
-                @last_change_id     = response.body['Id']
-                @last_change_status = response.body['Status']
-              else
-                Chef::Log.warn("Bad request: #{response.status} -- #{response}")
-              end
-              yield(@last_change_id, @last_change_status) if block_given?
-            end
-          end
-
-        end
-      end
-    end
-  end
-
-rescue LoadError
-  Chef::Log.warn("Missing gem 'fog'")
-end
-
 module Opscode
   module Route53
     module Route53
@@ -115,7 +60,8 @@ module Opscode
           if rr.nil?
             create_resource_record(zone, fqdn, type, ttl, values)
           else
-            rr.update(values, ttl.to_s) && rr.wait{|cid,status| Chef::Log.debug("Creating Resource Record for #{fqdn} (#{type}) - #{status}") }
+            rr.modify(:name => fqdn, :type => type, :ttl => ttl.to_s, :value => values)
+            rr.wait_for { ready? }
           end
         end
       end
