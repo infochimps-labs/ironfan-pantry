@@ -1,0 +1,152 @@
+= Log Integration Cookbook
+
+== Overview
+
+This cookbook provides recipes to rotate logs and to use Flume to
+transport them to S3.
+
+All configuration for both rotation and S3 storage has smart defaults
+and can also be tuned on a per-log basis.
+
+== Usage
+
+To enable log integration on a node, ensure that recipes from this
+cookbook are included.  They should preferentially be included near
+the end of the run list so that they can pick up on any logs declared
+by earlier recipes.
+
+The following two recipes are available:
+
+=== log_integration::logrotate
+
+This recipe creates configuration files for the logrotated service.
+Node attributes define the default behavior for a node.  There are a
+*lot* of options, consult <tt>man logrotate</tt> for details.
+
+Some default options are set in this cookbook
+
+  default[:log_integration][:logrotate][:compress]               = true
+  default[:log_integration][:logrotate][:copytruncate]           = true
+  default[:log_integration][:logrotate][:daily]                  = true
+  default[:log_integration][:logrotate][:dateext]                = true
+  default[:log_integration][:logrotate][:dateformat]             = ".%Y-%m-%d.%s"
+  default[:log_integration][:logrotate][:delaycompress]          = true
+  default[:log_integration][:logrotate][:missingok]              = true
+  default[:log_integration][:logrotate][:nomail]                 = true
+  default[:log_integration][:logrotate][:notifempty]             = true
+  default[:log_integration][:logrotate][:olddir]                 = '.rotated'
+  default[:log_integration][:logrotate][:rotate]                 = 14
+
+These options are designed to
+
+ - Never replace a log file, obviating the need to restart processes
+   that are logging to it.
+ 
+ - Rotate logfiles daily, unless the log is empty, keeping 14 days of
+   backups.
+
+ - Name backups by both date and timestamp, for human readability and
+   to avoid any collision.
+
+ - Keep backups in a hidden directory in the same directory as the
+   original logs.
+
+ - Compress logs using Gzip.
+
+To make your logs rotate, just declare them using an announce
+
+  announce(:myapp, :webserver, :logs => { :unicorn => '/path/to/log_dir' })
+
+All files in the given directory (or the given file) will be rotated
+according the options above.
+
+You can use the full breadth of options provided by logrotate just be
+declaring it in the announce:
+
+  announce(:myapp, :webserver,
+    :logs => {
+      :unicorn => {
+        :path          => '/path/to/log_dir',
+
+	# use bzip2 compression instead
+	:compresscmd   => 'bzip2',
+	:uncompresscmd => 'bunzip2',
+
+	# keep a year's worth of weekly logs
+	:daily         => false,
+	:weekly        => true,
+	:rotate        => 52
+      }
+    })
+
+See <tt>man logrotate</tt> for more.
+
+Logs can be declared but not rotated using the +logrotate+ option.
+(**Note:** the option is **logrotate**, not rotate -- rotate is a
+directive that is passed along to the logrotate configuration and
+defines the number of prior log rotations to retain):
+
+  announce(:myapp, :webserver,
+    :logs => {
+      :unicorn => {
+        :path      => '/path/to/log_dir',
+	:logrotate => false
+      }
+    })
+
+
+=== log_integration::flume_s3
+
+This recipe relies on Flume (OG) being installed a Flume physical node
+running in order to execute properly.
+
+If Flume is properly installed, this recipe will create a Flume
+logical node for each log file that needs to be archived on this node.
+The log file will be directly flume'd to a deterministic path in S3.
+
+Pretend that
+
+- this is node      'sparkle-master-3'
+- in cluster        'sparkle'
+- and cluster-facet 'sparkle-master'
+- and a log is declared at '/var/log/webapp/logs/unicorn.log'
+- for the 'webapp-backend' component
+- and it's 2012-02-14 Tue 03:13
+
+then the S3 path the log should wind up in is
+
+  s3://sparkle-master.logs.foobar.com/webapp-backend/2012-02-14/sparkle-master-3/var/log/webapp/logs/unicorn.log
+
+This works out almost correctly in practice.  Due to the impossibility
+of S3 appends, many files like the above but with different sorts of
+cruft after them are created in S3.  These files accumulate at a rate
+of 1 per each machine providing the 'webapp-backend' component per
+roll period (default 10 minutes).
+
+The attributes that lead to the above behavior are:
+
+  default[:log_integration][:flume_s3][:bucket_suffix] = 'logs.foobar.com'
+  default[:log_integration][:flume_s3][:format]        = 'raw'
+  default[:log_integration][:flume_s3][:period]        = 10 # minutes
+
+The bucket, format, or roll period of any particular log file can be
+tweaked when that log file is announced:
+
+  announce(:webapp, :backend, {
+             :logs => {
+               :unicorn => {
+	         :path   	=> '/var/log/webapp/logs/unicorn.log',
+		 :period 	=> 1,
+		 :format 	=> 'json',
+		 :bucket_suffix => 'logs.company.com'
+	}}})
+
+Flume/S3 processing for a given log announcement can also be turned
+off:
+
+  announce(:webapp, :backend, {
+             :logs => {
+	       :unicorn => {
+	         :path     => '/var/log/webapp/logs/unicorn.log',
+		 :flume_s3 => false
+	}}})
