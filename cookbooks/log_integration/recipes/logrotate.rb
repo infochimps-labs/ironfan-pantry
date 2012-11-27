@@ -1,5 +1,10 @@
 package "logrotate"
 
+# Rotate hourly, in case we have fast-moving logs we want to expire quickly
+bash "mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate" do
+  creates "/etc/cron.hourly/logrotate"
+end
+
 # Iterate over ever component with a log aspect...
 components_with(:logs).each do |component|
   
