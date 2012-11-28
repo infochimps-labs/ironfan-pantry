@@ -19,10 +19,10 @@ zookeeper.tracelog.file=zookeeper_trace.log
 log4j.rootLogger=${zookeeper.root.logger}
 
 # Example with rolling log file
-#log4j.rootLogger=DEBUG, CONSOLE, ROLLINGFILE
+#log4j.rootLogger=DEBUG, CONSOLE, FILE
 
 # Example with rolling log file and tracing
-#log4j.rootLogger=TRACE, CONSOLE, ROLLINGFILE, TRACEFILE
+#log4j.rootLogger=TRACE, CONSOLE, FILE, TRACEFILE
 
 #
 # Log INFO level and above messages to the console
@@ -33,19 +33,13 @@ log4j.appender.CONSOLE.layout=org.apache.log4j.PatternLayout
 log4j.appender.CONSOLE.layout.ConversionPattern=%d{ISO8601} [myid:%X{myid}] - %-5p [%t:%C{1}@%L] - %m%n
 
 #
-# Add ROLLINGFILE to rootLogger to get log file output
+# Add FILE to rootLogger to get log file output
 #    Log DEBUG level and above messages to a log file
-log4j.appender.ROLLINGFILE=org.apache.log4j.RollingFileAppender
-log4j.appender.ROLLINGFILE.Threshold=${zookeeper.log.threshold}
-log4j.appender.ROLLINGFILE.File=${zookeeper.log.dir}/${zookeeper.log.file}
+log4j.appender.FILE=org.apache.log4j.FileAppender
+log4j.appender.FILE.File=${zookeeper.log.dir}/${zookeeper.log.file}
 
-# Max log file size of 10MB
-log4j.appender.ROLLINGFILE.MaxFileSize=10MB
-# uncomment the next line to limit number of backup files
-#log4j.appender.ROLLINGFILE.MaxBackupIndex=10
-
-log4j.appender.ROLLINGFILE.layout=org.apache.log4j.PatternLayout
-log4j.appender.ROLLINGFILE.layout.ConversionPattern=%d{ISO8601} [myid:%X{myid}] - %-5p [%t:%C{1}@%L] - %m%n
+log4j.appender.FILE.layout=org.apache.log4j.PatternLayout
+log4j.appender.FILE.layout.ConversionPattern=%d{ISO8601} [myid:%X{myid}] - %-5p [%t:%C{1}@%L] - %m%n
 
 
 #

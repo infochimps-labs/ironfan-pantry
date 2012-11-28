@@ -74,7 +74,7 @@ if ((not node[:zookeeper][:zkid]) || (node[:zookeeper][:zkid].to_s != ''))
   node[:zookeeper][:zkid] += node[:zookeeper][:zkid_offset].to_i if node[:zookeeper][:zkid_offset]
 end
 
-announce(:zookeeper, :server)
+announce(:zookeeper, :server, :logs => { :server => node[:zookeeper][:log_dir] } )
 
 runit_service "zookeeper_server" do
   run_state     node[:zookeeper][:server][:run_state]
