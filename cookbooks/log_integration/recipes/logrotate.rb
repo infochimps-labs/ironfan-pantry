@@ -1,7 +1,8 @@
 package "logrotate"
 
 # Rotate hourly, in case we have fast-moving logs we want to expire quickly
-bash "mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate" do
+bash "run logrotate every hour" do
+  code "mv /etc/cron.daily/logrotate /etc/cron.hourly/logrotate"
   creates "/etc/cron.hourly/logrotate"
 end
 
