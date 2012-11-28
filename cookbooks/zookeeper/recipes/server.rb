@@ -23,6 +23,7 @@ include_recipe 'runit'
 include_recipe 'silverware'
 include_recipe 'zookeeper'
 
+
 # === Locations
 
 # Zookeeper snapshots on a single persistent drive
@@ -74,9 +75,35 @@ if ((not node[:zookeeper][:zkid]) || (node[:zookeeper][:zkid].to_s != ''))
   node[:zookeeper][:zkid] += node[:zookeeper][:zkid_offset].to_i if node[:zookeeper][:zkid_offset]
 end
 
-announce(:zookeeper, :server, :logs => { :server => node[:zookeeper][:log_dir] } )
-
 runit_service "zookeeper_server" do
   run_state     node[:zookeeper][:server][:run_state]
   options       node[:zookeeper]
 end
+
+#
+# Announcements 
+#
+
+# TODO Elegently figure out when to announce election and leader ports as they are not always open.  
+
+# NOTE: iron_cuke will not pick up the daemon as running due to username length > 8, len(zookeeper) = 9 
+
+announce(:zookeeper, :server, {
+           :logs  => { :server => node[:zookeeper][:log_dir] },
+           :ports => {
+             :client_port => {
+               :port      => node[:zookeeper][:client_port]
+             },
+             :jmx => { 
+               :port => node[:zookeeper][:jmx_dash_port]
+               :dashboard => true
+             }, 
+           },
+           :daemons => {
+             :java => {
+               :name    => 'java',
+               :user    => node[:zookeeper][:user],
+               :cmd     => 'QuorumPeerMain'
+             }
+           }
+         })
