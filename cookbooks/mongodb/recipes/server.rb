@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: mongodb
-# Recipe:: source
+# Cookbook Name::       mongodb
+# Description::         Mongodb server
+# Recipe::              server
+# Author::              brandon.bell
 #
-# Author:: Gerhard Lazu (<gerhard.lazu@papercavalier.com>)
-#
-# Copyright 2010, Paper Cavalier, LLC
+# Copyright 2011, Chris Howe - Infochimps, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,82 +19,52 @@
 # limitations under the License.
 #
 
-init_system = node[:mongodb][:init_system]
-server_init = Mash.new(
-  :type     => "mongodb",
-  :daemon   => "mongod"
-)
+include_recipe 'mongodb'
+include_recipe 'volumes'
+include_recipe 'runit'
 
-mongo_user = mongo_group = node[:mongodb][:user]
-server_init[:basename]   = node[:mongodb][:user]
-daemon_user(:mongodb)
+daemon_user('mongodb.server')
 
-# Data onto a bulk device
+#
+# Directories
+#
+
+standard_dirs('mongodb.server') do
+  directories [ :home_dir, :log_dir, :conf_dir, :pid_dir, :journal_dir ]
+end
+
 volume_dirs('mongodb.data') do
-  type          :persistent
+  type          :local
   selects       :single
-  path          'mongodb'
-  mode          "0755"
+  mode          "0700"
 end
 
-file node[:mongodb][:logfile] do
-  owner mongo_user
-  group mongo_group
-  mode 0644
-  action :create_if_missing
-  backup false
+#
+# Create service
+#
+
+kill_old_service('mongodb')
+
+runit_service "mongodb_server" do
+  run_state     node[:mongodb][:server][:run_state]
+  options       Mash.new(node[:mongodb].to_hash).merge(node[:mongodb][:server].to_hash)
 end
 
-template node[:mongodb][:config] do
-  source "mongodb.conf.erb"
-  owner mongo_user
-  group mongo_group
-  mode 0644
-  backup false
-end
+#
+# Announcments
+# 
 
-case init_system
-when "upstart"
-  template '/etc/init/mongodb.conf' do
-    source "mongod.upstart.erb"
-    owner "root"
-    group "root"
-    mode 0644
-    backup false
-    variables(:server_init => server_init)
-  end
-when "sysv"
-  template "/etc/init.d/mongodb" do
-    source "mongodb.init.erb"
-    mode 0755
-    backup false
-    variables(:server_init => server_init)
-  end
-else
-  # Do nothing, and assume the install_from cookbooks
-  #   put down a correctly formatted init script
-end
+announce(:mongodb, :server, {
+           :logs  => { :server => node[:mongodb][:log_dir] },
+           :ports => {
+             :http => { :port => node[:mongodb][:server][:mongod_port], :protocol => 'http' },
+           },
+           :daemons => {
+             :mongod => {
+               :name => 'mongod',
+               :user => node[:mongodb][:user],
+               :cmd  => 'mongod'
+             }
+           }
+         }) 
 
-service server_init[:basename] do
-  supports :start => true, :stop => true, "force-stop" => true, :restart => true, "force-reload" => true, :status => true
-  action        node[:mongodb][:server][:run_state]
-  subscribes :restart, resources(:template => node[:mongodb][:config])
-  case init_system
-  when "upstart"
-    subscribes :restart, resources(:template => "/etc/init/mongodb.conf")
-    provider Chef::Provider::Service::Upstart
-  when "sysv"
-    subscribes :restart, resources(:template => "/etc/init.d/mongodb")
-  end
-end
-
-template "/etc/logrotate.d/#{server_init[:basename]}" do
-  source "mongodb.logrotate.erb"
-  owner mongo_user
-  group mongo_group
-  mode "0644"
-  backup false
-  variables(:logfile => node[:mongodb][:logfile])
-end
-
-announce(:mongodb, :server)
