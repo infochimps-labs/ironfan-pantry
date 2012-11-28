@@ -1,0 +1,42 @@
+#
+# Locations
+#
+
+default[:mongodb][:data_dir]                        = "/var/lib/mongodb"
+default[:mongodb][:home_dir]                        = "/usr/lib/mongodb"
+default[:mongodb][:conf_dir]                        = "/etc/mongodb"
+default[:mongodb][:log_dir]                         = "/var/log/mongodb"
+default[:mongodb][:pid_dir]                         = "/var/run/mongodb"
+default[:mongodb][:journal_dir]                     = "/var/lib/mongodb/journal"
+
+#
+# User
+#
+
+default[:mongodb][:user]                            = 'mongodb'
+default[:users]['mongodb'][:uid]          	    = 5001
+default[:groups]['mongodb'][:gid]           	    = 5001
+
+#
+# Install
+#
+
+default[:mongodb][:version]                         = "2.2.1"
+default[:mongodb][:i686][:release_file_md5]         = "21153b201cad912c273d754b02eba19b"
+default[:mongodb][:i686][:release_url]              = "http://fastdl.mongodb.org/linux/mongodb-linux-i686-2.2.1.tgz"
+default[:mongodb][:x86_64][:release_file_md5]       = "6b2cce94194113ebfe2a14bdb84ccd7e"
+default[:mongodb][:x86_64][:release_url]            = "http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.2.1.tgz"
+
+#
+# Services
+#
+
+default[:mongodb][:server][:run_state]    	    = :start
+
+#
+# Tunables
+#
+
+default[:mongodb][:server][:mongod_port]	    = 27017
+default[:mongodb][:server][:bind_ip]		    = nil
+default[:mongodb][:server][:rest]		    = false 

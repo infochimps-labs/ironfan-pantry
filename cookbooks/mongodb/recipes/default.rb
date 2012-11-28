@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: mongodb
-# Recipe:: default
+# Cookbook Name::       mongodb
+# Description::         Base configuration for mongodb
+# Recipe::              default
+# Author::              brandon.bell
 #
-# Author:: Gerhard Lazu (<gerhard.lazu@papercavalier.com>)
-#
-# Copyright 2010, Paper Cavalier, LLC
+# Copyright 2011, Chris Howe - Infochimps, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,4 +19,15 @@
 # limitations under the License.
 #
 
-# placeholder: see roles/mongodb_server.rb
+
+#
+# Create MondoDB user 
+#
+
+if node[:mongodb][:server] # Only need user for servers
+  user node[:mongodb][:user] do
+    action :create
+    system true
+    shell "/bin/false"
+  end
+end

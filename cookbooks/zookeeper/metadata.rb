@@ -2,7 +2,7 @@ maintainer       "Infochimps, Inc"
 maintainer_email "coders@infochimps.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.1.5"
+version          "3.1.6"
 
 description      "Zookeeper, a distributed high-availability consistent datastore"
 
@@ -21,11 +21,23 @@ recipe           "zookeeper::config_files",            "Config files -- include 
   supports os
 end
 
+# User Information 
+attribute "zookeeper/user",
+  :display_name          => "",
+  :description           => "",
+  :default               => "zookeeper"
+
+attribute "users/zookeeper/uid",
+  :display_name          => "",
+  :description           => "",
+  :default               => "305"
+
 attribute "groups/zookeeper/gid",
   :display_name          => "",
   :description           => "",
   :default               => "305"
 
+# Directories 
 attribute "zookeeper/data_dir",
   :display_name          => "",
   :description           => "[set by recipe]",
@@ -36,46 +48,42 @@ attribute "zookeeper/journal_dir",
   :description           => "[set by recipe]",
   :default               => "/var/zookeeper"
 
-attribute "zookeeper/cluster_name",
-  :display_name          => "",
-  :description           => "",
-  :default               => "cluster_name"
-
 attribute "zookeeper/log_dir",
   :display_name          => "",
   :description           => "",
   :default               => "/var/log/zookeeper"
-
-attribute "zookeeper/max_client_connections",
-  :display_name          => "",
-  :description           => "Limits the number of concurrent connections (at the socket level) that a\nsingle client, identified by IP address, may make to a single member of the\nZooKeeper ensemble. This is used to prevent certain classes of DoS attacks,\nincluding file descriptor exhaustion. The zookeeper default is 60; this file\nbumps that to 300, but you will want to turn this up even more on a production\nmachine. Setting this to 0 entirely removes the limit on concurrent\nconnections.",
-  :default               => "300"
 
 attribute "zookeeper/home_dir",
   :display_name          => "",
   :description           => "",
   :default               => "/usr/lib/zookeeper"
 
-attribute "zookeeper/exported_jars",
-  :display_name          => "",
-  :description           => "",
-  :type                  => "array",
-  :default               => ["/usr/lib/zookeeper/zookeeper.jar"]
-
 attribute "zookeeper/conf_dir",
   :display_name          => "",
   :description           => "",
   :default               => "/etc/zookeeper"
 
-attribute "zookeeper/user",
-  :display_name          => "",
-  :description           => "",
-  :default               => "zookeeper"
-
 attribute "zookeeper/pid_dir",
   :display_name          => "",
   :description           => "",
   :default               => "/var/run/zookeeper"
+
+# Configuration
+attribute "zookeeper/cluster_name",
+  :display_name          => "",
+  :description           => "",
+  :default               => "cluster_name"
+
+attribute "zookeeper/max_client_connections",
+  :display_name          => "",
+  :description           => "Limits the number of concurrent connections (at the socket level) that a\nsingle client, identified by IP address, may make to a single member of the\nZooKeeper ensemble. This is used to prevent certain classes of DoS attacks,\nincluding file descriptor exhaustion. The zookeeper default is 60; this file\nbumps that to 300, but you will want to turn this up even more on a production\nmachine. Setting this to 0 entirely removes the limit on concurrent\nconnections.",
+  :default               => "300"
+
+attribute "zookeeper/exported_jars",
+  :display_name          => "",
+  :description           => "",
+  :type                  => "array",
+  :default               => ["/usr/lib/zookeeper/zookeeper.jar"]
 
 attribute "zookeeper/client_port",
   :display_name          => "",
@@ -132,7 +140,3 @@ attribute "zookeeper/server/run_state",
   :description           => "",
   :default               => "stop"
 
-attribute "users/zookeeper/uid",
-  :display_name          => "",
-  :description           => "",
-  :default               => "305"

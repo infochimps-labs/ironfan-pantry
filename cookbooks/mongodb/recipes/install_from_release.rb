@@ -1,10 +1,10 @@
 #
-# Cookbook Name:: mongodb
-# Recipe:: source
+# Cookbook Name::       mongodb
+# Description::         Install From Release
+# Recipe::              install_from_release
+# Author::              GoTime, modifications by Infochimps
 #
-# Author:: Gerhard Lazu (<gerhard.lazu@papercavalier.com>)
-#
-# Copyright 2010, Paper Cavalier, LLC
+# Copyright 2011, GoTime, modifications by Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,38 +19,22 @@
 # limitations under the License.
 #
 
-platform = node[:kernel][:machine]
+include_recipe 'install_from'
 
-daemon_user('mongodb.server')
+install_from_release(:mongodb) do
 
-[node[:mongodb][:dir], "#{node[:mongodb][:dir]}/bin"].each do |dir|
-  directory dir do
-    owner "mongodb"
-    group "mongodb"
-    mode 0755
-    recursive true
-  end
-end
+    case node[:kernel][:machine]
+        when 'i686'
+            release_url   node[:mongodb][:i686][:release_url]
+            checksum      node[:mongodb][:i686][:checksum]
+        when 'x86_64'
+            release_url   node[:mongodb][:x86_64][:release_url]
+            checksum      node[:mongodb][:x86_64][:checksum]
+        end
+       
+    home_dir      node[:mongodb][:home_dir]
+    version       node[:mongodb][:version]
+    action        [ :install ]
+    has_binaries  [ 'bin/mongodb' ]
 
-unless `ps -A -o command | grep "[m]ongo"`.include? node[:mongodb][:version]
-  # ensuring we have this directory
-  directory "/opt/src"
-
-  remote_file "/opt/src/mongodb-#{node[:mongodb][:version]}.tar.gz" do
-    source node[:mongodb][:source]
-    checksum node[:mongodb][platform][:checksum]
-    action :create_if_missing
-  end
-
-  bash "Setting up MongoDB #{node[:mongodb][:version]}" do
-    cwd "/opt/src"
-    code <<-EOH
-      tar -zxf mongodb-#{node[:mongodb][:version]}.tar.gz --strip-components=2 -C #{node[:mongodb][:dir]}/bin
-    EOH
-  end
-end
-
-environment = File.read('/etc/environment')
-unless environment.include? node[:mongodb][:dir]
-  File.open('/etc/environment', 'w') { |f| f.puts environment.gsub(/PATH="/, "PATH=\"#{node[:mongodb][:dir]}/bin:") }
 end
