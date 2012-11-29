@@ -95,7 +95,7 @@ announce(:zookeeper, :server, {
                :port      => node[:zookeeper][:client_port]
              },
              :jmx => { 
-               :port => node[:zookeeper][:jmx_dash_port]
+               :port => node[:zookeeper][:jmx_dash_port],
                :dashboard => true
              }, 
            },
