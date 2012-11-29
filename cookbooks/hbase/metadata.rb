@@ -28,11 +28,23 @@ recipe           "hbase::config_files",                "Finalizes the config, wr
   supports os
 end
 
+# User Information
+attribute "hbase/user",
+  :display_name          => "",
+  :description           => "",
+  :default               => "hbase"
+
+attribute "users/hbase/uid",
+  :display_name          => "",
+  :description           => "",
+  :default               => "304"
+
 attribute "groups/hbase/gid",
   :display_name          => "",
   :description           => "",
   :default               => "304"
 
+# Directories
 attribute "hbase/tmp_dir",
   :display_name          => "",
   :description           => "",
@@ -58,6 +70,7 @@ attribute "hbase/pid_dir",
   :description           => "",
   :default               => "/var/run/hbase"
 
+# Backups
 attribute "hbase/weekly_backup_tables",
   :display_name          => "",
   :description           => "",
@@ -68,6 +81,7 @@ attribute "hbase/backup_location",
   :description           => "",
   :default               => "/mnt/hbase/bkup"
 
+# Tunables - Master
 attribute "hbase/master/java_heap_size_max",
   :display_name          => "",
   :description           => "total size of the JVM heap (master)",
@@ -94,7 +108,7 @@ attribute "hbase/master/run_state",
   :type                  => "array",
   :default               => "start"
 
-attribute "hbase/master/port",
+attribute "hbase/master/bind_port",
   :display_name          => "",
   :description           => "",
   :default               => "60000"
@@ -108,6 +122,8 @@ attribute "hbase/master/jmx_dash_port",
   :display_name          => "",
   :description           => "",
   :default               => "10101"
+
+# Tunables - Regionserver
 
 attribute "hbase/regionserver/java_heap_size_max",
   :display_name          => "",
@@ -135,7 +151,7 @@ attribute "hbase/regionserver/run_state",
   :type                  => "array",
   :default               => "start"
 
-attribute "hbase/regionserver/port",
+attribute "hbase/regionserver/bind_port",
   :display_name          => "",
   :description           => "",
   :default               => "60020"
@@ -225,6 +241,8 @@ attribute "hbase/regionserver/hash_type",
   :description           => "hbase.hash.type (default murmur) -- The hashing algorithm for use in HashFunction. Two\nvalues are supported now: murmur (MurmurHash) and jenkins (JenkinsHash).  Used by\nbloom filters.",
   :default               => "murmur"
 
+# Tunables - Stargage
+
 attribute "hbase/stargate/run_state",
   :display_name          => "",
   :description           => "",
@@ -245,6 +263,8 @@ attribute "hbase/stargate/readonly",
   :display_name          => "",
   :description           => "hbase.rest.readonly (default false) -- Defines the mode the REST server will be started\nin. Possible values are: false: All HTTP methods are permitted - GET/PUT/POST/DELETE.\ntrue: Only the GET method is permitted.",
   :default               => ""
+
+# Tunables - Thrift
 
 attribute "hbase/thrift/run_state",
   :display_name          => "",
@@ -295,6 +315,8 @@ attribute "hbase/zookeeper/max_client_connections",
   :display_name          => "",
   :description           => "hbase.zookeeper.property.maxClientCnxns (default 2000) -- Limit on number of concurrent\nconnections (at the socket level) that a single client, identified by IP address, may\nmake to a single member of the ZooKeeper ensemble. Set high to avoid zk connection\nissues running standalone and pseudo-distributed.",
   :default               => "2000"
+
+# Tunables
 
 attribute "hbase/client/write_buffer",
   :display_name          => "",
@@ -376,13 +398,8 @@ attribute "hbase/compaction/period",
   :description           => "hbase.hregion.majorcompaction (default 86400000) -- The time (in miliseconds) between\n'major' compactions of all HStoreFiles in a region.  Default: 1 day.  Set to 0 to\ndisable automated major compactions.",
   :default               => "86400000"
 
-attribute "users/hbase/uid",
-  :display_name          => "",
-  :description           => "",
-  :default               => "304"
-
 attribute "tuning/ulimit/hbase",
   :display_name          => "",
   :description           => "",
   :type                  => "hash",
-  :default               => {:nofile=>{:both=>32768}, :nproc=>{:both=>50000}}
+  :default               => { :nofile => { :both => 32768}, :nproc => { :both => 50000 } }
