@@ -23,3 +23,21 @@ include_recipe 'hadoop_cluster'
 include_recipe 'runit'
 
 hadoop_service(:datanode)
+
+announce(:hadoop, :datanode, {
+           :logs  => { :datanode => node[:hadoop][:datanode][:log_dir] },
+           :ports => {
+             :xcvr_port => { :port => node[:hadoop][:datanode][:xcvr_port] },
+             :ipc_port  => { :port => node[:hadoop][:datanode][:ipc_port], }, 
+             :dash_por  => { :port => node[:hadoop][:datanode][:dash_port], 
+                             :dashboard => true}, 
+           },
+           :daemons => {
+             :datanode => {
+               :name => 'java',
+               :user => node[:hadoop][:datanode][:user],
+               :cmd  => 'org.apache.hadoop.hdfs.server.datanode.DataNode'
+             }
+           }
+         })
+
