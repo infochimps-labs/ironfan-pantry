@@ -247,7 +247,7 @@ attribute "hadoop/namenode/java_heap_size_max",
   :description           => "",
   :default               => ""
 
-attribute "hadoop/namenode/port",
+attribute "hadoop/namenode/ipc_port",
   :display_name          => "",
   :description           => "",
   :default               => "8020"
@@ -289,7 +289,7 @@ attribute "hadoop/datanode/java_heap_size_max",
   :description           => "",
   :default               => ""
 
-attribute "hadoop/datanode/port",
+attribute "hadoop/datanode/xcvr_port",
   :display_name          => "",
   :description           => "",
   :default               => "50010"
