@@ -25,7 +25,6 @@ include_recipe 'runit'
 hadoop_service(:jobtracker)
 
 announce(:hadoop, :jobtracker, {
-           :logs  => { :jobtracker => node[:hadoop][:jobtracker][:log_dir] },
            :ports => {
              :dash_port     => { :port => node[:hadoop][:jobtracker][:dash_port],
                                  :dashboard => true, :protocol => 'http' }, 

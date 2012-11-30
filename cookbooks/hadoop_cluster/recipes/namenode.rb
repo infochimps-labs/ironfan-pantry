@@ -43,7 +43,6 @@ template "#{node[:hadoop][:conf_dir]}/nuke_hdfs_from_orbit_its_the_only_way_to_b
 end
 
 announce(:hadoop, :namenode, {
-           :logs  => { :namenode => node[:hadoop][:namenode][:log_dir] },
            :ports => {
              :dash_port     => { :port => node[:hadoop][:namenode][:dash_port], :protocol => 'http' },
              :jmx_dash_port => { :port => node[:hadoop][:namenode][:jmx_dash_port], 
