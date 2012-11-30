@@ -2,7 +2,7 @@ maintainer       "brandon.bell"
 maintainer_email "remuso@gmail.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.3.0"
+version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 description      "MongoDB is a scalable, high-performance, open source NoSQL database. "
 

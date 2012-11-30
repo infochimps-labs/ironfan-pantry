@@ -2,7 +2,7 @@ maintainer       "Philip (flip) Kromer - Infochimps, Inc"
 maintainer_email "coders@infochimps.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          "3.1.2"
+version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 description      "Mounts volumes as directed by node metadata. Can attach external cloud drives, such as ebs volumes."
 

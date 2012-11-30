@@ -2,7 +2,7 @@ maintainer       "Dhruv Bansal - Infochimps, Inc"
 maintainer_email "coders@infochimps.com"
 license          "Apache 2.0"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.rdoc'))
-version          "3.2.0"
+version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 description      "Log integration -- coordinates rotation and archival of logs."
 

@@ -1,7 +1,7 @@
 maintainer       "Logan Lowell - Infochimps, Inc"
 maintainer_email "coders@infochimps.com"
 license          "Apache 2.0"
-version          "0.0.2"
+version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 description      "ZeroMQ: The socket library that acts as a concurrency framework."
 
