@@ -249,7 +249,7 @@ attribute "hbase/stargate/run_state",
   :type                  => "array",
   :default               => "start"
 
-attribute "hbase/stargate/port",
+attribute "hbase/stargate/bind_port",
   :display_name          => "",
   :description           => "",
   :default               => "8080"
@@ -270,6 +270,11 @@ attribute "hbase/thrift/run_state",
   :display_name          => "",
   :description           => "",
   :default               => "start"
+
+attribute "hbase/thrift/bind_port",
+  :display_name          => "",
+  :description           => "",
+  :default               => "9090"
 
 attribute "hbase/thrift/jmx_dash_port",
   :display_name          => "",
