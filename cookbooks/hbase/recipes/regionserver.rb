@@ -41,7 +41,7 @@ announce(:hbase, :regionserver, {
              :jmx_dash_port => { :port => node[:hbase][:regionserver][:jmx_dash_port], :dashboard => true },
            },
            :daemons => {
-             :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'org.apache.hadoop.hbase.regionserver.HRegionServer' } 
+             :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'hbase-regionserver' }
            }
         })
 

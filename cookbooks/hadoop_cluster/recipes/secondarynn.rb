@@ -39,7 +39,7 @@ announce(:hadoop, :secondarynn, {
              :secondarynn => {
                :name => 'java',
                :user => node[:hadoop][:secondarynn][:user],
-               :cmd  => 'org.apache.hadoop.hdfs.server.namenode.SecondaryNameNode'
+               :cmd  => 'hadoop-secondarynn'
              }
            }
          })

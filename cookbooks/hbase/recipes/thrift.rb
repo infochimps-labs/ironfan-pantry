@@ -39,7 +39,7 @@ announce(:hbase, :thrift, {
              :bind_port => { :port => node[:hbase][:thrift][:bind_port] },
            },
            :daemons => {
-             :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'org.apache.hadoop.hbase.thrift.ThriftServer' }
+             :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'hbase-thrift' }
            }
         })
 

@@ -35,7 +35,7 @@ announce(:hadoop, :datanode, {
              :datanode => {
                :name => 'java',
                :user => node[:hadoop][:datanode][:user],
-               :cmd  => 'org.apache.hadoop.hdfs.server.datanode.DataNode'
+               :cmd  => 'hadoop-datanode'
              }
            }
          })

@@ -35,7 +35,7 @@ announce(:hadoop, :jobtracker, {
              :jobtracker => {
                :name => 'java',
                :user => node[:hadoop][:jobtracker][:user],
-               :cmd  => 'org.apache.hadoop.mapred.JobTracker'
+               :cmd  => 'hadoop-jobtracker'
              }
            }
          })

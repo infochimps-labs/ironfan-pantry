@@ -52,7 +52,7 @@ announce(:hadoop, :namenode, {
              :namenode => {
                :name => 'java',
                :user => node[:hadoop][:namenode][:user],
-               :cmd  => 'org.apache.hadoop.hdfs.server.namenode.NameNode'
+               :cmd  => 'hadoop-namenode'
              }
            }
          })

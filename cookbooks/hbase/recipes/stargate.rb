@@ -39,7 +39,7 @@ announce(:hbase, :stargate, {
              :bind_port => { :port => node[:hbase][:stargate][:bind_port] },
            },
            :daemons => {
-             :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'org.apache.hadoop.hbase.rest.Main' }
+             :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'hbase-rest' }
            }
         })
 
