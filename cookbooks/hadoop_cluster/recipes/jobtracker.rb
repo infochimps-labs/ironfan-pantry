@@ -23,3 +23,20 @@ include_recipe 'hadoop_cluster'
 include_recipe 'runit'
 
 hadoop_service(:jobtracker)
+
+announce(:hadoop, :jobtracker, {
+           :ports => {
+             :dash_port     => { :port => node[:hadoop][:jobtracker][:dash_port],
+                                 :dashboard => true, :protocol => 'http' }, 
+             :jmx_dash_port => { :port => node[:hadoop][:jobtracker][:jmx_dash_port],
+                                 :dashboard => true},
+           },
+           :daemons => {
+             :jobtracker => {
+               :name => 'java',
+               :user => node[:hadoop][:jobtracker][:user],
+               :cmd  => 'org.apache.hadoop.mapred.JobTracker'
+             }
+           }
+         })
+

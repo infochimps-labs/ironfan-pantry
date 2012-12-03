@@ -22,13 +22,25 @@
 include_recipe 'hadoop_cluster'
 include_recipe 'runit'
 
-hadoop_service(:secondarynn) do
+hadoop_service(:secondarynn) do 
   old_service_name :secondarynamenode
   package_name     :secondarynamenode
   jar_name         :secondarynamenode
-  daemons :main => { 
-    :name       => 'java',
-    :user       => node[:hadoop][:secondarynn][:user],
-    :cmd        => "proc_secondarynamenode"
-  }
 end
+
+announce(:hadoop, :secondarynn, {
+           :ports => {
+             :dash_port     => { :port => node[:hadoop][:secondarynn][:dash_port],
+                                 :dashboard => true, :protocol => 'http' },
+             :jmx_dash_port => { :port => node[:hadoop][:secondarynn][:jmx_dash_port],
+                                 :dashboard => true},
+           },
+           :daemons => {
+             :secondarynn => {
+               :name => 'java',
+               :user => node[:hadoop][:secondarynn][:user],
+               :cmd  => 'org.apache.hadoop.hdfs.server.namenode.SecondaryNameNode'
+             }
+           }
+         })
+
