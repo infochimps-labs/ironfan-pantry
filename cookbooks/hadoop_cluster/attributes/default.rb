@@ -60,9 +60,9 @@ default[:hadoop][:tmp_dir]  = nil          # set in recipe using volume_dirs
 default[:hadoop][:exported_confs] ||= nil  # set in recipe
 default[:hadoop][:exported_jars]  ||= nil  # set in recipe
 
-default[:hadoop][:namenode   ][:port]              =  8020
+default[:hadoop][:namenode   ][:ipc_port]          =  8020
 default[:hadoop][:jobtracker ][:port]              =  8021
-default[:hadoop][:datanode   ][:port]              = 50010
+default[:hadoop][:datanode   ][:xcvr_port]         = 50010
 default[:hadoop][:datanode   ][:ipc_port]          = 50020
 
 default[:hadoop][:namenode   ][:dash_port]         = 50070

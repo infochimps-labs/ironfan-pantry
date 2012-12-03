@@ -33,4 +33,15 @@ end
 
 kill_old_service("hadoop-hbase-regionserver"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-regionserver") } }
 
-announce(:hbase, :regionserver)
+announce(:hbase, :regionserver, {
+           :logs  => { :regionserver => node[:hbase][:log_dir] },
+           :ports => {
+#             :bind_port     => { :port => node[:hbase][:regionserver][:bind_port] }, # Not available on localhost.  
+             :dash_port     => { :port => node[:hbase][:regionserver][:dash_port], :dashboard => true },
+             :jmx_dash_port => { :port => node[:hbase][:regionserver][:jmx_dash_port], :dashboard => true },
+           },
+           :daemons => {
+             :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'org.apache.hadoop.hbase.regionserver.HRegionServer' } 
+           }
+        })
+
