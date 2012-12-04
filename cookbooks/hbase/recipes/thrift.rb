@@ -34,7 +34,9 @@ end
 kill_old_service("hadoop-hbase-thrift"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-thrift") } }
 
 announce(:hbase, :thrift, {
-           :logs  => { :thrift => node[:hbase][:log_dir] },
+           :logs => { :thrift => {
+             :glob => node[:hbase][:log_dir] + '/hbase-hbase-thrift-*.{log,out}'
+           } },
            :ports => {
              :bind_port => { :port => node[:hbase][:thrift][:bind_port] },
            },

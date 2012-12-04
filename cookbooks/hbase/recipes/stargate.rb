@@ -34,7 +34,9 @@ end
 kill_old_service("hadoop-hbase-stargate"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-stargate") } }
 
 announce(:hbase, :stargate, {
-           :logs  => { :stargate => node[:hbase][:log_dir] },
+           :logs => { :rest => {
+             :glob => node[:hbase][:log_dir] + '/hbase-hbase-rest-*.log'
+           } },
            :ports => {
              :bind_port => { :port => node[:hbase][:stargate][:bind_port] },
            },

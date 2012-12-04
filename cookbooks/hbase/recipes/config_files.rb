@@ -63,7 +63,7 @@ hbase_config = Mash.new({
 end
 
 
-%w[ hbase-env.sh hbase-site.xml hadoop-metrics.properties ].each do |conf_file|
+%w[ hbase-env.sh hbase-site.xml hadoop-metrics.properties log4j.properties ].each do |conf_file|
   template "#{node[:hbase][:conf_dir]}/#{conf_file}" do
     owner       "root"
     mode        "0644"
