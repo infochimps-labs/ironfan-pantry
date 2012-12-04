@@ -56,7 +56,7 @@ This lets you blow up the size of your cluster and not have to wait later for no
 
 ### Initial Cluster Setup
 
-These steps are helpful for mitigating race conditions dealing with
+These steps are helpful for preventing race conditions dealing with
 resizing EBS volumes. Follow them to painlessly set up Hadoop
 clusters.
 
