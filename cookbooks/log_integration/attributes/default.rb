@@ -6,19 +6,21 @@ default[:log_integration][:logrotate][:conf_dir]    = '/etc/logrotate.d'
 default[:log_integration][:logrotate][:conf_prefix] = nil
 
 # Log rotate has a LOT of options:
-# 
-#  compress compresscmd uncompresscmd compressext compressoptions copy
-#  copytruncate create daily dateext dateformat delaycompress
-#  extension ifempty include mail mailfirst maillast maxage minsize
-#  missingok monthly nocompress nocopy nocopytruncate nocreate
-#  nodelaycompress nodateext nomail nomissingok noolddir
-#  nosharedscripts noshred notifempty olddir postrotate/endscript
-#  prerotate/endscript firstaction/endscript lastaction/endscript
-#  rotate size sharedscripts shred shredcycles start tabooext weekly
-#  yearly
 #
+default[:log_integration][:logrotate][:native_options] = %w[
+    compress compresscmd uncompresscmd compressext compressoptions copy
+    copytruncate create daily dateext dateformat delaycompress
+    extension ifempty include mail mailfirst maillast maxage minsize
+    missingok monthly nocompress nocopy nocopytruncate nocreate
+    nodelaycompress nodateext nomail nomissingok noolddir
+    nosharedscripts noshred notifempty olddir postrotate/endscript
+    prerotate/endscript firstaction/endscript lastaction/endscript
+    rotate size sharedscripts shred shredcycles start tabooext weekly
+    yearly
+]
+
 # We take the approach here of listing all options as node attributes.
-# We chooose a smart set of defaults, fill in those attributes, and
+# We choose a smart set of defaults, fill in those attributes, and
 # comment out the other attributes so the node's attributes hash isn't
 # stupidly larger with nils.  You can still set one of the commented
 # attributes, either on the node level or on the individual log file
