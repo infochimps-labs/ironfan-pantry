@@ -62,33 +62,33 @@ clusters.
 
 #### Starting the Master
 
-    1. Set the :run_state to :stop for all hadoop daemons in the
-       master in the cluster definition.
-    2. Launch the master.
-    3. Rerun chef-client and ensure the EBS volumes have resized.
-    4. Run "/etc/hadoop/conf/bootstrap\_hadoop\_namenode" as root.
-    5. Set the :run_state to :start as desired for all appropriate
-       Hadoop daemons and run a "knife cluster sync."
-    6. Rerun chef-client.
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch the master.
+  3. Rerun chef-client and ensure the EBS volumes have resized.
+  4. Run "/etc/hadoop/conf/bootstrap\_hadoop\_namenode" as root.
+  5. Set the :run_state to :start as desired for all appropriate
+     Hadoop daemons and run a "knife cluster sync."
+  6. Rerun chef-client.
 
 #### Launching the First Worker
 
-    1. Set the :run_state to :stop for all hadoop daemons in the
-       master in the cluster definition.
-    2. Launch the first worker.
-    3. Rerun chef-client and ensure the EBS volumes have resized.
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch the first worker.
+  3. Rerun chef-client and ensure the EBS volumes have resized.
 
 #### Launching the Rest of the Workers    
    
-    1. Set the :run_state to :stop for all hadoop daemons in the
-       master in the cluster definition.
-    2. Launch all additional workers.
-    3. Set the :run_state for :hadoop_tasktracker and :hadoop_datanode
-       to :start in the cluster definition and run a "knife cluster
-       sync."
-    4. After all workers have launched, rerun chef-client on all
-       launched workers, including the first if you have just launched
-       it.
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch all additional workers.
+  3. Set the :run_state for :hadoop_tasktracker and :hadoop_datanode
+     to :start in the cluster definition and run a "knife cluster
+     sync."
+  4. After all workers have launched, rerun chef-client on all
+     launched workers, including the first if you have just launched
+     it.
 
 ### Author:
       
