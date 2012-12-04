@@ -31,6 +31,7 @@ node[:hadoop][:secondarynn][:addr] = discover(:hadoop, :secondarynn).private_ip 
 
 %w[ core-site.xml     hdfs-site.xml     mapred-site.xml
     hadoop-env.sh     fairscheduler.xml hadoop-metrics.properties
+    log4j.properties
 ].each do |conf_file|
   template "#{node[:hadoop][:conf_dir]}/#{conf_file}" do
     owner "root"

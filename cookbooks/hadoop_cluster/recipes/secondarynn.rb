@@ -29,6 +29,9 @@ hadoop_service(:secondarynn) do
 end
 
 announce(:hadoop, :secondarynn, {
+           :logs => { :secondarynn => {
+             :glob => node[:hadoop][:log_dir] + '/hadoop-hadoop-secondarynn-*.log'
+           } },
            :ports => {
              :dash_port     => { :port => node[:hadoop][:secondarynn][:dash_port],
                                  :dashboard => true, :protocol => 'http' },

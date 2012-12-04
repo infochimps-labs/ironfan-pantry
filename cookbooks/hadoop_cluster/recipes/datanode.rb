@@ -25,6 +25,9 @@ include_recipe 'runit'
 hadoop_service(:datanode)
 
 announce(:hadoop, :datanode, {
+           :logs => { :datanode => {
+             :glob => node[:hadoop][:log_dir] + '/hadoop-hadoop-datanode-*.log'
+           } },
            :ports => {
              :xcvr_port => { :port => node[:hadoop][:datanode][:xcvr_port] },
              :ipc_port  => { :port => node[:hadoop][:datanode][:ipc_port], }, 
