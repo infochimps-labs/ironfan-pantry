@@ -35,7 +35,7 @@ kill_old_service("hadoop-hbase-stargate"){ hard(:real_hard) ; only_if{ File.exis
 
 announce(:hbase, :stargate, {
            :logs => { :rest => {
-             :glob => node[:hbase][:log_dir] + '/hbase-hbase-rest-*.log'
+             :glob => node[:hbase][:log_dir] + '/*hbase-rest-*.log'
            } },
            :ports => {
              :bind_port => { :port => node[:hbase][:stargate][:bind_port] },

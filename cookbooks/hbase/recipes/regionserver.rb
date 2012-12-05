@@ -35,7 +35,7 @@ kill_old_service("hadoop-hbase-regionserver"){ hard(:real_hard) ; only_if{ File.
 
 announce(:hbase, :regionserver, {
            :logs => { :regionserver => {
-             :glob => node[:hbase][:log_dir] + '/hbase-hbase-regionserver-*.{log,out}'
+             :glob => node[:hbase][:log_dir] + '/*hbase-regionserver-*'
            } },
            :ports => {
 #             :bind_port     => { :port => node[:hbase][:regionserver][:bind_port] }, # Not available on localhost.  

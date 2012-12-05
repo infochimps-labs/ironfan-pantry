@@ -35,7 +35,7 @@ kill_old_service("hadoop-hbase-master"){ hard(:real_hard) ; only_if{ File.exists
 
 announce(:hbase, :master, {
            :logs => { :master => {
-             :glob => node[:hbase][:log_dir] + '/hbase-hbase-master-*.{log,out}'
+             :glob => node[:hbase][:log_dir] + '/*hbase-master-*'
            } },
            :ports => {
 #             :bind_port     => { :port => node[:hbase][:master][:bind_port] }, # Not available via localhost so fails iron_cuke test
