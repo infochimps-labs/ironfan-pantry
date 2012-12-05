@@ -24,42 +24,25 @@ aws = node[:aws]
 
 if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key] && node[:cloud]
 
-  public_node_name   = (node[:route53][:node_name] || node.name).to_s
+  node_name   = (node[:route53][:node_name] || node.name).to_s
 
-  public_hostname    =  public_node_name.gsub(/[^a-zA-Z0-9\-]/, '-')
-  public_fqdn        = [public_hostname, node[:route53][:zone]].compact.join(".")
+  hostname    =  node_name.gsub(/[^a-zA-Z0-9\-]/, '-')
+  fqdn        = [hostname, node[:route53][:zone]].compact.join(".")
 
-  # point "gordo-datanode-3.awesomeco.com" => the cloud public_hostname
-  route53_rr(public_hostname) do
+  # point "gordo-datanode-3.awesomeco.com" => the cloud hostname
+  route53_rr(hostname) do
     zone          node[:route53][:zone]
 
-    fqdn          public_fqdn
+    fqdn          fqdn
     type          "CNAME"
-    values        ["#{node[:cloud][:public_hostname]}."]
+    values        ["#{node[:cloud][:hostname]}."]
     ttl           node[:route53][:ttl]
 
     action        :update
     aws_access_key_id     aws[:aws_access_key_id]
     aws_secret_access_key aws[:aws_secret_access_key]
   end
-  node[:route53][:fqdn] = public_fqdn
-  
-  private_hostname    =  "#{public_node_name}-internal".gsub(/[^a-zA-Z0-9\-]/, '-')
-  private_fqdn        = [private_hostname, node[:route53][:zone]].compact.join(".")
-
-  # point "gordo-datanode-3-internal.awesomeco.com" => the cloud local_hostname
-  route53_rr(private_hostname) do
-    zone          node[:route53][:zone]
-
-    fqdn          private_fqdn
-    type          "CNAME"
-    values        ["#{node[:cloud][:local_hostname]}."]
-    ttl           node[:route53][:ttl]
-
-    action        :update
-    aws_access_key_id     aws[:aws_access_key_id]
-    aws_secret_access_key aws[:aws_secret_access_key]
-  end
+  node[:route53][:fqdn] = fqdn
 elsif not node[:cloud]
   Chef::Log.warn("Cannot set hostname, because the node[:cloud] attributes aren't set. On a cloud machine, sometimes this doesn't happen until the second run.")
 else
