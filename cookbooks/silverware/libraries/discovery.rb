@@ -38,7 +38,7 @@ module Ironfan
       #
       component.instance_eval(&block) if block
       #
-      node.set[:announces][component.fullname] = component.to_hash
+      node.default[:announces][component.fullname] = component.to_hash
       node_changed!
       component
     end
