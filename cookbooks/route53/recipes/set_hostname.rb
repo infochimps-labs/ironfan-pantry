@@ -35,7 +35,7 @@ if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key] && node[:cloud]
 
     fqdn          fqdn
     type          "CNAME"
-    values        ["#{node[:cloud][:hostname]}."]
+    values        ["#{node[:cloud][:public_hostname]}."]
     ttl           node[:route53][:ttl]
 
     action        :update
