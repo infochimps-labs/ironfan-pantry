@@ -26,6 +26,7 @@
 
 if node[:mongodb][:server] # Only need user for servers
   user node[:mongodb][:user] do
+    group node[:mongodb][:group]
     action :create
     system true
     shell "/bin/false"

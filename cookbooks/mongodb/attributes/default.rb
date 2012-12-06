@@ -14,6 +14,7 @@ default[:mongodb][:journal_dir]                     = "/var/lib/mongodb/journal"
 #
 
 default[:mongodb][:user]                            = 'mongodb'
+default[:mongodb][:group]                           = 'mongodb'
 default[:users]['mongodb'][:uid]          	    = 5001
 default[:groups]['mongodb'][:gid]           	    = 5001
 
