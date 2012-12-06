@@ -38,9 +38,9 @@ announce(:hbase, :master, {
              :glob => node[:hbase][:log_dir] + '/*hbase-master-*'
            } },
            :ports => {
-#             :bind_port     => { :port => node[:hbase][:master][:bind_port] }, # Not available via localhost so fails iron_cuke test
-             :dash_port     => { :port => node[:hbase][:master][:dash_port], :dashboard => true },
-#             :jmx_dash_port => { :port => node[:hbase][:master][:jmx_dash_port], :dashboard => true }, # This moves between instances of master, only one of which will have it open
+             # :bind_port     => { :port => node[:hbase][:master][:bind_port] }, # Not available via localhost so fails iron_cuke test
+             # :dash_port     => { :port => node[:hbase][:master][:dash_port], :dashboard => true }, # This moves between instances of master, only one of which will have it open
+            :jmx_dash_port => { :port => node[:hbase][:master][:jmx_dash_port], :dashboard => true }, 
            },
            :daemons => {
              :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'hbase-master' } 
