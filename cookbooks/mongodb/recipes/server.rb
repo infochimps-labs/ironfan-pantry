@@ -47,7 +47,7 @@ kill_old_service('mongodb')
 
 runit_service "mongodb_server" do
   run_state     node[:mongodb][:server][:run_state]
-  options       Mash.new(node[:mongodb].to_hash).merge(node[:mongodb][:server].to_hash)
+  options       Mash.new(:service_name => 'server').merge(node[:mongodb]).merge(node[:mongodb][:server])
 end
 
 #
