@@ -25,9 +25,14 @@
 #
 
 if node[:mongodb][:server] # Only need user for servers
-  user node[:mongodb][:user] do
-    group node[:mongodb][:group]
+  group node[:mongodb][:group] do 
     action :create
+    system true
+    gid    node[:mongodb][:gid]
+  end 
+  user node[:mongodb][:user] do
+    action :create
+    group node[:mongodb][:group]
     system true
     shell "/bin/false"
   end
