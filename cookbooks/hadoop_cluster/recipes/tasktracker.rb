@@ -38,7 +38,7 @@ announce(:hadoop, :tasktracker, {
              :tasktracker => {
                :name => 'java',
                :user => node[:hadoop][:tasktracker][:user],
-               :cmd  => 'hadoop-jobtracker'
+               :cmd  => 'proc_tasktracker'
              }
            }
          })

@@ -63,7 +63,7 @@ announce(:hadoop, :jobtracker, {
              :jobtracker => {
                :name => 'java',
                :user => node[:hadoop][:jobtracker][:user],
-               :cmd  => 'hadoop-jobtracker'
+               :cmd  => 'proc_jobtracker'
              }
            }
          })

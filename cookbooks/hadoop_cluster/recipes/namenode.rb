@@ -55,7 +55,7 @@ announce(:hadoop, :namenode, {
              :namenode => {
                :name => 'java',
                :user => node[:hadoop][:namenode][:user],
-               :cmd  => 'hadoop-namenode'
+               :cmd  => 'proc_namenode'
              }
            }
          })

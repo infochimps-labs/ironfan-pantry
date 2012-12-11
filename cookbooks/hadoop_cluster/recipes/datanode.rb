@@ -38,7 +38,7 @@ announce(:hadoop, :datanode, {
              :datanode => {
                :name => 'java',
                :user => node[:hadoop][:datanode][:user],
-               :cmd  => 'hadoop-datanode'
+               :cmd  => 'proc_datanode'
              }
            }
          })
