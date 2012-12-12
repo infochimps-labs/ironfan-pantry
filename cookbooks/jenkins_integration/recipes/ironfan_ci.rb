@@ -17,6 +17,16 @@
 # limitations under the License.
 #
 
-ironfan_homebase "testmonkey-homebase" do
-  path ""
+base_path = node[:jenkins_integration][:ironfan_ci][:path]
+[ base_path, base_path + '/workspace' ].each do |dir|
+  directory dir do
+    owner node[:jenkins_integration][:user]
+    group node[:jenkins_integration][:group]
+  end
+end
+
+ci_name = node[:jenkins_integration][:ironfan_ci][:name]
+ironfan_homebase_path ci_name do
+  path          "#{base_path}/workspace/#{ci_name}"
+  repository    node[:jenkins_integration][:ironfan_ci][:repository]
 end

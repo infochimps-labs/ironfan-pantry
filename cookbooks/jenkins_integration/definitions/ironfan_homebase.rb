@@ -2,23 +2,24 @@
 #   may be used to
 
 define(:ironfan_homebase,
-  :path         => node[:jenkins_integration][:ironfan_homebase][:path]
+  :user         => node[:jenkins_integration][:user],
+  :group        => node[:jenkins_integration][:group],
+  :path         => node[:jenkins_integration][:ironfan_homebase][:path] + '/' + params[:name],
+  :repository   => node[:jenkins_integration][:ironfan_homebase][:repository],
 #   :action       => [:create, :manage],  # action. You typically want [:create, :manage] or [:create]
-#   :user         => nil,                 # username to create.      default: `scoped_hash[:user]`
 #   :home         => nil,                 # home directory for daemon. default: `scoped_hash[:pid_dir]`
 #   :manage_home  => false,               # manage home directory? set to false, because most daemon users should not own their own home
 #   :shell        => '/bin/false',        # shell to set. default: `/bin/false`
-#   :group        => nil,                 # group for daemon.          default: `scoped_hash[:group]`
 #   :comment      => nil,                 # comment for user info
 #   :create_group => true                 # Action to take on the group: `true` means `[:create]`, false-y means do nothing, or you can supply explicit actions (eg `[:create, :manage]`). default: true
   ) do
 
   git_private_repo params[:name] do
     path                   params[:path]
-#     repository             node[:ironfan_api][:homebase][:git_url]
+    repository             params[:repository]
 #     private_keys_contents  node[:ironfan_api][:homebase][:private_keys]
-#     action                 :sync
-#     enable_submodules      true
+    action                 :sync
+    enable_submodules      true
   end
 #   sys, subsys = params[:name].to_s.split(".", 2).map(&:to_sym)
 #   component = Ironfan::Component.new(node, sys, subsys)
