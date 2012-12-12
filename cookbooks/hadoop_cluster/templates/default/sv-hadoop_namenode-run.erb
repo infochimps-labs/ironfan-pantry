@@ -27,8 +27,8 @@ export _HADOOP_DAEMON_PIDFILE=$HADOOP_PID_DIR/hadoop-$HADOOP_IDENT_STRING-$comma
 export _HADOOP_DAEMON_DETACHED="false"
 
 export HADOOP_LOGFILE=hadoop-$HADOOP_IDENT_STRING-$command-$HADOOP_NODENAME.log
-export HADOOP_ROOT_LOGGER="INFO,DRFA"
-export HADOOP_SECURITY_LOGGER="INFO,DRFAS"
+export HADOOP_ROOT_LOGGER="INFO,FA"
+export HADOOP_SECURITY_LOGGER="INFO,FAS"
 
 # Set the ulimit, then prove the new settings got there
 ulimit -H -n 65535 

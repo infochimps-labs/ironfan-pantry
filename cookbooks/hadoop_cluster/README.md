@@ -56,12 +56,39 @@ This lets you blow up the size of your cluster and not have to wait later for no
 
 ### Initial Cluster Setup
 
-Follow these simple steps to set Hadoop up as painlessly as possible on a new cluster.
+These steps are helpful for preventing race conditions dealing with
+resizing EBS volumes. Follow them to painlessly set up Hadoop
+clusters.
 
-  1. Set all the hadoop daemons to default to the "stop" state in the master facet definition before you first launch the master node.
-  2. Run the "/etc/hadoop/conf/bootstrap\_hadoop\_namenode" as root.
-  3. Set all the hadoop daemons except tasktracker to the "start" state in the master facet definition, run a knife cluster sync, and then run chef-client on the master.
-  4. Set the hadoop\_datanode daemon to "stop" on the worker nodes (or whatever facet is running the datanodes.) Launch the datanodes, edit the cluster definition to set all of the datanode daemons to default to the "start" state. Then rerun chef-client on all of the datanodes.
+#### Starting the Master
+
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch the master.
+  3. Rerun chef-client and ensure the EBS volumes have resized.
+  4. Run "/etc/hadoop/conf/bootstrap\_hadoop\_namenode" as root.
+  5. Set the :run_state to :start as desired for all appropriate
+     Hadoop daemons and run a "knife cluster sync."
+  6. Rerun chef-client.
+
+#### Launching the First Worker
+
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch the first worker.
+  3. Rerun chef-client and ensure the EBS volumes have resized.
+
+#### Launching the Rest of the Workers    
+   
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch all additional workers.
+  3. Set the :run_state for :hadoop_tasktracker and :hadoop_datanode
+     to :start in the cluster definition and run a "knife cluster
+     sync."
+  4. After all workers have launched, rerun chef-client on all
+     launched workers, including the first if you have just launched
+     it.
 
 ### Author:
       

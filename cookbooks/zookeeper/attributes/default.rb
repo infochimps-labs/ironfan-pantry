@@ -36,7 +36,7 @@ default[:zookeeper][:exported_jars]            = [ ::File.join(node[:zookeeper][
 # Services
 #
 
-default[:zookeeper][:server][:run_state] = :stop
+default[:zookeeper][:server][:run_state] = :nothing
 
 #
 # Tunables

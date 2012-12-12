@@ -28,11 +28,11 @@
   <property> <name>hbase.zookeeper.quorum</name>                               <value><%= @zookeeper_addrs.join(",")                     %></value> </property>
   <property> <name>hbase.rest.readonly</name>                                  <value><%= @hbase[:stargate    ][:readonly]               %></value> </property>
   
-  <property> <name>hbase.master.port</name>                                    <value><%= @hbase[:master      ][:port]                   %></value> </property>
+  <property> <name>hbase.master.port</name>                                    <value><%= @hbase[:master      ][:bind_port]                   %></value> </property>
   <property> <name>hbase.master.info.port</name>                               <value><%= @hbase[:master      ][:dash_port]              %></value> </property>
-  <property> <name>hbase.regionserver.port</name>                              <value><%= @hbase[:regionserver][:port]                   %></value> </property>
+  <property> <name>hbase.regionserver.port</name>                              <value><%= @hbase[:regionserver][:bind_port]                   %></value> </property>
   <property> <name>hbase.regionserver.info.port</name>                         <value><%= @hbase[:regionserver][:dash_port]              %></value> </property>
-  <property> <name>hbase.rest.port</name>                                      <value><%= @hbase[:stargate    ][:port]                   %></value> </property>
+  <property> <name>hbase.rest.port</name>                                      <value><%= @hbase[:stargate    ][:bind_port]                   %></value> </property>
   <property> <name>hbase.zookeeper.peerport</name>                             <value><%= @hbase[:zookeeper   ][:peer_port]              %></value> </property>
   <property> <name>hbase.zookeeper.leaderport</name>                           <value><%= @hbase[:zookeeper   ][:leader_port]            %></value> </property>
   <property> <name>hbase.zookeeper.property.clientPort</name>                  <value><%= @hbase[:zookeeper   ][:client_port]            %></value> </property>

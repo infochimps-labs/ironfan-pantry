@@ -41,3 +41,21 @@ template "#{node[:hadoop][:conf_dir]}/nuke_hdfs_from_orbit_its_the_only_way_to_b
   variables     :hadoop => hadoop_config_hash
   source        "nuke_hdfs_from_orbit_its_the_only_way_to_be_sure.sh.erb"
 end
+
+announce(:hadoop, :namenode, {
+           :logs => { :namenode => {
+             :glob => node[:hadoop][:log_dir] + '/hadoop-hadoop-namenode-*.log'
+           } },
+           :ports => {
+             :dash_port     => { :port => node[:hadoop][:namenode][:dash_port], :protocol => 'http' },
+             :jmx_dash_port => { :port => node[:hadoop][:namenode][:jmx_dash_port], 
+                                 :dashboard => true},
+           },
+           :daemons => {
+             :namenode => {
+               :name => 'java',
+               :user => node[:hadoop][:namenode][:user],
+               :cmd  => 'proc_namenode'
+             }
+           }
+         })

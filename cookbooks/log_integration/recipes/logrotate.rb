@@ -11,7 +11,6 @@ components_with(:logs).each do |component|
   
   # ... and over each log aspect for the component...
   component.logs.each_pair do |aspect_name, aspect_props|
-
     # Now we figure out the paths to the actual log files that will
     # need to be rotated by lograted for this aspect.
     aspect_props = { :path => aspect_props } unless aspect_props.is_a?(Hash)
@@ -22,8 +21,8 @@ components_with(:logs).each do |component|
     given_path = aspect_props[:path]
     case
     when aspect_props[:glob]
-      rel_path = File.dirname(aspect_props[:glob])
-      log_path = Dir[aspect_props[:glob]].map { |path| '"' + path + '"' }.join(' ')
+      rel_path = given_path || File.dirname(aspect_props[:glob])
+      log_path = aspect_props[:glob]
     when !File.exist?(given_path)
       Chef::Log.warn("Could not find a log file/directory at #{given_path} to logrotate, skipping...")
       next
@@ -45,8 +44,11 @@ components_with(:logs).each do |component|
     formatted_options  = []
     options.each_pair do |name, value|
       # Ignore the non-logrotate options we've jammed into the Hash...
-      next if %w[path conf_prefix conf_dir logrotate].include?(name.to_s)
+      next unless node.log_integration.logrotate.native_options.include?(name.to_s)
       
+      # Ignore any keys with value of nil
+      next if value.nil?
+
       # Let helper format the actual option text
       line = (logrotate_option(name, value) || logrotate_option(name, value.to_s))
       formatted_options << line if line

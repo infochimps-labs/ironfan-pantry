@@ -23,3 +23,22 @@ include_recipe 'hadoop_cluster'
 include_recipe 'runit'
 
 hadoop_service(:tasktracker)
+
+announce(:hadoop, :tasktracker, {
+           :logs => { :tasktracker => {
+             :glob => node[:hadoop][:log_dir] + '/hadoop-hadoop-tasktracker-*.log'
+           } },
+           :ports => {
+             :dash_port     => { :port => node[:hadoop][:tasktracker][:dash_port],
+                                 :dashboard => true, :protocol => 'http' },
+             :jmx_dash_port => { :port => node[:hadoop][:tasktracker][:jmx_dash_port],
+                                 :dashboard => true},
+           },
+           :daemons => {
+             :tasktracker => {
+               :name => 'java',
+               :user => node[:hadoop][:tasktracker][:user],
+               :cmd  => 'proc_tasktracker'
+             }
+           }
+         })

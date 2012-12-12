@@ -44,12 +44,18 @@ hbase_config = Mash.new({
     end
   end
 
-
-
   # FIXME: this is brittle, but the best I can do. can you do better?
   Array(node[component][:exported_libs]).flatten.each do |export|
     pathsegs = export.gsub(%r{\A.*/native/([\w\.\-]+)/([^/]+)\z}, '\1/\2')
     Chef::Log.debug( [ 'hbase using hadoop native libs', pathsegs, node[:hadoop][:exported_libs], node[:hbase][:home_dir] ].inspect )
+    # FIXME:  This should only be done once and is a little dirty 
+    dirname = File.dirname(pathsegs)
+    directory "#{node[:hbase][:home_dir]}/lib/native/#{dirname}" do
+      owner "hbase"
+      group "hbase"
+      mode "0755"
+      action :create
+    end
     link "#{node[:hbase][:home_dir]}/lib/native/#{pathsegs}" do
       to  export
     end
@@ -57,7 +63,7 @@ hbase_config = Mash.new({
 end
 
 
-%w[ hbase-env.sh hbase-site.xml hadoop-metrics.properties ].each do |conf_file|
+%w[ hbase-env.sh hbase-site.xml hadoop-metrics.properties log4j.properties ].each do |conf_file|
   template "#{node[:hbase][:conf_dir]}/#{conf_file}" do
     owner       "root"
     mode        "0644"
