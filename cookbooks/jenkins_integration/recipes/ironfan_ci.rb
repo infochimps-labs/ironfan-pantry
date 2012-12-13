@@ -26,7 +26,7 @@ base_path = node[:jenkins_integration][:ironfan_ci][:path]
 end
 
 ci_name = node[:jenkins_integration][:ironfan_ci][:name]
-ironfan_homebase_path ci_name do
+ironfan_homebase(ci_name) do
   path          "#{base_path}/workspace/#{ci_name}"
   repository    node[:jenkins_integration][:ironfan_ci][:repository]
 end
