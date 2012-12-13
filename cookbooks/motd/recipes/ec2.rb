@@ -19,17 +19,8 @@
 # limitations under the License.
 #
 
-[ :instance_id,
-  :instance_type,
-  :public_hostname,
-].each do |v|
-  node.set[:motd][v] = (node[:ec2] || {})[v] || ''
-end
-[ :security_groups,
-].each do |v|
-  node.set[:motd][v] = (node[:ec2] || {})[v] || []
-end
-[ :description
-].each do |v|
-  node.set[:motd][v] = (node[:lsb] || {})[v] || ''
-end
+node.set[:motd][:instance_id]           = node[:ec2][:instance_id]      || ''
+node.set[:motd][:instance_type]         = node[:ec2][:instance_type]    || ''
+node.set[:motd][:public_hostname]       = node[:ec2][:public_hostname]  || ''
+node.set[:motd][:security_groups]       = node[:ec2][:security_groups]  || []
+

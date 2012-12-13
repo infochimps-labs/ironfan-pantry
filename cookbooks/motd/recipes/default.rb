@@ -28,20 +28,15 @@ link '/etc/motd' do
   only_if{ File.symlink?('/etc/motd') }
 end
 
-node.set[:motd]         = Mash.new unless node[:motd]
-node.set[:motd][:roles] = node[:roles] || []
+node.set[:motd]                 = Mash.new unless node[:motd]
 
-if node[:ec2]
-  include_recipe 'motd::ec2'
-end
+node.set[:motd][:roles]         = node[:roles]                  || []
+node.set[:motd][:ipaddress]     = node[:ipaddress]              || ''
+node.set[:motd][:private_ips]   = node[:cloud][:private_ips]    || []
+node.set[:motd][:public_ips]    = node[:cloud][:public_ips]     || []
+node.set[:motd][:description]   = node[:lsb][:description]      || ''
 
-node[:motd][:ipaddress] = node[:ipaddress]
-
-# FIXME: decouple
-[ :private_ips, :public_ips                       ].each{|v| node[:motd][v] = (node[:cloud] || {})[v] || [] }
-[ :instance_id, :instance_type, :public_hostname, ].each{|v| node[:motd][v] = (node[:ec2]   || {})[v] || '' }
-[ :security_groups,                               ].each{|v| node[:motd][v] = (node[:ec2]   || {})[v] || [] }
-[ :description                                    ].each{|v| node[:motd][v] = (node[:lsb]   || {})[v] || '' }
+include_recipe 'motd::ec2' if node[:ec2]
 
 template "/etc/motd" do
   owner  "root"
