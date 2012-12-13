@@ -57,7 +57,7 @@ module Ironfan
       #
       servers = discover_all_nodes(component_name)
       servers.map do |server|
-        hsh = server[:announces][component_name]
+        hsh = server[:announces][component_name].to_hash
         hsh[:realm] = realm
         Ironfan::Component.new(server, sys, subsys, hsh)
       end

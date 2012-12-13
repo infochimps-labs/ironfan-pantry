@@ -28,8 +28,8 @@ link '/etc/motd' do
   only_if{ File.symlink?('/etc/motd') }
 end
 
-node[:motd]         ||= Mash.new
-node[:motd][:roles]   = node[:roles] || []
+node.set[:motd]         = Mash.new unless node[:motd]
+node.set[:motd][:roles] = node[:roles] || []
 
 if node[:ec2]
   include_recipe 'motd::ec2'

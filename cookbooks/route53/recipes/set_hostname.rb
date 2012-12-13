@@ -42,7 +42,7 @@ if aws && aws[:aws_access_key_id] && aws[:aws_secret_access_key] && node[:cloud]
     aws_access_key_id     aws[:aws_access_key_id]
     aws_secret_access_key aws[:aws_secret_access_key]
   end
-  node[:route53][:fqdn] = fqdn
+  node.set[:route53][:fqdn] = fqdn
 elsif not node[:cloud]
   Chef::Log.warn("Cannot set hostname, because the node[:cloud] attributes aren't set. On a cloud machine, sometimes this doesn't happen until the second run.")
 else

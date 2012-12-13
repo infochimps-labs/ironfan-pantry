@@ -11,7 +11,7 @@ module JenkinsHelpers
     existing_plugins = node[:jenkins][:server][:plugins].map(&:to_s)
     plugins_to_add   = plugin_list.map(&:to_s) - existing_plugins
     unless plugins_to_add.empty?
-      node[:jenkins][:server][:plugins] = existing_plugins + plugins_to_add
+      node.set[:jenkins][:server][:plugins] = existing_plugins + plugins_to_add
       node_changed!
     end
   end
