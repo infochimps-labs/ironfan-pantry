@@ -17,16 +17,16 @@
 # limitations under the License.
 #
 
-base_path = node[:jenkins_integration][:ironfan_ci][:path]
-[ base_path, base_path + '/workspace' ].each do |dir|
+ci_path = node[:jenkins_integration][:ironfan_ci][:path]
+[ ci_path, ci_path + '/workspace' ].each do |dir|
   directory dir do
     owner node[:jenkins_integration][:user]
     group node[:jenkins_integration][:group]
   end
 end
 
-ci_name = node[:jenkins_integration][:ironfan_ci][:name]
-ironfan_homebase(ci_name) do
-  path          "#{base_path}/workspace/#{ci_name}"
+ironfan_homebase node[:jenkins_integration][:ironfan_ci][:name] do
+  base_path     "#{ci_path}/workspace/"
   repository    node[:jenkins_integration][:ironfan_ci][:repository]
+  git_keys      node[:jenkins_integration][:ironfan_ci][:git_keys]
 end
