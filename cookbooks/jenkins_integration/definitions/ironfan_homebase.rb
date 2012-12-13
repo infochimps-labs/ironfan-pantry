@@ -15,15 +15,20 @@ define(:ironfan_homebase,
   defaults[:group]      = node[:jenkins_integration][:group]
   defaults[:base_path]  = node[:jenkins_integration][:ironfan_homebase][:path]
   defaults[:repository] = node[:jenkins_integration][:ironfan_homebase][:repository]
-
   config                = defaults.merge(params)
-  full_path             = config[:full_path] || "#{config[:base_path]}/#{config[:name]}"
 
   git_private_repo params[:name] do
-    path                   full_path
+    user                   config[:user]
+    group                  config[:group]
+    path                   config[:full_path] || "#{config[:base_path]}/#{config[:name]}"
     repository             config[:repository]
     private_keys_contents  config[:git_keys] unless config[:git_keys].nil?
     action                 :sync
     enable_submodules      true
   end
+
+  # bundle install
+
+  # create knife-user-testmonkey.rb, add AWS keys
+  # create testmonkey.pem for Chef                      ## (do I refactor git_keys?)
 end
