@@ -140,7 +140,7 @@ index:
       # Largest segment (by total byte size) that may be merged with other
       # segments. Defaults to 5gb.
       # max_merged_segment:
-    <%- if @elasticsearch[:max_thread_count] %>
+    <%- unless @elasticsearch[:max_thread_count].nil? %>
     scheduler:
       max_thread_count:         <%= @elasticsearch[:max_thread_count] %>
     <%- end %>

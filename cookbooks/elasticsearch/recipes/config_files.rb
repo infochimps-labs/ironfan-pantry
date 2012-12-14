@@ -30,7 +30,7 @@ template "/etc/elasticsearch/elasticsearch.in.sh" do
   variables     :elasticsearch => node[:elasticsearch]
 end
 
-node[:elasticsearch][:seeds] = discover_all(:elasticsearch, :datanode).map(&:private_ip)
+node.set[:elasticsearch][:seeds] = discover_all(:elasticsearch, :datanode).map(&:private_ip)
 Chef::Log.warn("No elasticsearch seeds!") if node[:elasticsearch][:seeds].empty?
 template "/etc/elasticsearch/elasticsearch.yml" do
   source        "elasticsearch.yml.erb"
@@ -41,13 +41,10 @@ template "/etc/elasticsearch/elasticsearch.yml" do
     :elasticsearch      => node[:elasticsearch],
     :aws                => node[:aws]
   })
-end
-
-# FIXME: This should be in server as a subscription, but that isn't supported by the
-#   new syntax, and the old syntax requires that the subscription only occur after
-#   the declaration of its target (which will fail since config happens last.)
-if ( node.elasticsearch.is_datanode && ( node.elasticsearch.server.run_state != 'stop') )
-  template "/etc/elasticsearch/elasticsearch.yml" do
+  # FIXME: This should be in server as a subscription, but that isn't supported by the
+  #   new syntax, and the old syntax requires that the subscription only occur after
+  #   the declaration of its target (which will fail since config happens last.)
+  if ( node.elasticsearch.is_datanode && ( node.elasticsearch.server.run_state != 'stop') )
     notifies      :restart, "service[elasticsearch]"
   end
 end

@@ -87,4 +87,4 @@ announce(:elasticsearch, :server, {
          })
 
 # JMX should listen on the public interface
-node[:elasticsearch][:jmx_dash_addr] = public_ip_of(node)
+node.set[:elasticsearch][:jmx_dash_addr] = public_ip_of(node)
