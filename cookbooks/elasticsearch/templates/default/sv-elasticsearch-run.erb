@@ -14,6 +14,9 @@ ES_DATA_ROOT=<%= @options[:data_root] %>
 export ES_DATA_DIR=$ES_DATA_ROOT/data
 export ES_WORK_DIR=$ES_DATA_ROOT/work
 
+# Wait longer for elasticsearch to come up
+export SVWAIT=15
+
 # bump the # of open files way way up
 ulimit -n 65536
 <%- unless @options[:ulimit_mlock].nil? %>
