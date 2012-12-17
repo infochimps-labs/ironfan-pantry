@@ -8,7 +8,7 @@ export ZOOPIDFILE=<%= @options[:pid_dir] %>/zookeeper-server.pid
 export ZOO_LOG_DIR=<%= @options[:log_dir] %>
 export ZOOCFGDIR=$ZOOKEEPER_CONF
 export CLASSPATH=$CLASSPATH:$ZOOKEEPER_CONF:$ZOOKEEPER_HOME/*:$ZOOKEEPER_HOME/lib/*
-export ZOO_LOG4J_PROP=INFO,ROLLINGFILE
+export ZOO_LOG4J_PROP=INFO,FILE
 export JVMFLAGS=-Dzookeeper.log.threshold=INFO
 
 # See http://java.sun.com/javase/6/docs/technotes/guides/management/agent.html
@@ -32,7 +32,7 @@ echo "Using config: $ZOOCFG"
 
 _ZOO_DAEMON_OUT="$ZOO_LOG_DIR/zookeeper.out"
 
-echo $JAVA  
+echo $JAVA
 
 exec chpst -u <%= @options[:user] %> "$JAVA"  \
   "-Dzookeeper.log.dir=${ZOO_LOG_DIR}"        \
