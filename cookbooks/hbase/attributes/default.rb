@@ -38,15 +38,15 @@ default[:hbase][:zookeeper   ][:client_port]   = 2181
 # default[:hbase][:nameserver]                 = default # hbase.*.dns.nameserver (default default) -- The host name or IP address of the name server (DNS) which an hbase component should use to determine the host name used by the master for communication and display purposes.
 
 # these are set by the recipes
-node[:hbase][:exported_jars]   ||= []
-node[:hbase][:exported_confs]  ||= []
+node.set[:hbase][:exported_jars]   ||= []
+node.set[:hbase][:exported_confs]  ||= []
 
 #
 # Users
 #
 
 # hbase user
-node[:hbase][:user] = 'hbase'
+node.set[:hbase][:user] = 'hbase'
 default[:users ]['hbase'     ][:uid]    = 304
 default[:groups]['hbase'     ][:gid]    = 304
 
@@ -54,7 +54,7 @@ default[:groups]['hbase'     ][:gid]    = 304
 # Run state of daemons
 #
 
-node[:hbase][:services] = [ :master, :regionserver, :stargate, :thrift ]
+node.set[:hbase][:services] = [ :master, :regionserver, :stargate, :thrift ]
 
 default[:hbase][:master      ][:run_state] = :start
 default[:hbase][:regionserver][:run_state] = :start
