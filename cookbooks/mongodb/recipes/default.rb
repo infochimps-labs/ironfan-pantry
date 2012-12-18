@@ -32,3 +32,7 @@ if node[:mongodb][:server] # Only need user for servers
     shell "/bin/false"
   end
 end
+
+standard_dirs('mongodb.server') do
+  directories [ :home_dir, :log_dir, :conf_dir, :pid_dir, :journal_dir ]
+end

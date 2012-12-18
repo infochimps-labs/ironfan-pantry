@@ -29,10 +29,6 @@ daemon_user('mongodb.server')
 # Directories
 #
 
-standard_dirs('mongodb.server') do
-  directories [ :home_dir, :log_dir, :conf_dir, :pid_dir, :journal_dir ]
-end
-
 volume_dirs('mongodb.data') do
   type          :local
   selects       :single
