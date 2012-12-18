@@ -33,12 +33,12 @@ gems = %w[
 #   instead overrides the settings of the existing resource. That
 #   breaks other cookbooks that try to install any of the above gems.
 # To avoid this, we run chef-jgem directly instead.
-execute "Install jruby gems #{gems}" do
-  command "#{jgem} install #{gems.join ' '}"
-  not_if "#{jgem} list | grep  #{gems.last}"
+gems.each do |rubygem|
+  # gem_package rubygem do
+  #   gem_binary File.join(node[:jruby][:home_dir], 'bin/chef-jgem')
+  # end
+  execute "Install jruby gem #{rubygem}" do
+    command "#{jgem} install #{rubygem}"
+    only_if { Dir.glob("#{node[:jruby][:home_dir]}/lib/ruby/gems/*/gems/#{rubygem}-*").empty? }
+  end
 end
-## gems.each do |rubygem|
-##   gem_package rubygem do
-##     gem_binary File.join(node[:jruby][:home_dir], 'bin/chef-jgem')
-##   end
-## end

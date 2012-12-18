@@ -50,8 +50,8 @@ end
   link("/usr/local/bin/#{filename}"){ to target }
 end
 
-node[:jruby][:exported_jars] = [
+node.set[:jruby][:exported_jars] = [
   "#{node[:jruby][:home_dir]}/lib/jruby.jar",
 ]
 
-node[:jruby][:exported_confs]  = []
+node.set[:jruby][:exported_confs]  = []
