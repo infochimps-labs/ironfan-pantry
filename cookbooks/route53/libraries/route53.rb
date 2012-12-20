@@ -29,18 +29,18 @@ begin
           attribute :created_at,  :aliases => ['SubmittedAt']
 
           def update(new_value, new_ttl)
-            Chef::Log.info(["update record model", self].inspect)
+            Chef::Log.debug(["update record model", self].inspect)
             requires :name, :type, :zone
             #
             batch = []
             old_records = zone.records.all!.select{|record| (record.name == self.name) && (record.type == self.type) }
-            Chef::Log.info(["update record model", old_records].inspect)
+            Chef::Log.debug(["update record model", old_records].inspect)
             old_records.each do |record|
               batch << { :action => 'DELETE', :name => record.name, :resource_records => [*record.value], :ttl => record.ttl.to_s, :type => record.type }
             end
             batch << { :action => 'CREATE', :name => name, :resource_records => [*new_value], :ttl => new_ttl.to_s, :type => type }
             #
-            Chef::Log.info(batch.inspect)
+            Chef::Log.debug(batch.inspect)
             data = connection.change_resource_record_sets(zone.id, batch).body
             merge_attributes(data)
             @last_change_id     = data['Id']
@@ -110,19 +110,19 @@ module Opscode
 
       def update_resource_record(zone, fqdn, type, ttl, values, rr=nil)
         safely do
-          Chef::Log.info(["update_resource_record", fqdn, type, ttl.to_s, values, rr].inspect)
+          Chef::Log.debug(["update_resource_record", fqdn, type, ttl.to_s, values, rr].inspect)
           rr ||= resource_record(zone, fqdn, type)
           if rr.nil?
             create_resource_record(zone, fqdn, type, ttl, values)
           else
-            rr.update(values, ttl.to_s) && rr.wait{|cid,status| Chef::Log.info("Creating Resource Record for #{fqdn} (#{type}) - #{status}") }
+            rr.update(values, ttl.to_s) && rr.wait{|cid,status| Chef::Log.debug("Creating Resource Record for #{fqdn} (#{type}) - #{status}") }
           end
         end
       end
 
       def create_resource_record(zone, fqdn, type, ttl, values)
         safely do
-          Chef::Log.info(["create_resource_record", fqdn, type, ttl, values].inspect)
+          Chef::Log.debug(["create_resource_record", fqdn, type, ttl, values].inspect)
           zone.records.create(:name => fqdn, :type => type, :ttl => ttl.to_s, :value => values)
         end
       end
