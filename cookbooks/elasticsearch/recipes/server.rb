@@ -53,6 +53,8 @@ runit_service "elasticsearch" do
   run_restart   false   # don't automatically start or restart daemons
   run_state     node[:elasticsearch][:server][:run_state]
   options       node[:elasticsearch]
+  start_command         "-w #{node[:elasticsearch][:server][:start_wait]} start"
+  restart_command       "-w #{node[:elasticsearch][:server][:start_wait]} restart"
 end
 
 ## FIXME: Cannot use this syntax currently, see http://tickets.opscode.com/browse/CHEF-1994

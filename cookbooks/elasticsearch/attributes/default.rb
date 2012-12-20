@@ -27,7 +27,7 @@ default[:groups]['elasticsearch'][:gid]           = 61021
 
 default[:elasticsearch][:version]                 = "0.19.8"
 default[:elasticsearch][:release_url_checksum]    = nil
-default[:elasticsearch][:release_url]             = "https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-:version:.tar.gz"
+default[:elasticsearch][:release_url]             = "http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-:version:.tar.gz"
 default[:elasticsearch][:git_repo]                = "https://github.com/elasticsearch/elasticsearch.git"
 default[:elasticsearch][:plugins]                 = ["elasticsearch/elasticsearch-cloud-aws/1.8.0"]
 
@@ -35,6 +35,7 @@ default[:elasticsearch][:plugins]                 = ["elasticsearch/elasticsearc
 # Services
 #
 default[:elasticsearch][:server][:run_state]      = :start
+default[:elasticsearch][:server][:start_wait]     = 60  # seconds to wait before failing on a (re)start
 
 # set true to be a data esnode (stores, indexes data)
 default[:elasticsearch][:is_datanode]             = false # set to true in elasticsearch_datanode role
