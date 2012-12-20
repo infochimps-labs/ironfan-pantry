@@ -33,7 +33,7 @@ module Ironfan
     #
     def complain_if_not_sun_java(program)
       unless( %w[sun oracle oracle_via_webupd8].include?(node['java']['install_flavor'].to_s))
-        warn "Warning!! You are *strongly* recommended to use Sun/Oracle Java for #{program}. Set node['java']['install_flavor'] = 'oracle' in a role -- right now it's '#{node['java']['install_flavor']}'"
+        warn "Warning!! You are *strongly* recommended to use Sun/Oracle Java for #{program}. Set node['java']['install_flavor'] = 'oracle_via_webupd8' in a role -- right now it's '#{node['java']['install_flavor']}'"
       end
     end
 
