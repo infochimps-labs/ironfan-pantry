@@ -33,8 +33,8 @@ Silverware.raid_groups(node).each do |rg_name, rg|
 
   sub_vols = sub_volumes(node, rg)
 
-  Chef::Log.info(rg.inspect)
-  Chef::Log.info( sub_vols.values.inspect )
+  Chef::Log.debug(rg.inspect)
+  Chef::Log.debug( sub_vols.values.inspect )
 
   #
   # unmount all devices tagged for that raid group
