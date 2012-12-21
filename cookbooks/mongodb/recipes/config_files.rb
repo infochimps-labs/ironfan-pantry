@@ -26,8 +26,6 @@
 template "#{node[:mongodb][:conf_dir]}/mongodb.conf" do
   source        "mongodb.conf.erb"
   backup        false
-  owner         "mongodb"
-  group         "mongodb"
-  mode          "0644" 
+  mode          "0644"
   notify_startable_services(:mongodb, [:server])
 end

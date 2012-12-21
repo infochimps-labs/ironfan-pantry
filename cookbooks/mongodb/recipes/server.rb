@@ -23,14 +23,12 @@ include_recipe 'mongodb'
 include_recipe 'volumes'
 include_recipe 'runit'
 
-daemon_user('mongodb.server')
-
 #
 # Directories
 #
 
 volume_dirs('mongodb.data') do
-  type          :local
+  type          :local unless node[:mongodb][:server][:persistent]
   selects       :single
   mode          "0700"
 end

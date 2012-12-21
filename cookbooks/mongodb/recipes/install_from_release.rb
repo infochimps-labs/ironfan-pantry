@@ -23,18 +23,13 @@ include_recipe 'install_from'
 
 install_from_release(:mongodb) do
 
-    case node[:kernel][:machine]
-        when 'i686'
-            release_url   node[:mongodb][:i686][:release_url]
-            checksum      node[:mongodb][:i686][:checksum]
-        when 'x86_64'
-            release_url   node[:mongodb][:x86_64][:release_url]
-            checksum      node[:mongodb][:x86_64][:checksum]
-        end
-       
-    home_dir      node[:mongodb][:home_dir]
-    version       node[:mongodb][:version]
-    action        [ :install ]
-    has_binaries  [ 'bin/mongodb' ]
+  arch = node[:kernel][:machine].to_sym
+  release_url   node[:mongodb][arch][:release_url]
+  checksum      node[:mongodb][arch][:checksum]
+
+  home_dir      node[:mongodb][:home_dir]
+  version       node[:mongodb][:version]
+  action        [ :install ]
+  has_binaries  [ 'bin/mongod', 'bin/mongo' ]
 
 end

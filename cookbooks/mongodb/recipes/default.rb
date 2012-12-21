@@ -23,21 +23,8 @@
 #
 # Create MondoDB user 
 #
+daemon_user('mongodb')
 
-if node[:mongodb][:server] # Only need user for servers
-  group node[:mongodb][:group] do 
-    action :create
-    system true
-    gid    node[:mongodb][:gid]
-  end 
-  user node[:mongodb][:user] do
-    action :create
-    group node[:mongodb][:group]
-    system true
-    shell "/bin/false"
-  end
-end
-
-standard_dirs('mongodb.server') do
+standard_dirs('mongodb') do
   directories [ :log_dir, :conf_dir, :pid_dir, :journal_dir ]
 end

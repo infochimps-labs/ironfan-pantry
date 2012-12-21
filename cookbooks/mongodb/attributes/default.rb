@@ -2,7 +2,7 @@
 # Locations
 #
 
-default[:mongodb][:data_dir]                        = "/var/lib/mongodb"
+default[:mongodb][:data_dir]                        = nil       # set by volume_dirs
 default[:mongodb][:home_dir]                        = "/usr/lib/mongodb"
 default[:mongodb][:conf_dir]                        = "/etc/mongodb"
 default[:mongodb][:log_dir]                         = "/var/log/mongodb"
@@ -15,8 +15,8 @@ default[:mongodb][:journal_dir]                     = "/var/lib/mongodb/journal"
 
 default[:mongodb][:user]                            = 'mongodb'
 default[:mongodb][:group]                           = 'mongodb'
-default[:users]['mongodb'][:uid]          	    = 362
-default[:groups]['mongodb'][:gid]           	    = 362
+default[:users]['mongodb'][:uid]                    = 362
+default[:groups]['mongodb'][:gid]                   = 362
 
 #
 # Install
@@ -32,12 +32,13 @@ default[:mongodb][:x86_64][:release_url]            = "http://fastdl.mongodb.org
 # Services
 #
 
-default[:mongodb][:server][:run_state]    	    = :start
+default[:mongodb][:server][:run_state]              = :start
 
 #
 # Tunables
 #
 
-default[:mongodb][:server][:mongod_port]	    = 27017
-default[:mongodb][:server][:bind_ip]		    = nil
-default[:mongodb][:server][:rest]		    = false 
+default[:mongodb][:server][:mongod_port]            = 27017
+default[:mongodb][:server][:bind_ip]                = nil
+default[:mongodb][:server][:rest]                   = false
+default[:mongodb][:server][:persistent]             = true
