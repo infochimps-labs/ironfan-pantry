@@ -29,5 +29,5 @@ template "#{node[:mongodb][:conf_dir]}/mongodb.conf" do
   owner         "mongodb"
   group         "mongodb"
   mode          "0644" 
-  notifies      :restart, "service[mongodb_server]", :delayed if startable?(node[:mongodb][:server])
+  notify_startable_services(:mongodb, [:server])
 end
