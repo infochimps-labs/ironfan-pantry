@@ -50,6 +50,17 @@ group 'supergroup' do
   append     true
 end
 
+# FIXME
+if node[:platform_version] == '12.04'
+  execute "Manually install libzip1" do
+    Chef::Log.warn "FIXME: hadoop_cluster installs libzip1 manually, to satisfy outdated dependencies."
+    cwd "/tmp"
+    command "wget http://launchpadlibrarian.net/48191694/libzip1_0.9.3-1_amd64.deb ; dpkg -i libzip1_0.9.3-1_amd64.deb"
+    not_if "aptitude show libzip1 | grep 'State: installed'"
+  end
+end
+# FIXME
+
 #
 # Primary hadoop packages
 #
