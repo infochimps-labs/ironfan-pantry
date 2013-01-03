@@ -17,16 +17,50 @@
 # limitations under the License.
 #
 
-ci_path = node[:jenkins_integration][:ironfan_ci][:path]
-[ ci_path, ci_path + '/workspace' ].each do |dir|
-  directory dir do
-    owner node[:jenkins_integration][:user]
-    group node[:jenkins_integration][:group]
-  end
+ssh_dir                 = node[:jenkins][:server][:home_dir] + '/.ssh'
+directory ssh_dir do
+  owner         node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  mode          '0700'
 end
 
-ironfan_homebase node[:jenkins_integration][:ironfan_ci][:name] do
-  base_path     "#{ci_path}/workspace/"
-  repository    node[:jenkins_integration][:ironfan_ci][:repository]
-  git_keys      node[:jenkins_integration][:ironfan_ci][:git_keys]
+# Set up the correct public key
+public_key_filename     = ssh_dir + '/id_rsa'
+file public_key_filename do
+  owner         node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  content       node[:jenkins_integration][:ironfan_ci][:deploy_key]
+  mode          '0600'
+  notifies      :run, 'execute[Regenerate id_rsa.pub]', :immediately
+end
+execute 'Regenerate id_rsa.pub' do
+  user          node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  cwd           ssh_dir
+  command       "ssh-keygen -y -f id_rsa -N'' -P'' > id_rsa.pub"
+  action        :nothing
+end
+
+# Add Github's fingerprint to known_hosts
+cookbook_file ssh_dir + '/github.fingerprint' do
+  user          node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  notifies      :run, 'execute[Get familiar with Github]', :immediately
+end
+execute 'Get familiar with Github' do
+  user          node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+  cwd           ssh_dir
+  command       "cat github.fingerprint >> known_hosts"
+  action        :nothing
+end
+
+# Set up the job
+jenkins_job 'Ironfan CI'
+
+# Setup jenkins user to make commits
+template node[:jenkins][:server][:home_dir] + '/.gitconfig' do
+  source        '.gitconfig.erb'
+  owner         node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
 end
