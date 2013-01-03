@@ -18,7 +18,7 @@ fi
 
 # some variables normally set by bin/hbase-daemon.sh 
 export HBASE_LOGFILE=hbase-$HBASE_IDENT_STRING-$command-$HBASE_NODENAME.log
-export HBASE_ROOT_LOGGER="INFO,DRFA"
+export HBASE_ROOT_LOGGER="INFO,FA"
 
 cd "$HBASE_HOME"
 exec chpst -u <%= @options[:user] %> "$HBASE_HOME"/bin/hbase $command start "$@" < /dev/null
