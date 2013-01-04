@@ -19,5 +19,4 @@
 # limitations under the License.
 #
 
-package "hadoop-hive" { version node[:hadoop][:deb_version] }
-
+package("hadoop-hive")

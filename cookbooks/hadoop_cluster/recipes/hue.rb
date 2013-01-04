@@ -19,6 +19,5 @@
 # limitations under the License.
 #
 
-package "hue-common" { version node[:hadoop][:deb_version] }
-package "hue-plugins" { version node[:hadoop][:deb_version] }
-
+package("hue-common")
+package("hue-plugins")
