@@ -64,3 +64,6 @@ template node[:jenkins][:server][:home_dir] + '/.gitconfig' do
   owner         node[:jenkins][:server][:user]
   group         node[:jenkins][:server][:group]
 end
+
+# FIXME: Needs PATH added via /etc/profile.d/ to handle scripts. This may be better
+#  than linking into /usr/local/sbin/ if it works for cron.d - test this?

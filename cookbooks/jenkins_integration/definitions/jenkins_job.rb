@@ -5,6 +5,7 @@ define(:jenkins_job,
   :path         => nil,         # Path to clone to, overrides base_path
   ) do
 
+  params[:name].sub!(' ','_')   # Jenkins and bundle hate paths with spaces
   params[:path] ||= "#{node[:jenkins][:lib_dir]}/jobs/#{params[:name]}"
 
   directory params[:path] do
