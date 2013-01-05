@@ -1,0 +1,5 @@
+chef_solr:      chef-solr           -c <%= @chef_server['conf_dir'] %>/solr.rb -l info
+chef_expander:  chef-expander       -c <%= @chef_server['conf_dir'] %>/expander.rb -l info -n <%= @chef_server['expander_nodes'] %>
+chef_server:    chef-server         -N -p <%= @chef_server['api_port']   %> -e production -P <%= @chef_server['run_path'] %>/chef-server.%s.pid -C <%= @chef_server['conf_dir'] %>/server.rb
+chef_webui:     chef-server-webui   -N -p <%= @chef_server['webui_port'] %> -e production -P <%= @chef_server['run_path'] %>/chef-server-webui.%s.pid -C <%= @chef_server['conf_dir'] %>/webui.rb
+

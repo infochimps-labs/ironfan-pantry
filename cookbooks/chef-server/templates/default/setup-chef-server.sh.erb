@@ -1,0 +1,56 @@
+# !/usr/bin/env bash
+
+set -e
+
+rabbitmq_user=chef
+rabbitmq_password=<%= @chef_server['amqp_pass'] %>
+rabbitmq_vhost='/chef'
+
+chef_conf_dir=<%= @chef_server['conf_dir'] %>
+
+# bring up the backend
+echo "Starting up chef backend..."
+foreman start -f ${chef_conf_dir}/Procfile-chef-backend &
+sleep 10
+
+# add the vhost if not exists
+if rabbitmqctl list_vhosts| grep -q "$rabbitmq_vhost" ; then
+  echo "Rabbitmq vhost $rabbitmq_vhost exists. Skipping..."
+else
+  echo "Adding $rabbimq_vhost vhost..."
+  rabbitmqctl add_vhost "$rabbitmq_vhost"
+fi
+
+# add the user if not exists
+if rabbitmqctl list_users| grep -q "$rabbitmq_user" ; then
+  echo "Rabbitmq user $rabbitmq_user exists. Skipping..."
+else
+  echo "Adding rabbitmq user ${rabbimq_user}..."
+  rabbitmqctl add_user "$rabbitmq_user" "$rabbitmq_password"
+fi
+
+# set the user's permissions
+if rabbitmqctl list_user_permissions "$rabbitmq_user" | grep -q "$rabbitmq_vhost" ; then
+  echo "Rabbitmq user $rabbitmq_user permissions good. Skipping..."
+else
+  echo "Setting rabbitmq user ${rabbimq_user} permissions..."
+  rabbitmqctl set_permissions -p "$rabbitmq_vhost" "$rabbitmq_user" ".*" ".*" ".*"
+  rabbitmqctl set_permissions -p "$rabbitmq_vhost" "guest"          ".*" ".*" ".*"
+fi
+
+# start chef_server to generate the keys
+echo "Starting up chef server to generate keys..."
+foreman start chef_server -f ${chef_conf_dir}/Procfile-chef-server &
+
+for tm in 3 10 15 20 ; do
+  if [ -f ${chef_conf_dir}/webui.pem ] ; then break ; fi
+  echo "  waiting $tm seconds for chef server to make keys..."
+  sleep $tm
+done
+
+# bring everything down
+echo "Bringing everything down..."
+kill %`jobs | grep chef-backend | awk '{print $1}'| tr -dC "[:digit:]"` || true
+# kill the epm daemon like a microphone fiend
+kill `ps aux | grep epmd | grep -v grep | awk '{print $2}'`             || true
+kill %`jobs | grep chef-server | awk '{print $1}'| tr -dC "[:digit:]"`  || true
