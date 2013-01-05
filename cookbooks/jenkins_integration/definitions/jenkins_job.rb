@@ -3,6 +3,7 @@
 
 define(:jenkins_job,
   :path         => nil,         # Path to clone to, overrides base_path
+  :tasks        => []           # Array of shell scripts to run
   ) do
 
   params[:name].sub!(' ','_')   # Jenkins and bundle hate paths with spaces
@@ -16,7 +17,8 @@ define(:jenkins_job,
   template params[:path] + '/config.xml' do
     source      'config.xml.erb'
     variables   :repository => 'git@github.com:infochimps/testmonkey-homebase.git',
-                :branches   => 'master'
+                :branches   => 'master',
+                :tasks => params[:tasks]
     owner       node[:jenkins][:server][:user]
     group       node[:jenkins][:server][:group]
     notifies    :restart, 'service[jenkins_server]', :delayed

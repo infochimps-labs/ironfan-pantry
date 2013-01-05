@@ -2,9 +2,9 @@
 <project>
   <keepDependencies>false</keepDependencies>
   <properties/>
-<%- unless @repository %>
+  <%- unless @repository %>
   <scm class="hudson.scm.NullSCM"/>
-<%- else %>
+  <%- else %>
   <scm class="hudson.plugins.git.GitSCM" plugin="git@1.1.26">
     <configVersion>2</configVersion>
     <userRemoteConfigs>
@@ -42,14 +42,26 @@
     <includedRegions></includedRegions>
     <scmName></scmName>
   </scm>
-<%- end %>
-  <canRoam>false</canRoam>
+  <%- end %>
+  <canRoam>true</canRoam>
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers class="vector"/>
   <concurrentBuild>false</concurrentBuild>
+  <%- unless @tasks %>
   <builders/>
+  <%- else
+      require 'htmlentities' 
+      entities = HTMLEntities.new %>
+  <builders>
+    <%- @tasks.each do |task| %>
+    <hudson.tasks.Shell>
+      <command><%= entities.encode task %></command>
+    </hudson.tasks.Shell>
+    <%- end %>
+  </builders>
+  <%- end %>
   <publishers/>
   <buildWrappers/>
 </project>

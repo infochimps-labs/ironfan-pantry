@@ -55,8 +55,63 @@ execute 'Get familiar with Github' do
   action        :nothing
 end
 
-# Set up the job
-jenkins_job 'Ironfan CI'
+# Set up the CI job
+jenkins_job 'Ironfan CI' do
+  # Hackity hack, don't talk back
+  def cleanup_script_format(string)
+    string.gsub(/^ {4}/, '')
+  end
+
+  knife_shared = cleanup_script_format <<-eos
+    export CHEF_USER=testmonkey
+    export CREDENTIALS='-x ubuntu -i knife/credentials/ec2_keys/el_ridiculoso.pem';
+
+    function knife {
+      bundle exec knife "$@"
+    }
+    function kc {
+      knife cluster "$@"
+    }
+    function klean_exit {
+      kc kill el_ridiculoso --yes
+      exit $@
+    }
+  eos
+
+  bundler = cleanup_script_format <<-eos 
+    #!/usr/bin/env bash
+    bundle install --path vendor
+    bundle update
+  eos
+
+  full_sync = cleanup_script_format <<-eos
+    #!/usr/bin/env bash
+    #{knife_shared}
+
+    rake full_sync
+  eos
+
+  pequeno = cleanup_script_format <<-eos
+    #!/usr/bin/env bash
+    #{knife_shared}
+
+    kc list -f
+    kc show el_ridiculoso
+
+    kc launch el_ridiculoso-pequeno
+
+    while true; do
+      kc ssh el_ridiculoso $CREDENTIALS cat /var/log/chef/client.log > tmp.client.log
+      grep 'INFO: Chef Run complete in ' tmp.client.log && klean_exit 0
+      grep -q 'FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out' tmp.client.log &&
+        kc ssh el_ridiculoso $CREDENTIALS sudo cat /var/chef/cache/chef-stacktrace.out &&
+        klean_exit 1
+      echo "Waiting 5 seconds while chef finishes running" && sleep 5
+    done
+  eos
+
+  tasks         [ bundler, full_sync, pequeno ]
+end
 
 # Setup jenkins user to make commits
 template node[:jenkins][:server][:home_dir] + '/.gitconfig' do
@@ -65,5 +120,9 @@ template node[:jenkins][:server][:home_dir] + '/.gitconfig' do
   group         node[:jenkins][:server][:group]
 end
 
-# FIXME: Needs PATH added via /etc/profile.d/ to handle scripts. This may be better
-#  than linking into /usr/local/sbin/ if it works for cron.d - test this?
+# FIXME: fucking omnibus
+file node[:jenkins][:server][:home_dir] + '/.profile' do
+  content       'export PATH=/opt/chef/embedded/bin/:$PATH'
+  owner         node[:jenkins][:server][:user]
+  group         node[:jenkins][:server][:group]
+end
