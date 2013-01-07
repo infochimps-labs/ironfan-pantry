@@ -64,7 +64,11 @@ jenkins_job 'Ironfan CI' do
 
   knife_shared = cleanup_script_format <<-eos
     export CHEF_USER=testmonkey
-    export CREDENTIALS='-x ubuntu -i knife/credentials/ec2_keys/el_ridiculoso.pem';
+
+    export CLUSTER=t9
+    export FACET=simple
+
+    export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
     function knife {
       bundle exec knife "$@"
@@ -73,7 +77,7 @@ jenkins_job 'Ironfan CI' do
       knife cluster "$@"
     }
     function klean_exit {
-      kc kill el_ridiculoso --yes
+      kc kill $CLUSTER --yes
       exit $@
     }
   eos
@@ -88,6 +92,11 @@ jenkins_job 'Ironfan CI' do
     #!/usr/bin/env bash
     #{knife_shared}
 
+    cat <<EOF > config/Berksfile.conf.rb
+    PANTRY_BRANCH='testing'
+    ENTERPRISE_BRANCH='testing'
+    EOF
+
     rake full_sync
   eos
 
@@ -96,17 +105,17 @@ jenkins_job 'Ironfan CI' do
     #{knife_shared}
 
     kc list -f
-    kc show el_ridiculoso
+    kc show $CLUSTER
 
-    kc launch el_ridiculoso-pequeno
+    kc launch $CLUSTER-$FACET
 
     while true; do
-      kc ssh el_ridiculoso $CREDENTIALS cat /var/log/chef/client.log > tmp.client.log
-      grep 'INFO: Chef Run complete in ' tmp.client.log && klean_exit 0
+      kc ssh $CLUSTER $CREDENTIALS cat /var/log/chef/client.log > tmp.client.log
       grep -q 'FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out' tmp.client.log &&
-        kc ssh el_ridiculoso $CREDENTIALS sudo cat /var/chef/cache/chef-stacktrace.out &&
+        kc ssh $CLUSTER $CREDENTIALS sudo cat /var/chef/cache/chef-stacktrace.out &&
         klean_exit 1
       echo "Waiting 5 seconds while chef finishes running" && sleep 5
+      grep 'INFO: Chef Run complete in ' tmp.client.log && klean_exit 0
     done
   eos
 
