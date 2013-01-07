@@ -65,10 +65,9 @@ jenkins_job 'Ironfan CI' do
   end
 
   knife_shared = cleanup_script_format <<-eos
-    export CHEF_USER=testmonkey
-
-    export CLUSTER=t9
-    export FACET=simple
+    export CHEF_USER=#{node[:jenkins_integration][:ironfan_ci][:chef_user]}
+    export CLUSTER=#{node[:jenkins_integration][:ironfan_ci][:cluster]}
+    export FACET=#{node[:jenkins_integration][:ironfan_ci][:facet]}
 
     export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
@@ -123,6 +122,8 @@ jenkins_job 'Ironfan CI' do
     done
   eos
 
+  repository    node[:jenkins_integration][:ironfan_ci][:repository]
+  branches      node[:jenkins_integration][:ironfan_ci][:branches]
   tasks         [ bundler, full_sync, pequeno ]
 end
 

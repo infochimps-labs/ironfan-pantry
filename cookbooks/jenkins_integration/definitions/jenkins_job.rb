@@ -2,6 +2,8 @@
 #   may be used to test Ironfan deployment
 
 define(:jenkins_job,
+  :repository   => nil,         # Source repository
+  :branches     => 'master',    # Which branches to build
   :path         => nil,         # Path to clone to, overrides base_path
   :tasks        => []           # Array of shell scripts to run
   ) do
@@ -16,8 +18,8 @@ define(:jenkins_job,
 
   template params[:path] + '/config.xml' do
     source      'config.xml.erb'
-    variables   :repository => 'git@github.com:infochimps/testmonkey-homebase.git',
-                :branches   => 'master',
+    variables   :repository => params[:repository],
+                :branches   => params[:branches],
                 :tasks => params[:tasks]
     owner       node[:jenkins][:server][:user]
     group       node[:jenkins][:server][:group]
