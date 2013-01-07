@@ -107,15 +107,18 @@ jenkins_job 'Ironfan CI' do
     #!/usr/bin/env bash
     #{knife_shared}
 
+    export CHEF_LOG=/var/log/chef/client.log
+    export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
+
     kc list -f
     kc show $CLUSTER
 
     kc launch $CLUSTER-$FACET
 
     while true; do
-      kc ssh $CLUSTER $CREDENTIALS cat /var/log/chef/client.log > tmp.client.log
-      grep -q 'FATAL: Stacktrace dumped to /var/chef/cache/chef-stacktrace.out' tmp.client.log &&
-        kc ssh $CLUSTER $CREDENTIALS sudo cat /var/chef/cache/chef-stacktrace.out &&
+      kc ssh $CLUSTER $CREDENTIALS cat $CHEF_LOG > tmp.client.log
+      grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log &&
+        kc ssh $CLUSTER $CREDENTIALS sudo cat $CHEF_STACKTRACE &&
         klean_exit 1
       echo "Waiting 5 seconds while chef finishes running" && sleep 5
       grep 'INFO: Chef Run complete in ' tmp.client.log && klean_exit 0
