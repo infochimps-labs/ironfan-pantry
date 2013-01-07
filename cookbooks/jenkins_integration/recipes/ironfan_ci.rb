@@ -57,9 +57,11 @@ end
 
 # Set up the CI job
 jenkins_job 'Ironfan CI' do
-  # Hackity hack, don't talk back
-  def cleanup_script_format(string)
-    string.gsub(/^ {4}/, '')
+  # Remove the indentation of multiline heredoc formatted strings.
+  # (Hackity hack, don't talk back.)
+  def cleanup_script_format(string='')
+    depth = string.gsub(/^( +).+/m,'\1').length
+    string.gsub(/^ {#{depth}}/, '')
   end
 
   knife_shared = cleanup_script_format <<-eos
@@ -82,7 +84,7 @@ jenkins_job 'Ironfan CI' do
     }
   eos
 
-  bundler = cleanup_script_format <<-eos 
+  bundler = cleanup_script_format <<-eos
     #!/usr/bin/env bash
     bundle install --path vendor
     bundle update
@@ -92,12 +94,14 @@ jenkins_job 'Ironfan CI' do
     #!/usr/bin/env bash
     #{knife_shared}
 
-    cat <<EOF > config/Berksfile.conf.rb
+    cat \<\<EOF > config/Berksfile.conf.rb
     PANTRY_BRANCH='testing'
     ENTERPRISE_BRANCH='testing'
     EOF
 
-    rake full_sync
+    # Would do rake_full install, but that syncs all clusters, too
+    rake roles
+    rake berkshelf_install
   eos
 
   pequeno = cleanup_script_format <<-eos
