@@ -66,3 +66,20 @@ namespace :all do
   end
 end
 
+task :enqueue_testing do
+  system <<-eos.gsub(/^ {#{4}}/, '')
+    #!/usr/bin/env bash
+    echo "make sure master and testing are in sync with origin:"
+    git checkout master
+    git pull
+    echo
+
+    echo "make sure master is a descendant of testing:"
+    git merge testing | grep 'Already up-to-date'
+    if [ $? -ne '0' ]; then
+      echo "FATAL: master is not a descendant of testing" >&2
+      exit 1
+    fi
+    echo
+  eos
+end
