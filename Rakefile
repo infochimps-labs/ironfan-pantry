@@ -104,8 +104,20 @@ task :enqueue_testing do
     echo "ensure each change includes a version bump:"
     for cookbook in `echo "$CHANGES"`; do
       git diff --name-only testing -- cookbooks/$cookbook/VERSION | grep VERSION
-      if [ $? -ne '0' ]; then rake $cookbook:version:bump; fi
+      if [ $? -ne '0' ]; then
+        rake $cookbook:version:bump
+        git push
+      fi
     done
+    echo
+
+    echo "push the changes forward into testing"
+    git checkout testing
+    git merge master
+
+    echo "bump version in master for all queued cookbooks"
+    git checkout master
+    for cookbook in `echo "$CHANGES"`; do rake $cookbook:version:bump; done
     git push
     echo
 
