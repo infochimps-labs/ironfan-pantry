@@ -111,7 +111,6 @@ task :enqueue_testing do
       if [ $? -ne '0' ]; then
         echo "bumping $cookbook"
         rake $cookbook:version:bump
-        git push
       fi
     done
     echo
@@ -119,6 +118,7 @@ task :enqueue_testing do
     echo "push the changes forward into testing"
     git checkout testing
     git merge master
+    git checkout master
     git push
     echo
 
