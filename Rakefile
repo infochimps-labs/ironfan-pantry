@@ -96,6 +96,19 @@ task :enqueue_testing do
     fi
     echo
 
+    echo "find all cookbook differences between master and testing:"
+    CHANGES=`git diff --name-only testing -- cookbooks | cut -d/ -f2 | sort | uniq`
+    echo $CHANGES
+    echo
+
+    echo "ensure each change includes a version bump:"
+    for cookbook in `echo "$CHANGES"`; do
+      git diff --name-only testing -- cookbooks/$cookbook/VERSION | grep VERSION
+      if [ $? -ne '0' ]; then rake $cookbook:version:bump; fi
+    done
+    git push
+    echo
+
     echo "DONE"
   eos
 end
