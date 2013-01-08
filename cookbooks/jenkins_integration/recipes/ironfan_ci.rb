@@ -65,6 +65,7 @@ module Ironfan
 end
 
 # FIXME: Cleanup and parameterize for multiple pantries
+# FIXME: Set up trigger from pantry to CI job
 jenkins_job 'ironfan-pantry' do
   project       'https://github.com/infochimps-labs/ironfan-pantry/'
   repository    'git@github.com:infochimps-labs/ironfan-pantry.git'
@@ -72,14 +73,16 @@ jenkins_job 'ironfan-pantry' do
   triggers({ :github => true})
 end
 
+# FIXME: Set up trigger from CI job to pantry publication
 # Set up the CI job
 jenkins_job 'Ironfan CI' do
+  repository    node[:jenkins_integration][:ironfan_ci][:repository]
+  branches      node[:jenkins_integration][:ironfan_ci][:branches]
 
   knife_shared = Ironfan::reformat_heredoc <<-eos
     export CHEF_USER=#{node[:jenkins_integration][:ironfan_ci][:chef_user]}
     export CLUSTER=#{node[:jenkins_integration][:ironfan_ci][:cluster]}
     export FACET=#{node[:jenkins_integration][:ironfan_ci][:facet]}
-
     export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
     function knife {
@@ -131,13 +134,11 @@ jenkins_job 'Ironfan CI' do
       grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log &&
         kc ssh $CLUSTER $CREDENTIALS sudo cat $CHEF_STACKTRACE &&
         klean_exit 1
-      echo "Waiting 5 seconds while chef finishes running" && sleep 5
       grep 'INFO: Chef Run complete in ' tmp.client.log && klean_exit 0
+      echo "Waiting 5 seconds while chef finishes running" && sleep 5
     done
   eos
 
-  repository    node[:jenkins_integration][:ironfan_ci][:repository]
-  branches      node[:jenkins_integration][:ironfan_ci][:branches]
   tasks         [ bundler, full_sync, pequeno ]
 end
 

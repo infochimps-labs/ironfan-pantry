@@ -72,7 +72,6 @@
   <%- if @tasks.empty? %>
   <builders/>
   <%- else %>
-  <!-- <%= @tasks %> -->
   <builders>
     <%- @tasks.each do |task| %>
     <hudson.tasks.Shell>
