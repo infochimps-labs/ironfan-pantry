@@ -69,9 +69,19 @@ end
 task :enqueue_testing do
   system <<-eos.gsub(/^ {#{4}}/, '')
     #!/usr/bin/env bash
-    echo "make sure master and testing are in sync with origin:"
+    echo "make sure master is clean and in sync with origin:"
     git checkout master
     git pull
+    git status | grep 'nothing to commit (working directory clean)'
+    if [ $? -ne '0' ]; then
+      echo "FATAL: master is not clean" >&2
+      exit 1
+    fi
+    git push | grep 'Everything up-to-date'
+    if [ $? -ne '0' ]; then
+      echo "FATAL: master is not in sync with origin/master" >&2
+      exit 1
+    fi
     echo
 
     echo "make sure master is a descendant of testing:"
