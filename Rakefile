@@ -69,16 +69,17 @@ end
 task :enqueue_testing do
   system <<-eos.gsub(/^ {#{4}}/, '')
     #!/usr/bin/env bash
-    echo "make sure master is clean and in sync with origin:"
+    echo "ensure master is clean:"
     git checkout master
-    git pull
     git status | grep 'nothing to commit (working directory clean)'
     if [ $? -ne '0' ]; then
       echo "FATAL: master branch is not clean" >&2
       exit 1
     fi
-    git push
 
+    echo "ensure master is in sync with origin:"
+    git pull
+    git push
     git status | grep 'Your branch is '
     if [ $? -ne '1' ]; then
       echo "FATAL: master branch isn't in sync with origin/master" >&2
