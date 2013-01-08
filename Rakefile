@@ -76,6 +76,7 @@ task :enqueue_testing do
       echo "FATAL: master branch is not clean" >&2
       exit 1
     fi
+    echo
 
     echo "ensure master is in sync with origin:"
     git pull
@@ -94,5 +95,7 @@ task :enqueue_testing do
     #   exit 1
     # fi
     # echo
+
+    echo "DONE"
   eos
 end
