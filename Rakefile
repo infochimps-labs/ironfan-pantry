@@ -77,6 +77,7 @@ task :enqueue_testing do
       echo "FATAL: master branch is not clean" >&2
       exit 1
     fi
+    git push
 
     git status | grep 'Your branch is '
     if [ $? -ne '1' ]; then
