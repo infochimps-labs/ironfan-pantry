@@ -64,13 +64,14 @@ module Ironfan
   end
 end
 
-# FIXME: Cleanup and parameterize for multiple pantries
-# FIXME: Set up trigger from pantry to CI job
-jenkins_job 'ironfan-pantry' do
-  project       'https://github.com/infochimps-labs/ironfan-pantry/'
-  repository    'git@github.com:infochimps-labs/ironfan-pantry.git'
-  branches      'testing'
-  triggers({ :github => true})
+node[:jenkins_integration][:pantries].each_pair do |name, attrs|
+  jenkins_job name do
+    project       attrs[:project]
+    repository    attrs[:repository]
+    branches      ( attrs[:branches] || 'master' )
+    downstream    [ 'Ironfan CI' ]
+    triggers({ :github => true})
+  end
 end
 
 # FIXME: Set up trigger from CI job to pantry publication

@@ -80,6 +80,21 @@
     <%- end %>
   </builders>
   <%- end %>
+  <%- if @downstream.empty? %>
   <publishers/>
+  <%- else %>
+  <publishers>
+    <%- @downstream.each do |task| %>
+    <hudson.tasks.BuildTrigger>
+      <childProjects><%= task %></childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+    <%- end %>
+  </publishers>
+  <%- end %>
   <buildWrappers/>
 </project>
