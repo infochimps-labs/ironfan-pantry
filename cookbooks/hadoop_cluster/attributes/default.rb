@@ -134,6 +134,8 @@ default[:tuning][:ulimit]['mapred'] = { :nofile => { :both => 32768 }, :nproc =>
 default[:hadoop][:namenode][:plugins] = []
 default[:hadoop][:datanode][:plugins] = []
 default[:hadoop][:thrift][:port] = 10090
+default[:hadoop][:jobtracker][:plugins] = []
+default[:hadoop][:jobtracker][:thrift_port] = 9290
 
 # Other recipes can add to this under their own special key, for instance
 #  node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'

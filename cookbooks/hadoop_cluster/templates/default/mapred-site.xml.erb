@@ -64,6 +64,11 @@
 <property> <name>mapred.jobtracker.retirejob.check</name>         <value>300000</value></property>
 <property> <name>mapred.jobtracker.completeuserjobs.maximum</name><value>100</value></property>
 
+<!-- for Hue -->
+
+<property> <name>jobtracker.thrift.address</name>                 <value>0.0.0.0:<%= @hadoop[:jobtracker][:thrift_port] %></value></property>
+<property> <name>mapred.jobtracker.plugins</name>                 <value><%= @hadoop[:jobtracker][:plugins].join(",") %></value></property>
+
 <!-- mapred.job.tracker.retiredjobs.cache.size -->
 <!-- mapred.jobtracker.restart.recover --><!-- "true" to enable (job) recovery upon restart, "false" to start afresh -->
 
