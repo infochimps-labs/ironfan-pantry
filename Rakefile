@@ -98,6 +98,10 @@ task :enqueue_testing do
 
     echo "find all cookbook differences between master and testing:"
     CHANGES=`git diff --name-only testing -- cookbooks | cut -d/ -f2 | sort | uniq`
+    if [ $CHANGES -eq '' ]; then
+      echo "No cookbook changes between master and testing"
+      exit 0
+    fi
     echo $CHANGES
     echo
 
