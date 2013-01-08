@@ -35,7 +35,6 @@ cookbooks.each do |ckbk|
   namespace ckbk do
     Rake::VersionTask.new do |task|
       task.with_git     = true
-      task.with_git_tag = true
       task.filename     = File.join('cookbooks',ckbk,'VERSION')
     end
   end
