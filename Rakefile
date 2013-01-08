@@ -88,13 +88,13 @@ task :enqueue_testing do
     fi
     echo
 
-    # echo "make sure master is a descendant of testing:"
-    # git merge testing | grep 'Already up-to-date'
-    # if [ $? -ne '0' ]; then
-    #   echo "FATAL: master is not a descendant of testing" >&2
-    #   exit 1
-    # fi
-    # echo
+    echo "make sure master is a descendant of testing:"
+    git merge testing | grep 'Already up-to-date'
+    if [ $? -ne '0' ]; then
+      echo "FATAL: master is not a descendant of testing" >&2
+      exit 1
+    fi
+    echo
 
     echo "DONE"
   eos
