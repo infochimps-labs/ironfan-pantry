@@ -1,7 +1,17 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <project>
+  <actions/>
+  <description></description>
   <keepDependencies>false</keepDependencies>
+  <%- unless @project %>
   <properties/>
+  <%- else %>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.4">
+      <projectUrl><%= @project %></projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+  </properties>
+  <%- end %>
   <%- unless @repository %>
   <scm class="hudson.scm.NullSCM"/>
   <%- else %>
@@ -47,17 +57,26 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <%- unless @triggers %>
   <triggers class="vector"/>
+  <%- else %>
+  <triggers class="vector">
+    <%- if @triggers[:github] %>
+    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.4">
+      <spec></spec>
+    </com.cloudbees.jenkins.GitHubPushTrigger>
+    <%- end %>
+  </triggers>
+  <%- end %>
   <concurrentBuild>false</concurrentBuild>
-  <%- unless @tasks %>
+  <%- if @tasks.empty? %>
   <builders/>
-  <%- else
-      require 'htmlentities' 
-      entities = HTMLEntities.new %>
+  <%- else %>
+  <!-- <%= @tasks %> -->
   <builders>
     <%- @tasks.each do |task| %>
     <hudson.tasks.Shell>
-      <command><%= entities.encode task %></command>
+      <command><%= task %></command>
     </hudson.tasks.Shell>
     <%- end %>
   </builders>

@@ -55,16 +55,27 @@ execute 'Get familiar with Github' do
   action        :nothing
 end
 
-# Set up the CI job
-jenkins_job 'Ironfan CI' do
-  # Remove the indentation of multiline heredoc formatted strings.
-  # (Hackity hack, don't talk back.)
-  def cleanup_script_format(string='')
+# Remove the indentation of multiline heredoc formatted strings.
+# (Hackity hack, don't talk back.)
+module Ironfan
+  def self.reformat_heredoc(string='')
     depth = string.gsub(/^( +).+/m,'\1').length
     string.gsub(/^ {#{depth}}/, '')
   end
+end
 
-  knife_shared = cleanup_script_format <<-eos
+# FIXME: Cleanup and parameterize for multiple pantries
+jenkins_job 'ironfan-pantry' do
+  project       'https://github.com/infochimps-labs/ironfan-pantry/'
+  repository    'git@github.com:infochimps-labs/ironfan-pantry.git'
+  branches      'testing'
+  triggers({ :github => true})
+end
+
+# Set up the CI job
+jenkins_job 'Ironfan CI' do
+
+  knife_shared = Ironfan::reformat_heredoc <<-eos
     export CHEF_USER=#{node[:jenkins_integration][:ironfan_ci][:chef_user]}
     export CLUSTER=#{node[:jenkins_integration][:ironfan_ci][:cluster]}
     export FACET=#{node[:jenkins_integration][:ironfan_ci][:facet]}
@@ -83,13 +94,13 @@ jenkins_job 'Ironfan CI' do
     }
   eos
 
-  bundler = cleanup_script_format <<-eos
+  bundler = Ironfan::reformat_heredoc <<-eos
     #!/usr/bin/env bash
     bundle install --path vendor
     bundle update
   eos
 
-  full_sync = cleanup_script_format <<-eos
+  full_sync = Ironfan::reformat_heredoc <<-eos
     #!/usr/bin/env bash
     #{knife_shared}
 
@@ -103,7 +114,7 @@ jenkins_job 'Ironfan CI' do
     rake berkshelf_install
   eos
 
-  pequeno = cleanup_script_format <<-eos
+  pequeno = Ironfan::reformat_heredoc <<-eos
     #!/usr/bin/env bash
     #{knife_shared}
 
