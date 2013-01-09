@@ -25,8 +25,8 @@ directory ssh_dir do
 end
 
 # Set up the correct public key
-public_key_filename     = ssh_dir + '/id_rsa'
-file public_key_filename do
+private_key_filename     = ssh_dir + '/id_rsa'
+file private_key_filename do
   owner         node[:jenkins][:server][:user]
   group         node[:jenkins][:server][:group]
   content       node[:jenkins_integration][:ironfan_ci][:deploy_key]
@@ -128,7 +128,9 @@ jenkins_job 'Ironfan CI' do
     kc list -f
     kc show $CLUSTER
 
-    kc launch $CLUSTER-$FACET
+    kc launch $CLUSTER-$FACET || 
+      ( echo "FATAL: knife cluster launch failed &&
+        klean_exit 1 )
 
     while true; do
       kc ssh $CLUSTER $CREDENTIALS cat $CHEF_LOG > tmp.client.log
