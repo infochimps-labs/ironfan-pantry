@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 service chef-client stop
 #
 away_dir=/tmp/ami_away
@@ -5,7 +6,6 @@ mkdir -p "$away_dir"
 cd /tmp
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nTidy up the joint for the next occupants:\n"
-cp /etc/motd /etc/burninated
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\napt-get update/upgrade/cleanup:\n"
 apt-get -y update  ;
@@ -39,7 +39,7 @@ echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nCommandline history files:"
 find /root/.*history /home/*/.*history
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nSSH authorized_keys:"
-find / -name "authorized_keys*" -print -exec cat {} \;
+find / -regex ".*/authorized_keys2?" -print -exec cat {} \;
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nNon-system Users:"
 cat /etc/passwd /etc/shadow | grep -E '^[^:]*:[^:]{3,}' | cut -d: -f1
@@ -59,6 +59,7 @@ DISTRIB_DATE=`date +"%Y%m%d-%H"`
 cat > /etc/motd <<EOP
 CHIMP CHIMP CHIMP CRUNCH CRUNCH CRUNCH (image burned at `date`): ironfan-$DISTRIB_CODENAME-$DISTRIB_HARDWARE-$DISTRIB_RUBY-$DISTRIB_DATE
 EOP
+cp /etc/motd /etc/burninated
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nunmount your mountables\n"
 cd / ; for foo in /home /ebs* /data/ebs* /data ; do umount $foo 2>/dev/null ; done
