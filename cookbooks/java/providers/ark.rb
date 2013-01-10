@@ -49,11 +49,11 @@ action :install do
   else
     app_home = new_resource.app_home
   end
-  
+
   unless ::File.exists?(app_dir)
     Chef::Log.info "Adding #{new_resource.name} to #{app_dir}"
     require 'fileutils'
-    
+
     unless ::File.exists?(app_root)
       FileUtils.mkdir app_root, :mode => new_resource.app_home_mode
       FileUtils.chown new_resource.owner, new_resource.owner, app_root
@@ -66,9 +66,9 @@ action :install do
       action :nothing
     end
     r.run_action(:create_if_missing)
-    
+
     require 'tmpdir'
-    
+
     tmpdir = Dir.mktmpdir
     case tarball_name
     when /^.*\.bin/
@@ -124,12 +124,11 @@ action :install do
         end
         should_be_link = "#{app_home}/bin/#{cmd}"
         if current_bin_link != should_be_link
-          cmd = Chef::ShellOut.new(
-                                   %Q[ update-alternatives --install /usr/bin/#{cmd} #{cmd} #{app_home}/bin/#{cmd} 1;
-                                       update-alternatives --set #{cmd} #{app_home}/bin/#{cmd}  ]
-                                   ).run_command
+          cmd_string = %Q{ update-alternatives --install /usr/bin/#{cmd} #{cmd} #{app_home}/bin/#{cmd} 1;
+                           update-alternatives --set                     #{cmd} #{app_home}/bin/#{cmd}    }
+          cmd = Chef::ShellOut.new(cmd_string).run_command
           unless cmd.exitstatus == 0
-            Chef::Application.fatal!(%Q[ update alternatives  failed ])
+            Chef::Application.fatal!("update alternatives failed:\n#{cmd_string}")
           end
         end
       end
