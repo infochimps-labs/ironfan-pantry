@@ -1,4 +1,0 @@
-cookbook "cron" do
-  configuration "default"
-  configuration "cook_1622"
-end
