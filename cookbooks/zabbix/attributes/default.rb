@@ -40,7 +40,7 @@ default[:zabbix][:database][:install_method]  = 'mysql'
 
 # FIXME: need libmysqlclient-dev for Ubuntu 12.04
 
-default[:zabbix][:database][:debian_package]  = "libmysqlclient16-dev"
+default[:zabbix][:database][:debian_package]  = "libmysqlclient-dev"
 
 # Web frontend
 default[:zabbix][:web][:fqdn]           = ""
