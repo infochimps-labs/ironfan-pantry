@@ -19,13 +19,15 @@
 # limitations under the License.
 #
 
-include_recipe 'runit'
-include_recipe 'silverware'
-include_recipe 'redis::default'
-
 daemon_user(:redis) do
   home          node[:redis][:data_dir]
 end
+
+package "redis-server"
+
+include_recipe 'runit'
+include_recipe 'silverware'
+include_recipe 'redis::default'
 
 standard_dirs('redis.server') do
   directories   :conf_dir, :log_dir, :data_dir

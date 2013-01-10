@@ -14,8 +14,6 @@ Redis, a fast lightweight database
 
 * `client`                   - Client support for Redis database
 * `default`                  - Base configuration for redis
-* `install_from_package`     - Install From Ubuntu Package -- easy but lags in version
-* `install_from_release`     - Install From Release
 * `server`                   - Redis server with runit service
 
 ## Integration

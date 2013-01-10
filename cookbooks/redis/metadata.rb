@@ -7,18 +7,13 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 description      "Redis: a fast, flexible datastore offering an extremely useful set of data structure primitives"
 
 depends          "runit"
-depends          "install_from"
 depends          "silverware"
 
 recipe           "redis::default",                     "Base configuration for redis"
-recipe           "redis::install_from_package",        "Install From Ubuntu Package -- easy but lags in version"
-recipe           "redis::install_from_release",        "Install From Release"
 recipe           "redis::server",                      "Redis server with runit service"
 recipe           "redis::client",                      "Client support for Redis database"
 
-%w[ debian ubuntu ].each do |os|
-  supports os
-end
+supports 'ubuntu'
 
 attribute "redis/home_dir",
   :display_name          => "",
