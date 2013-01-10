@@ -1,3 +1,6 @@
+## v1.3.1:
+* Making path immune to spaces in name (appears to block execution in Ubuntu)
+
 ## v1.3.0:
 * Infochimps fork of Opscode 1.2.2
 * Added default pathing, minimal Ironfan reformatting

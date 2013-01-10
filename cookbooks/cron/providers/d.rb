@@ -1,11 +1,13 @@
+crond_file = "/etc/cron.d/#{new_resource.name.gsub(' ','_')}"
+
 action :delete do
-  file "/etc/cron.d/#{new_resource.name}" do
+  file crond_file do
     action :delete
   end
 end
 
 action :create do
-  t = template "/etc/cron.d/#{new_resource.name}" do
+  t = template crond_file do
     cookbook new_resource.cookbook
     source "cron.d.erb"
     mode "0644"
