@@ -25,8 +25,8 @@ directory ssh_dir do
 end
 
 # Set up the correct public key
-public_key_filename     = ssh_dir + '/id_rsa'
-file public_key_filename do
+private_key_filename     = ssh_dir + '/id_rsa'
+file private_key_filename do
   owner         node[:jenkins][:server][:user]
   group         node[:jenkins][:server][:group]
   content       node[:jenkins_integration][:ironfan_ci][:deploy_key]
@@ -64,13 +64,14 @@ module Ironfan
   end
 end
 
-# FIXME: Cleanup and parameterize for multiple pantries
-# FIXME: Set up trigger from pantry to CI job
-jenkins_job 'ironfan-pantry' do
-  project       'https://github.com/infochimps-labs/ironfan-pantry/'
-  repository    'git@github.com:infochimps-labs/ironfan-pantry.git'
-  branches      'testing'
-  triggers({ :github => true})
+node[:jenkins_integration][:pantries].each_pair do |name, attrs|
+  jenkins_job name do
+    project       attrs[:project]
+    repository    attrs[:repository]
+    branches      ( attrs[:branches] || 'master' )
+    downstream    [ 'Ironfan CI' ]
+    triggers({ :github => true})
+  end
 end
 
 # FIXME: Set up trigger from CI job to pantry publication
@@ -127,7 +128,9 @@ jenkins_job 'Ironfan CI' do
     kc list -f
     kc show $CLUSTER
 
-    kc launch $CLUSTER-$FACET
+    kc launch $CLUSTER-$FACET || 
+      ( echo "FATAL: knife cluster launch failed &&
+        klean_exit 1 )
 
     while true; do
       kc ssh $CLUSTER $CREDENTIALS cat $CHEF_LOG > tmp.client.log

@@ -35,7 +35,6 @@ cookbooks.each do |ckbk|
   namespace ckbk do
     Rake::VersionTask.new do |task|
       task.with_git     = true
-      task.with_git_tag = true
       task.filename     = File.join('cookbooks',ckbk,'VERSION')
     end
   end
@@ -67,3 +66,62 @@ namespace :all do
   end
 end
 
+task :enqueue_testing do
+  system <<-eos.gsub(/^ {#{4}}/, '')
+    #!/usr/bin/env bash
+    echo "ensure master is clean:"
+    git checkout master
+    git status | grep 'nothing to commit (working directory clean)'
+    if [ $? -ne '0' ]; then
+      echo "FATAL: master branch is not clean" >&2
+      exit 1
+    fi
+    echo
+
+    echo "ensure master is in sync with origin:"
+    git pull
+    git push
+    git status | grep 'Your branch is '
+    if [ $? -ne '1' ]; then
+      echo "FATAL: master branch isn't in sync with origin/master" >&2
+      exit 1
+    fi
+    echo
+
+    echo "make sure master is a descendant of testing:"
+    git merge testing | grep 'Already up-to-date'
+    if [ $? -ne '0' ]; then
+      echo "FATAL: master is not a descendant of testing" >&2
+      exit 1
+    fi
+    echo
+
+    echo "find all cookbook differences between master and testing:"
+    CHANGES=`git diff --name-only testing -- cookbooks | cut -d/ -f2 | sort | uniq`
+    if [ "x$CHANGES" = "x" ]; then
+      echo "No cookbook changes between master and testing"
+      exit 0
+    fi
+    echo $CHANGES
+    echo
+
+    echo "ensure each change includes a version bump:"
+    for cookbook in `echo "$CHANGES"`; do
+      git diff --name-only testing -- cookbooks/$cookbook/VERSION | grep -q VERSION
+      if [ $? -ne '0' ]; then
+        echo "bumping $cookbook"
+        rake $cookbook:version:bump
+      fi
+    done
+    echo
+
+    echo "push the changes forward into testing"
+    git checkout testing
+    git merge master
+    git checkout master
+    git push
+    echo
+
+    echo "DONE"
+  eos
+end
