@@ -5,6 +5,7 @@ mkdir -p "$away_dir"
 cd /tmp
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nTidy up the joint for the next occupants:\n"
+cp /etc/motd /etc/burninated
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\napt-get update/upgrade/cleanup:\n"
 apt-get -y update  ;
