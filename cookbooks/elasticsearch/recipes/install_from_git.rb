@@ -30,7 +30,7 @@ es_dist_name = "elasticsearch-#{node[:elasticsearch][:version]}-SNAPSHOT"
 es_zip_file  = "/usr/local/share/elasticsearch-git/build/distributions/#{es_dist_name}.zip"
 
 # install into eg. /usr/local/share/elasticsearch-git
-git "#{node[:elasticsearch][:install_dir]}-git" do
+git "#{node[:elasticsearch][:home_dir]}-git" do
   repository    node[:elasticsearch][:git_repo]
   action        :sync
   group         'admin'
