@@ -6,7 +6,7 @@ default[:redis][:conf_dir]          = "/etc/redis"
 default[:redis][:log_dir]           = "/var/log/redis"
 default[:redis][:data_dir]          = "/var/lib/redis"
 
-default[:redis][:home_dir]          = "/usr/local/share/redis"
+default[:redis][:home_dir]          = "/var/lib/redis"
 default[:redis][:pid_file]          = "/var/run/redis.pid"
 
 default[:redis][:db_basename]       = "dump.rdb"
