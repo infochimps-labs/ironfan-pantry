@@ -42,7 +42,7 @@ announce(:hadoop, :secondarynn, {
              :secondarynn => {
                :name => 'java',
                :user => node[:hadoop][:secondarynn][:user],
-               :cmd  => 'proc_secondarynn'
+               :cmd  => 'proc_secondarynamenode'
              }
            }
          })
