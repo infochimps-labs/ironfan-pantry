@@ -3,4 +3,4 @@
 cd <%= @options[:data_dir] %>
 
 exec 2>&1
-exec chpst -u <%= @options[:user] %> <%= @options[:home_dir] %>/redis-server <%= @options[:conf_dir] %>/redis.conf
+exec chpst -u <%= @options[:user] %> redis-server <%= @options[:conf_dir] %>/redis.conf
