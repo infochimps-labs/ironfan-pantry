@@ -158,7 +158,7 @@ Cookbook dependencies:
   - The default block size for new files
 * `[:hadoop][:max\_map_tasks]`         -  (default: "3")
 * `[:hadoop][:max\_reduce_tasks]`      -  (default: "2")
-* `[:hadoop][:java\_child_opts]`       -  (default: "-Xmx2432m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server")
+* `[:hadoop][:java\_child_opts]`       -  (default: "-Xmx2432m -Xss256k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server")
 * `[:hadoop][:java\_child_ulimit]`     -  (default: "7471104")
 * `[:hadoop][:io\_sort_factor]`        -  (default: "25")
 * `[:hadoop][:io\_sort_mb]`            -  (default: "250")
