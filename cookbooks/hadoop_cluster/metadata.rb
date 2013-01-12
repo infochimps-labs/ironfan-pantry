@@ -130,7 +130,7 @@ attribute "hadoop/max_reduce_tasks",
 attribute "hadoop/java_child_opts",
   :display_name          => "",
   :description           => "",
-  :default               => "-Xmx2432m -Xss128k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server"
+  :default               => "-Xmx2432m -Xss256k -XX:+UseCompressedOops -XX:MaxNewSize=200m -server"
 
 attribute "hadoop/java_child_ulimit",
   :display_name          => "",
