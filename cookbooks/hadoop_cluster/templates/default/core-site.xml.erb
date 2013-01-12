@@ -34,6 +34,8 @@
 
 <%- if @hadoop[:define_topology] %>
 <property><name>topology.script.file.name</name>     <value><%= @hadoop[:conf_dir] %>/hadoop-topologizer.rb</value></property>
+<property><name>topology.script.number.args</name>   <value>50</value></property>
+
 <%- end %>
 
 </configuration>
