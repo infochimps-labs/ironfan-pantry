@@ -12,13 +12,41 @@ The hadoop_cluster cookbook lets you spin up hadoop clusters of arbitrary size, 
 
 This cookbook installs Apache hadoop using the [Cloudera hadoop distribution (CDH)](http://archive.cloudera.com/docs/), and it plays well with the infochimps cookbooks for HBase, Flume, ElasticSearch, Zookeeper, Ganglia and Zabbix.
 
-### Cluster instantiation
+### Initial Cluster Setup
 
-Instantiating a cluster from thin air requires
-* start the master, with all the `:run_state`s set to 'stop'
-* running `/etc/hadoop/conf/bootstrap_hadoop_namenode.sh`, which is now fairly robust and re-runnable. It should start the namenode on its own.
-* set `run_state`s to 'start', run `knife cluster sync` and then `knife cluster kick` the master.
-* launch the jobbtracker, workers, etc.
+These cluster initialization steps are helpful for preventing race 
+conditions dealing with resizing EBS volumes. Follow them to 
+painlessly set up Hadoop clusters.
+
+#### Starting the Master
+
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch the master.
+  3. Rerun chef-client and ensure the EBS volumes have resized.
+  4. Run "/etc/hadoop/conf/bootstrap\_hadoop\_namenode" as root.
+  5. Set the :run_state to :start as desired for all appropriate
+     Hadoop daemons and run a "knife cluster sync."
+  6. Rerun chef-client.
+
+#### Launching the First Worker
+
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch the first worker.
+  3. Rerun chef-client and ensure the EBS volumes have resized.
+
+#### Launching the Rest of the Workers    
+   
+  1. Set the :run_state to :stop for all hadoop daemons in the
+     master in the cluster definition.
+  2. Launch all additional workers.
+  3. Set the :run_state for :hadoop_tasktracker and :hadoop_datanode
+     to :start in the cluster definition and run a "knife cluster
+     sync."
+  4. After all workers have launched, rerun chef-client on all
+     launched workers, including the first if you have just launched
+     it.
 
 ### Tunables
 
@@ -53,42 +81,6 @@ This lets us do stupid, dangerous, awesome things like:
 Who says your workers should also be datanodes? Sure, "bring the compute to the data" is the way the *robots* want you to do it, but a tasktracker-only node on an idle cluster is one you can kill with no repercussions.
 
 This lets you blow up the size of your cluster and not have to wait later for nodes to decommission. Non-local map tasks obviously run slower-than-optimal, but we'd rather have sub-optimal robots than sub-optimal data scientists.
-
-### Initial Cluster Setup
-
-These steps are helpful for preventing race conditions dealing with
-resizing EBS volumes. Follow them to painlessly set up Hadoop
-clusters.
-
-#### Starting the Master
-
-  1. Set the :run_state to :stop for all hadoop daemons in the
-     master in the cluster definition.
-  2. Launch the master.
-  3. Rerun chef-client and ensure the EBS volumes have resized.
-  4. Run "/etc/hadoop/conf/bootstrap\_hadoop\_namenode" as root.
-  5. Set the :run_state to :start as desired for all appropriate
-     Hadoop daemons and run a "knife cluster sync."
-  6. Rerun chef-client.
-
-#### Launching the First Worker
-
-  1. Set the :run_state to :stop for all hadoop daemons in the
-     master in the cluster definition.
-  2. Launch the first worker.
-  3. Rerun chef-client and ensure the EBS volumes have resized.
-
-#### Launching the Rest of the Workers    
-   
-  1. Set the :run_state to :stop for all hadoop daemons in the
-     master in the cluster definition.
-  2. Launch all additional workers.
-  3. Set the :run_state for :hadoop_tasktracker and :hadoop_datanode
-     to :start in the cluster definition and run a "knife cluster
-     sync."
-  4. After all workers have launched, rerun chef-client on all
-     launched workers, including the first if you have just launched
-     it.
 
 ### Author:
       
