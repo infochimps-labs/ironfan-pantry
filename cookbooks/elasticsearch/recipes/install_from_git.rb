@@ -26,8 +26,12 @@ package 'unzip'
 # FIXME: integrate with install_from recipe
 #
 
-es_dist_name = "elasticsearch-#{node[:elasticsearch][:version]}-SNAPSHOT"
-es_zip_file  = "/usr/local/share/elasticsearch-git/build/distributions/#{es_dist_name}.zip"
+snapshot_suffix = node[:elasticsearch][:snapshot] ? '-SNAPSHOT' : ''
+
+es_suffix    = ["-#{node[:elasticsearch][:version]}", snapshot_suffix].join
+es_dist_name = ["elasticsearch"                  , es_suffix].join
+es_dist_home = [node[:elasticsearch][:home_dir]  , es_suffix].join
+es_zip_file  = "/usr/local/share/elasticsearch-git/target/releases/#{es_dist_name}.zip"
 
 # install into eg. /usr/local/share/elasticsearch-git
 git "#{node[:elasticsearch][:home_dir]}-git" do
@@ -39,22 +43,22 @@ end
 
 bash 'install from source' do
   user         'root'
-  cwd          "#{node[:elasticsearch][:install_dir]}-git"
+  cwd          "#{node[:elasticsearch][:home_dir]}-git"
   code <<EOF
-  ./gradlew
+mvn package -DskipTests=true
 EOF
   only_if{ not File.exists?(es_zip_file) }
 end
 
 # install into eg. /usr/local/share/elasticsearch-0.x.x ...
-directory "#{node[:elasticsearch][:install_dir]}-SNAPSHOT" do
+directory es_dist_home do
   owner       "root"
   group       "root"
   mode        0755
 end
 # ... and then force /usr/local/share/elasticsearch to link to the versioned dir
-link node[:elasticsearch][:install_dir] do
-  to "#{node[:elasticsearch][:install_dir]}-SNAPSHOT"
+link node[:elasticsearch][:home_dir] do
+  to es_dist_home
 end
 
 bash "unzip #{es_zip_file} to /tmp/#{es_dist_name}" do
@@ -70,6 +74,6 @@ end
 bash "copy elasticsearch root" do
   user          "root"
   cwd           "/tmp"
-  code          %(cp -r /tmp/#{es_dist_name}/* #{node[:elasticsearch][:install_dir]})
-  not_if{ File.exists? "#{node[:elasticsearch][:install_dir]}/lib" }
+  code          %(cp -r /tmp/#{es_dist_name}/* #{node[:elasticsearch][:home_dir]})
+  not_if{ File.exists? "#{node[:elasticsearch][:home_dir]}/lib" }
 end
