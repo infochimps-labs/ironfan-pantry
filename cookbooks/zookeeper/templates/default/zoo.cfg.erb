@@ -9,29 +9,39 @@ server.<%= idx %>=<%= zk_addr %>:<%= @zookeeper[:leader_port] %>:<%= @zookeeper[
 <%- end %>
 
 # The number of milliseconds of each tick (default 2000)
-tickTime=<%=       @zookeeper[:tick_time] %>
+tickTime=<%=                  @zookeeper[:tick_time] %>
 
 # Time, in ticks, to allow followers to connect and sync to a leader. 
-initLimit=<%=       @zookeeper[:initial_timeout_ticks] %>
+initLimit=<%=                 @zookeeper[:initial_timeout_ticks] %>
 
 # Time, in ticks, to allow followers to sync with ZooKeeper. If followers fall
 # too far behind a leader, they will be dropped.
-syncLimit=<%=       @zookeeper[:sync_timeout_ticks] %>
+syncLimit=<%=                 @zookeeper[:sync_timeout_ticks] %>
 
 # Should the leader accepts client connections? default "yes".  
-leaderServes=<%=   @leader_is_also_server %> 
+leaderServes=<%=              @leader_is_also_server %> 
 
 # maximum simultaneous connections to allow. 
-maxClientCnxns=<%= @zookeeper[:max_client_connections] %>
+maxClientCnxns=<%=            @zookeeper[:max_client_connections] %>
 
 # number of writes to trigger a snapshot
-snapCount=<%=      @zookeeper[:snapshot_trigger] %>
+snapCount=<%=                 @zookeeper[:snapshot_trigger] %>
 
 # the directory where the snapshot is stored.
-dataDir=<%=        @zookeeper[:data_dir] %>
+dataDir=<%=                   @zookeeper[:data_dir] %>
 
 # transaction journal directory. Should be a dedicated device.
-dataLogDir=<%=     @zookeeper[:journal_dir] %>
+dataLogDir=<%=                @zookeeper[:journal_dir] %>
 
 # the port at which the clients will connect
-clientPort=<%=     @zookeeper[:client_port] %>
+clientPort=<%=                @zookeeper[:client_port] %>
+
+<%- if @zookeeper[:snapshot_retention] %>
+# number of snapshots to keep during a purge
+autopurge.snapRetainCount=<%= @zookeeper[:snapshot_retention] %>       
+<%- end %>
+
+<%- if @zookeeper[:purge_interval] %>	
+# interval in hours of automatic purge
+autopurge.purgeInterval=<%=   @zookeeper[:purge_interval] %>
+<%- end %>

@@ -4,15 +4,14 @@ default[:zookeeper][:cluster_name]           = node[:cluster_name]
 #
 # Locations
 #
-
 default[:zookeeper][:home_dir]               = '/usr/lib/zookeeper'
 default[:zookeeper][:conf_dir]               = '/etc/zookeeper'
 default[:zookeeper][:log_dir]                = '/var/log/zookeeper'
 default[:zookeeper][:pid_dir]                = '/var/run/zookeeper'
 
-# default[:zookeeper][:journal_dir]          = '/var/zookeeper/txlog'
-# default[:zookeeper][:data_dir]             = '/var/zookeeper/data'
-
+#
+# Ports
+#
 default[:zookeeper][:client_port]            = '2181'
 default[:zookeeper][:jmx_dash_port]          = '2182'
 default[:zookeeper][:leader_port]            = '2888'
@@ -21,38 +20,42 @@ default[:zookeeper][:election_port]          = '3888'
 #
 # User
 #
-
 default[:zookeeper][:user]                   = 'zookeeper'
-default[:users ]['zookeeper' ][:uid]         = 305
-default[:groups]['zookeeper' ][:gid]         = 305
+default[:users    ]['zookeeper'][:uid]       = 305
+default[:groups   ]['zookeeper'][:gid]       = 305
 
 #
 # Install
 #
-
-default[:zookeeper][:exported_jars]            = [ ::File.join(node[:zookeeper][:home_dir], "zookeeper.jar"), ]
+default[:zookeeper][:exported_jars]          = [ ::File.join(node[:zookeeper][:home_dir], 'zookeeper.jar'), ]
+default[:zookeeper][:version]                = '3.4.5'
+default[:zookeeper][:release_url]            = ':apache_mirror:/zookeeper/zookeeper-:version:/zookeeper-:version:.tar.gz'
 
 #
 # Services
 #
-
-default[:zookeeper][:server][:run_state] = :nothing
+default[:zookeeper][:server][:run_state]     = :nothing
 
 #
 # Tunables
 #
+default[:zookeeper][:java_heap_size_max]     = 1000
 
-default[:zookeeper][:java_heap_size_max] = 1000
+# How many snapshots to keep when a purge is triggered. Default and mimimum is 3.
+default[:zookeeper][:snapshot_retention]     = 3
+
+# How often to perform auto purging of snapshots and transaction logs. (In hours)
+default[:zookeeper][:purge_interval]         = 1
 
 # the length of a single tick, which is the basic time unit used by ZooKeeper,
 # as measured in milliseconds. It is used to regulate heartbeats, and
 # timeouts. For example, the minimum session timeout will be two ticks.
-default[:zookeeper][:tick_time] = 2000
+default[:zookeeper][:tick_time]              = 2000
 
 # ZooKeeper logs transactions to a transaction log. After snapCount transactions
 # are written to a log file a snapshot is started and a new transaction log file
 # is created. The default snapCount is 100,000.
-default[:zookeeper][:snapshot_trigger] = 100_000
+default[:zookeeper][:snapshot_trigger]       = 100_000
 
 # Limits the number of concurrent connections (at the socket level) that a
 # single client, identified by IP address, may make to a single member of the
@@ -65,11 +68,11 @@ default[:zookeeper][:max_client_connections] = 300
 
 # Time, in ticks, to allow followers to connect and sync to a leader. Increase
 # if the amount of data managed by ZooKeeper is large
-default[:zookeeper][:initial_timeout_ticks] = 10
+default[:zookeeper][:initial_timeout_ticks]  = 10
 
 # Time, in ticks, to allow followers to sync with ZooKeeper. If followers fall
 # too far behind a leader, they will be dropped.
-default[:zookeeper][:sync_timeout_ticks] = 5
+default[:zookeeper][:sync_timeout_ticks]     = 5
 
 # Should the leader accepts client connections? default "yes".  The leader
 # machine coordinates updates. For higher update throughput at thes slight
