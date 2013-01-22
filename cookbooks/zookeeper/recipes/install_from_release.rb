@@ -34,7 +34,9 @@ package 'subversion' if platform?('centos')
 #   and links that to /usr/local/share/zookeeper
 #
 
-Chef::Log.info "Zookeeper release url #{node[:release_url]}"
+linked_jar    = "#{node[:zookeeper][:home_dir]}/zookeeper.jar"
+versioned_jar = Dir[::File.join(node[:zookeeper][:home_dir], 'zookeeper*.jar')].first
+
 install_from_release('zookeeper') do
   release_url        node[:zookeeper][:release_url]
   home_dir           node[:zookeeper][:home_dir]
@@ -42,5 +44,10 @@ install_from_release('zookeeper') do
   action             [:build_with_ant, :install]
   environment('JAVA_HOME' => node[:java][:java_home]) if node[:java][:java_home]
 
-  not_if{ ::File.exists?("#{node[:zookeeper][:home_dir]}/zookeeper.jar") }
+  not_if{ ::File.exists? linked_jar }
+end
+
+# Symlink the versioned jar to a basename jar
+if versioned_jar && !::File.exists?(linked_jar)
+  ::File.symlink(versioned_jar, linked_jar)
 end
