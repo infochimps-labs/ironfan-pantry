@@ -10,6 +10,21 @@
     <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.4">
       <projectUrl><%= @project %></projectUrl>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <%- unless @parameters.empty? %>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <%- @parameters.each_pair do |name,params| %>
+        <%-   if params[:type] == 'string' %>
+        <hudson.model.StringParameterDefinition>
+          <name><%= name %></name>
+          <description></description>
+          <defaultValue><%= params[:default] %></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <%-   end %>
+        <%- end %>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+    <%- end %>
   </properties>
   <%- end %>
   <%- unless @repository %>
@@ -19,16 +34,22 @@
     <configVersion>2</configVersion>
     <userRemoteConfigs>
       <hudson.plugins.git.UserRemoteConfig>
-        <name></name>
+        <name>origin</name>
         <refspec></refspec>
         <url><%= @repository %></url>
       </hudson.plugins.git.UserRemoteConfig>
     </userRemoteConfigs>
     <branches>
       <hudson.plugins.git.BranchSpec>
-        <name><%= @branches %></name>
+        <name><%= @branch %></name>
       </hudson.plugins.git.BranchSpec>
     </branches>
+    <%- if @merge %>
+    <userMergeOptions>
+      <mergeRemote>origin</mergeRemote>
+      <mergeTarget><%= @merge %></mergeTarget>
+    </userMergeOptions>
+    <%- end %>
     <disableSubmodules>false</disableSubmodules>
     <recursiveSubmodules>false</recursiveSubmodules>
     <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
@@ -66,6 +87,12 @@
       <spec></spec>
     </com.cloudbees.jenkins.GitHubPushTrigger>
     <%- end %>
+    <%- if @triggers[:poll_scm] %>
+    <hudson.triggers.SCMTrigger>
+      <spec></spec>
+      <ignorePostCommitHooks>false</ignorePostCommitHooks>
+    </hudson.triggers.SCMTrigger>
+    <%- end %>
   </triggers>
   <%- end %>
   <concurrentBuild>false</concurrentBuild>
@@ -74,7 +101,7 @@
   <%- else %>
   <builders>
     <hudson.tasks.Shell>
-      <command>#!/bin/bash
+      <command>#!/usr/bin/env bash -e
       <%- @tasks.each do |t| %>
         echo Running <%= t %>
         <%= @path %>/<%= t %>
@@ -85,7 +112,7 @@
     </hudson.tasks.Shell>
   </builders>
   <%- end %>
-  <%- if @downstream.empty? %>
+  <%- if (@downstream.empty? and @final.empty?) %>
   <publishers/>
   <%- else %>
   <publishers>
@@ -98,6 +125,35 @@
         <color>BLUE</color>
       </threshold>
     </hudson.tasks.BuildTrigger>
+    <%- end %>
+    <%- unless @final.empty? %>
+    <join.JoinTrigger plugin="join@1.15">
+      <joinProjects><%= @final.join(', ') %></joinProjects>
+      <joinPublishers>
+        <hudson.plugins.parameterizedtrigger.BuildTrigger plugin="parameterized-trigger@2.16">
+          <configs>
+            <hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+              <projects><%= @final.join(', ') %></projects>
+              <condition>SUCCESS</condition>
+            <%- if @final_params['GIT_COMMIT'] %>
+              <configs>
+                <hudson.plugins.git.GitRevisionBuildParameters plugin="git@1.1.26">
+                  <combineQueuedCommits>false</combineQueuedCommits>
+                </hudson.plugins.git.GitRevisionBuildParameters>
+              </configs>
+              <triggerWithNoParameters>false</triggerWithNoParameters>
+            <%- else %>
+              <configs/>
+              <projects><%= @final.join(', ') %></projects>
+              <condition>SUCCESS</condition>
+              <triggerWithNoParameters>true</triggerWithNoParameters>
+            <%- end %>
+            </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
+          </configs>
+        </hudson.plugins.parameterizedtrigger.BuildTrigger>
+      </joinPublishers>
+      <evenIfDownstreamUnstable>false</evenIfDownstreamUnstable>
+    </join.JoinTrigger>
     <%- end %>
   </publishers>
   <%- end %>

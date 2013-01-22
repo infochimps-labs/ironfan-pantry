@@ -2,6 +2,11 @@
 
 This file is used to list changes made in each version of jenkins_integration.
 
+## 0.1.6:
+* Expanded config templating to handle chaining of jobs
+* Included required plugins (run jenkins::plugins *after* ironfan_ci)
+* Added parameterization of chained jobs
+
 ## 0.1.5:
 * Switched to templating for tasks (instead of inline string)
 * Cleaning up knife_shared.inc usage

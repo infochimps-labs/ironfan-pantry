@@ -55,29 +55,31 @@ execute 'Get familiar with Github' do
   action        :nothing
 end
 
-# Remove the indentation of multiline heredoc formatted strings.
-# (Hackity hack, don't talk back.)
-module Ironfan
-  def self.reformat_heredoc(string='')
-    depth = string.gsub(/^( +).+/m,'\1').length
-    string.gsub(/^ {#{depth}}/, '')
-  end
-end
-
+# FIXME: use https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
+#   instead of developing a whole separate DSL->XML transformation
 node[:jenkins_integration][:pantries].each_pair do |name, attrs|
   jenkins_job name do
     project       attrs[:project]
     repository    attrs[:repository]
-    branches      ( attrs[:branches] || 'master' )
+    branch        ( attrs[:branch] || 'master' )
     downstream    [ 'Ironfan CI' ]
-    triggers({ :github => true})
+    final         [ "stage_#{name}" ]
+    final_params( { 'GIT_COMMIT' => { :type => 'git_commit' } })
+    triggers(     { :poll_scm => true})
+  end
+
+  jenkins_job "stage_#{name}" do
+    project       attrs[:project]
+    repository    attrs[:repository]
+    parameters(   { 'GIT_COMMIT' => {
+                      :default  => 'origin/staging',
+                      :type     => 'string'
+                  } })
+    branches      '$GIT_COMMIT'
   end
 end
 
 # FIXME: Set up trigger from CI job to pantry publication
-# - how do I split publication between branches afterward?
-#   - single downstream that detects all the changes?
-#   - split this into two parallel jobs?
 jenkins_job 'Ironfan CI' do
   repository    node[:jenkins_integration][:ironfan_ci][:repository]
   branches      node[:jenkins_integration][:ironfan_ci][:branches]
