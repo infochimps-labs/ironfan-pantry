@@ -11,6 +11,7 @@ define(:jenkins_job,
   :repository   => nil,         # Source repository
   :triggers     => {},          # Triggers to start this job
   :tasks        => [],          # Array of shell scripts templates to run
+  :templates    => [],          # Array of templates to deploy
   ) do
 
   entities = HTMLEntities.new
@@ -25,9 +26,9 @@ define(:jenkins_job,
     group       node[:jenkins][:server][:group]
   end
 
-  params[:tasks].each do |script|
-    template "#{params[:path]}/#{script}" do
-      source    "#{script}.erb"
+  (params[:tasks] + params[:templates]).each do |file|
+    template "#{params[:path]}/#{file}" do
+      source    "#{file}.erb"
       mode      '0700'
       owner     node[:jenkins][:server][:user]
       group     node[:jenkins][:server][:group]

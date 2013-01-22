@@ -2,7 +2,7 @@
 #
 # Synchronize local code to the Chef server.
 #
-source knife_shared.inc
+source `dirname $0`/knife_shared.inc
 
 cat <<EOF > config/Berksfile.conf.rb
 PANTRY_BRANCH='testing'

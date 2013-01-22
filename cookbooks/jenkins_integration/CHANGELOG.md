@@ -2,8 +2,11 @@
 
 This file is used to list changes made in each version of jenkins_integration.
 
-## 0.1.0:
+## 0.1.5:
+* Switched to templating for tasks (instead of inline string)
+* Cleaning up knife_shared.inc usage
 
+## 0.1.0:
 * Initial release of jenkins_integration
 
 - - - 

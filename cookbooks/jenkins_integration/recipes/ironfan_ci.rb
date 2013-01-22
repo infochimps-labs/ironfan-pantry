@@ -84,6 +84,7 @@ jenkins_job 'Ironfan CI' do
   # Some short justification: why bash? Because that's the command line
   #   that these tools are written for. We can test internal interfaces
   #   via ruby, but external ones should mimic the command line closely.
+  templates     [ 'knife_shared.inc' ]
   tasks         [ 'bundler.sh', 'full_sync.sh', 'launch.sh' ]
 end
 

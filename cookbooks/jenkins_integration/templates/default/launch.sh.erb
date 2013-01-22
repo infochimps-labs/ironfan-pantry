@@ -3,7 +3,7 @@
 # Launch a testing instance, and wait to see if chef-client
 #   ran to completion successfully.
 #
-source knife_shared.inc
+source `dirname $0`/knife_shared.inc
 
 export CHEF_LOG=/var/log/chef/client.log
 export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out

@@ -1,9 +1,9 @@
 # Some shared variable setting and convenience functions for testing
 #   knife cluster commands.
 
-export CHEF_USER=#{node[:jenkins_integration][:ironfan_ci][:chef_user]}
-export CLUSTER=#{node[:jenkins_integration][:ironfan_ci][:cluster]}
-export FACET=#{node[:jenkins_integration][:ironfan_ci][:facet]}
+export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
+export CLUSTER=<%= node[:jenkins_integration][:ironfan_ci][:cluster] %>
+export FACET=<%= node[:jenkins_integration][:ironfan_ci][:facet] %>
 export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
 function knife {
