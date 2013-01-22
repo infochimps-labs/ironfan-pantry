@@ -66,6 +66,7 @@ namespace :all do
   end
 end
 
+desc "Push the current commit in development (master) into the test queue"
 task :enqueue_testing do
   system <<-eos.gsub(/^ {#{4}}/, '')
     #!/usr/bin/env bash
