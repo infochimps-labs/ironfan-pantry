@@ -87,7 +87,7 @@ jenkins_job 'Ironfan CI' do
   #   that these tools are written for. We can test internal interfaces
   #   via ruby, but external ones should mimic the command line closely.
   templates     [ 'knife_shared.inc' ]
-  tasks         [ 'bundler.sh', 'full_sync.sh', 'launch.sh' ]
+  tasks         [ 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
 end
 
 # Setup jenkins user to make commits

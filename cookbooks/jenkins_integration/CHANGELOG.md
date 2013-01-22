@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of jenkins_integration.
 
+## 0.1.7:
+* Switching to crippled sync_changes.sh (instead of 1/2 hr full_sync.sh)
+
 ## 0.1.6:
 * Expanded config templating to handle chaining of jobs
 * Included required plugins (run jenkins::plugins *after* ironfan_ci)
