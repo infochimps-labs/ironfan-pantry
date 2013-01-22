@@ -1,10 +1,10 @@
 #
 # Cookbook Name::       zookeeper
-# Description::         Base configuration for zookeeper
-# Recipe::              default
-# Author::              Chris Howe - Infochimps, Inc
+# Description::         Installs Zookeeper from the cloudera package -- verified compatible, but on a slow update schedule.
+# Recipe::              install_from_package
+# Author::              Travis Dempsey - Infochimps, Inc
 #
-# Copyright 2010, Infochimps, Inc.
+# Copyright 2009, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,21 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'volumes'
-include_recipe 'silverware'
-include_recipe 'java'       ; complain_if_not_sun_java(:zookeeper)
+include_recipe 'zookeeper'
+include_recipe 'hadoop_cluster::add_cloudera_repo'
 
-#
-# User
-#
-daemon_user(:zookeeper) do
-  home          node[:zookeeper][:data_dir]
-  manage_home   false
-end
-
-#
-# Configuration files
-#
-standard_dirs('zookeeper.server') do
-  directories   :conf_dir, :log_dir
-end
+package 'hadoop-zookeeper'
