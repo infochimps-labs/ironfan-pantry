@@ -75,7 +75,7 @@ node[:jenkins_integration][:pantries].each_pair do |name, attrs|
                       :default  => 'origin/staging',
                       :type     => 'string'
                   } })
-    branches      '$GIT_COMMIT'
+    branch        '$GIT_COMMIT'
   end
 end
 
