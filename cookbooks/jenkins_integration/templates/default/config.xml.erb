@@ -73,11 +73,13 @@
   <builders/>
   <%- else %>
   <builders>
-    <%- @tasks.each do |task| %>
     <hudson.tasks.Shell>
-      <command><%= task %></command>
+      <command>#!/bin/bash
+      <%- @tasks.each do |t| %>
+<%=         @path + '/' + t %>
+      <%- end %>
+      </command>
     </hudson.tasks.Shell>
-    <%- end %>
   </builders>
   <%- end %>
   <%- if @downstream.empty? %>

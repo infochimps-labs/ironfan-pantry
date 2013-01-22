@@ -75,74 +75,16 @@ node[:jenkins_integration][:pantries].each_pair do |name, attrs|
 end
 
 # FIXME: Set up trigger from CI job to pantry publication
-# Set up the CI job
+# - how do I split publication between branches afterward?
+#   - single downstream that detects all the changes?
+#   - split this into two parallel jobs?
 jenkins_job 'Ironfan CI' do
   repository    node[:jenkins_integration][:ironfan_ci][:repository]
   branches      node[:jenkins_integration][:ironfan_ci][:branches]
-
-  knife_shared = Ironfan::reformat_heredoc <<-eos
-    export CHEF_USER=#{node[:jenkins_integration][:ironfan_ci][:chef_user]}
-    export CLUSTER=#{node[:jenkins_integration][:ironfan_ci][:cluster]}
-    export FACET=#{node[:jenkins_integration][:ironfan_ci][:facet]}
-    export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
-
-    function knife {
-      bundle exec knife "$@"
-    }
-    function kc {
-      knife cluster "$@"
-    }
-    function klean_exit {
-      kc kill $CLUSTER --yes
-      exit $@
-    }
-  eos
-
-  bundler = Ironfan::reformat_heredoc <<-eos
-    #!/usr/bin/env bash
-    bundle install --path vendor
-    bundle update
-  eos
-
-  full_sync = Ironfan::reformat_heredoc <<-eos
-    #!/usr/bin/env bash
-    #{knife_shared}
-
-    cat \<\<EOF > config/Berksfile.conf.rb
-    PANTRY_BRANCH='testing'
-    ENTERPRISE_BRANCH='testing'
-    EOF
-
-    # Would do rake_full install, but that syncs all clusters, too
-    rake roles
-    rake berkshelf_install
-  eos
-
-  pequeno = Ironfan::reformat_heredoc <<-eos
-    #!/usr/bin/env bash
-    #{knife_shared}
-
-    export CHEF_LOG=/var/log/chef/client.log
-    export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
-
-    kc list -f
-    kc show $CLUSTER
-
-    kc launch $CLUSTER-$FACET || 
-      ( echo "FATAL: knife cluster launch failed &&
-        klean_exit 1 )
-
-    while true; do
-      kc ssh $CLUSTER $CREDENTIALS cat $CHEF_LOG > tmp.client.log
-      grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log &&
-        kc ssh $CLUSTER $CREDENTIALS sudo cat $CHEF_STACKTRACE &&
-        klean_exit 1
-      grep 'INFO: Chef Run complete in ' tmp.client.log && klean_exit 0
-      echo "Waiting 5 seconds while chef finishes running" && sleep 5
-    done
-  eos
-
-  tasks         [ bundler, full_sync, pequeno ]
+  # Some short justification: why bash? Because that's the command line
+  #   that these tools are written for. We can test internal interfaces
+  #   via ruby, but external ones should mimic the command line closely.
+  tasks         [ 'bundler.sh', 'full_sync.sh', 'launch.sh' ]
 end
 
 # Setup jenkins user to make commits

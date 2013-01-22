@@ -10,7 +10,7 @@ define(:jenkins_job,
   :project      => nil,         # Source project URL
   :repository   => nil,         # Source repository
   :triggers     => {},          # Triggers to start this job
-  :tasks        => []           # Array of shell scripts to run
+  :tasks        => [],          # Array of shell scripts templates to run
   ) do
 
   entities = HTMLEntities.new
@@ -18,13 +18,20 @@ define(:jenkins_job,
   # Jenkins and bundle hate paths with spaces
   params[:name]         = params[:name].sub(' ','_')
   params[:downstream]   = params[:downstream].map {|r| r.sub(' ','_') }
-  # Tasks need to be HTML-encoded
-  params[:tasks]        = params[:tasks].map {|t| entities.encode t }
   params[:path]         ||= "#{node[:jenkins][:lib_dir]}/jobs/#{params[:name]}"
 
   directory params[:path] do
     owner       node[:jenkins][:server][:user]
     group       node[:jenkins][:server][:group]
+  end
+
+  params[:tasks].each do |script|
+    template "#{params[:path]}/#{script}" do
+      source    "#{script}.erb"
+      mode      '0700'
+      owner     node[:jenkins][:server][:user]
+      group     node[:jenkins][:server][:group]
+    end
   end
 
   template params[:path] + '/config.xml' do
