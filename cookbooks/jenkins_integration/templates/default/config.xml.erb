@@ -76,7 +76,10 @@
     <hudson.tasks.Shell>
       <command>#!/bin/bash
       <%- @tasks.each do |t| %>
-<%=         @path + '/' + t %>
+        echo Running <%= t %>
+        <%= @path %>/<%= t %>
+        echo
+
       <%- end %>
       </command>
     </hudson.tasks.Shell>
