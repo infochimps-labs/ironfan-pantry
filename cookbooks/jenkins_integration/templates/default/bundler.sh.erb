@@ -2,5 +2,10 @@
 #
 # Install all dependencies via bundler.
 #
-bundle install --path vendor --no-color
-bundle update --no-color
+if [ ! -f Gemfile.lock]; then
+  echo "Installing bundle:"
+  bundle install --path vendor --no-color
+else
+  echo "Updating bundle:"
+  bundle update --no-color
+fi

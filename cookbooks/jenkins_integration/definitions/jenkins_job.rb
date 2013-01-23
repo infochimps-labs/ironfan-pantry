@@ -1,8 +1,5 @@
 # Shorthand for deploying a descendent of ironfan-homebase, so that it
 #   may be used to test Ironfan deployment
-
-require 'htmlentities'
-
 define(:jenkins_job,
   :branch       => 'master',    # Which branch to build
   :downstream   => [],          # What downstream jobs to kick off on a good run
@@ -17,8 +14,6 @@ define(:jenkins_job,
   :tasks        => [],          # Array of shell scripts templates to run
   :templates    => [],          # Array of templates to deploy
   ) do
-
-  entities = HTMLEntities.new
 
   # Jenkins and bundle hate paths with spaces
   params[:name]         = params[:name].sub(' ','_')

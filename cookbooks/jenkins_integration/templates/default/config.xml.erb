@@ -7,7 +7,7 @@
   <properties/>
   <%- else %>
   <properties>
-    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.4">
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.5">
       <projectUrl><%= @project %></projectUrl>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
     <%- unless @parameters.empty? %>
@@ -78,12 +78,12 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
-  <%- unless @triggers %>
+  <%- if @triggers.empty? %>
   <triggers class="vector"/>
   <%- else %>
   <triggers class="vector">
     <%- if @triggers[:github] %>
-    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.4">
+    <com.cloudbees.jenkins.GitHubPushTrigger plugin="github@1.5">
       <spec></spec>
     </com.cloudbees.jenkins.GitHubPushTrigger>
     <%- end %>
@@ -112,9 +112,6 @@
     </hudson.tasks.Shell>
   </builders>
   <%- end %>
-  <%- if (@downstream.empty? and @final.empty?) %>
-  <publishers/>
-  <%- else %>
   <publishers>
     <%- @downstream.each do |task| %>
     <hudson.tasks.BuildTrigger>
@@ -155,7 +152,13 @@
       <evenIfDownstreamUnstable>false</evenIfDownstreamUnstable>
     </join.JoinTrigger>
     <%- end %>
+    <%- if @merge %>
+    <hudson.plugins.git.GitPublisher plugin="git@1.1.26">
+      <configVersion>2</configVersion>
+      <pushMerge>true</pushMerge>
+      <pushOnlyIfSuccess>true</pushOnlyIfSuccess>
+    </hudson.plugins.git.GitPublisher>
+    <%- end %>
   </publishers>
-  <%- end %>
   <buildWrappers/>
 </project>

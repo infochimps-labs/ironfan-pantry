@@ -20,5 +20,7 @@ fi
 export HBASE_LOGFILE=hbase-$HBASE_IDENT_STRING-$command-$HBASE_NODENAME.log
 export HBASE_ROOT_LOGGER="INFO,FA"
 
+ulimit -n <%= @options[:ulimit] %>
+
 cd "$HBASE_HOME"
 exec chpst -u <%= @options[:user] %> "$HBASE_HOME"/bin/hbase $command start -p <%= @options[:bind_port] %> "$@" < /dev/null
