@@ -5,7 +5,6 @@
 #
 # Locations
 #
-
 default[:hbase][:home_dir]                     = '/usr/lib/hbase'
 default[:hbase][:conf_dir]                     = '/etc/hbase/conf'
 default[:hbase][:pid_dir]                      = '/var/run/hbase'
@@ -46,28 +45,26 @@ default[:hbase][:exported_confs]   = []
 #
 
 # hbase user
-default[:hbase][:user]                  = 'hbase'
-default[:hbase][:group]                 = 'hbase'
-default[:users ]['hbase'     ][:uid]    = 304
-default[:groups]['hbase'     ][:gid]    = 304
+default[:hbase ][:user]                        = 'hbase'
+default[:hbase ][:group]                       = 'hbase'
+default[:users ]['hbase'     ][:uid]           = 304
+default[:groups]['hbase'     ][:gid]           = 304
 
 #
 # Run state of daemons
 #
-
 node.set[:hbase][:services] = [ :master, :regionserver, :stargate, :thrift ]
 
-default[:hbase][:master      ][:run_state] = :start
-default[:hbase][:regionserver][:run_state] = :start
-default[:hbase][:thrift      ][:run_state] = :start
-default[:hbase][:stargate    ][:run_state] = :start
+default[:hbase][:master      ][:run_state]     = :start
+default[:hbase][:regionserver][:run_state]     = :start
+default[:hbase][:thrift      ][:run_state]     = :start
+default[:hbase][:stargate    ][:run_state]     = :start
 
 #
 # HBase Backup
 #
-
-default[:hbase][:backup_location]            = '/mnt/hbase/bkup'
-default[:hbase][:weekly_backup_tables]       = []
+default[:hbase][:backup_location]              = '/mnt/hbase/bkup'
+default[:hbase][:weekly_backup_tables]         = []
 
 #
 # Stargate
@@ -77,4 +74,5 @@ default[:hbase][:weekly_backup_tables]       = []
 #   in. Possible values are: false: All HTTP methods are permitted - GET/PUT/POST/DELETE.
 #   true: Only the GET method is permitted.
 #
-default[:hbase][:stargate][:readonly]                      = false              ## false
+default[:hbase][:stargate][:readonly]          = false
+default[:hbase][:stargate][:ulimit]            = 65536

@@ -19,29 +19,25 @@
 # limitations under the License.
 #
 
-include_recipe 'hbase'
-include_recipe 'runit'
-
-
-
+include_recipe      'hbase'
+include_recipe      'runit'
 
 # Set up service
-runit_service "hbase_stargate" do
-  run_state     node[:hbase][:stargate][:run_state]
-  options       Mash.new(:service_name => 'stargate', :command_name => 'rest').merge(node[:hbase]).merge(node[:hbase][:stargate])
+runit_service 'hbase_stargate' do
+  run_state         node[:hbase][:stargate][:run_state]
+  options           Mash.new(service_name: 'stargate', command_name: 'rest').merge(node[:hbase]).merge(node[:hbase][:stargate])
 end
 
-kill_old_service("hadoop-hbase-stargate"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-stargate") } }
+kill_old_service('hadoop-hbase-stargate'){ hard(:real_hard) ; only_if{ File.exists? '/etc/init.d/hadoop-hbase-stargate' } }
 
 announce(:hbase, :stargate, {
-           :logs => { :rest => {
-             :glob => node[:hbase][:log_dir] + '/*hbase-rest-*.log'
-           } },
-           :ports => {
-             :bind_port => { :port => node[:hbase][:stargate][:bind_port] },
+           logs:    { 
+             rest:      { glob: File.join(node[:hbase][:log_dir], '*hbase-rest-*.log') }
            },
-           :daemons => {
-             :java => { :name => 'java', :user => node[:hbase][:user], :cmd => 'hbase-rest' }
+           ports:   {
+             bind_port: { port: node[:hbase][:stargate][:bind_port] },
+           },
+           daemons: {
+             java:      { name: 'java', user: node[:hbase][:user], cmd: 'hbase-rest' }
            }
         })
-
