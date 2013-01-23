@@ -61,8 +61,8 @@ node[:jenkins_integration][:pantries].each_pair do |name, attrs|
   # Initial trigger/tracking job. Have your pantry's post-commit 
   #   hook hit the API path for this job, to trigger the Ironfan CI
   #   (and stage the result if successful).
-  attrs[:branch]  ||= 'testing'
-  attrs[:merge]   ||= 'staging'
+  attrs[:branch]  ||= node[:jenkins_integration][:ironfan_ci][:pantry_branch]
+  attrs[:merge]   ||= node[:jenkins_integration][:ironfan_ci][:pantry_merge]
   jenkins_job name do
     project       attrs[:project]
     repository    attrs[:repository]
@@ -91,10 +91,10 @@ end
 #   server, watching it run to completion
 jenkins_job 'Ironfan CI' do
   repository    node[:jenkins_integration][:ironfan_ci][:repository]
-  branches      node[:jenkins_integration][:ironfan_ci][:branches]
   # Some short justification: why bash? Because these tools are 
   #   written for the command line. We can test internal interfaces
   #   via ruby, but external ones should use the command line.
+  branch        node[:jenkins_integration][:ironfan_ci][:branch]
   templates     [ 'knife_shared.inc' ]
   tasks         [ 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
 end
