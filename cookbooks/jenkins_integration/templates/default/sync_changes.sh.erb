@@ -8,8 +8,7 @@ MERGE=<%= @merge %>
 
 # never gonna give you up, never gonna let you down
 #   never gonna give you less than the latest roles
-echo "Uploading changed roles:"
-git diff --name-only $MERGE
+echo "Uploading roles:"
 rake roles
 echo
 
