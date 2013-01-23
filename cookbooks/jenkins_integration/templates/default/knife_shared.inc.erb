@@ -13,6 +13,6 @@ function kc {
   knife cluster "$@"
 }
 function klean_exit {
-  kc kill $CLUSTER --yes
+  time kc kill $CLUSTER --yes
   exit $@
 }
