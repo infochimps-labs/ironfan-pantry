@@ -103,6 +103,7 @@
     <hudson.tasks.Shell>
       <command>#!/usr/bin/env bash -e
       <%- @tasks.each do |t| %>
+        echo
         echo Running <%= t %>
         <%= @path %>/<%= t %>
         echo
