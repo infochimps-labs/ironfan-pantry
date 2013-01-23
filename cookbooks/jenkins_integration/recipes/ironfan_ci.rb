@@ -55,94 +55,40 @@ execute 'Get familiar with Github' do
   action        :nothing
 end
 
-# Remove the indentation of multiline heredoc formatted strings.
-# (Hackity hack, don't talk back.)
-module Ironfan
-  def self.reformat_heredoc(string='')
-    depth = string.gsub(/^( +).+/m,'\1').length
-    string.gsub(/^ {#{depth}}/, '')
-  end
-end
-
+# FIXME: use https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
+#   instead of developing a whole separate DSL->XML transformation
 node[:jenkins_integration][:pantries].each_pair do |name, attrs|
   jenkins_job name do
     project       attrs[:project]
     repository    attrs[:repository]
-    branches      ( attrs[:branches] || 'master' )
+    branch        ( attrs[:branch] || 'master' )
     downstream    [ 'Ironfan CI' ]
-    triggers({ :github => true})
+    final         [ "stage_#{name}" ]
+    final_params( { 'GIT_COMMIT' => { :type => 'git_commit' } })
+    triggers(     { :poll_scm => true})
+  end
+
+  jenkins_job "stage_#{name}" do
+    project       attrs[:project]
+    repository    attrs[:repository]
+    parameters(   { 'GIT_COMMIT' => {
+                      :default  => 'origin/staging',
+                      :type     => 'string'
+                  } })
+    branch        '$GIT_COMMIT'
+    merge         'staging'
   end
 end
 
 # FIXME: Set up trigger from CI job to pantry publication
-# Set up the CI job
 jenkins_job 'Ironfan CI' do
   repository    node[:jenkins_integration][:ironfan_ci][:repository]
   branches      node[:jenkins_integration][:ironfan_ci][:branches]
-
-  knife_shared = Ironfan::reformat_heredoc <<-eos
-    export CHEF_USER=#{node[:jenkins_integration][:ironfan_ci][:chef_user]}
-    export CLUSTER=#{node[:jenkins_integration][:ironfan_ci][:cluster]}
-    export FACET=#{node[:jenkins_integration][:ironfan_ci][:facet]}
-    export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
-
-    function knife {
-      bundle exec knife "$@"
-    }
-    function kc {
-      knife cluster "$@"
-    }
-    function klean_exit {
-      kc kill $CLUSTER --yes
-      exit $@
-    }
-  eos
-
-  bundler = Ironfan::reformat_heredoc <<-eos
-    #!/usr/bin/env bash
-    bundle install --path vendor
-    bundle update
-  eos
-
-  full_sync = Ironfan::reformat_heredoc <<-eos
-    #!/usr/bin/env bash
-    #{knife_shared}
-
-    cat \<\<EOF > config/Berksfile.conf.rb
-    PANTRY_BRANCH='testing'
-    ENTERPRISE_BRANCH='testing'
-    EOF
-
-    # Would do rake_full install, but that syncs all clusters, too
-    rake roles
-    rake berkshelf_install
-  eos
-
-  pequeno = Ironfan::reformat_heredoc <<-eos
-    #!/usr/bin/env bash
-    #{knife_shared}
-
-    export CHEF_LOG=/var/log/chef/client.log
-    export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
-
-    kc list -f
-    kc show $CLUSTER
-
-    kc launch $CLUSTER-$FACET || 
-      ( echo "FATAL: knife cluster launch failed &&
-        klean_exit 1 )
-
-    while true; do
-      kc ssh $CLUSTER $CREDENTIALS cat $CHEF_LOG > tmp.client.log
-      grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log &&
-        kc ssh $CLUSTER $CREDENTIALS sudo cat $CHEF_STACKTRACE &&
-        klean_exit 1
-      grep 'INFO: Chef Run complete in ' tmp.client.log && klean_exit 0
-      echo "Waiting 5 seconds while chef finishes running" && sleep 5
-    done
-  eos
-
-  tasks         [ bundler, full_sync, pequeno ]
+  # Some short justification: why bash? Because that's the command line
+  #   that these tools are written for. We can test internal interfaces
+  #   via ruby, but external ones should mimic the command line closely.
+  templates     [ 'knife_shared.inc' ]
+  tasks         [ 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
 end
 
 # Setup jenkins user to make commits

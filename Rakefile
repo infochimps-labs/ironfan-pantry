@@ -66,6 +66,7 @@ namespace :all do
   end
 end
 
+desc "Push the current commit in development (master) into the test queue"
 task :enqueue_testing do
   system <<-eos.gsub(/^ {#{4}}/, '')
     #!/usr/bin/env bash
@@ -97,7 +98,7 @@ task :enqueue_testing do
     echo
 
     echo "find all cookbook differences between master and testing:"
-    CHANGES=`git diff --name-only testing -- cookbooks | cut -d/ -f2 | sort | uniq`
+    CHANGES=`git diff --name-only testing -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
     if [ "x$CHANGES" = "x" ]; then
       echo "No cookbook changes between master and testing"
       exit 0
