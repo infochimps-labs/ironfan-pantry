@@ -6,6 +6,7 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 description      "Zookeeper, a distributed high-availability consistent datastore"
 
+depends          "ant"
 depends          "java"
 depends          "runit"
 depends          "volumes"
