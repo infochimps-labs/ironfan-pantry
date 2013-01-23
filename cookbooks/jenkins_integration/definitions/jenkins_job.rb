@@ -30,6 +30,7 @@ define(:jenkins_job,
   (params[:tasks] + params[:templates]).each do |file|
     template "#{params[:path]}/#{file}" do
       source    "#{file}.erb"
+      variables params
       mode      '0700'
       owner     node[:jenkins][:server][:user]
       group     node[:jenkins][:server][:group]
