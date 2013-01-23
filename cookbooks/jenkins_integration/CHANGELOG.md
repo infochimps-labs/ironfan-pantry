@@ -6,6 +6,7 @@ This file is used to list changes made in each version of jenkins_integration.
 * sync_changes.sh uploads only changed cookbooks
 * cleaning up comments, default :branch and :merge for pantries
 * dropping htmlentities (no longer necessary)
+* cleaning up reporting, bundler execution
 
 ## 0.1.9:
 * Adding merge to staging on stage_* steps

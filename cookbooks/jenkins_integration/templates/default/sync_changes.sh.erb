@@ -3,30 +3,31 @@
 # Synchronize code that has changed to the Chef server.
 #
 source `dirname $0`/knife_shared.inc
+BRANCH=<%= @branch %>
+MERGE=<%= @merge %>
 
 # never gonna give you up, never gonna let you down
 #   never gonna give you less than the latest roles
-echo "uploading roles"
+echo "Uploading changed roles:"
+git diff --name-only $MERGE
 rake roles
 echo
 
 # discover changes between testing and staging by
 #   comparing VERSION files
-BRANCH=<%= @branch %>
-MERGE=<%= merge %>
 export PANTRY_BRANCH=$BRANCH
 export ENTERPRISE_BRANCH=$BRANCH
-echo "getting $BRANCH cookbooks"
+echo "Getting $BRANCH cookbooks:"
 bundle exec berks install --path cookbooks
 echo
 
 export PANTRY_BRANCH=$MERGE
 export ENTERPRISE_BRANCH=$MERGE
-echo "getting $MERGE cookbooks"
+echo "Getting $MERGE cookbooks:"
 bundle exec berks install --path staged_cookbooks
 echo
 
-echo "finding differences between $BRANCH and $MERGE"
+echo "Finding differences between $BRANCH and $MERGE:"
 changed=''
 for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
 do
@@ -35,5 +36,5 @@ do
     changed="$changed$cookbook "
 done
 
-echo "uploading changed cookbooks: $changed"
+echo "Uploading changed cookbooks: $changed"
 knife cookbook upload $changed
