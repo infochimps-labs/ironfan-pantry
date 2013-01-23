@@ -56,37 +56,45 @@ execute 'Get familiar with Github' do
 end
 
 # FIXME: use https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
-#   instead of developing a whole separate DSL->XML transformation
+#   instead of developing this DSL->XML transformation further
 node[:jenkins_integration][:pantries].each_pair do |name, attrs|
+  # Initial trigger/tracking job. Have your pantry's post-commit 
+  #   hook hit the API path for this job, to trigger the Ironfan CI
+  #   (and stage the result if successful).
+  attrs[:branch]  ||= 'testing'
+  attrs[:merge]   ||= 'staging'
   jenkins_job name do
     project       attrs[:project]
     repository    attrs[:repository]
-    branch        ( attrs[:branch] || 'master' )
+    branch        attrs[:branch]
     downstream    [ 'Ironfan CI' ]
     final         [ "stage_#{name}" ]
     final_params( { 'GIT_COMMIT' => { :type => 'git_commit' } })
     triggers(     { :poll_scm => true})
   end
 
+  # Push the results of a successful CI run into the staging branch
   jenkins_job "stage_#{name}" do
     project       attrs[:project]
     repository    attrs[:repository]
     parameters(   { 'GIT_COMMIT' => {
-                      :default  => 'origin/staging',
+                      :default  => "origin/#{attrs[:merge]}",   # Do nothing if called by default
                       :type     => 'string'
                   } })
     branch        '$GIT_COMMIT'
-    merge         'staging'
+    merge         attrs[:merge]
   end
 end
 
-# FIXME: Set up trigger from CI job to pantry publication
+# Core integration job: this sets up the test universe homebase, syncs
+#   to that universe's Chef Server, and launches the specified test
+#   server, watching it run to completion
 jenkins_job 'Ironfan CI' do
   repository    node[:jenkins_integration][:ironfan_ci][:repository]
   branches      node[:jenkins_integration][:ironfan_ci][:branches]
-  # Some short justification: why bash? Because that's the command line
-  #   that these tools are written for. We can test internal interfaces
-  #   via ruby, but external ones should mimic the command line closely.
+  # Some short justification: why bash? Because these tools are 
+  #   written for the command line. We can test internal interfaces
+  #   via ruby, but external ones should use the command line.
   templates     [ 'knife_shared.inc' ]
   tasks         [ 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
 end
