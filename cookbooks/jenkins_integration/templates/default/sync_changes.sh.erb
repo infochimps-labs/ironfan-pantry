@@ -4,11 +4,22 @@
 #
 source `dirname $0`/knife_shared.inc
 
-cat <<EOF > config/Berksfile.conf.rb
-PANTRY_BRANCH='testing'
-ENTERPRISE_BRANCH='testing'
-EOF
-
+# never gonna give you up, never gonna let you down
+#   never gonna give you less than the latest roles
 rake roles
-rake berkshelf
-echo "FIXME: Need to upload *just* the changed cookbooks"
+
+# upload *just* the changed cookbooks
+export PANTRY_BRANCH='testing'
+export ENTERPRISE_BRANCH='testing'
+bundle exec berks install --path cookbooks
+
+export PANTRY_BRANCH='staging'
+export ENTERPRISE_BRANCH='staging'
+bundle exec berks install --path staged_cookbooks
+
+for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
+do
+  cb_path=cookbooks/$cookbook/VERSION
+  diff -q $cb_path staged_$cb_path > /dev/null ||
+    knife cookbook upload $cookbook
+done
