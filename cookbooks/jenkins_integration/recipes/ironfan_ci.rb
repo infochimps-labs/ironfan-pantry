@@ -76,6 +76,7 @@ node[:jenkins_integration][:pantries].each_pair do |name, attrs|
                       :type     => 'string'
                   } })
     branch        '$GIT_COMMIT'
+    merge         'staging'
   end
 end
 

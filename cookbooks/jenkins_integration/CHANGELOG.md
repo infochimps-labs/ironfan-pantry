@@ -2,6 +2,9 @@
 
 This file is used to list changes made in each version of jenkins_integration.
 
+## 0.1.9:
+* Adding merge to staging on stage_* steps
+
 ## 0.1.8:
 * Mock change, to test final setup
 
