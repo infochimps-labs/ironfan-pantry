@@ -2,11 +2,18 @@
 
 This file is used to list changes made in each version of jenkins_integration.
 
+## 0.1.11:
+* adding missing variables to CI script templates
+* fixing syntax fail on bundler.sh
+* cleaning up branch choice for homebase scripts, some format cleanup
+* adding time checking to task steps (for optimization)
+
 ## 0.1.10:
 * sync_changes.sh uploads only changed cookbooks
 * cleaning up comments, default :branch and :merge for pantries
 * dropping htmlentities (no longer necessary)
 * cleaning up reporting, bundler execution
+* removing stub of role differentiation (realized I don't have branches to rely on in homebase)
 
 ## 0.1.9:
 * Adding merge to staging on stage_* steps
