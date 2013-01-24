@@ -143,3 +143,22 @@ default[:hadoop][:extra_classpaths]  = { }
 default[:hadoop][:codecs] = %w[org.apache.hadoop.io.compress.GzipCodec
                                org.apache.hadoop.io.compress.DefaultCodec
                                org.apache.hadoop.io.compress.BZip2Codec]
+
+# for hive
+
+# (mysql setup)
+
+# set in credentials and pull in using the hadoop_hive role
+# default[:hadoop][:hive][:mysql_password]
+default[:hadoop][:hive][:mysql_hive_username]      = 'hiveuser'
+default[:hadoop][:hive][:mysql_root_username]      = 'root'
+default[:hadoop][:hive][:mysql_database]           = 'metastore'
+default[:hadoop][:hive][:mysql_host]               = 'localhost'
+
+# located in :hive => :home_dir
+default[:hadoop][:hive][:mysql_upgrade_script]     = 'scripts/metastore/upgrade/mysql/hive-schema-0.7.0.mysql.sql'
+
+default[:hadoop][:hive][:home_dir]                 = '/usr/lib/hive'
+default[:hadoop][:hive][:conf_dir]                 = '/etc/hive/conf'
+default[:hadoop][:hive][:mysql_connector_jar]      = 'mysql-connector-java-5.1.22-bin.jar'
+default[:hadoop][:hive][:mysql_connector_location] = 'https://s3.amazonaws.com/artifacts.chimpy.us/jars/mysql-connector-java-5.1.22-bin.jar'

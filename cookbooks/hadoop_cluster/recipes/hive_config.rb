@@ -19,8 +19,9 @@
 # limitations under the License.
 #
 
-package("hadoop-hive")
-
-remote_file(File.join(node[:hadoop][:hive][:home_dir], node[:hadoop][:hive][:mysql_connector_jar])) do
-  source node[:hadoop][:hive][:mysql_connector_location]
+template File.join(node[:hadoop][:hive][:conf_dir], 'hive-site.xml') do
+  owner "root"
+  mode "0644"
+  variables(:hive => node[:hadoop][:hive])
+  source "hive-site.xml.erb"
 end
