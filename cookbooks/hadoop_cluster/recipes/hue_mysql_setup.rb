@@ -70,7 +70,7 @@ configure_bash_commands = [
                            hue_dump,
                            hue_sync,
                            hue_load,
-                           ].join("&&")
+                           ].join(" && ")
 
 #--------------------------------------------------------------------------------
 # execution
