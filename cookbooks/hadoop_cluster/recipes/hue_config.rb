@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       hadoop_cluster
-# Description::         Configures Hadoop Hive (SQL with HDFS backend)
-# Recipe::              hive_config
+# Description::         Configures Hadoop Hue (Hadoop Workspace)
+# Recipe::              hue_config
 # Author::              Josh Bronson - Infochimps, Inc
 #
 # Copyright 2012 Infochimps, Inc
@@ -19,9 +19,9 @@
 # limitations under the License.
 #
 
-template File.join(node[:hadoop][:hive][:conf_dir], 'hive-site.xml') do
+template File.join(node[:hadoop][:hue][:conf_dir], 'hue.ini') do
   owner "root"
   mode "0644"
-  variables(:hive => node[:hadoop][:hive])
-  source "hive-site.xml.erb"
+  variables(:hue => node[:hadoop][:hue], :hadoop => node[:hadoop])
+  source "hue.ini.erb"
 end

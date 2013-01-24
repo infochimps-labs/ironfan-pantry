@@ -131,6 +131,20 @@ default[:tuning][:ulimit]['mapred'] = { :nofile => { :both => 32768 }, :nproc =>
 
 # for hue
 
+default[:hadoop][:hue][:conf_dir]                 = '/etc/hue'
+
+# (mysql setup)
+# set in credentials and pull in using the hadoop_hive role
+# default[:hadoop][:hive][:mysql_password]
+default[:hadoop][:hue][:mysql_hue_username]       = 'hue'
+default[:hadoop][:hue][:mysql_root_username]      = 'root'
+default[:hadoop][:hue][:mysql_database]           = 'hue'
+default[:hadoop][:hue][:mysql_host]               = 'localhost'
+
+default[:hadoop][:hue][:share_dir]                = '/usr/share/hue'
+default[:hadoop][:hue][:time_zone]                = 'UTC'
+default[:hadoop][:hue][:user]                     = 'hue'
+
 default[:hadoop][:namenode][:plugins] = []
 default[:hadoop][:datanode][:plugins] = []
 default[:hadoop][:thrift][:port] = 10090
