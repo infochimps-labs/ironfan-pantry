@@ -3,13 +3,13 @@
 # Synchronize code that has changed to the Chef server.
 #
 source `dirname $0`/knife_shared.inc
-BRANCH=<%= @branch %>
-MERGE=<%= @merge %>
+BRANCH=<%= node[:jenkins_integration][:ironfan_ci][:pantry_branch] %>
+MERGE=<%= node[:jenkins_integration][:ironfan_ci][:pantry_merge] %>
 
 # never gonna give you up, never gonna let you down
 #   never gonna give you less than the latest roles
 echo "Uploading roles:"
-rake roles
+time rake roles
 echo
 
 # discover changes between testing and staging by
@@ -17,13 +17,13 @@ echo
 export PANTRY_BRANCH=$BRANCH
 export ENTERPRISE_BRANCH=$BRANCH
 echo "Getting $BRANCH cookbooks:"
-bundle exec berks install --path cookbooks
+time bundle exec berks install --path cookbooks
 echo
 
 export PANTRY_BRANCH=$MERGE
 export ENTERPRISE_BRANCH=$MERGE
 echo "Getting $MERGE cookbooks:"
-bundle exec berks install --path staged_cookbooks
+time bundle exec berks install --path staged_cookbooks
 echo
 
 echo "Finding differences between $BRANCH and $MERGE:"
@@ -36,4 +36,4 @@ do
 done
 
 echo "Uploading changed cookbooks: $changed"
-knife cookbook upload $changed
+time knife cookbook upload $changed
