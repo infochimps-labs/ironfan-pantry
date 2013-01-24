@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'mysql::client'
+include_recipe 'database'
 
 # Establish root MySQL connection
 root_mysql_conn    = {:host => node.zabbix.database.host, :username => node.zabbix.database.root_user, :password => node.zabbix.database.root_password}
