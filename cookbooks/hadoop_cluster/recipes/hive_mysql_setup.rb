@@ -42,6 +42,8 @@ hive_mysql_conn = {
 mysql_statements = [
                     "CREATE DATABASE IF NOT EXISTS #{mysql_database_name}",
                     "USE #{mysql_database_name}",
+
+                    # This script looks like it's designed to be idempotent.
                     "SOURCE #{mysql_schema_script}",
 
                     # This will create the user if it does not already exist.
