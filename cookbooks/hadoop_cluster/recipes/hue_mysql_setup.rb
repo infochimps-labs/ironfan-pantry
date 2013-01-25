@@ -22,7 +22,7 @@
 # Assume mysql is running on the local machine.
 share_dir           = node[:hadoop][:hue][:share_dir]
 hue_exec            = File.join(share_dir, "build/env/bin/hue")
-config_dump_file    = '/tmp/hive_config_dump.json'
+config_dump_file    = '/tmp/hue_config_dump.json'
 mysql_host          = node[:hadoop][:hue][:mysql_host]
 mysql_hue_username  = node[:hadoop][:hue][:mysql_hue_username]
 mysql_user_password = node[:hadoop][:hue][:mysql_user_password]
@@ -39,6 +39,7 @@ hue_mysql_conn = {
 # and mysql_database_user resources.
 
 check_database_exists = "SHOW DATABASES;"
+delete_content_type = "DELETE FROM #{mysql_database_name}.django_content_type;"
 
 create_user_and_database_sql = [
                                 "CREATE DATABASE IF NOT EXISTS #{mysql_database_name}",
@@ -61,22 +62,17 @@ create_user_and_database = [
                             "-e \"#{create_user_and_database_sql}\"",  
                            ].join(" "),
 
-hue_dump = "#{hue_exec} dumpdata > #{config_dump_file}"
-hue_sync = "#{hue_exec} syncdb --noinput"
-hue_load = "#{hue_exec} loaddata < #{config_dump_file}"
+hue_sync                = "#{hue_exec} syncdb --noinput"
 
-configure_bash_commands = [
-                           create_user_and_database,
-                           hue_dump,
-                           hue_sync,
-                           hue_load,
-                           ].join(" && ")
+configure_bash_commands = [create_user_and_database, hue_sync].join(" && ")
 
 #--------------------------------------------------------------------------------
 # execution
 #--------------------------------------------------------------------------------
 
 execute "create and configure mysql database and hue user" do
+  user node[:hadoop][:hue][:user]
+  cwd share_dir
   command configure_bash_commands
   not_if [
           [
