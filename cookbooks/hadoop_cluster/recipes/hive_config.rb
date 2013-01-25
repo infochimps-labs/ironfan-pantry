@@ -22,6 +22,6 @@
 template File.join(node[:hadoop][:hive][:conf_dir], 'hive-site.xml') do
   owner "root"
   mode "0644"
-  variables(:hive => node[:hadoop][:hive])
+  variables(:hive => node[:hadoop][:hive], :private_ip => private_ip_of(node))
   source "hive-site.xml.erb"
 end

@@ -23,18 +23,11 @@
 #--------------------------------------------------------------------------------
 
 # Assume mysql is running on the local machine.
-mysql_host          = node[:hadoop][:hive][:mysql_host]
 mysql_hive_username = node[:hadoop][:hive][:mysql_hive_username]
 mysql_user_password = node[:hadoop][:hive][:mysql_user_password]
 mysql_root_password = node['mysql']['server_root_password']
 mysql_schema_script = File.join(node[:hadoop][:hive][:home_dir], node[:hadoop][:hive][:mysql_upgrade_script])
 mysql_database_name = node[:hadoop][:hive][:mysql_database]
-
-hive_mysql_conn = {
-  :host     => mysql_host,
-  :username => mysql_hive_username,
-  :password => mysql_user_password,
-},
 
 # This should probably be replaced with calls to the mysql_database
 # and mysql_database_user resources.
@@ -61,10 +54,14 @@ mysql_statements = [
 # execution
 #--------------------------------------------------------------------------------
 
+remote_file File.join(node[:hadoop][:hive][:home_dir], 'lib', node[:hadoop][:hive][:mysql_connector_jar]) do
+  source node[:hadoop][:hive][:mysql_connector_location]
+  mode 0644
+end
+
 execute "create and configure mysql database and hive user" do
   command [
            "/usr/bin/mysql",
-           "-h",  mysql_host,
            "-u root",
            ["-p", mysql_root_password].join,
            "-e \"#{mysql_statements}\"",  

@@ -23,17 +23,10 @@
 share_dir           = node[:hadoop][:hue][:share_dir]
 hue_exec            = File.join(share_dir, "build/env/bin/hue")
 config_dump_file    = '/tmp/hue_config_dump.json'
-mysql_host          = node[:hadoop][:hue][:mysql_host]
 mysql_hue_username  = node[:hadoop][:hue][:mysql_hue_username]
 mysql_user_password = node[:hadoop][:hue][:mysql_user_password]
 mysql_root_password = node['mysql']['server_root_password']
 mysql_database_name = node[:hadoop][:hue][:mysql_database]
-
-hue_mysql_conn = {
-  :host     => mysql_host,
-  :username => mysql_hue_username,
-  :password => mysql_user_password,
-},
 
 # This should probably be replaced with calls to the mysql_database
 # and mysql_database_user resources.
@@ -56,7 +49,6 @@ create_user_and_database_sql = [
 
 create_user_and_database = [
                             "/usr/bin/mysql",
-                            "-h",  mysql_host,
                              "-u root",
                             ["-p", mysql_root_password].join,
                             "-e \"#{create_user_and_database_sql}\"",  
@@ -77,7 +69,6 @@ execute "create and configure mysql database and hue user" do
   not_if [
           [
            "/usr/bin/mysql",
-           "-h",  mysql_host,
            "-u root",
            ["-p", mysql_root_password].join,
            "-e \"#{check_database_exists}\"",  

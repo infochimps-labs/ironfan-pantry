@@ -15,7 +15,7 @@
 
 <property>
   <name>javax.jdo.option.ConnectionURL</name>
-  <value>jdbc:mysql://<%= @hive[:mysql_host] %>/metastore</value>
+  <value>jdbc:mysql://<%= @private_ip %>:3306/metastore</value>
   <description>JDBC connect string for a JbDBC metastore</description>
 </property>
 
@@ -27,12 +27,12 @@
 
 <property>
   <name>javax.jdo.option.ConnectionUserName</name>
-  <value><%= @hive[:mysql_username] %></value>
+  <value><%= @hive[:mysql_hive_username] %></value>
 </property>
  
 <property>
   <name>javax.jdo.option.ConnectionPassword</name>
-  <value><%= @hive[:mysql_password] %></value>
+  <value><%= @hive[:mysql_user_password] %></value>
 </property>
 
 <property>
