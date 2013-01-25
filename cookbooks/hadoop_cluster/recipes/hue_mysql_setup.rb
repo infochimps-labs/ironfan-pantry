@@ -32,7 +32,6 @@ mysql_database_name = node[:hadoop][:hue][:mysql_database]
 # and mysql_database_user resources.
 
 check_database_exists = "SHOW DATABASES;"
-delete_content_type = "DELETE FROM #{mysql_database_name}.django_content_type;"
 
 create_user_and_database_sql = [
                                 "CREATE DATABASE IF NOT EXISTS #{mysql_database_name}",
