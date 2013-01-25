@@ -6,6 +6,7 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 description      "Cluster orchestration -- coordinates discovery, integration and decoupling of cookbooks"
 
+conflicts        "metachef"     # The predecessor to silverware
 
 recipe           "silverware::default",                  "Base configuration for silverware"
 
