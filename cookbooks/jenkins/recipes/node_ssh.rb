@@ -97,6 +97,6 @@ file "#{node[:jenkins][:worker][:home_dir]}/.gitconfig" do
   content <<EOF
 [user]
         name            = Philip (flip) Kromer
-        email           = flip@infochimps.org
+        email           = flip@infochimps.com
 EOF
 end

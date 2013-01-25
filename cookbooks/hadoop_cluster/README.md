@@ -84,7 +84,7 @@ This lets you blow up the size of your cluster and not have to wait later for no
 
 ### Author:
       
-Author:: Joshua Timberman (<joshua@opscode.com>), Flip Kromer (<flip@infochimps.org>), much code taken from Tom White (<tom@cloudera.com>)'s hadoop-ec2 scripts and Robert Berger (http://blog.ibd.com)'s blog posts.
+Author:: Joshua Timberman (<joshua@opscode.com>), Flip Kromer (<flip@infochimps.com>), much code taken from Tom White (<tom@cloudera.com>)'s hadoop-ec2 scripts and Robert Berger (http://blog.ibd.com)'s blog posts.
 
 Copyright:: 2009, Opscode, Inc; 2010, 2011 Infochimps, In
 
