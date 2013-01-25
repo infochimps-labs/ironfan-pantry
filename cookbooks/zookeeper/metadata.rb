@@ -12,6 +12,7 @@ depends          "runit"
 depends          "volumes"
 depends          "silverware"
 depends          "hadoop_cluster"
+depends          "install_from"
 
 recipe           "zookeeper::client",                  "Installs Zookeeper client libraries"
 recipe           "zookeeper::default",                 "Base configuration for zookeeper"
