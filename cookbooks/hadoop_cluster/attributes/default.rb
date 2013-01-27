@@ -167,6 +167,7 @@ default[:hadoop][:codecs] = %w[org.apache.hadoop.io.compress.GzipCodec
 default[:hadoop][:hive][:mysql_hive_username]      = 'hiveuser'
 default[:hadoop][:hive][:mysql_root_username]      = 'root'
 default[:hadoop][:hive][:mysql_database]           = 'metastore'
+default[:hadoop][:hive][:input_format]             = 'org.apache.hadoop.hive.ql.io.HiveInputFormat'
 
 # located in :hive => :home_dir
 default[:hadoop][:hive][:mysql_upgrade_script]     = 'scripts/metastore/upgrade/mysql/hive-schema-0.7.0.mysql.sql'

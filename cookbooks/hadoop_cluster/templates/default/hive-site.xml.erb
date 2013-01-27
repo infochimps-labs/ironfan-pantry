@@ -51,4 +51,15 @@
   <value>true</value>
 </property>
 
+<property>
+  <name>hive.input.format</name>
+  <value><%= @hive[:input_format] %></value>
+  <description>Hive uses a wrapping input format so each partition can be handled differently.
+    The default CombineHiveInputFormat does not actually ask input formats for their splits,
+    instead looks at the files themselves and attempts to optimize based on file size and
+    location. We use HiveInputFormat to disable this optimization as we want our loaders
+    to report their splits.
+  </description>
+</property>
+
 </configuration>
