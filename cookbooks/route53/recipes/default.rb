@@ -28,13 +28,13 @@ else
   raise 'Unable to install route53 dependencies'
 end
 
-chef_gem("fog") do
+gem_package("fog") do
   ignore_failure true
-  version '~> 1.5.0'
+  version '~> 1.9.0'
   action :nothing
 end.run_action(:install)
-chef_gem("net-ssh-multi"){ action :nothing }.run_action(:install)
-chef_gem("ghost"        ){ action :nothing }.run_action(:install)
+gem_package("net-ssh-multi"){ action :nothing }.run_action(:install)
+gem_package("ghost"        ){ action :nothing }.run_action(:install)
 
 # Source the fog gem, forcing Gem to recognize new version if any
 
