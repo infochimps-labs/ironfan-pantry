@@ -6,7 +6,7 @@
 
 <configuration>
 
-<property> <name>mapred.job.tracker</name>                        <value>localhost:<%= @hadoop[:jobtracker][:port] %></value></property>
+<property> <name>mapred.job.tracker</name>                        <value>0.0.0.0:<%= @hadoop[:jobtracker][:port] %></value></property>
 <property> <name>mapred.job.tracker.http.address</name>           <value>0.0.0.0:<%= @hadoop[:jobtracker][:dash_port] %></value></property>
 <property> <name>mapred.task.tracker.http.address</name>          <value>0.0.0.0:<%= @hadoop[:tasktracker][:dash_port] %></value></property>
 
