@@ -55,8 +55,6 @@ execute 'Get familiar with Github' do
   action        :nothing
 end
 
-# FIXME: use https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
-#   instead of developing this DSL->XML transformation further
 node[:jenkins_integration][:pantries].each_pair do |name, attrs|
   # Initial trigger/tracking job. Have your pantry's post-commit 
   #   hook hit the API path for this job, to trigger the Ironfan CI

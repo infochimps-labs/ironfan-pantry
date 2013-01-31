@@ -1,5 +1,8 @@
-# Shorthand for deploying a descendent of ironfan-homebase, so that it
-#   may be used to test Ironfan deployment
+# Shorthand for deploying a Jenkins job
+# FIXME: This is in some ways well in advance of the native jenkins job provider.
+#   In other ways, it's well behind. Merge them, at some point.
+# FIXME: use https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
+#   instead of developing this DSL->XML transformation further
 define(:jenkins_job,
   :branch       => 'master',    # Which branch to build
   :downstream   => [],          # What downstream jobs to kick off on a good run
