@@ -66,19 +66,24 @@ end
 announce(:elasticsearch, :datanode) if node[:elasticsearch][:is_datanode]
 announce(:elasticsearch, :httpnode) if node[:elasticsearch][:is_httpnode]
 
+ports = {
+  :api  => node[:elasticsearch][:api_port].to_i,
+  :jmx  => {
+    :port      => node[:elasticsearch][:jmx_dash_port].to_s.split('-').first.to_i,
+    :dashboard => true
+  }
+}
+
+if node[:elasticsearch][:is_httpnode]
+  ports[:http] = {
+    :port     => node[:elasticsearch][:http_ports].to_s.split('-').first.to_i,
+    :protocol => 'http'
+  }
+end
+
 announce(:elasticsearch, :server, {
            :logs  => { :elasticsearch => node[:elasticsearch][:log_dir] },
-           :ports => {
-             :http => {
-               :port     => node[:elasticsearch][:http_ports].to_s.split('-').first.to_i,
-               :protocol => 'http'
-             },
-             :api  => node[:elasticsearch][:api_port].to_i,
-             :jmx  => {
-               :port      => node[:elasticsearch][:jmx_dash_port].to_s.split('-').first.to_i,
-               :dashboard => true
-             }
-           },
+           :ports => ports,
            :daemons => {
              :java => {
                :name => 'java',
