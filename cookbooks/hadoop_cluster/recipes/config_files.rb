@@ -25,7 +25,7 @@
 # Find these variables in ../hadoop_cluster/libraries/hadoop_cluster.rb
 #
 
-node[:hadoop][:namenode   ][:addr] = discover(:hadoop, :namenode   ).private_ip rescue nil
+node[:hadoop][:namenode   ][:addr] = discover(:hadoop, :namenode   ).private_hostname rescue nil
 node[:hadoop][:jobtracker ][:addr] = discover(:hadoop, :jobtracker ).private_ip rescue nil
 node[:hadoop][:secondarynn][:addr] = discover(:hadoop, :secondarynn).private_ip rescue nil
 
