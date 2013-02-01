@@ -11,7 +11,7 @@ export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
 time kc list -f
 time kc show $CLUSTER
 
-time kc launch $CLUSTER-$FACET ||
+time kc launch $FACET ||
   ( echo "FATAL: knife cluster launch failed" &&
     klean_exit 1 )
 

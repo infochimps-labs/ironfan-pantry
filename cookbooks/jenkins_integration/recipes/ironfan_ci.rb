@@ -17,6 +17,10 @@
 # limitations under the License.
 #
 
+#
+# Environmental Setup
+#
+
 ssh_dir                 = node[:jenkins][:server][:home_dir] + '/.ssh'
 directory ssh_dir do
   owner         node[:jenkins][:server][:user]
@@ -55,48 +59,6 @@ execute 'Get familiar with Github' do
   action        :nothing
 end
 
-node[:jenkins_integration][:pantries].each_pair do |name, attrs|
-  # Initial trigger/tracking job. Have your pantry's post-commit 
-  #   hook hit the API path for this job, to trigger the Ironfan CI
-  #   (and stage the result if successful).
-  attrs[:branch]  ||= node[:jenkins_integration][:ironfan_ci][:pantry_branch]
-  attrs[:merge]   ||= node[:jenkins_integration][:ironfan_ci][:pantry_merge]
-  jenkins_job name do
-    project       attrs[:project]
-    repository    attrs[:repository]
-    branch        attrs[:branch]
-    downstream    [ 'Ironfan CI' ]
-    final         [ "stage_#{name}" ]
-    final_params( { 'GIT_COMMIT' => { :type => 'git_commit' } })
-    triggers(     { :poll_scm => true})
-  end
-
-  # Push the results of a successful CI run into the staging branch
-  jenkins_job "stage_#{name}" do
-    project       attrs[:project]
-    repository    attrs[:repository]
-    parameters(   { 'GIT_COMMIT' => {
-                      :default  => "origin/#{attrs[:merge]}",   # Do nothing if called by default
-                      :type     => 'string'
-                  } })
-    branch        '$GIT_COMMIT'
-    merge         attrs[:merge]
-  end
-end
-
-# Core integration job: this sets up the test universe homebase, syncs
-#   to that universe's Chef Server, and launches the specified test
-#   server, watching it run to completion
-jenkins_job 'Ironfan CI' do
-  repository    node[:jenkins_integration][:ironfan_ci][:repository]
-  # Some short justification: why bash? Because these tools are 
-  #   written for the command line. We can test internal interfaces
-  #   via ruby, but external ones should use the command line.
-  branch        node[:jenkins_integration][:ironfan_ci][:branch]
-  templates     [ 'knife_shared.inc' ]
-  tasks         [ 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
-end
-
 # Setup jenkins user to make commits
 template node[:jenkins][:server][:home_dir] + '/.gitconfig' do
   source        '.gitconfig.erb'
@@ -126,3 +88,72 @@ file node[:jenkins][:server][:home_dir] + '/.profile' do
   owner         node[:jenkins][:server][:user]
   group         node[:jenkins][:server][:group]
 end
+
+#
+# Jenkins Jobs
+#
+
+build_test              = "Launch testing machine"
+build_broken            = "Launch known broken machine"
+homebase_staging        = "Stage homebase cookbooks"
+pantry_staging          = "Stage pantry branches"
+
+jenkins_job build_test do
+  tasks         [ 'enqueue_tests.sh', 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
+  downstream    [ build_broken_target ] 
+  final         [ homebase_staging ]
+end
+
+jenkins_job homebase_staging do
+  final         [ pantry_staging ]
+end
+
+jenkins_job pantry_staging do
+end
+
+jenkins_job build_broken do
+end
+
+
+
+# node[:jenkins_integration][:pantries].each_pair do |name, attrs|
+#   # Initial trigger/tracking job. Have your pantry's post-commit 
+#   #   hook hit the API path for this job, to trigger the Ironfan CI
+#   #   (and stage the result if successful).
+#   attrs[:branch]  ||= 'testing'
+#   attrs[:merge]   ||= 'staging'
+#   jenkins_job name do
+#     project       attrs[:project]
+#     repository    attrs[:repository]
+#     branch        attrs[:branch]
+#     downstream    [ 'Ironfan CI' ]
+#     final         [ "stage_#{name}" ]
+#     final_params( { 'GIT_COMMIT' => { :type => 'git_commit' } })
+#     triggers(     { :poll_scm => true})
+#   end
+# 
+#   # Push the results of a successful CI run into the staging branch
+#   jenkins_job "stage_#{name}" do
+#     project       attrs[:project]
+#     repository    attrs[:repository]
+#     parameters(   { 'GIT_COMMIT' => {
+#                       :default  => "origin/#{attrs[:merge]}",   # Do nothing if called by default
+#                       :type     => 'string'
+#                   } })
+#     branch        '$GIT_COMMIT'
+#     merge         attrs[:merge]
+#   end
+# end
+# 
+# # Core integration job: this sets up the test universe homebase, syncs
+# #   to that universe's Chef Server, and launches the specified test
+# #   server, watching it run to completion
+# jenkins_job 'Ironfan CI' do
+#   repository    node[:jenkins_integration][:ironfan_ci][:repository]
+#   # Some short justification: why bash? Because these tools are 
+#   #   written for the command line. We can test internal interfaces
+#   #   via ruby, but external ones should use the command line.
+#   branch        'master'
+#   templates     [ 'knife_shared.inc' ]
+#   tasks         [ 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
+# end
