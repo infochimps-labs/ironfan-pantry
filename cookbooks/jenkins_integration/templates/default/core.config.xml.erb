@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+  <disabledAdministrativeMonitors/>
+  <version>1.0</version>
+  <numExecutors>2</numExecutors>
+  <mode>NORMAL</mode>
+  <useSecurity>true</useSecurity>
+  <authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
+    <permission>hudson.model.Computer.Configure:authenticated</permission>
+    <permission>hudson.model.Computer.Connect:authenticated</permission>
+    <permission>hudson.model.Computer.Create:authenticated</permission>
+    <permission>hudson.model.Computer.Delete:authenticated</permission>
+    <permission>hudson.model.Computer.Disconnect:authenticated</permission>
+    <permission>hudson.model.Hudson.Administer:authenticated</permission>
+    <permission>hudson.model.Hudson.ConfigureUpdateCenter:authenticated</permission>
+    <permission>hudson.model.Hudson.Read:authenticated</permission>
+    <permission>hudson.model.Hudson.RunScripts:authenticated</permission>
+    <permission>hudson.model.Hudson.UploadPlugins:authenticated</permission>
+    <permission>hudson.model.Item.Build:authenticated</permission>
+    <permission>hudson.model.Item.Cancel:authenticated</permission>
+    <permission>hudson.model.Item.Configure:authenticated</permission>
+    <permission>hudson.model.Item.Create:authenticated</permission>
+    <permission>hudson.model.Item.Delete:authenticated</permission>
+    <permission>hudson.model.Item.Discover:authenticated</permission>
+    <permission>hudson.model.Item.Read:authenticated</permission>
+    <permission>hudson.model.Item.Workspace:authenticated</permission>
+    <permission>hudson.model.Run.Delete:authenticated</permission>
+    <permission>hudson.model.Run.Update:authenticated</permission>
+    <permission>hudson.model.View.Configure:authenticated</permission>
+    <permission>hudson.model.View.Create:authenticated</permission>
+    <permission>hudson.model.View.Delete:authenticated</permission>
+    <permission>hudson.model.View.Read:authenticated</permission>
+    <permission>hudson.scm.SCM.Tag:authenticated</permission>
+  </authorizationStrategy>
+  <securityRealm class="hudson.security.PAMSecurityRealm" plugin="pam-auth@1.0">
+    <serviceName>sshd</serviceName>
+  </securityRealm>
+  <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+  <workspaceDir>${ITEM_ROOTDIR}/workspace</workspaceDir>
+  <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+  <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter">
+    <disableSyntaxHighlighting>false</disableSyntaxHighlighting>
+  </markupFormatter>
+  <jdks/>
+  <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+  <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+  <clouds/>
+  <slaves/>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>All</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+    </hudson.model.AllView>
+  </views>
+  <primaryView>All</primaryView>
+  <slaveAgentPort>0</slaveAgentPort>
+  <label></label>
+  <nodeProperties/>
+  <globalNodeProperties/>
+</hudson>

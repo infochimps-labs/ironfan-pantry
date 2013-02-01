@@ -1,6 +1,8 @@
 default[:jenkins_integration][:git][:name]      = 'Jenkins Integration'
 default[:jenkins_integration][:git][:email]     = 'jenkins@example.org'
 
+default[:jenkins_integration][:security]        = 'local_users'
+
 default[:jenkins_integration][:ironfan_ci][:repository]         = 'git@github.com:infochimps-labs/ironfan-homebase.git'
 default[:jenkins_integration][:ironfan_ci][:chef_user]          = 'test'
 default[:jenkins_integration][:ironfan_ci][:cluster]            = 'testharness'

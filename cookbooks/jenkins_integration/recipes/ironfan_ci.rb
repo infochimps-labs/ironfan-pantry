@@ -104,6 +104,22 @@ template node[:jenkins][:server][:home_dir] + '/.gitconfig' do
   group         node[:jenkins][:server][:group]
 end
 
+# Lock access down to local user accounts
+# FIXME: This is only the vaguest of security, very unconfigurable,
+#   and really should be done over HTTPS to prevent pw hash sniffing.
+if node[:jenkins_integration][:security] == "local_users" do
+  group "shadow" do
+    action :modify
+    members node[:jenkins][:server][:user]
+    append true
+  end
+  template "#{node[:jenkins][:server][:home_dir]}/config.xml" do
+    source        "core.config.xml.erb"
+    owner         node[:jenkins][:server][:user]
+    group         node[:jenkins][:server][:group]
+  end
+end
+
 # FIXME: fucking omnibus
 file node[:jenkins][:server][:home_dir] + '/.profile' do
   content       'export PATH=/opt/chef/embedded/bin/:$PATH'

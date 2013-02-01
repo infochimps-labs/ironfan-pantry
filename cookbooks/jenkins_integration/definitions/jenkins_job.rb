@@ -41,7 +41,7 @@ define(:jenkins_job,
   end
 
   template params[:path] + '/config.xml' do
-    source      'config.xml.erb'
+    source      'job.config.xml.erb'
     variables   params
     owner       node[:jenkins][:server][:user]
     group       node[:jenkins][:server][:group]
