@@ -1,0 +1,86 @@
+= Backup Cookbook
+
+== Overview
+
+This cookbook provides backup routines for various data-stores including HBase and Elasticsearch.  
+
+Time configurations have defaults of weekends and nights.  S3 bucket and table names need to be specified.  
+
+== Usage
+
+To enable a specific backup, include the recipe.  Configure an S3 bucket and any required tables.  
+
+  default[:backups][:location]	= "/mnt/backups"
+  default[:backups][:s3      ] 	= nil 
+
+You will need to set the S3 bucket.  
+
+=== backups::s3cfg
+
+This recipe is included from all other recipes and sets up s3cmd with your credentials.  
+
+=== backups::hbase
+
+This recipe performs full backups at a specified day and differential backups in between.  
+
+  default[:backups][:hbase][:cluster_name]     = "hbase"
+  default[:backups][:hbase][:full_backup ]     = "Sunday"
+  default[:backups][:hbase][:tables      ]     = []
+  default[:backups][:hbase][:versions    ]     = "2147483647"
+  default[:backups][:hbase][:minute      ]     = "0"
+  default[:backups][:hbase][:hour        ]     = "2"
+  default[:backups][:hbase][:day         ]     = "*"
+  default[:backups][:hbase][:month       ]     = "*"
+  default[:backups][:hbase][:weekday     ]     = "*"
+
+Tables need to be specified.  The default settings run full backups every Sunday at 2:00 and differential backups the rest of the week. 
+
+TODO: Make more configurable, include incrimentals
+
+=== backups::namenode
+
+  Backups up namenode fsimage and edit logs.  Defaults to 30 minutes and buckets to S3 by day.  
+
+  default[:backups][:namenode][:cluster_name]     = "hadoop"
+  default[:backups][:namenode][:minute      ]     = "*/30"
+  default[:backups][:namenode][:hour        ]     = "*"
+  default[:backups][:namenode][:day         ]     = "*"
+  default[:backups][:namenode][:month       ]     = "*"
+  default[:backups][:namenode][:weekday     ]     = "*"
+
+  TODO: Write up restoration process
+
+=== backups::elasticsearch
+
+  Backups up elasticsearch indexes to GZipped JSON using Scan / Scroll API.  This is extremely slow and needs to be reworked. 
+
+  default[:backups][:elasticsearch][:cluster_name]     = "elasticsearch"
+  default[:backups][:elasticsearch][:scroll      ]     = "1000"
+  default[:backups][:elasticsearch][:indexes     ]     = []
+  default[:backups][:elasticsearch][:minute      ]     = "0"
+  default[:backups][:elasticsearch][:hour        ]     = "4"
+  default[:backups][:elasticsearch][:day         ]     = "*"
+  default[:backups][:elasticsearch][:month       ]     = "*"
+  default[:backups][:elasticsearch][:weekday     ]     = "0"
+
+=== backups::zokeeper
+
+  Backups up Zookeeper transaction logs and snapshots.  This needs to be located alongside at least one zookeeper node at this time. 
+
+  default[:backups][:zookeeper][:cluster_name]     = "zookeeper"
+  default[:backups][:zookeeper][:minute      ]     = "*/30"
+  default[:backups][:zookeeper][:hour        ]     = "*"
+  default[:backups][:zookeeper][:day         ]     = "*"
+  default[:backups][:zookeeper][:month       ]     = "*"
+  default[:backups][:zookeeper][:weekday     ]     = "*"
+
+  To include on only one index, specify the index as follows:
+
+  facet(:foo).server(0) do
+    recipe              'backups::zookeeper'
+  end
+
+
+  TODO: Figure out how to do this backup remotely.  
+ 
+
