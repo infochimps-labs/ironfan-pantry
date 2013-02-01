@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+clusterName="<%= @node[:backups][:namenode][:cluster_name] %>"
+nameNode="<%= @namenode_fqdn %>"
+dt=$(date +%Y%m%d)
+s3Target="s3://<%= @node[:backups][:s3] %>/namenode_backups/${dt}/"
+
+if [ -z ${clusterName} ]; then
+    clusterName="hadoop"
+fi
+
+workDir="<%= @node[:backups][:location] %>/${clusterName}-namenode-${dt}"
+
+if [ ! -d ${workDir} ]; then
+    mkdir -p ${workDir}
+fi
+
+curl -s http://${nameNode}:50070/getimage?getimage=1 > $workDir/fsimage
+curl -s http://${nameNode}:50070/getimage?getedit=1 > $workDir/edits
+
+cd $workDir
+
+tar -cf ${clusterName}.namenode.${dt}.tar ./fsimage ./edits
+s3cmd put ${workDir}/${clusterName}.namenode.${dt}.tar ${s3Target}
+
+rm $workDir/${clusterName}.namenode.${dt}.tar $workDir/fsimage $workDir/edits
+
+exit 0
