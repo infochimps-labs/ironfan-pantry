@@ -38,14 +38,14 @@ else
 fi
 
 for table in ${hbaseTables}; do 
-    hbase org.apache.hadoop.hbase.mapreduce.Export -D mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec -D mapred.output.compression.type=BLOCK -D mapred.output.compress=true ${table} /tmp/${table}_backup.${dt} ${versions} ${start}; 
+    sudo -u hdfs base org.apache.hadoop.hbase.mapreduce.Export -D mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec -D mapred.output.compression.type=BLOCK -D mapred.output.compress=true ${table} /tmp/${table}_backup.${dt} ${versions} ${start}; 
 
     if [ ! -d ${workDir}/${table}-${type} ]; then
         mkdir ${workDir}/${table}-${type}
     fi 
 
     hadoop fs -get /tmp/${table}_backup.${dt}/part-* ${workDir}/${table}-${type}/
-    hadoop fs -rmr /tmp/${table}_backup.${dt}
+    sudo -u hdfs hadoop fs -rmr /tmp/${table}_backup.${dt}
 
     for file in ${workDir}/${table}-${type}/part*; do 
       mv ${file} ${file}.snappy

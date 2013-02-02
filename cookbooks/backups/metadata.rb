@@ -6,6 +6,9 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 description      "Backups -- coordinates backups of your stuff"
 
+depends		 "hbase"
+depends		 "hadoop_cluster"
+
 recipe           "backups::default",       "Default Recipe"
 recipe           "backups::namenode",      "Namenode Backup Recipe"
 recipe           "backups::s3cfg",         "S3 Configuration Recipe"
