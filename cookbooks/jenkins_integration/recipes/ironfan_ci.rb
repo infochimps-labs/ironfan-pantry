@@ -69,7 +69,7 @@ end
 # Lock access down to local user accounts
 # FIXME: This is only the vaguest of security, very unconfigurable,
 #   and really should be done over HTTPS to prevent pw hash sniffing.
-if node[:jenkins_integration][:security] == "local_users" do
+if node[:jenkins_integration][:security] == "local_users"
   group "shadow" do
     action :modify
     members node[:jenkins][:server][:user]
@@ -100,7 +100,7 @@ pantry_staging          = "Stage pantry branches"
 
 jenkins_job build_test do
   tasks         [ 'enqueue_tests.sh', 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
-  downstream    [ build_broken_target ] 
+  downstream    [ build_broken ]
   final         [ homebase_staging ]
 end
 

@@ -4,9 +4,13 @@
 if [ ! -d vendor ]; then mkdir vendor; fi
 cd vendor
 
-<%- node[:jenkins_integration][:pantries].each_pair do |name, attrs| %>
+<%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
 git clone <%= attrs[:repository] %> <%= name %>
 cd <%= name %>
+echo <%= name %>
 rake enqueue_testing
-cd -
-<%- done %>
+cd - > /dev/null
+echo
+
+<%- end %>
+

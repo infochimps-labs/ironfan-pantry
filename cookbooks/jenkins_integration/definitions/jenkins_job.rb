@@ -7,7 +7,7 @@ define(:jenkins_job,
   :branch       => 'master',    # Which branch to build
   :downstream   => [],          # What downstream jobs to kick off on a good run
   :final        => [],          # What final jobs to kick off when downstreams are done
-  :final_params => [],          # What parameters to pass to final jobs
+  :final_params => {},          # What parameters to pass to final jobs
   :merge        => nil,         # What branch to attempt to merge and push
   :path         => nil,         # Path to clone to, overrides base_path
   :project      => nil,         # Source project URL
@@ -19,8 +19,8 @@ define(:jenkins_job,
   ) do
 
   # Jenkins and bundle hate paths with spaces
-  params[:name]         = params[:name].sub(' ','_')
-  params[:downstream]   = params[:downstream].map {|r| r.sub(' ','_') }
+  params[:name]         = params[:name].gsub(' ','_')
+  params[:downstream]   = params[:downstream].map {|r| r.gsub(' ','_') }
   params[:path]         ||= "#{node[:jenkins][:lib_dir]}/jobs/#{params[:name]}"
 
   directory params[:path] do

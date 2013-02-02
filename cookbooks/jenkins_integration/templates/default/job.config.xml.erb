@@ -142,8 +142,6 @@
               <triggerWithNoParameters>false</triggerWithNoParameters>
             <%- else %>
               <configs/>
-              <projects><%= @final.join(', ') %></projects>
-              <condition>SUCCESS</condition>
               <triggerWithNoParameters>true</triggerWithNoParameters>
             <%- end %>
             </hudson.plugins.parameterizedtrigger.BuildTriggerConfig>
