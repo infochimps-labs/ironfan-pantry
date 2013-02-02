@@ -99,19 +99,22 @@ homebase_staging        = "Stage homebase cookbooks"
 pantry_staging          = "Stage pantry branches"
 
 jenkins_job build_test do
-  tasks         [ 'enqueue_tests.sh', 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
+  tasks         %w[ enqueue_tests.sh bundler.sh sync_changes.sh launch.sh ]
   downstream    [ build_broken ]
   final         [ homebase_staging ]
 end
 
 jenkins_job homebase_staging do
+  tasks         %w[ stage_homebases.sh ]
   final         [ pantry_staging ]
 end
 
 jenkins_job pantry_staging do
+  tasks         %w[ stage_pantries.sh ]
 end
 
 jenkins_job build_broken do
+  tasks         %w[ launch_broken.sh ]
 end
 
 

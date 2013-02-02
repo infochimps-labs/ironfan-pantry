@@ -21,6 +21,7 @@ define(:jenkins_job,
   # Jenkins and bundle hate paths with spaces
   params[:name]         = params[:name].gsub(' ','_')
   params[:downstream]   = params[:downstream].map {|r| r.gsub(' ','_') }
+  params[:final]        = params[:final].map {|r| r.gsub(' ','_') }
   params[:path]         ||= "#{node[:jenkins][:lib_dir]}/jobs/#{params[:name]}"
 
   directory params[:path] do
