@@ -40,7 +40,7 @@ volume_dirs('zookeeper.journal') do
 end
 
 standard_dirs('zookeeper.server') do
-  directories   :data_dir, :journal_dir
+  directories   :data_dir, :journal_dir, :pid_dir
 end
 
 # === Install
