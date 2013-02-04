@@ -51,7 +51,7 @@ kill_old_service('hadoop-zookeeper-server'){ pattern 'zookeeper' ; only_if{ File
 # === Announce
 
 # JMX should listen on the public interface
-node[:zookeeper][:jmx_dash_addr] = public_ip_of(node)
+node.set[:zookeeper][:jmx_dash_addr] = public_ip_of(node)
 
 # * zkid auto-assigment happens in server file only; clients don't deserve zkids.
 # * preparation of zookeeper_host list happens in one place
@@ -67,8 +67,8 @@ if ((not node[:zookeeper][:zkid]) || (node[:zookeeper][:zkid].to_s != ''))
   # If zookeeper servers span facets, give each a well-sized offset in facet_role
   # (if 'bink' nodes have zkid_offset 10, 'foo-bink-7' would get zkid 17)
   #
-  node[:zookeeper][:zkid]  = node[:facet_index] || node[:hostname].match(/[^\d]*0*(\d+)$/)[1]
-  node[:zookeeper][:zkid] += node[:zookeeper][:zkid_offset].to_i if node[:zookeeper][:zkid_offset]
+  node.set[:zookeeper][:zkid]  = node[:facet_index] || node[:hostname].match(/[^\d]*0*(\d+)$/)[1]
+  node.set[:zookeeper][:zkid] += node[:zookeeper][:zkid_offset].to_i if node[:zookeeper][:zkid_offset]
 end
 
 runit_service "zookeeper_server" do
