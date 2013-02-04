@@ -110,9 +110,9 @@ default[:hadoop][:deb_version]          = '0.20.2+923.142-1~maverick-cdh3'
 default[:apt][:cloudera][:force_distro] = 'maverick'
 default[:apt][:cloudera][:release_name] = 'cdh3u2'
 
-default[:hadoop][:lzo][:github]  = "https://github.com/cloudera/hadoop-lzo/tarball/0.4.14"
-default[:hadoop][:lzo][:archive] = "cloudera-hadoop-lzo-8aa0605"
-default[:hadoop][:lzo][:version] = "0.4.14"
+default[:hadoop][:lzo][:github]  = "https://github.com/twitter/hadoop-lzo/tarball/9ab0565"
+default[:hadoop][:lzo][:archive] = "twitter-hadoop-lzo-9ab0565"
+default[:hadoop][:lzo][:version] = "0.4.16"
 
 default[:hadoop][:elephant_bird][:github]  = "https://github.com/kevinweil/elephant-bird/tarball/v2.2.2"
 default[:hadoop][:elephant_bird][:version] = "2.2.2"
