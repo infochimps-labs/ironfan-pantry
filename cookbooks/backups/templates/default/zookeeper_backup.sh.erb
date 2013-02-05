@@ -2,21 +2,21 @@
 
 clusterName="<%= @node[:zookeeper][:cluster_name] %>"
 dt=$(date +%Y%m%d)
-timeStamp=$(date +%s)
 workDir="<%= @node[:backups][:location] %>/${clusterName}-zookeeper-${dt}"
 s3Target="s3://<%= @node[:backups][:s3] %>/zookeeper_backups/${dt}/"
 dataDir="<%= @node[:zookeeper][:data_dir] %>"
 txDir="<%= @node[:zookeeper][:journal_dir] %>"
-snapshot=`find ${dataDir} -name "snapshot.*" | xargs ls -rt | tail -n 1`
-txLog=`find ${txDir} -name "log.*" | xargs ls -rt | tail -n 1`
+snapshot=`find ${dataDir} -name "snapshot.*" | xargs ls -rt | tail -n 3`
+txLog=`find ${txDir} -name "log.*" | xargs ls -rt | tail -n 3`
 
 if [ ! -d ${workDir} ]; then
     mkdir -p ${workDir}
 fi
 
-tar -cf ${workDir}/<%= node.name %>.zookeeper.${timeStamp}.tar ${snapshot} ${txLog}
-s3cmd put ${workDir}/<%= node.name %>.zookeeper.${timeStamp}.tar ${s3Target}
+tar -cf ${workDir}/<%= node.name %>.zookeeper.${dt}.tar ${snapshot} ${txLog}
+s3cmd put ${workDir}/<%= node.name %>.zookeeper.${dt}.tar ${s3Target}
 
 rm $workDir/<%= node.name %>.zookeeper.${timeStamp}.tar
 
 exit 0
+
