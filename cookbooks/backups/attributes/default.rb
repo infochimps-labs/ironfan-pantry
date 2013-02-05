@@ -26,7 +26,10 @@ default[:backups][:namenode][:weekday     ] 	= "*"
 #
 
 default[:backups][:hbase][:cluster_name]     = "hbase"
-default[:backups][:hbase][:full_backup ]     = "Sunday"
+default[:backups][:hbase][:conf        ]     = "/etc/hbase_backup.yaml"
+default[:backups][:hbase][:full        ]     = ["Sunday"]
+default[:backups][:hbase][:differential]     = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+default[:backups][:hbase][:incrimental ]     = []
 default[:backups][:hbase][:tables      ]     = []
 default[:backups][:hbase][:versions    ]     = "2147483647"
 default[:backups][:hbase][:minute      ]     = "0"

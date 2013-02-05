@@ -21,10 +21,13 @@ This recipe is included from all other recipes and sets up s3cmd with your crede
 
 === backups::hbase
 
-This recipe performs full backups at a specified day and differential backups in between.  
+This recipe performs full, differential, and incrimental backups on the specified days of the week.  This is intended to run daily and is a little fragile regarding times.  Arrays are expected to be in the correct order.  Larger backups will supercede smaller onese (ie: if you specify "Sunday" in both full and differential, only the full will be ran).  
 
   default[:backups][:hbase][:cluster_name]     = "hbase"
-  default[:backups][:hbase][:full_backup ]     = "Sunday"
+  default[:backups][:hbase][:conf        ]     = "/etc/hbase_backup.yaml"
+  default[:backups][:hbase][:full        ]     = ["Sunday"]
+  default[:backups][:hbase][:differential]     = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+  default[:backups][:hbase][:incrimental ]     = []
   default[:backups][:hbase][:tables      ]     = []
   default[:backups][:hbase][:versions    ]     = "2147483647"
   default[:backups][:hbase][:minute      ]     = "0"
@@ -33,10 +36,8 @@ This recipe performs full backups at a specified day and differential backups in
   default[:backups][:hbase][:month       ]     = "*"
   default[:backups][:hbase][:weekday     ]     = "*"
 
+
 Tables need to be specified.  The default settings run full backups every Sunday at 2:00 and differential backups the rest of the week. 
-
-TODO: Make more configurable, include incrimentals
-
 === backups::namenode
 
   Backups up namenode fsimage and edit logs.  Defaults to 30 minutes and buckets to S3 by day.  

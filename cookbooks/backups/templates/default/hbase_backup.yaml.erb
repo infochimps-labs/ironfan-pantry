@@ -1,0 +1,10 @@
+backups:
+  s3:  "<%= @node[:backups][:s3] %>"
+  versions: <%= @node[:backups][:hbase][:versions] %>
+
+tables: <%= @node[:backups][:hbase][:tables] %>
+
+default:
+  full:         <%= @node[:backups][:hbase][:full] %>
+  differential: <%= @node[:backups][:hbase][:differential] %>
+  incrimental:  <%= @node[:backups][:hbase][:incrimental] %>
