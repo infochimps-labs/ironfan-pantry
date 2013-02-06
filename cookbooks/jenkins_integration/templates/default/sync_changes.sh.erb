@@ -12,9 +12,6 @@ echo "Uploading roles:"
 time rake roles
 echo
 
-export USE_LOCAL=1
-export LOCAL_PATH='vendor'
-
 # discover changes between testing and staging by
 #   comparing VERSION files
 export PANTRY_BRANCH=$BRANCH
@@ -31,6 +28,7 @@ echo
 
 echo "Finding differences between $BRANCH and $MERGE:"
 changed=''
+echo > changed_cookbooks
 for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
 do
   cb_path=cookbooks/$cookbook/VERSION
@@ -38,10 +36,11 @@ do
     changed="$changed$cookbook "
 done
 
-if [ "nothing$changed" -eq "nothing" ]; then
-  echo "Nothing changed - very suspicious!"
-  exit 0
+if [ "nothing$changed" == "nothing" ]; then
+  echo "Nothing changed - very suspicious"
+  exit 1
 fi
 
+echo $changed > changed_cookbooks
 echo "Uploading changed cookbooks: $changed"
 time knife cookbook upload $changed

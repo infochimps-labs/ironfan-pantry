@@ -3,9 +3,9 @@
 
 if [ ! -d vendor ]; then mkdir vendor; fi
 
-echo $1
+echo Vendoring $1
 if [ ! -d $1 ]; then
-  git clone $2 $1
+  git clone $2 vendor/$1
   cd vendor/$1
   for remote in `git branch -r | grep -v origin/master`; do
     git checkout -t remotes/$remote

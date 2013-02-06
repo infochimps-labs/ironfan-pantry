@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
+if [ ! -s changed_cookbooks ]; then exit 1; fi
+
 <%- node[:jenkins_integration][:ironfan_ci][:homebases].each_pair do |name, attrs| %>
 `dirname $0`/vendor_git.sh <%= name %> <%= attrs[:repository] %>
 cd vendor/<%= name %>
+
 `dirname $0`/bundler.sh
+knife cookbook upload -E staging --freeze `
+
+cd - > /dev/null
+echo
 <%- end %>
 # clone or update all the homebases
 # set the exact git hashes for Berkshelf to use
