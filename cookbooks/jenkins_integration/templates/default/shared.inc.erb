@@ -1,16 +1,9 @@
 ROOT_DIR=`dirname $0`
-WORKSPACE=ROOT_DIR/workspace
+WORKSPACE=$ROOT_DIR/workspace
 
 # 
 # Convenience functions for changing directories quietly
 # 
-function pushd {
-  pushd $@ > /dev/null
-}
-function popd {
-  pushd $@ > /dev/null
-}
-
 function pantry_branch {
   <%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
   pushd $WORKSPACE/<%= name %>

@@ -12,10 +12,10 @@ if [ ! -d $1 ]; then
   git checkout master
 else
   echo "Updating $1:"
-  cd $1
+  pushd $1
   git pull
   for remote in `git branch -r | grep -v origin/master`; do
-    git checkout $remote
+    git checkout ${remote#*/}
     git pull
   done
 fi

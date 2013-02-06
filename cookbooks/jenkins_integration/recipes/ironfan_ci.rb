@@ -95,7 +95,7 @@ end
 
 jenkins_job "Ironfan" do
   templates     %w[ shared.inc launch.inc checkout.sh ]
-  tasks         %w[ enqueue_tests.sh bundler.sh cookbook_changes.sh
+  tasks         %w[ enqueue_tests.sh cookbook_changes.sh
                     sync_changes.sh launch_instance.sh stage_all.sh ]
   if node[:jenkins_integration][:ironfan_ci][:broken]
     downstream [ "Ironfan - known broken" ]
@@ -105,7 +105,7 @@ end
 if node[:jenkins_integration][:ironfan_ci][:broken]
   jenkins_job "Ironfan - known broken" do
     templates   %w[ shared.inc launch.inc ]
-    tasks       %w[ bundler.sh launch_broken.sh ]
+    tasks       %w[ launch_broken.sh ]
   end
 end
 

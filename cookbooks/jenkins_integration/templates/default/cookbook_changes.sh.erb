@@ -4,6 +4,8 @@
 #
 source `dirname $0`/shared.inc
 
+pushd <%= node[:jenkins_integration][:ironfan_ci][:test_homebase] %>
+
 # discover changes between testing and staging by
 #   comparing VERSION files
 export USE_LOCAL=true
@@ -11,11 +13,13 @@ export LOCAL_PATH=..
 
 echo "Getting staging cookbooks:"
 pantry_branch "staging"
+git checkout staging
 time bundle exec berks install --path staged_cookbooks
 echo
 
 echo "Getting testing cookbooks:"
 pantry_branch "testing"
+git checkout master
 time bundle exec berks install --path cookbooks
 echo
 
@@ -27,7 +31,7 @@ echo > $ROOT_DIR/changed_cookbooks
 for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
 do
   cb_path=cookbooks/$cookbook/VERSION
-  diff -q $cb_path staged_$cb_path > /dev/null ||
+  diff -qN $cb_path staged_$cb_path > /dev/null ||
     changed="$changed$cookbook "
 done
 
@@ -36,4 +40,7 @@ if [ "nothing$changed" == "nothing" ]; then
   exit 1
 fi
 
-echo $changed > $ROOT_DIR/changed_cookbooks
+echo $changed | tee $ROOT_DIR/changed_cookbooks
+
+
+popd
