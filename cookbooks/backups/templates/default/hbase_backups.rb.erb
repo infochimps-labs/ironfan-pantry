@@ -10,15 +10,14 @@ class Hbase_Backup
  
   def backup(table, start, versions, type)
 
-    `hbase org.apache.hadoop.hbase.mapreduce.Export -D mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec -D mapred.output.compression.type=BLOCK -D mapred.output.compress=true #{table} /tmp/backups.#{@dt}/#{table}.#{type}/ #{versions} #{start}`
-  end 
+    `hbase org.apache.hadoop.hbase.mapreduce.Export -D mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec -D mapred.output.compression.type=BLOCK -D mapred.output.compress=true #{table} /tmp/backups/#{type}/#{@dt}/#{table}/ #{versions} #{start}`
+  end
 
 end
 
-def s3(bucket, dt)
-  `hadoop fs -mkdir s3n://#{bucket}/hbase_backups/#{dt}/`
-  `hadoop fs -cp /tmp/backups.#{dt}/* s3n://#{bucket}/hbase_backups/#{dt}/`
-  `hadoop fs -rmr /tmp/backups.#{dt}`
+def s3(bucket, type, dt)
+  `hadoop distcp /tmp/backups/#{type}/#{dt}/ s3n://#{bucket}/hbase_backups/#{type}/#{dt}/`
+  `hadoop fs -rmr /tmp/backups`
 end
 
 config = YAML::load(File.open('<%= @node[:backups][:hbase][:conf] %>', 'r').read())
@@ -61,4 +60,4 @@ tables.each do |table|
 
 end
   
-s3(config['backups']['s3'], dt)
+s3(config['backups']['s3'], type, dt)
