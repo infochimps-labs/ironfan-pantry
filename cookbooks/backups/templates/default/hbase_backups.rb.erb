@@ -10,15 +10,15 @@ class Hbase_Backup
  
   def backup(table, start, versions, type)
 
-    `sudo -u hdfs hbase org.apache.hadoop.hbase.mapreduce.Export -D mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec -D mapred.output.compression.type=BLOCK -D mapred.output.compress=true #{table} /tmp/backups.#{@dt}/#{table}.#{type}/ #{versions} #{start}`
+    `hbase org.apache.hadoop.hbase.mapreduce.Export -D mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec -D mapred.output.compression.type=BLOCK -D mapred.output.compress=true #{table} /tmp/backups.#{@dt}/#{table}.#{type}/ #{versions} #{start}`
   end 
 
 end
 
 def s3(bucket, dt)
   `hadoop fs -mkdir s3n://#{bucket}/hbase_backups/#{dt}/`
-  `sudo -u hdfs hadoop fs -cp /tmp/backups.#{dt}/* s3n://#{bucket}/hbase_backups/#{dt}/`
-  `sudo -u hdfs hadoop fs -rmr /tmp/backups.#{dt}`
+  `hadoop fs -cp /tmp/backups.#{dt}/* s3n://#{bucket}/hbase_backups/#{dt}/`
+  `hadoop fs -rmr /tmp/backups.#{dt}`
 end
 
 config = YAML::load(File.open('<%= @node[:backups][:hbase][:conf] %>', 'r').read())

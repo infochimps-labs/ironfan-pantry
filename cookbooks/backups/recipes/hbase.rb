@@ -9,15 +9,16 @@ include_recipe 'hbase::config_files'
 
 template "#{node[:backups][:hbase][:conf]}" do
   source	"hbase_backup.yaml.erb"
-  mode		"0600"
+  mode		"0744"
 end
 
 template "/usr/local/sbin/#{node[:backups][:hbase][:cluster_name]}_table_backups.rb" do
   source        "hbase_backups.rb.erb"
-  mode          "0700"
+  mode          "0755"
 end
 
 cron "hbase table backup" do
+  user		"hdfs"
   minute        node[:backups][:hbase][:minute]
   hour          node[:backups][:hbase][:hour]
   day           node[:backups][:hbase][:day]
