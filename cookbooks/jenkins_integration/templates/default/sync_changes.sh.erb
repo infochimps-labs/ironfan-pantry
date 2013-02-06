@@ -38,11 +38,10 @@ do
     changed="$changed$cookbook "
 done
 
-if [ "nothing$changed" == "nothing"]
-then
+if [ "nothing$changed" == "nothing"]; then
   echo "Nothing changed - very suspicious!"
   exit 0
-end
+fi
 
 echo "Uploading changed cookbooks: $changed"
 time knife cookbook upload $changed

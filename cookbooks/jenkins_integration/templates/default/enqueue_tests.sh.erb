@@ -10,6 +10,9 @@ echo <%= name %>
 if [ ! -d <%= name %> ]; then
   git clone <%= attrs[:repository] %> <%= name %>
   cd <%= name %>
+  git checkout -t origin/testing
+  git checkout -t origin/staging
+  git checkout master
 else
   cd <%= name %>
   git pull
