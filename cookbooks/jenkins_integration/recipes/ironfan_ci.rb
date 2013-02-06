@@ -95,7 +95,7 @@ end
 
 jenkins_job "Ironfan" do
   repository    node[:jenkins_integration][:ironfan_ci][:repository]
-  templates     %w[ knife_shared.inc launch.inc ]
+  templates     %w[ knife_shared.inc launch.inc vendor_git.sh ]
   tasks         %w[ enqueue_tests.sh bundler.sh sync_changes.sh
                     launch_instance.sh 
                     stage_homebases.sh stage_pantries.sh ]

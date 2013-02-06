@@ -6,17 +6,7 @@ cd vendor
 
 
 <%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
-echo <%= name %>
-if [ ! -d <%= name %> ]; then
-  git clone <%= attrs[:repository] %> <%= name %>
-  cd <%= name %>
-  git checkout -t origin/testing
-  git checkout -t origin/staging
-  git checkout master
-else
-  cd <%= name %>
-  git pull
-fi
+`dirname $0`/vendor_git.sh <%= name %> <%= attrs[:repository] %>
 
 `dirname $0`/bundler.sh
 rake enqueue_testing
