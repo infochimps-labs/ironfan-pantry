@@ -8,6 +8,7 @@ cd vendor
 <%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
 `dirname $0`/vendor_git.sh <%= name %> <%= attrs[:repository] %>
 
+cd <%= name %>
 `dirname $0`/bundler.sh
 rake enqueue_testing
 
