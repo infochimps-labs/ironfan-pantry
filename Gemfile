@@ -5,7 +5,7 @@ source "http://rubygems.org"
 #
 
 gem 'chef',            ">= 0.10.8"
-gem 'ironfan',         "~> 4.5", :path => '../ironfan'
+gem 'ironfan',         "~> 4.5"
 gem 'knife-cookbook-bump', :git => 'git://github.com/Atalanta/knife-cookbook-bump.git'
 gem 'berkshelf',       ">= 1.0.1"
 gem 'version'
