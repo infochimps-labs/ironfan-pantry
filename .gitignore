@@ -54,11 +54,10 @@ metadata.json
 vagrants/iso/*
 vagrants/boxes/*
 
-vendor/internal
 knife/*-credentials
 knife-user-*.rb
 knife/checksums/*
-vendor/cluster_chef
 knife/plugins
 site-cookbooks/*
-zabbix_integration
+
+vendor
