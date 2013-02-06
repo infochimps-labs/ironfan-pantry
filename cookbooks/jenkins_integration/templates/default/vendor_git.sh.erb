@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 # Usage: vendor_git.sh name git-repo-path
 
+if [ ! -d vendor ]; then mkdir vendor; fi
+
 echo $1
 if [ ! -d $1 ]; then
   git clone $2 $1
-  cd $1
+  cd vendor/$1
   for remote in `git branch -r | grep -v origin/master`; do
     git checkout -t remotes/$remote
   done
   git checkout master
 else
-  cd $1
+  cd vendor/$1
   git pull
 fi
+git submodule update --init
 cd - > /dev/null

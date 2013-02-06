@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+<%- node[:jenkins_integration][:ironfan_ci][:homebases].each_pair do |name, attrs| %>
+`dirname $0`/vendor_git.sh <%= name %> <%= attrs[:repository] %>
+cd vendor/<%= name %>
+`dirname $0`/bundler.sh
+<%- end %>
 # clone or update all the homebases
 # set the exact git hashes for Berkshelf to use
 # rake berkshelf
