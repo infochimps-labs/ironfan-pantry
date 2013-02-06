@@ -1,10 +1,17 @@
 # Launch a testing instance, and wait to see if chef-client
 #   ran to completion successfully.
 
-source `dirname $0`/knife_shared.inc
-
 export CHEF_LOG=/var/log/chef/client.log
 export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
+export CLUSTER=${FACET%-*}
+
+function kc {
+  knife cluster "$@"
+}
+function klean_exit {
+  time kc kill $CLUSTER --yes
+  exit $@
+}
 
 time kc list -f
 time kc show $CLUSTER

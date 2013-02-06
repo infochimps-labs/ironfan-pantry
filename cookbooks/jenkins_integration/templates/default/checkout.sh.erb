@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Usage: vendor_git.sh name git-repo-path
+source `dirname $0`/shared.inc
+
+if [ ! -d $1 ]; then
+  echo "Checking out $1"
+  git clone $2 $1
+  pushd $1
+  for remote in `git branch -r | grep -v origin/master`; do
+    git checkout -t remotes/$remote
+  done
+  git checkout master
+else
+  echo "Updating $1:"
+  cd $1
+  git pull
+  for remote in `git branch -r | grep -v origin/master`; do
+    git checkout $remote
+    git pull
+  done
+fi
+git submodule update --init
+cd - > /dev/null

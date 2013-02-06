@@ -94,11 +94,9 @@ end
 #
 
 jenkins_job "Ironfan" do
-  repository    node[:jenkins_integration][:ironfan_ci][:repository]
-  templates     %w[ knife_shared.inc launch.inc vendor_git.sh ]
-  tasks         %w[ enqueue_tests.sh bundler.sh sync_changes.sh
-                    launch_instance.sh 
-                    stage_homebases.sh stage_pantries.sh ]
+  templates     %w[ shared.inc launch.inc checkout.sh ]
+  tasks         %w[ enqueue_tests.sh bundler.sh cookbook_changes.sh
+                    sync_changes.sh launch_instance.sh stage_all.sh ]
   if node[:jenkins_integration][:ironfan_ci][:broken]
     downstream [ "Ironfan - known broken" ]
   end
@@ -106,11 +104,34 @@ end
 
 if node[:jenkins_integration][:ironfan_ci][:broken]
   jenkins_job "Ironfan - known broken" do
-    repository  node[:jenkins_integration][:ironfan_ci][:repository]
-    templates   %w[ knife_shared.inc launch.inc ]
+    templates   %w[ shared.inc launch.inc ]
     tasks       %w[ bundler.sh launch_broken.sh ]
   end
 end
+
+# So. We don't want *anything* as the core repository for the job.
+# 
+# Fuckin' bashism everywhere, instead.
+# 
+# 1. Check out every homebase and pantry, getting all branches
+
+# 2. Enqueue testing on each of them
+#   a. FIXME: homebases need enqueue_tests
+#   b. FIXME: how do I reconcile this with the tree structure?
+
+# 3. Sync changes to testing environment (including versions) [sync_changes.sh]
+#   a. FIXME: rework for new directory layout
+
+# 4. Launch test instance [launch_instance.sh]
+# 5. Stage homebases
+#   a. Upload cookbook and freeze at that version
+#   b. Commit cookbook versions to testing, merge testing to master
+
+# 6. Stage pantries
+
+# 7. Launch known broken instance [launch_broken.sh]
+
+
 
 
 # node[:jenkins_integration][:pantries].each_pair do |name, attrs|

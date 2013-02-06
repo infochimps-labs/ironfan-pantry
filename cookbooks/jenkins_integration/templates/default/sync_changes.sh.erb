@@ -3,8 +3,6 @@
 # Synchronize code that has changed to the Chef server.
 #
 source `dirname $0`/knife_shared.inc
-BRANCH='testing'
-MERGE='staging'
 
 # never gonna give you up, never gonna let you down
 #   never gonna give you less than the latest roles
@@ -12,36 +10,6 @@ echo "Uploading roles:"
 time rake roles
 echo
 
-export USE_LOCAL=1
-export LOCAL_PATH='vendor'
-
-# discover changes between testing and staging by
-#   comparing VERSION files
-export PANTRY_BRANCH=$BRANCH
-export ENTERPRISE_BRANCH=$BRANCH
-echo "Getting $BRANCH cookbooks:"
-time bundle exec berks install --path cookbooks
-echo
-
-export PANTRY_BRANCH=$MERGE
-export ENTERPRISE_BRANCH=$MERGE
-echo "Getting $MERGE cookbooks:"
-time bundle exec berks install --path staged_cookbooks
-echo
-
-echo "Finding differences between $BRANCH and $MERGE:"
-changed=''
-for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
-do
-  cb_path=cookbooks/$cookbook/VERSION
-  diff -q $cb_path staged_$cb_path > /dev/null ||
-    changed="$changed$cookbook "
-done
-
-if [ "nothing$changed" -eq "nothing" ]; then
-  echo "Nothing changed - very suspicious!"
-  exit 0
-fi
-
+$changed=`cat $ROOT_DIR/changed_cookbooks`
 echo "Uploading changed cookbooks: $changed"
 time knife cookbook upload $changed

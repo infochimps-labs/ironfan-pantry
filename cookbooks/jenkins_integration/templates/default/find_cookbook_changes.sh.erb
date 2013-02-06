@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#
+# Synchronize code that has changed to the Chef server.
+#
+source `dirname $0`/knife_shared.inc
+
+function pantry_branch
+  <%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
+  pushd ../<%= name %>
+  git checkout $1
+  popd
+  <%- end %>
+end
+
+# discover changes between testing and staging by
+#   comparing VERSION files
+export USE_LOCAL=true
+export LOCAL_PATH=..
+
+echo "Getting testing cookbooks:"
+pantry_branch "testing"
+time bundle exec berks install --path cookbooks
+echo
+
+echo "Getting staging cookbooks:"
+pantry_branch "staging"
+time bundle exec berks install --path staged_cookbooks
+echo
+
+pantry_branch "master"
+
+echo "Finding differences between testing and staging:"
+changed=''
+echo > $ROOT_DIR/changed_cookbooks
+for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
+do
+  cb_path=cookbooks/$cookbook/VERSION
+  diff -q $cb_path staged_$cb_path > /dev/null ||
+    changed="$changed$cookbook "
+done
+
+if [ "nothing$changed" == "nothing" ]; then
+  echo "Nothing changed - very suspicious"
+  exit 1
+fi
+
+echo $changed > $ROOT_DIR/changed_cookbooks

@@ -1,19 +1,16 @@
 #!/usr/bin/env bash
 # Bump the pantries from master to staging
+source `dirname $0`/shared.inc
 
-if [ ! -d vendor ]; then mkdir vendor; fi
-cd vendor
-
-
-<%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
-`dirname $0`/vendor_git.sh <%= name %> <%= attrs[:repository] %>
-
-`dirname $0`/bundler.sh
-rake enqueue_testing
-
-cd - > /dev/null
-echo
-
-
+<%- directories = {}
+    directories.merge! node[:jenkins_integration][:ironfan_ci][:pantries].to_hash
+    directories.merge! node[:jenkins_integration][:ironfan_ci][:homebases].to_hash
+    directories.each_pair do |name, attrs| %>
+  $ROOT_DIR/checkout.sh <%= name %> <%= attrs[:repository] %>
+  pushd <%= name %>
+    $ROOT_DIR/bundler.sh
+    rake enqueue_testing
+  popd
+  echo
 <%- end %>
 

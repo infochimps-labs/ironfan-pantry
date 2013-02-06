@@ -1,0 +1,37 @@
+ROOT_DIR=`dirname $0`
+WORKSPACE=ROOT_DIR/workspace
+
+# 
+# Convenience functions for changing directories quietly
+# 
+function pushd {
+  pushd $@ > /dev/null
+}
+function popd {
+  pushd $@ > /dev/null
+}
+
+function pantry_branch {
+  <%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
+  pushd $WORKSPACE/<%= name %>
+  git checkout $1
+  popd
+  <%- end %>
+}
+function homebase_branch {
+  <%- node[:jenkins_integration][:ironfan_ci][:homebases].each_pair do |name, attrs| %>
+  pushd $WORKSPACE/<%= name %>
+  git checkout $1
+  popd
+  <%- end %>
+}
+
+#
+# Shared variables and convenience functions for knife commands.
+#
+export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
+export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
+
+function knife {
+  bundle exec knife "$@"
+}
