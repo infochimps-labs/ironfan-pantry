@@ -5,10 +5,13 @@ if [ ! -d vendor ]; then mkdir vendor; fi
 cd vendor
 
 <%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
-git clone <%= attrs[:repository] %> <%= name %>
-cd <%= name %>
 echo <%= name %>
+if [ ! -d <%= name %> ]; then git clone <%= attrs[:repository] %> <%= name %>; fi
+cd <%= name %>
+
+`dirname $0`/bundler.sh
 rake enqueue_testing
+
 cd - > /dev/null
 echo
 

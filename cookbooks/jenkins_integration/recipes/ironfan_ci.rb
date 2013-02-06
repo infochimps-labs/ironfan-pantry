@@ -93,30 +93,24 @@ end
 # Jenkins Jobs
 #
 
-build_test              = "Launch testing machine"
-build_broken            = "Launch known broken machine"
-homebase_staging        = "Stage homebase cookbooks"
-pantry_staging          = "Stage pantry branches"
-
-jenkins_job build_test do
-  tasks         %w[ enqueue_tests.sh bundler.sh sync_changes.sh launch.sh ]
-  downstream    [ build_broken ]
-  final         [ homebase_staging ]
+jenkins_job "Ironfan" do
+  repository    node[:jenkins_integration][:ironfan_ci][:repository]
+  templates     %w[ knife_shared.inc launch.inc ]
+  tasks         %w[ enqueue_tests.sh bundler.sh sync_changes.sh
+                    launch_instance.sh 
+                    stage_homebases.sh stage_pantries.sh ]
+  if node[:jenkins_integration][:ironfan_ci][:broken]
+    downstream [ "Ironfan - known broken" ]
+  end
 end
 
-jenkins_job homebase_staging do
-  tasks         %w[ stage_homebases.sh ]
-  final         [ pantry_staging ]
+if node[:jenkins_integration][:ironfan_ci][:broken]
+  jenkins_job "Ironfan - known broken" do
+    repository  node[:jenkins_integration][:ironfan_ci][:repository]
+    templates   %w[ knife_shared.inc launch.inc ]
+    tasks       %w[ bundler.sh launch_broken.sh ]
+  end
 end
-
-jenkins_job pantry_staging do
-  tasks         %w[ stage_pantries.sh ]
-end
-
-jenkins_job build_broken do
-  tasks         %w[ launch_broken.sh ]
-end
-
 
 
 # node[:jenkins_integration][:pantries].each_pair do |name, attrs|

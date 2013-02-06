@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#
+# Launch a testing instance instance
+#
+
+export FACET=<%= node[:jenkins_integration][:ironfan_ci][:target] %>
+source `dirname $0`/launch.inc

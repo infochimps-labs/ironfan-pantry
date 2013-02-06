@@ -5,8 +5,8 @@ default[:jenkins_integration][:security]        = 'local_users'
 
 default[:jenkins_integration][:ironfan_ci][:repository]         = 'git@github.com:infochimps-labs/ironfan-homebase.git'
 default[:jenkins_integration][:ironfan_ci][:chef_user]          = 'test'
-default[:jenkins_integration][:ironfan_ci][:cluster]            = 'testharness'
-default[:jenkins_integration][:ironfan_ci][:facet]              = 'simple'
+default[:jenkins_integration][:ironfan_ci][:target]             = 'testharness-simple'
+default[:jenkins_integration][:ironfan_ci][:broken]             = nil   # Set to launch a known-broken instance
 default[:jenkins_integration][:ironfan_ci][:branch]             = 'master'
 
 ironfan_pantry = Mash.new

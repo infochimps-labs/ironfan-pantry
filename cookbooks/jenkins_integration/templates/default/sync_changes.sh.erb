@@ -12,6 +12,9 @@ echo "Uploading roles:"
 time rake roles
 echo
 
+export USE_LOCAL=1
+export LOCAL_PATH='vendor'
+
 # discover changes between testing and staging by
 #   comparing VERSION files
 export PANTRY_BRANCH=$BRANCH
@@ -34,6 +37,12 @@ do
   diff -q $cb_path staged_$cb_path > /dev/null ||
     changed="$changed$cookbook "
 done
+
+if [ "nothing$changed" == "nothing"]
+then
+  echo "Nothing changed - very suspicious!"
+  exit 0
+end
 
 echo "Uploading changed cookbooks: $changed"
 time knife cookbook upload $changed
