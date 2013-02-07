@@ -90,8 +90,7 @@ module Ironfan
     def node_components(server)
       server[:announces].map do |name, hsh|
         realm, sys, subsys = name.split("-", 3)
-        hsh[:realm] = realm
-        Ironfan::Component.new(server, sys, subsys, hsh)
+        Ironfan::Component.new(server, sys, subsys, hsh.merge(:realm => realm))
       end
     end
 
