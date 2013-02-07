@@ -6,6 +6,7 @@
 include_recipe 'hadoop_cluster::config_files'
 include_recipe 'hbase::default'
 include_recipe 'hbase::config_files'
+include_recipe 'backups::s3cfg'
 
 template "#{node[:backups][:hbase][:conf]}" do
   source	"hbase_backup.yaml.erb"
@@ -24,6 +25,6 @@ cron "hbase table backup" do
   day           node[:backups][:hbase][:day]
   month         node[:backups][:hbase][:month]
   weekday       node[:backups][:hbase][:weekday]
-  command       "/usr/local/sbin/#{node[:backups][:hbase][:cluster_name]}_table_backups.rb"
+  command       "/usr/local/sbin/#{node[:backups][:hbase][:cluster_name]}_table_backups.rb > /tmp/#{node[:backups][:hbase][:cluster_name]}_table_backups.$(date +\\%Y\\%m\\%d).out 2>&1"
 end
 

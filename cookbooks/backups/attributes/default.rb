@@ -25,18 +25,22 @@ default[:backups][:namenode][:weekday     ] 	= "*"
 # HBase
 #
 
-default[:backups][:hbase][:cluster_name]     = "hbase"
-default[:backups][:hbase][:conf        ]     = "/etc/hbase_backup.yaml"
-default[:backups][:hbase][:full        ]     = ["Sunday"]
-default[:backups][:hbase][:differential]     = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-default[:backups][:hbase][:incrimental ]     = []
-default[:backups][:hbase][:tables      ]     = []
-default[:backups][:hbase][:versions    ]     = "2147483647"
-default[:backups][:hbase][:minute      ]     = "0"
-default[:backups][:hbase][:hour        ]     = "2"
-default[:backups][:hbase][:day         ]     = "*"
-default[:backups][:hbase][:month       ]     = "*"
-default[:backups][:hbase][:weekday     ]     = "*"
+default[:backups][:hbase][:cluster_name            ]     = "hbase"
+default[:backups][:hbase][:conf                    ]     = "/etc/hbase_backup.yaml"
+default[:backups][:hbase][:full                    ]     = ["Sunday"]
+default[:backups][:hbase][:differential            ]     = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+default[:backups][:hbase][:incrimental             ]     = []
+default[:backups][:hbase][:tables                  ]     = []
+default[:backups][:hbase][:versions                ]     = "2147483647"
+default[:backups][:hbase][:minute                  ]     = "0"
+default[:backups][:hbase][:hour                    ]     = "2"
+default[:backups][:hbase][:day                     ]     = "*"
+default[:backups][:hbase][:month                   ]     = "*"
+default[:backups][:hbase][:weekday                 ]     = "*"
+default[:backups][:hbase][:retention][:full        ]     = "5"    
+default[:backups][:hbase][:retention][:differential]     = "10"
+default[:backups][:hbase][:retention][:incrimental ]     = "0"
+
 
 #
 # Zookeeper

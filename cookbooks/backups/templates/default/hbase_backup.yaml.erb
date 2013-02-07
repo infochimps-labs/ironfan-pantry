@@ -8,3 +8,9 @@ default:
   full:         <%= @node[:backups][:hbase][:full] %>
   differential: <%= @node[:backups][:hbase][:differential] %>
   incrimental:  <%= @node[:backups][:hbase][:incrimental] %>
+
+retention:
+  full:         <%= @node[:backups][:hbase][:retention][:full] %>
+  differential: <%= @node[:backups][:hbase][:retention][:differential] %>
+  incrimental:  <%= @node[:backups][:hbase][:retention][:incrimental] %>
+

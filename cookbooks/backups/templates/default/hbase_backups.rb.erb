@@ -20,6 +20,24 @@ def s3(bucket, type, dt)
   `hadoop fs -rmr /tmp/backups`
 end
 
+def cleanup(bucket, retention, dt)
+  today = Date.strptime(dt, "%Y%m%d")
+  retention.each_pair do |type, days|
+    if days < 1
+      break # If 0, keep all backups 
+    end
+    backups=`s3cmd ls s3://#{bucket}/hbase_backups/#{type}/ | grep "DIR" | awk '{print $2}'`
+    backups.each do |backup|
+      backup_date = Date.strptime(backup.split('/')[-1], "%Y%m%d")
+      if (today - backup_date) > days
+#        `s3cmd -r del #{backup}`
+        puts "s3cmd -r del #{backup}"
+      end
+    end
+  end
+end
+
+
 config = YAML::load(File.open('<%= @node[:backups][:hbase][:conf] %>', 'r').read())
 tables = config['tables']
 versions = config['backups']['versions']
@@ -61,3 +79,4 @@ tables.each do |table|
 end
   
 s3(config['backups']['s3'], type, dt)
+cleanup(config['backups']['s3'], config['retention'], dt)
