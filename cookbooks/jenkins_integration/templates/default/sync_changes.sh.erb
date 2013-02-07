@@ -12,7 +12,7 @@ echo "Uploading roles:"
 time rake roles
 echo
 
-$changed=`cat $ROOT_DIR/changed_cookbooks`
+changed=`cat $ROOT_DIR/changed_cookbooks`
 echo "Uploading changed cookbooks: $changed"
 time knife cookbook upload $changed
 
