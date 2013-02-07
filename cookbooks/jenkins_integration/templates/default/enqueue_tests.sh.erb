@@ -1,15 +1,22 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash -e
 # Bump the pantries from master to staging
 source `dirname $0`/shared.inc
 
 REPOS="<%=( node[:jenkins_integration][:ironfan_ci][:pantries] +
             node[:jenkins_integration][:ironfan_ci][:homebases] ).join(' ') %>"
+
 for repo in $REPOS; do
   $ROOT_DIR/checkout.sh $repo
 done
 
-for name in $ALL_REPOS; do
+for name in $ALL_PATHS; do
   cd $WORKSPACE/$name
   $ROOT_DIR/bundler.sh
+done
+
+# FIXME: We should probably have a `rake enqueue_testing` framework 
+#   in the homebases too; build it as soon as demand occurs
+for name in $PANTRIES; do
+  cd $WORKSPACE/$name
   rake enqueue_testing
 done
