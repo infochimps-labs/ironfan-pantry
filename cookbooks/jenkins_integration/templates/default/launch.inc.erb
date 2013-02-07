@@ -16,16 +16,22 @@ function klean_exit {
 
 time kc list -f
 time kc show $CLUSTER
-
-time kc launch $FACET ||
-  ( echo "FATAL: knife cluster launch failed" &&
-    klean_exit 1 )
+time kc launch $FACET
+if ! $? ; then
+  echo "FATAL: knife cluster launch failed"
+  klean_exit 1
+fi
 
 while true; do
   kc ssh $CLUSTER $CREDENTIALS cat $CHEF_LOG > tmp.client.log
-  grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log &&
-    kc ssh $CLUSTER $CREDENTIALS sudo cat $CHEF_STACKTRACE &&
+  if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
+    kc ssh $CLUSTER $CREDENTIALS sudo cat $CHEF_STACKTRACE >> tmp.client.log
+    cat tmp.client.log
     klean_exit 1
-  grep 'INFO: Chef Run complete in ' tmp.client.log && klean_exit 0
-  echo "Waiting 15 seconds while chef finishes running" && sleep 15
+  elsif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
+    cat tmp.client.log
+    klean_exit 0
+  fi
+  echo "Waiting 15 seconds while chef finishes running"
+  sleep 15
 done
