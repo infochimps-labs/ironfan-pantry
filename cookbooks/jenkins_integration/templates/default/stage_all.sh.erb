@@ -1,13 +1,12 @@
 #!/usr/bin/env bash -e
 source `dirname $0`/shared.inc
 
-changed=`cat changed_cookbooks`
+changed=`cat $ROOT_DIR/changed_cookbooks`
 
 pantry_branch "testing"
 
-<%- node[:jenkins_integration][:ironfan_ci][:homebases].each_pair do |name, attrs| %>
-  pushd $WORKSPACE/<%= name %>
-
+for homebase in $HOMBASES; do
+  cd $WORKSPACE/$homebase
   # Install testing cookbooks, upload and freeze those which changed this run
   time bundle exec berks install --path cookbooks
   time knife cookbook upload --freeze $changed
@@ -31,17 +30,13 @@ pantry_branch "testing"
   git checkout master
   git merge testing
   git push
-
-  popd
   echo
+done
 
-<%- end %>
-
-<%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
-  pushd $WORKSPACE/<%= name %>
+for pantry in $PANTRIES; do
+  cd $WORKSPACE/$pantry
   git checkout staging
   git merge testing
   git push
-  popd
   echo
-<%- end %>
+done
