@@ -1,22 +1,40 @@
 ROOT_DIR=`dirname $0`
 WORKSPACE=$ROOT_DIR/workspace
 
-# 
-# Convenience functions for changing directories quietly
-# 
+#
+# Convenience functions for switching branches on all homebases or pantries,
+#   and supporting shared variables for all homebases or pantries
+#
+<%- 
+def repo_name(repo)
+  repo[/\/([a-z-]*)\.git/,1]
+end
+def repo_names(repo)
+  repo.map {|r| repo_name r }.join(' ')
+end
+%>
+PANTRIES="<%= repo_names node[:jenkins_integration][:ironfan_ci][:pantries] %>"
+HOMEBASES="<%= repo_names node[:jenkins_integration][:ironfan_ci][:homebases] %>"
+ALL_REPOS="$PANTRIES $HOMEBASES"
+
+TEST_REPO="<%= node[:jenkins_integration][:ironfan_ci][:test_repo] %>"
+TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_repo] %>"
+
+function switch_branches {
+  for repo in $2; do
+    pushd $WORKSPACE/$repo
+    git checkout $1
+    popd
+  done
+}
 function pantry_branch {
-  <%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
-  pushd $WORKSPACE/<%= name %>
-  git checkout $1
-  popd
-  <%- end %>
+  switch_branches $1 "$PANTRIES"
 }
 function homebase_branch {
-  <%- node[:jenkins_integration][:ironfan_ci][:homebases].each_pair do |name, attrs| %>
-  pushd $WORKSPACE/<%= name %>
-  git checkout $1
-  popd
-  <%- end %>
+  switch_branches $1 "$HOMEBASES"
+}
+function switch_all_branches {
+  switch_branches $1 "$ALL_REPOS"
 }
 
 #

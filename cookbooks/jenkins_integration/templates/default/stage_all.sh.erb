@@ -5,43 +5,40 @@ changed=`cat changed_cookbooks`
 
 pantry_branch "testing"
 
-<%- node[:jenkins_integration][:ironfan_ci][:homebases].each_pair do |name, attrs| %>
-  pushd $WORKSPACE/<%= name %>
+for homebase in $HOMBASES; do
+  pushd $homebase
+    # Install testing cookbooks, upload and freeze those which changed this run
+    time bundle exec berks install --path cookbooks
+    time knife cookbook upload --freeze $changed
 
-  # Install testing cookbooks, upload and freeze those which changed this run
-  time bundle exec berks install --path cookbooks
-  time knife cookbook upload --freeze $changed
+    # Record the cookbook versions to the staging evnironment
+    git checkout staging
+    VERSIONS=environments/_cookbooks.rb
+    echo -n > $VERSIONS
+    for target in `ls -1d cookbooks/*`; do
+      cookbook=${target#cookbooks/}
+      echo -e "\$versions['$cookbook']\t= '`cat cookbooks/$cookbook/VERSION`'" >> $VERSIONS
+    done
+    knife environment from file environments/staging.rb
+    git commit $VERSIONS -m"$VERSIONS: updating staged versions"
+    git push
 
-  # Record the cookbook versions to the staging evnironment
-  git checkout staging
-  VERSIONS=environments/_cookbooks.rb
-  echo -n > $VERSIONS
-  for target in `ls -1d cookbooks/*`; do
-    cookbook=${target#cookbooks/}
-    echo -e "\$versions['$cookbook']\t= '`cat cookbooks/$cookbook/VERSION`'" >> $VERSIONS
-  done
-  knife environment from file environments/staging.rb
-  git commit $VERSIONS -m"$VERSIONS: updating staged versions"
-  git push
-
-  # Ensure that staging remains a subset of testing, which remains a subset of master
-  git checkout testing
-  git merge staging
-  git push
-  git checkout master
-  git merge testing
-  git push
-
+    # Ensure that staging remains a subset of testing, which remains a subset of master
+    git checkout testing
+    git merge staging
+    git push
+    git checkout master
+    git merge testing
+    git push
   popd
   echo
+done
 
-<%- end %>
-
-<%- node[:jenkins_integration][:ironfan_ci][:pantries].each_pair do |name, attrs| %>
-  pushd $WORKSPACE/<%= name %>
-  git checkout staging
-  git merge testing
-  git push
+for pantry in $PANTRIES; do
+  pushd $pantry
+    git checkout staging
+    git merge testing
+    git push
   popd
   echo
-<%- end %>
+done

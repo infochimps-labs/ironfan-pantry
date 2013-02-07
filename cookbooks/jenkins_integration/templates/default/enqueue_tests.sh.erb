@@ -2,15 +2,15 @@
 # Bump the pantries from master to staging
 source `dirname $0`/shared.inc
 
-<%- directories = {}
-    directories.merge! node[:jenkins_integration][:ironfan_ci][:pantries].to_hash
-    directories.merge! node[:jenkins_integration][:ironfan_ci][:homebases].to_hash
-    directories.each_pair do |name, attrs| %>
-  $ROOT_DIR/checkout.sh <%= name %> <%= attrs[:repository] %>
-  pushd <%= name %>
+REPOS="<%=( node[:jenkins_integration][:ironfan_ci][:pantries] +
+            node[:jenkins_integration][:ironfan_ci][:homebases] ).join(' ') %>"
+for repo in $REPOS; do
+  $ROOT_DIR/checkout.sh $repo
+done
+
+for name in $ALL_REPOS; do
+  pushd $name
     $ROOT_DIR/bundler.sh
     rake enqueue_testing
   popd
-  echo
-<%- end %>
-
+done

@@ -4,7 +4,10 @@
 #
 source `dirname $0`/shared.inc
 export FACET=<%= node[:jenkins_integration][:ironfan_ci][:broken] %>
-pushd <%= node[:jenkins_integration][:ironfan_ci][:test_homebase] %>
+repo=<%= node[:jenkins_integration][:ironfan_ci][:test_repo] %>
+
+$ROOT_DIR/checkout.sh $repo
+pushd $TEST_PATH
   $ROOT_DIR/bundler.sh
   source $ROOT_DIR/launch.inc
 popd
