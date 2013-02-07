@@ -8,13 +8,13 @@ name=${name%.git}
 if [ ! -d $name ]; then
   echo "Checking out $1:"
   git clone $1
-  pushd $name
+  cd $name
   for remote in `git branch -r | grep -v origin/master`; do
     git checkout -t remotes/$remote
   done
 else
   echo "Updating $1:"
-  pushd $name
+  cd $name
   git pull
   for remote in `git branch -r | grep -v origin/master`; do
     git checkout ${remote#*/}
@@ -23,4 +23,3 @@ else
 fi
 git checkout master
 git submodule update --init
-popd

@@ -9,8 +9,7 @@ for repo in $REPOS; do
 done
 
 for name in $ALL_REPOS; do
-  pushd $name
-    $ROOT_DIR/bundler.sh
-    rake enqueue_testing
-  popd
+  cd $WORKSPACE/$name
+  $ROOT_DIR/bundler.sh
+  rake enqueue_testing
 done
