@@ -4,6 +4,7 @@
 export CHEF_LOG=/var/log/chef/client.log
 export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
 export CLUSTER=${FACET%-*}
+export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
 function kc {
   knife cluster "$@"

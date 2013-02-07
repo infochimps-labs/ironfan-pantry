@@ -24,8 +24,8 @@ function switch_branches {
   for repo in $2; do
     cd $WORKSPACE/$repo
     git checkout $1
+    cd - > /dev/null
   done
-  cd $WORKSPACE
 }
 function pantry_branch {
   switch_branches $1 "$PANTRIES"
@@ -41,7 +41,6 @@ function switch_all_branches {
 # Shared variables and convenience functions for knife commands.
 #
 export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
-export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
 function knife {
   bundle exec knife "$@"
