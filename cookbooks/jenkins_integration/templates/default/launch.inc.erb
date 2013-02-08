@@ -17,7 +17,7 @@ function klean_exit {
 time kc list -f
 time kc show $CLUSTER
 time kc launch $FACET
-if ! $? ; then
+if [ $? -ne 0 ] ; then
   echo "FATAL: knife cluster launch failed"
   klean_exit 1
 fi
