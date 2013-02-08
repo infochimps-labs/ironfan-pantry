@@ -93,8 +93,9 @@ end
 # Jenkins Jobs
 #
 
+shared_templates = %w[ shared.inc launch.inc checkout.sh cookbook_versions.rb.h ]
 jenkins_job "Ironfan" do
-  templates     %w[ shared.inc launch.inc checkout.sh ]
+  templates     shared_templates
   tasks         %w[ enqueue_tests.sh cookbook_changes.sh
                     sync_changes.sh launch_instance.sh stage_all.sh ]
   if node[:jenkins_integration][:ironfan_ci][:broken]
@@ -104,7 +105,7 @@ end
 
 if node[:jenkins_integration][:ironfan_ci][:broken]
   jenkins_job "Ironfan - known broken" do
-    templates   %w[ shared.inc launch.inc ]
+    templates     shared_templates
     tasks       %w[ launch_broken.sh ]
   end
 end
