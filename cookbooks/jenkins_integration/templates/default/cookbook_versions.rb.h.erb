@@ -3,3 +3,4 @@
 # modify directly; your modifications will be overwritten.
 #
 
+$cookbooks = {}
