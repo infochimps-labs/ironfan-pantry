@@ -22,7 +22,7 @@ pantry_branch "master"
 
 echo "Finding differences between testing and staging:"
 changed=''
-echo > $ROOT_DIR/changed_cookbooks
+echo > $CHANGED_COOKBOOKS
 for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
 do
   cb_path=cookbooks/$cookbook/VERSION
@@ -35,4 +35,4 @@ if [ "nothing$changed" == "nothing" ]; then
   exit 1
 fi
 
-echo $changed | tee $ROOT_DIR/changed_cookbooks
+echo $changed | tee $CHANGED_COOKBOOKS
