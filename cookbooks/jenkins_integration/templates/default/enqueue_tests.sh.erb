@@ -14,8 +14,8 @@ for name in $ALL_PATHS; do
   $ROOT_DIR/bundler.sh
 done
 
-# FIXME: We should probably have a `rake enqueue_testing` framework 
-#   in the homebases too; build it as soon as demand occurs
+# FIXME: We should probably have a framework in the homebases
+#   too; build it as soon as actual need arises
 for name in $PANTRIES; do
   cd $WORKSPACE/$name
 
@@ -30,7 +30,7 @@ for name in $PANTRIES; do
 
   echo "ensure master is in sync with origin:"
   git pull
-  #git push  # FIXME: BAAAD
+  #git push  # FIXME: BAAAD - kill it or make it right
   git status | grep 'Your branch is '
   if [ $? -ne '1' ]; then
     echo "FATAL: master branch isn't in sync with origin/master" >&2
@@ -50,7 +50,7 @@ for name in $PANTRIES; do
   CHANGES=`git diff --name-only testing -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
   if [ "x$CHANGES" = "x" ]; then
     echo "No cookbook changes between master and testing"
-    exit 0
+    continue
   fi
   echo $CHANGES
   echo
@@ -69,7 +69,7 @@ for name in $PANTRIES; do
   git checkout testing
   git merge master
   git checkout master
-  # git push  # FIXME: BAAAD
+  git push origin master        # Just the HEAD, baby (not any changes to testing, etc.)
   echo
 
   echo "DONE"

@@ -19,7 +19,8 @@ for homebase in $HOMEBASES; do
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
   for target in `ls -1d cookbooks/*`; do
     cookbook=${target#cookbooks/}
-    echo -e "\$versions['$cookbook']\t= '`cat cookbooks/$cookbook/VERSION`'" >> $VERSIONS
+    version=`cat cookbooks/$cookbook/VERSION`
+    echo -e "\$versions['$cookbook']\t= '$version'" >> $VERSIONS
   done
   knife environment from file environments/staging.rb
   git commit $VERSIONS -m"$VERSIONS: updating staged versions"
