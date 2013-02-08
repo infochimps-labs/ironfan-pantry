@@ -45,3 +45,9 @@ export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
 function knife {
   bundle exec knife "$@"
 }
+
+
+# discover changes between testing and staging by
+#   comparing VERSION files
+export USE_LOCAL=true
+export LOCAL_PATH=..

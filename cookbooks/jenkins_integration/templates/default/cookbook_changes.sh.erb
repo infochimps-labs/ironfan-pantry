@@ -6,11 +6,6 @@ source `dirname $0`/shared.inc
 
 cd $TEST_PATH
 
-# discover changes between testing and staging by
-#   comparing VERSION files
-export USE_LOCAL=true
-export LOCAL_PATH=..
-
 echo "Getting staging cookbooks:"
 pantry_branch "staging"
 git checkout staging

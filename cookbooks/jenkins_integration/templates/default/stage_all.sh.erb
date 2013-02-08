@@ -1,11 +1,13 @@
-#!/usr/bin/env bash -e
+#!/usr/bin/env bash
+set -e
+
 source `dirname $0`/shared.inc
 
 changed=`cat $ROOT_DIR/changed_cookbooks`
 
 pantry_branch "testing"
 
-for homebase in $HOMBASES; do
+for homebase in $HOMEBASES; do
   cd $WORKSPACE/$homebase
   # Install testing cookbooks, upload and freeze those which changed this run
   time bundle exec berks install --path cookbooks
@@ -21,13 +23,12 @@ for homebase in $HOMBASES; do
   done
   knife environment from file environments/staging.rb
   git commit $VERSIONS -m"$VERSIONS: updating staged versions"
-  git push
 
   # Ensure that staging remains a subset of testing, which remains a subset of master
   git checkout testing
   git merge staging
-  git push
   git checkout master
+  git pull
   git merge testing
   git push
   echo
