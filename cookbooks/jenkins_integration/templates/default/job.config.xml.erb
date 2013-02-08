@@ -102,11 +102,11 @@
   <builders>
     <hudson.tasks.Shell>
       <command>#!/usr/bin/env bash -e
+      echo
       <%- @tasks.each do |t| %>
-        echo
         echo Running <%= t %>
         <%= @path %>/<%= t %>
-        echo
+        echo; echo; echo;
 
       <%- end %>
       </command>

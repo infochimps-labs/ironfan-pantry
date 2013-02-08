@@ -28,7 +28,7 @@ while true; do
     kc ssh $CLUSTER $CREDENTIALS sudo cat $CHEF_STACKTRACE >> tmp.client.log
     cat tmp.client.log
     klean_exit 1
-  elsif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
+  elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
     cat tmp.client.log
     klean_exit 0
   fi
