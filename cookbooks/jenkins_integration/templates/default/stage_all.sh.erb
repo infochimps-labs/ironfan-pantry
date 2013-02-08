@@ -15,8 +15,8 @@ for homebase in $HOMEBASES; do
 
   # Record the cookbook versions to the staging evnironment
   git checkout staging
-  VERSIONS=environments/_cookbooks.rb
-  echo -n > $VERSIONS
+  VERSIONS=environments/cookbook_versions.rb
+  cat $ROOT_DIR/cookbook_versions.h > $VERSIONS
   for target in `ls -1d cookbooks/*`; do
     cookbook=${target#cookbooks/}
     echo -e "\$versions['$cookbook']\t= '`cat cookbooks/$cookbook/VERSION`'" >> $VERSIONS
