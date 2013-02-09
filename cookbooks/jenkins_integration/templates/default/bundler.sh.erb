@@ -6,8 +6,8 @@ source `dirname $0`/shared.inc
 
 if [ ! -f Gemfile.lock ]; then
   echo "Installing bundle:"
-  time bundle install --path vendor --no-color --without=development,support
+  bundle install --path vendor --no-color --without=development,support
 else
   echo "Updating bundle:"
-  time bundle update --no-color
+  bundle update --no-color
 fi

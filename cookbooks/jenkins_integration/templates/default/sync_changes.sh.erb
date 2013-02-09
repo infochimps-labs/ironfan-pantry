@@ -9,9 +9,9 @@ cd $TEST_PATH
 # never gonna give you up, never gonna let you down
 #   never gonna give you less than the latest roles
 echo "Uploading roles:"
-time rake roles
+rake roles
 echo
 
 changed=`cat $ROOT_DIR/changed_cookbooks`
 echo "Uploading changed cookbooks: $changed"
-time knife cookbook upload $changed
+knife cookbook upload $changed

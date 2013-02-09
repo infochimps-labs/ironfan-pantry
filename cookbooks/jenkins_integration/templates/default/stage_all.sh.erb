@@ -10,8 +10,8 @@ pantry_branch "testing"
 for homebase in $HOMEBASES; do
   cd $WORKSPACE/$homebase
   # Install testing cookbooks, upload and freeze those which changed this run
-  time bundle exec berks install --path cookbooks
-  time knife cookbook upload -V --freeze $changed
+  bundle exec berks install --path cookbooks
+  knife cookbook upload -V --freeze $changed
 
   # Record the cookbook versions to the staging evnironment
   git checkout staging

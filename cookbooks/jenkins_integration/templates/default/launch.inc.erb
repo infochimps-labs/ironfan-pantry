@@ -10,13 +10,13 @@ function kc {
   knife cluster "$@"
 }
 function klean_exit {
-  time kc kill $CLUSTER --yes
+  kc kill $CLUSTER --yes
   exit $@
 }
 
-time kc list -f
-time kc show $CLUSTER
-time kc launch $FACET
+kc list -f
+kc show $CLUSTER
+kc launch $FACET
 if [ $? -ne 0 ] ; then
   echo "FATAL: knife cluster launch failed"
   klean_exit 1

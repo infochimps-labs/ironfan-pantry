@@ -105,7 +105,7 @@
       echo
       <%- @tasks.each do |t| %>
         echo Running <%= t %>
-        <%= @path %>/<%= t %>
+        time <%= @path %>/<%= t %>
         echo; echo; echo;
 
       <%- end %>
