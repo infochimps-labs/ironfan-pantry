@@ -11,16 +11,11 @@ done
 
 for name in $ALL_PATHS; do
   cd $WORKSPACE/$name
-  $ROOT_DIR/bundler.sh
-done
-
-# FIXME: We should probably have a framework in the homebases
-#   too; build it as soon as actual need arises
-for name in $PANTRIES; do
-  cd $WORKSPACE/$name
+  pwd
 
   echo "ensure master is clean:"
   git checkout master
+  git reset --hard
   git status | grep 'nothing to commit (working directory clean)'
   if [ $? -ne '0' ]; then
     echo "FATAL: master branch is not clean" >&2
@@ -37,6 +32,14 @@ for name in $PANTRIES; do
     exit 1
   fi
   echo
+
+  $ROOT_DIR/bundler.sh
+done
+
+# FIXME: These probably need to be expanded for all repos
+for name in $PANTRIES; do
+  cd $WORKSPACE/$name
+  pwd
 
   echo "make sure master is a descendant of testing:"
   git merge testing | grep 'Already up-to-date'
@@ -71,6 +74,4 @@ for name in $PANTRIES; do
   git checkout master
   git push origin master        # Just the HEAD, baby (not any changes to testing, etc.)
   echo
-
-  echo "DONE"
 done

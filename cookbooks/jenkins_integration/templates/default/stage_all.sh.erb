@@ -22,7 +22,7 @@ for homebase in $HOMEBASES; do
     version=`cat cookbooks/$cookbook/VERSION`
     echo -e "\$versions['$cookbook']\t= '$version'" >> $VERSIONS
   done
-  knife environment from file environments/staging.rb
+  knife environment from file staging.rb
   git commit $VERSIONS -m"$VERSIONS: updating staged versions"
 
   # Ensure that staging remains a subset of testing, which remains a subset of master
