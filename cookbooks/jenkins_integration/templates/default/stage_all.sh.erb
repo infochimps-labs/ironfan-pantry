@@ -32,6 +32,9 @@ for homebase in $HOMEBASES; do
   git pull
   git merge testing
   git push
+
+  # Clean up the working directory
+  rm -r staged_cookbooks/ tmp.client.log
   echo
 done
 
