@@ -31,6 +31,8 @@ default[:elasticsearch][:release_url]             = "http://download.elasticsear
 default[:elasticsearch][:snapshot]                = false
 default[:elasticsearch][:git_repo]                = "https://github.com/elasticsearch/elasticsearch.git"
 default[:elasticsearch][:plugins]                 = ["elasticsearch/elasticsearch-cloud-aws/1.8.0"]
+# Options are [none, local, fs, hadoop, s3]
+default[:elasticsearch][:gateway_type]            = 's3'
 
 #
 # Services
