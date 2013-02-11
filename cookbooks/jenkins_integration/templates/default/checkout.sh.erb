@@ -47,6 +47,9 @@ else
   echo
 fi
 
+git checkout master
+git submodule update --init
+
 if [ ! -f Gemfile.lock ]; then
   echo "Installing bundle:"
   bundle install --path vendor --no-color --without=development,support
@@ -55,6 +58,3 @@ else
   bundle update --no-color
 fi
 echo
-
-git checkout master
-git submodule update --init
