@@ -48,3 +48,11 @@ for name in $PANTRIES; do
   git push origin master        # Just the HEAD, baby (not any changes to testing, etc.)
   echo
 done
+
+# Only continue if something needs testing
+EXIT_CODE=1
+for name in $PANTRIES; do
+  if ! git diff --quiet testing staging; then EXIT_CODE=0; fi
+done
+if [ ! $EXIT_CODE ]; then echo "No changes found for testing"; fi
+exit $EXIT_CODE

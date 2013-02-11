@@ -12,6 +12,6 @@ echo "Uploading roles:"
 rake roles
 echo
 
-changed=`cat $ROOT_DIR/changed_cookbooks`
+changed=`cat $CHANGED_COOKBOOKS`
 echo "Uploading changed cookbooks: $changed"
 knife cookbook upload $changed
