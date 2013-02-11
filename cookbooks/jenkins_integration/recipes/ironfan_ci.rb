@@ -93,10 +93,11 @@ end
 # Jenkins Jobs
 #
 
-# Make sure that the test homebase is the first homebase
-node.set[:jenkins_integration][:ironfan_ci][:homebases] = \
-  ( node[:jenkins_integration][:ironfan_ci][:homebases].to_a.unshift 
-    default[:jenkins_integration][:ironfan_ci][:test_homebase] ).uniq
+# # Make sure that the test homebase is the first homebase
+# # FIXME: This breaks for obscure attribute interface reasons
+# node.set[:jenkins_integration][:ironfan_ci][:homebases] = (
+#   node[:jenkins_integration][:ironfan_ci][:homebases].unshift
+#   node[:jenkins_integration][:ironfan_ci][:test_homebase] ).uniq
 
 # 1. Check out every homebase and pantry, getting all branches
 # 2. Enqueue testing on each of them
@@ -105,7 +106,7 @@ node.set[:jenkins_integration][:ironfan_ci][:homebases] = \
 # 5. Stage homebases and pantries
 #   a. Homebases: Upload cookbook and freeze at that version
 #   b. All: Commit testing cookbook versions to staging
-shared_templates = %w[ shared.inc launch.inc checkout.sh cookbook_versions.rb.h ]
+shared_templates = %w[ shared.inc launch.inc cookbook_versions.rb.h ]
 jenkins_job "Ironfan" do
   templates     shared_templates
   tasks         %w[ enqueue_tests.sh cookbook_changes.sh

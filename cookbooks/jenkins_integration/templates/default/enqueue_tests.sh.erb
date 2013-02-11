@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bump the pantries from master to staging
+# Prepare the pantries and homebases for cookbook testing
 source `dirname $0`/shared.inc
 
 REPOS="<%=( node[:jenkins_integration][:ironfan_ci][:pantries] +
@@ -7,33 +7,6 @@ REPOS="<%=( node[:jenkins_integration][:ironfan_ci][:pantries] +
 
 for repo in $REPOS; do
   $ROOT_DIR/checkout.sh $repo
-done
-
-for name in $ALL_PATHS; do
-  cd $WORKSPACE/$name
-  pwd
-
-  echo "ensure master is clean:"
-  git checkout master
-  git reset --hard
-  git status | grep 'nothing to commit (working directory clean)'
-  if [ $? -ne '0' ]; then
-    echo "FATAL: master branch is not clean" >&2
-    exit 1
-  fi
-  echo
-
-  echo "ensure master is in sync with origin:"
-  git pull
-  #git push  # FIXME: BAAAD - kill it or make it right
-  git status | grep 'Your branch is '
-  if [ $? -ne '1' ]; then
-    echo "FATAL: master branch isn't in sync with origin/master" >&2
-    exit 1
-  fi
-  echo
-
-  $ROOT_DIR/bundler.sh
 done
 
 # FIXME: These probably need to be expanded for all repos
