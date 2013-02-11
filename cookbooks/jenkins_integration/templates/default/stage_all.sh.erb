@@ -26,6 +26,7 @@ for homebase in $HOMEBASES; do
   git commit $VERSIONS -m"$VERSIONS: updating staged versions"
 
   # Ensure that staging remains a subset of testing, which remains a subset of master
+  git merge testing
   git checkout testing
   git merge staging
   git checkout master
@@ -41,6 +42,9 @@ done
 for pantry in $PANTRIES; do
   cd $WORKSPACE/$pantry
   git checkout staging
+  git merge testing
+  git checkout master
+  git pull
   git merge testing
   git push
   echo
