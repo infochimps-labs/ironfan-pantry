@@ -14,7 +14,7 @@ recipe           "backups::namenode",      "Namenode Backup Recipe"
 recipe           "backups::s3cfg",         "S3 Configuration Recipe"
 recipe           "backups::hbase",         "HBase Backup Recipe"
 recipe           "backups::zookeeper",     "Zookeeper Backup Recipe"
-recipe           "backups::elsaticsearch", "Elasticsearch Backup Recipe"
+recipe           "backups::elasticsearch", "Elasticsearch Backup Recipe"
 
 %w[ debian ubuntu ].each do |os|
   supports os
