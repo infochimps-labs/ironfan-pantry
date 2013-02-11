@@ -93,6 +93,18 @@ end
 # Jenkins Jobs
 #
 
+# Make sure that the test homebase is the first homebase
+node.set[:jenkins_integration][:ironfan_ci][:homebases] = \
+  ( node[:jenkins_integration][:ironfan_ci][:homebases].to_a.unshift 
+    default[:jenkins_integration][:ironfan_ci][:test_homebase] ).uniq
+
+# 1. Check out every homebase and pantry, getting all branches
+# 2. Enqueue testing on each of them
+# 3. Sync changes to testing environment (including versions) [sync_changes.sh]
+# 4. Launch test instance [launch_instance.sh]
+# 5. Stage homebases and pantries
+#   a. Homebases: Upload cookbook and freeze at that version
+#   b. All: Commit testing cookbook versions to staging
 shared_templates = %w[ shared.inc launch.inc checkout.sh cookbook_versions.rb.h ]
 jenkins_job "Ironfan" do
   templates     shared_templates
@@ -103,6 +115,7 @@ jenkins_job "Ironfan" do
   end
 end
 
+# Launch known broken instance [launch_broken.sh]
 if node[:jenkins_integration][:ironfan_ci][:broken]
   jenkins_job "Ironfan - known broken" do
     templates     shared_templates
@@ -110,70 +123,3 @@ if node[:jenkins_integration][:ironfan_ci][:broken]
   end
 end
 
-# So. We don't want *anything* as the core repository for the job.
-# 
-# Fuckin' bashism everywhere, instead.
-# 
-# 1. Check out every homebase and pantry, getting all branches
-# 
-# 2. Enqueue testing on each of them
-#   a. FIXME: homebases need enqueue_tests
-#   b. FIXME: how do I reconcile this with the tree structure?
-# 
-# 3. Sync changes to testing environment (including versions) [sync_changes.sh]
-#   a. FIXME: rework for new directory layout
-# 
-# 4. Launch test instance [launch_instance.sh]
-# 
-# 5. Stage homebases
-#   a. Upload cookbook and freeze at that version
-#   b. Commit cookbook versions to testing, merge testing to master
-#
-# 6. Stage pantries
-# 
-# 7. Launch known broken instance [launch_broken.sh]
-
-
-
-
-# node[:jenkins_integration][:pantries].each_pair do |name, attrs|
-#   # Initial trigger/tracking job. Have your pantry's post-commit 
-#   #   hook hit the API path for this job, to trigger the Ironfan CI
-#   #   (and stage the result if successful).
-#   attrs[:branch]  ||= 'testing'
-#   attrs[:merge]   ||= 'staging'
-#   jenkins_job name do
-#     project       attrs[:project]
-#     repository    attrs[:repository]
-#     branch        attrs[:branch]
-#     downstream    [ 'Ironfan CI' ]
-#     final         [ "stage_#{name}" ]
-#     final_params( { 'GIT_COMMIT' => { :type => 'git_commit' } })
-#     triggers(     { :poll_scm => true})
-#   end
-# 
-#   # Push the results of a successful CI run into the staging branch
-#   jenkins_job "stage_#{name}" do
-#     project       attrs[:project]
-#     repository    attrs[:repository]
-#     parameters(   { 'GIT_COMMIT' => {
-#                       :default  => "origin/#{attrs[:merge]}",   # Do nothing if called by default
-#                       :type     => 'string'
-#                   } })
-#     branch        '$GIT_COMMIT'
-#     merge         attrs[:merge]
-#   end
-# end
-# 
-# # Core integration job: this sets up the test universe homebase, syncs
-# #   to that universe's Chef Server, and launches the specified test
-# #   server, watching it run to completion
-# jenkins_job 'Ironfan CI' do
-#   repository    node[:jenkins_integration][:ironfan_ci][:repository]
-#   # Some short justification: why bash? Because these tools are 
-#   #   written for the command line. We can test internal interfaces
-#   #   via ruby, but external ones should use the command line.
-#   branch        'master'
-#   templates     [ 'knife_shared.inc' ]
-#   tasks         [ 'bundler.sh', 'sync_changes.sh', 'launch.sh' ]
-# end

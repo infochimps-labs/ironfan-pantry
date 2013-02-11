@@ -3,7 +3,7 @@ default[:jenkins_integration][:git][:email]     = 'jenkins@example.org'
 
 default[:jenkins_integration][:security]        = 'local_users'
 
-default[:jenkins_integration][:ironfan_ci][:test_repo]  = 'git@github.com:infochimps-labs/ironfan-homebase.git'
+default[:jenkins_integration][:ironfan_ci][:test_homebase] = 'git@github.com:infochimps-labs/ironfan-homebase.git'
 default[:jenkins_integration][:ironfan_ci][:chef_user]  = 'test'
 default[:jenkins_integration][:ironfan_ci][:target]     = 'testharness-simple'
 default[:jenkins_integration][:ironfan_ci][:broken]     = nil   # Set to launch a known-broken facet
