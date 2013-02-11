@@ -42,6 +42,9 @@ for pantry in $PANTRIES; do
   cd $WORKSPACE/$pantry
   git checkout staging
   git merge testing
+  git checkout master
+  git pull
+  git merge testing
   git push
   echo
 done
