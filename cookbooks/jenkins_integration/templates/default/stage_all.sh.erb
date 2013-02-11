@@ -26,6 +26,7 @@ for homebase in $HOMEBASES; do
   git commit $VERSIONS -m"$VERSIONS: updating staged versions"
 
   # Ensure that staging remains a subset of testing, which remains a subset of master
+  git merge testing
   git checkout testing
   git merge staging
   git checkout master
