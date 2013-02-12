@@ -22,7 +22,7 @@ else
   echo "ensure master is clean:"
   git checkout master
   git reset --hard
-  git clean
+  git clean -f
   git status | grep 'nothing to commit (working directory clean)'
   if [ $? -ne '0' ]; then
     echo "FATAL: master branch is not clean" >&2

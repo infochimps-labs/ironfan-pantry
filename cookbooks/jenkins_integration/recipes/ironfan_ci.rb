@@ -101,17 +101,16 @@ end
 
 # 1. Check out every homebase and pantry, getting all branches
 #   a. Enqueue testing on each pantry's cookbooks
-# 2. Discover which cookbooks have changed between testing and staging
-# 3. Sync changes to testing environment (including versions)
-# 4. Launch test instance
-# 5. Stage homebases and pantries
+# 2. Sync changes to testing environment (including versions)
+# 3. Launch test instance
+# 4. Stage homebases and pantries
 #   a. Homebases: Upload cookbook and freeze at that version
 #   b. All: Commit testing cookbook versions to staging
 shared_templates = %w[ shared.inc launch.inc checkout.sh cookbook_versions.rb.h ]
 jenkins_job "Ironfan" do
   templates     shared_templates
-  tasks         %w[ enqueue_tests.sh cookbook_changes.sh
-                    sync_changes.sh launch_instance.sh stage_all.sh ]
+  tasks         %w[ enqueue_tests.sh sync_changes.sh 
+                    launch_instance.sh stage_all.sh ]
   if node[:jenkins_integration][:ironfan_ci][:broken]
     downstream [ "Ironfan - known broken" ]
   end
