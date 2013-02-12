@@ -9,44 +9,24 @@ if [ ! -d $name ]; then
   echo "Checking out $1:"
   git clone $1
   cd $name
-  echo
 
-  echo "get submodules:"
+  echo "get remotes:"
   for remote in `git branch -r | grep -v origin/master`; do
     git checkout -t remotes/$remote
   done
 else
   echo "Updating $1:"
   cd $name
-
-  echo "ensure master is clean:"
-  git checkout master
-  git reset --hard
-  git clean -f -d
-  git status | grep 'nothing to commit (working directory clean)'
-  if [ $? -ne '0' ]; then
-    echo "FATAL: master branch is not clean" >&2
-    exit 1
-  fi
-  echo
-
-  echo "ensure master is in sync with origin:"
   git pull
-  git status | grep 'Your branch is '
-  if [ $? -ne '1' ]; then
-    echo "FATAL: master branch isn't in sync with origin/master" >&2
-    exit 1
-  fi
-  echo
 
-  echo "get submodules:"
+  echo "update remotes:"
   for remote in `git branch -r | grep -v origin/master`; do
     git checkout ${remote#*/}
     git pull
   done
-  echo
 fi
 
+echo "Get submodules"
 git checkout master
 git submodule update --init
 

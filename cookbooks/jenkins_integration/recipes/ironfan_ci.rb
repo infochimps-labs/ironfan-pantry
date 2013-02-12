@@ -107,19 +107,25 @@ end
 #   a. Homebases: Upload cookbook and freeze at that version
 #   b. All: Commit testing cookbook versions to staging
 shared_templates = %w[ shared.inc launch.inc checkout.sh cookbook_versions.rb.h ]
-jenkins_job "Ironfan Cookbooks" do
+jenkins_job "Ironfan Cookbooks - 1 - Check for new code" do
+  templates     shared_templates
+  tasks         %w[ new_developments.sh ]
+  downstream    [ "Ironfan Cookbooks - 2 - Test and stage" ]
+end
+
+jenkins_job "Ironfan Cookbooks - 2 - Test and stage" do
   templates     shared_templates
   tasks         %w[ enqueue_tests.sh sync_changes.sh 
                     launch_instance.sh stage_all.sh ]
   if node[:jenkins_integration][:ironfan_ci][:broken]
-    downstream [ "Ironfan Cookbooks - known broken" ]
+    downstream  [ "Ironfan Cookbooks - 3 - Test known broken" ]
   end
 end
 
 # Launch known broken instance [launch_broken.sh]
 if node[:jenkins_integration][:ironfan_ci][:broken]
-  jenkins_job "Ironfan Cookbooks - known broken" do
-    templates     shared_templates
+  jenkins_job "Ironfan Cookbooks - 3 - Test known broken" do
+    templates   shared_templates
     tasks       %w[ launch_broken.sh ]
   end
 end
