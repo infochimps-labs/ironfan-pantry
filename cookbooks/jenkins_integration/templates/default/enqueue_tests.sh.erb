@@ -39,7 +39,7 @@ for name in $PANTRIES; do
   git checkout master
   git pull
   for cookbook in `echo "$CHANGES"`; do
-    git diff --name-only testing -- cookbooks/$cookbook/VERSION | grep -q VERSION
+    git diff --name-only origin/testing -- cookbooks/$cookbook/VERSION | grep -q VERSION
     if [ $? -ne '0' ]; then
       echo "bumping $cookbook"
       rake $cookbook:version:bump
