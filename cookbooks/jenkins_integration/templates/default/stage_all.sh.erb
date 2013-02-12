@@ -7,13 +7,31 @@ changed=`cat $CHANGED_COOKBOOKS`
 
 pantry_branch "testing"
 
+# Push the testing branch into the staging one. Ensure that staging remains a
+#   subset of testing, which remains a subset of master, by also pulling in
+#   changes from those branches. If this all works, push the results to origin.
+function matroshka {
+  git checkout staging
+  git merge testing
+
+  git checkout testing
+  git merge staging
+
+  git checkout master
+  git pull              # There may be development changes
+  git merge testing
+
+  git push
+}
+
 for homebase in $HOMEBASES; do
   cd $WORKSPACE/$homebase
-  # Install testing cookbooks, upload and freeze those which changed this run
+  pwd
+  echo "Install testing cookbooks, upload and freeze those which changed this run"
   bundle exec berks install --path cookbooks
   knife cookbook upload -V --freeze $changed
 
-  # Record the cookbook versions to the staging evnironment
+  echo "Record the cookbook versions to the staging environment"
   git checkout staging
   VERSIONS=environments/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
@@ -25,23 +43,12 @@ for homebase in $HOMEBASES; do
   knife environment from file staging.rb
   git commit $VERSIONS -m"$VERSIONS: updating staged versions"
 
-  # Ensure that staging remains a subset of testing, which remains a subset of master
-  git merge testing
-  git checkout testing
-  git merge staging
-  git checkout master
-  git pull
-  git merge testing
-  git push
+  matroshka
 done
 
 for pantry in $PANTRIES; do
   cd $WORKSPACE/$pantry
-  git checkout staging
-  git merge testing
-  git checkout master
-  git pull
-  git merge testing
-  git push
-  echo
+  matroshka
 done
+echo
+echo "Everything has converged successfully. Enjoy your new staging version."

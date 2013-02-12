@@ -47,8 +47,6 @@ function knife {
   bundle exec knife "$@"
 }
 
-
-# discover changes between testing and staging by
-#   comparing VERSION files
+# Use the local copies of repos for Berkshelf operations
 export USE_LOCAL=true
 export LOCAL_PATH=..

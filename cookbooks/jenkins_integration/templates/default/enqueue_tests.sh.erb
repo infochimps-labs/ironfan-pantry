@@ -31,7 +31,13 @@ for name in $PANTRIES; do
   echo $CHANGES
   echo
 
-  echo "ensure each change includes a version bump:"
+  echo "push the changes forward into testing"
+  git checkout testing
+  git merge master
+
+  echo "ensure each change includes a version bump in master:"
+  git checkout master
+  git pull
   for cookbook in `echo "$CHANGES"`; do
     git diff --name-only testing -- cookbooks/$cookbook/VERSION | grep -q VERSION
     if [ $? -ne '0' ]; then
@@ -39,14 +45,9 @@ for name in $PANTRIES; do
       rake $cookbook:version:bump
     fi
   done
+  git push origin master        # Just the HEAD, baby (not any changes to testing, etc.)
   echo
 
-  echo "push the changes forward into testing"
-  git checkout testing
-  git merge master
-  git checkout master
-  git pull
-  git push origin master        # Just the HEAD, baby (not any changes to testing, etc.)
   echo
 done
 
