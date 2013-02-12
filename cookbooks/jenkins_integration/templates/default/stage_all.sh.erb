@@ -7,10 +7,10 @@ changed=`cat $CHANGED_COOKBOOKS`
 
 pantry_branch "testing"
 
-# Push the testing branch into the staging one. Ensure that staging remains a
-#   subset of testing, which remains a subset of master, by also pulling in
-#   changes from those branches. If this all works, push the results to origin.
 function matroshka {
+  echo Push the testing branch into the staging one. Ensure that staging remains a
+  echo subset of testing, which remains a subset of master, by also pulling in
+  echo changes from those branches. If this all works, push the results to origin.
   git checkout staging
   git merge testing
 
@@ -48,6 +48,7 @@ done
 
 for pantry in $PANTRIES; do
   cd $WORKSPACE/$pantry
+  pwd
   matroshka
 done
 echo
