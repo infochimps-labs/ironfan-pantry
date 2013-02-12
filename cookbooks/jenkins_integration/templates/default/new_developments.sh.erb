@@ -13,7 +13,10 @@ EXIT_CODE=1
 for name in $PANTRIES; do
   cd $WORKSPACE/$name
   pwd
-  if ! git diff --quiet testing staging; then EXIT_CODE=0; fi
+  if ! git diff --quiet master staging; then
+    echo "Changes found"
+    EXIT_CODE=0;
+  fi
 done
 if [ ! $EXIT_CODE ]; then echo "No changes found for testing"; fi
 exit $EXIT_CODE
