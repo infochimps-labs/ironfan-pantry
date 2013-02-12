@@ -23,8 +23,7 @@ include_recipe 'silverware'
 
 # FLIP FIX THIS -- it breaks on new builds.  chef_gem is definitely
 # the future, but the code in libraries/rubix_connection.rb:21 used to
-# do a similar thing.  Please look ther
-# include_recipe 'chef_gem'
+# do a similar thing.  Please look there
 # chef_gem 'rubix' do
 #   version ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
 # end
