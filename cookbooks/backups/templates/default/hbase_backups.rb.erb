@@ -27,11 +27,16 @@ def cleanup(bucket, retention, dt)
       break # If 0, keep all backups 
     end
     backups=`s3cmd ls s3://#{bucket}/hbase_backups/#{type}/ | grep "DIR" | awk '{print $2}'`
-    backups.each do |backup|
-      backup_date = Date.strptime(backup.split('/')[-1], "%Y%m%d")
+    backups.split("\n").each do |backup|
+      begin
+        backup_date = Date.strptime(backup.split('/')[-1], "%Y%m%d")
+      rescue ArgumentError
+         `s3cmd -c /etc/s3cfg -r del #{backup}`
+         next
+      end
+
       if (today - backup_date) > days
-#        `s3cmd -r del #{backup}`
-        puts "s3cmd -r del #{backup}"
+        `s3cmd -c /etc/s3cfg -r del #{backup}`
       end
     end
   end

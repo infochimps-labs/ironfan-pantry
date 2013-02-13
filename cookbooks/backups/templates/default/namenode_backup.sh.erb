@@ -21,7 +21,7 @@ curl -s http://${nameNode}:50070/getimage?getedit=1 > $workDir/edits
 cd $workDir
 
 tar -cf ${clusterName}.namenode.${dt}.tar ./fsimage ./edits
-s3cmd put ${workDir}/${clusterName}.namenode.${dt}.tar ${s3Target}
+s3cmd -c /etc/s3cfg put ${workDir}/${clusterName}.namenode.${dt}.tar ${s3Target}
 
 rm $workDir/${clusterName}.namenode.${dt}.tar $workDir/fsimage $workDir/edits
 
