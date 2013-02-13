@@ -76,8 +76,8 @@
   <%- end %>
   <canRoam>true</canRoam>
   <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
-  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>true</blockBuildWhenUpstreamBuilding>
   <%- if @triggers.empty? %>
   <triggers class="vector"/>
   <%- else %>
@@ -92,6 +92,11 @@
       <spec></spec>
       <ignorePostCommitHooks>false</ignorePostCommitHooks>
     </hudson.triggers.SCMTrigger>
+    <%- end %>
+    <%- if @triggers[:schedule] %>
+     <hudson.triggers.TimerTrigger>
+       <spec><%= @triggers[:schedule] %</spec>
+     </hudson.triggers.TimerTrigger>
     <%- end %>
   </triggers>
   <%- end %>

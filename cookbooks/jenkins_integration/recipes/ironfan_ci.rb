@@ -110,6 +110,7 @@ shared_templates = %w[ shared.inc launch.inc checkout.sh cookbook_versions.rb.h 
 jenkins_job "Ironfan Cookbooks - 1 - Check for new code" do
   templates     shared_templates
   tasks         %w[ new_developments.sh ]
+  triggers      :schedule => node[:jenkins_integration][:ironfan_ci][:schedule]
   downstream    [ "Ironfan Cookbooks - 2 - Test and stage" ]
 end
 

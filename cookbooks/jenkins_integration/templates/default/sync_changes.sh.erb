@@ -27,7 +27,7 @@ for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
 do
   cb_path=cookbooks/$cookbook/VERSION
   # Don't treat a removed cookbook as changed; it just causes confusion
-  if [ -f $cb_path ] && diff -qN $cb_path staged_$cb_path > /dev/null; then
+  if [ -f $cb_path ] && ! diff -qN $cb_path staged_$cb_path > /dev/null; then
     changed="$changed$cookbook "
   fi
 done

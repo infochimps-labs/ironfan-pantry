@@ -8,6 +8,7 @@ default[:jenkins_integration][:ironfan_ci][:chef_user]  = 'test'
 default[:jenkins_integration][:ironfan_ci][:target]     = 'testharness-simple'
 default[:jenkins_integration][:ironfan_ci][:broken]     = nil   # Set to launch a known-broken facet
 default[:jenkins_integration][:ironfan_ci][:branch]     = 'master'
+default[:jenkins_integration][:ironfan_ci][:schedule]   = '@midnight'
 
 pantries        = %w[ git@github.com:infochimps-labs/ironfan-pantry.git ]
 homebases       = %w[ git@github.com:infochimps-labs/ironfan-homebase.git ]
