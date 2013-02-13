@@ -178,7 +178,7 @@ Cookbook dependencies:
 
 ## Attributes
 
-* `[:zabbix][:home_dir]`              -  (default: "/opt/zabbix")
+* `[:zabbix][:home_dir]`              -  (default: "/usr/local/share/zabbix")
   - The base installation directory for Zabbix.
 * `[:zabbix][:host_groups]`           - 
   - Host groups for this node in Zabbix.

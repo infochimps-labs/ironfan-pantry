@@ -2,9 +2,9 @@
 # Cookbook Name::       zabbix
 # Description::         Installs and launches Zabbix agent.
 # Recipe::              agent
-# Author::              Dhruv Bansal (<dhruv@infochimps.com>)
+# Author::              Dhruv Bansal (<dhruv@infochimps.com>), Nacer Laradji (<nacer.laradji@gmail.com>)
 #
-# Copyright 2012, Infochimps
+# Copyright 2012-2013, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,72 +19,65 @@
 # limitations under the License.
 #
 
-directory node.zabbix.agent.log_dir do
-  owner 'zabbix'
-  group 'zabbix'
-  mode '0755'
+include_recipe("zabbix::default")
+
+standard_dirs('zabbix.agent') do
+  directories :log_dir
 end
 
-server_ips = all_zabbix_server_ips()
-# Install configuration
-template "/etc/zabbix/zabbix_agentd.conf" do
-  source "zabbix_agentd.conf.erb"
-  owner "root"
-  group "root"
-  mode "644"
-  notifies :restart, "service[zabbix_agentd]", :delayed
+case node.zabbix.agent.install_method
+when 'source', 'prebuild'
+  include_recipe "zabbix::agent_#{node.zabbix.agent.install_method}"
+else
+  warn "Invalid install method '#{node.zabbix.agent.install_method}'.  Only 'source' and 'prebuild' are supported for Zabbix agent."
+end
+
+server_ips       = all_zabbix_server_ips()
+zabbix_server_ip = server_ips.first
+template(File.join(node[:zabbix][:conf_dir], "zabbix_agentd.conf")) do
+  source    "zabbix_agentd.conf.erb"
+  mode      "644"
+  notifies  :restart, "service[zabbix_agentd]", :delayed
   variables :server_ips => server_ips
 end
 
-# Install Init script
 template "/etc/init.d/zabbix_agentd" do
   source "zabbix_agentd.init.erb"
-  owner "root"
-  group "root"
-  mode "754"
+  mode   "754"
 end
 
-include_recipe "zabbix::agent_#{node.zabbix.agent.install_method}"
-
-# We can create a host in Zabbix corresponding to this agent.
-if node.zabbix.agent.create_host
-  zabbix_server_ip = default_zabbix_server_ip
-  node_host_groups = node_zabbix_host_groups
-  node_templates   = node_zabbix_templates
-  zabbix_host node[:node_name] do
-    server      zabbix_server_ip
-    host_groups node_host_groups
-    templates   node_templates
-    monitored   true
+service "zabbix_agentd" do
+  supports :status => true, :start => true, :stop => true
+  case node.platform
+  when 'centos'
+    action [ :start ]
+  else
+    action [ :start, :enable ]
   end
 end
 
 if node.zabbix.agent.unmonitor_on_shutdown
-  template "/etc/zabbix/externalscripts/unmonitor_zabbix_host.rb" do
+  template File.join(node[:zabbix][:conf_dir], "external_scripts", "unmonitor_zabbix_host.rb") do
     source    "unmonitor_zabbix_host.rb.erb"
     mode      '0776'
     variables :ip => zabbix_server_ip
     action    :create
   end
-  
   template "/etc/init/unmonitor_zabbix_host.conf" do
     source 'unmonitor_zabbix_host.conf.erb'
     action :create
   end
 end
 
-link "/usr/local/bin/zabbix_sender" do
-  to "/opt/zabbix/bin/zabbix_sender"
-end
+announce(:zabbix, :agent, {
+  # register in the same realm, for discovery purposes
+  realm:  discovery_realm(:zabbix, :server),
+  logs:   { agent:  node.zabbix.agent.log_dir },
+  ports:  { agent:  {
+      port:     10051,
+      monitor:  false
+    }
+  },
+  daemons:  { agent:  'zabbix_agentd' }
+})
 
-announce(:zabbix, :agent,
-         # register in the same realm, for discovery purposes
-         :realm => discovery_realm(:zabbix, :server), 
-         :logs  => { :agent => node.zabbix.agent.log_dir },
-         :ports => { :agent => {
-             :port    => 10051,
-             :monitor => false
-           }
-         },
-         :daemons => { :agent => 'zabbix_agentd' }
-         )

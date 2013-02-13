@@ -2,9 +2,9 @@
 # Cookbook Name::       zabbix
 # Description::         Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache.
 # Recipe::              web_apache
-# Author::              Nacer Laradji (<nacer.laradji@gmail.com>)
+# Author::              Dhruv Bansal (<dhruv@infochimps.com>), Nacer Laradji (<nacer.laradji@gmail.com>)
 #
-# Copyright 2011, Efactures
+# Copyright 2012-2013, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,6 +28,6 @@ if node[:zabbix][:web][:fqdn] != nil
   web_app "#{node.zabbix.web.fqdn}" do
     server_name node.zabbix.web.fqdn
     server_aliases "zabbix"
-    docroot "/opt/zabbix/web"
+    docroot node.zabbix.web.home_dir
   end
 end

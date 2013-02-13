@@ -2,9 +2,9 @@
 # Cookbook Name::       zabbix
 # Description::         Configures PHP-driven, reverse-proxied Zabbix web frontend.
 # Recipe::              web
-# Author::              Dhruv Bansal (dhruv@infochimps.com)
+# Author::              Dhruv Bansal (dhruv@infochimps.com), Nacer Laradji (<nacer.laradji@gmail.com>)
 #
-# Copyright 2012, Infochimps
+# Copyright 2012-2013, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,61 +19,52 @@
 # limitations under the License.
 #
 
+include_recipe("zabbix::default")
+
 case node[:platform]
 when "ubuntu","debian"
-  bash "apt-get-y-update" do
-    code "apt-get -y update"
-  end
   %w[traceroute php5-cgi php5-mysql php5-gd].each { |name| package(name) }
 when "centos"
   %w[traceroute php php-mysql php-gd php-bcmath php-mbstring php-xml].each { |name| package(name) }
 else
-  log "No #{node.platform} support yet"
+  log "No #{node.platform} support yet for Zabbix web"
 end
 
-# Link to the web interface version
-link "/opt/zabbix/web" do
-  to "/opt/zabbix-#{node.zabbix.server.version}/frontends/php"
+standard_dirs('zabbix.web') do
+  directories :log_dir
 end
 
-# fix web folder right
-script "zabbix_fix_web_right" do
-  interpreter "bash"
-  user "root"
-  cwd "/opt"
+install_from_release('zabbix') do
+  action        :configure
+  release_url   node.zabbix.release_url
+  version       node.zabbix.server.version
+  notifies      :run, 'bash[chown_zabbix_web]', :immediately
+  not_if        { File.exist?(node.zabbix.web.home_dir) }
+end
+
+bash "chown_zabbix_web" do
   action :nothing
-  code <<-EOH
-  chown www-data -R /opt/zabbix-#{node.zabbix.server.version}/frontends/php
-  EOH
+  code "chown -R #{node.zabbix.web.user} #{node.zabbix.web.home_dir}"
 end
 
-# Give access to www-data to zabbix frontend config folder
-directory "/opt/zabbix-#{node.zabbix.server.version}/frontends/php" do
-  owner "www-data"
-  group "www-data"
-  mode "0755"
-  recursive true
-  action :create
-  notifies :run, resources(:script => "zabbix_fix_web_right")
-end
-
-[node.zabbix.web.log_dir, "/opt/zabbix-#{node.zabbix.server.version}/frontends/php/conf"].each do |d|
-  directory d do
-    owner 'www-data'
-    group 'www-data'
-    mode '0755'
-    action :create
-    recursive true
-  end
-end
-
-template "/opt/zabbix-#{node.zabbix.server.version}/frontends/php/conf/zabbix.conf.php" do
-  source "zabbix.conf.php.erb"
-  owner 'www-data'
-  group 'www-data'
-  mode '0600'
+template File.join(node.zabbix.web.home_dir, 'conf', 'zabbix.conf.php') do
+  source 'zabbix.conf.php.erb'
+  owner  node.zabbix.web.user
+  group  node.zabbix.web.user
+  mode   '0600'
   action :create
 end
 
-# Configure upstream webserver.
-include_recipe "zabbix::web_#{node.zabbix.web.install_method}"
+template File.join(node.zabbix.conf_dir, "php.ini") do
+  source   'php.ini.erb'
+  owner    node.zabbix.web.user
+  action   :create
+  notifies :restart, resources(service: 'zabbix_web'), :delayed
+end
+
+case node.zabbix.web.install_method
+when 'nginx', 'apache'
+  include_recipe "zabbix::web_#{node.zabbix.web.install_method}"
+else
+  warn "Invalid install method '#{node.zabbix.web.install_method}'.  Only 'nginx' and 'apache' are supported for Zabbix web."
+end
