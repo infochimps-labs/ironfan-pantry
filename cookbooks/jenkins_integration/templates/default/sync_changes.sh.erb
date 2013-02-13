@@ -42,7 +42,11 @@ echo $changed | tee $CHANGED_COOKBOOKS
 # never gonna give you up, never gonna let you down
 #   never gonna give you less than the latest roles
 echo "Uploading roles:"
-rake roles
+# rake roles
+for file in `git diff --name-only staging roles/`
+do
+  if [ -f $file ]; then rake role from file $file; fi
+done
 echo
 
 echo "Uploading changed cookbooks: $changed"
