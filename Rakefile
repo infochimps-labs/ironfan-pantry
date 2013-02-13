@@ -77,14 +77,14 @@ task :ensure_postcommit_hook do
 
     echo "Looking for version bumps in changed code"
 
-    changes=`git diff --name-only master origin/staging -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
+    changes=`git diff --name-only master origin/testing -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
     if [ "x$changes" = "x" ]; then
-      echo "No cookbook changes between master and staging"
+      echo "No cookbook changes between master and testing"
       exit 0
     fi
 
     for cookbook in $changes; do
-      if git diff --quiet master origin/staging -- cookbooks/$cookbook/VERSION; then
+      if git diff --quiet master origin/testing -- cookbooks/$cookbook/VERSION; then
         echo "INFO: changes found without VERSION, bumping version in $cookbook"
         rake $cookbook:version:bump
       fi
