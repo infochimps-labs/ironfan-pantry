@@ -22,9 +22,13 @@ echo "Uploading changed cookbooks:"
 changed=''
 echo > $CHANGED_COOKBOOKS
 for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
-  cb_path=cookbooks/$cookbook/VERSION
+  cb_path=cookbooks/$cookbook
   # Don't treat a removed cookbook as changed
-  if [ -f $cb_path ] && ! diff -qN $cb_path staged_$cb_path > /dev/null; then
+  test_path="[ -d $cb_path ]"
+  find_change="diff -qr $cb_path staged_$cb_path"
+  # Look only for differences that *aren't* VERSION bumps
+  real_change="! $find_change | grep -v VERSION > /dev/null"
+  if $test_path && $real_change; then
     changed="$changed$cookbook "
   fi
 done
