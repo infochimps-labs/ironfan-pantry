@@ -111,7 +111,8 @@
       <%- @tasks.each do |t| %>
         echo Running <%= t %>
         time <%= @path %>/<%= t %>
-        echo; echo; echo;
+        echo Finished <%= t %>
+        echo; echo; echo; echo; echo;
 
       <%- end %>
       </command>

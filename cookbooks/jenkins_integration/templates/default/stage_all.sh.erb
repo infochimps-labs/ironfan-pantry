@@ -22,6 +22,7 @@ function matroshka {
   git merge testing
 
   git push
+  echo
 }
 
 for homebase in $HOMEBASES; do
@@ -30,6 +31,7 @@ for homebase in $HOMEBASES; do
   echo "Install testing cookbooks, upload and freeze those which changed this run"
   bundle exec berks install --path cookbooks
   knife cookbook upload -V --freeze $changed
+  echo
 
   echo "Record the cookbook versions to the staging environment"
   git checkout staging
@@ -42,6 +44,7 @@ for homebase in $HOMEBASES; do
   done
   knife environment from file staging.rb
   git commit $VERSIONS -m"$VERSIONS: updating staged versions"
+  echo
 
   matroshka
 done
