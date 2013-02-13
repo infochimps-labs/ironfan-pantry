@@ -17,6 +17,7 @@ if [ ! -d $name ]; then
 else
   echo "Updating $1:"
   cd $name
+  git checkout master
   git pull
 
   echo "update remotes:"
