@@ -29,8 +29,8 @@ for name in $PANTRIES; do
   git pull
   for cookbook in $changes; do
     if git diff --quiet staging -- cookbooks/$cookbook/VERSION; then
-      echo "ERROR: changes found but no version bump in $cookbook"
-      EXIT_CODE=2
+      echo "WARNING: changes found but no version bump in $cookbook"
+      rake $cookbook:version:bump
     fi
   done
   echo
