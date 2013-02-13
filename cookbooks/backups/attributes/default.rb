@@ -70,9 +70,10 @@ default[:backups][:elasticsearch][:weekday     ]     = "0"
 # Retention
 # 
 
-default[:backups][:retention][:minute  ]     = "0"
-default[:backups][:retention][:hour    ]     = "4"
-default[:backups][:retention][:day     ]     = "*"
-default[:backups][:retention][:month   ]     = "*"
-default[:backups][:retention][:weekday ]     = "*"
-default[:backups][:retention][:namenode]     = "7" # Retention in days
+default[:backups][:retention][:minute   ]     = "0"
+default[:backups][:retention][:hour     ]     = "4"
+default[:backups][:retention][:day      ]     = "*"
+default[:backups][:retention][:month    ]     = "*"
+default[:backups][:retention][:weekday  ]     = "*"
+default[:backups][:retention][:namenode ]     = "7" # Retention in days
+default[:backups][:retention][:zookeeper]     = "5" # Retention in days
