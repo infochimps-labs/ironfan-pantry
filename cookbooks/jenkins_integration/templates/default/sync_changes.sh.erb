@@ -18,9 +18,8 @@ git checkout master
 bundle exec berks install --path cookbooks
 echo
 
-pantry_branch "master"
-
 echo "Finding differences between testing and staging:"
+pantry_branch "master"
 changed=''
 echo > $CHANGED_COOKBOOKS
 for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
@@ -36,8 +35,8 @@ if [ "nothing$changed" == "nothing" ]; then
   echo "Nothing changed - very suspicious"
   exit 1
 fi
-
 echo $changed | tee $CHANGED_COOKBOOKS
+echo
 
 # never gonna give you up, never gonna let you down
 #   never gonna give you less than the latest roles
