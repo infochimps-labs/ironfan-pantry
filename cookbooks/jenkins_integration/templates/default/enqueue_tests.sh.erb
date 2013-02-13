@@ -38,9 +38,9 @@ for name in $PANTRIES; do
   echo "ensure each change includes a version bump in master:"
   git checkout master
   git pull
-  for cookbook in `echo "$CHANGES"`; do
-    git diff --name-only origin/testing -- cookbooks/$cookbook/VERSION | grep -q VERSION
-    if [ $? -ne '0' ]; then
+  for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
+    git diff --quiet --name-only origin/testing -- cookbooks/$cookbook/VERSION
+    if ! $?; then
       echo "bumping $cookbook"
       rake $cookbook:version:bump
     fi
