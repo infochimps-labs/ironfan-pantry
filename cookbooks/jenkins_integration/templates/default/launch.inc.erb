@@ -15,27 +15,36 @@ function klean_exit {
 }
 
 kc list -f
+echo
+
 kc show $CLUSTER
+echo
+
 kc launch $FACET
 if [ $? -ne 0 ] ; then
   echo "FATAL: knife cluster launch failed"
   klean_exit 1
 fi
+echo
 
 WAIT=0
 while true; do
-  kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log
-  if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
-    kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE >> tmp.client.log
-    cat tmp.client.log
-    klean_exit 1
-  elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
-    cat tmp.client.log
-    klean_exit 0
-  fi
   sleep 15
   WAIT=$((WAIT+15))
-  # FIXME: not accurate, ignores knife cluster run times. 
-  #   Not really worth fixing . . . yet.
+  # FIXME: inaccurate (only counts wait time). Not really worth fixing yet.
   echo "Waited $WAIT seconds while chef finishes running"
+
+  kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log
+  if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
+    echo
+    kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE >> tmp.client.log
+    cat tmp.client.log
+    echo
+    klean_exit 1
+  elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
+    echo
+    cat tmp.client.log
+    echo
+    klean_exit 0
+  fi
 done

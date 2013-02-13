@@ -18,19 +18,17 @@ git checkout master
 bundle exec berks install --path cookbooks
 echo
 
-echo "Finding differences between testing and staging:"
+echo "Finding cookbook differences between testing and staging:"
 pantry_branch "master"
 changed=''
 echo > $CHANGED_COOKBOOKS
-for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`
-do
+for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
   cb_path=cookbooks/$cookbook/VERSION
   # Don't treat a removed cookbook as changed; it just causes confusion
   if [ -f $cb_path ] && ! diff -qN $cb_path staged_$cb_path > /dev/null; then
     changed="$changed$cookbook "
   fi
 done
-
 if [ "nothing$changed" == "nothing" ]; then
   echo "Nothing changed - very suspicious"
   exit 1
@@ -38,15 +36,22 @@ fi
 echo $changed | tee $CHANGED_COOKBOOKS
 echo
 
-# never gonna give you up, never gonna let you down
-#   never gonna give you less than the latest roles
-echo "Uploading roles:"
-# rake roles
-for file in `git diff --name-only staging roles/`
-do
-  if [ -f $file ]; then rake role from file $file; fi
-done
-echo
-
 echo "Uploading changed cookbooks: $changed"
 knife cookbook upload $changed
+echo
+
+# never gonna give you up, never gonna let you down
+#   never gonna give you less than the latest roles
+echo "Uploading changed roles:"
+# rake roles
+for file in `git diff --name-only staging roles/`; do
+  changed=''
+  if [ -f $file ]; then 
+    rake role from file $file
+    changed="$changed$file "
+  fi
+done
+if [ "nothing$changed" == "nothing" ]; then
+  echo "Nothing changed"
+fi
+echo
