@@ -25,10 +25,8 @@ for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
   cb_path=cookbooks/$cookbook
   # Don't treat a removed cookbook as changed
   test_path="[ -d $cb_path ]"
-  find_change="diff -qr $cb_path staged_$cb_path"
-  # Look only for differences that *aren't* VERSION bumps
-  real_change="! $find_change | grep -v VERSION > /dev/null"
-  if $test_path && $real_change; then
+  no_change="diff -qr $cb_path staged_$cb_path"
+  if $test_path && ! $no_change > /dev/null; then
     changed="$changed$cookbook "
   fi
 done
