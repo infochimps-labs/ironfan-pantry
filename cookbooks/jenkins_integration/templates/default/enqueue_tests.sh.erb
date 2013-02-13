@@ -40,7 +40,7 @@ for name in $PANTRIES; do
   git pull
   for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
     git diff --quiet --name-only origin/testing -- cookbooks/$cookbook/VERSION
-    if ! $?; then
+    if [ $? -ne '0' ]; then
       echo "bumping $cookbook"
       rake $cookbook:version:bump
     fi
