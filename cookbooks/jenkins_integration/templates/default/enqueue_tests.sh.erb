@@ -23,12 +23,12 @@ for name in $PANTRIES; do
   echo
 
   echo "find all cookbook differences between master and staging:"
-  CHANGES=`git diff --name-only staging -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
-  if [ "x$CHANGES" = "x" ]; then
+  changes=`git diff --name-only staging -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
+  if [ "x$changes" = "x" ]; then
     echo "No cookbook changes between master and staging"
     continue
   fi
-  echo $CHANGES
+  echo $changes
   echo
 
   echo "push the changes forward into testing"
@@ -39,13 +39,11 @@ for name in $PANTRIES; do
   echo "ensure each change includes a version bump in master:"
   git checkout master
   git pull
-  for cookbook in $CHANGES; do
-    git diff --quiet --name-only testing -- cookbooks/$cookbook/VERSION
-    if [ $? -ne '0' ]; then
-      echo "bumping $cookbook"
-      rake $cookbook:version:bump
-    fi
+  for cookbook in $changes; do
+    echo "bumping $cookbook"
+    rake $cookbook:version:bump
   done
-  git push origin master        # Just the HEAD, baby (not any changes to testing, etc.)
+  # Just the HEAD, baby (not any changes to testing, etc.)
+  git push origin master
   echo
 done
