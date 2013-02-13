@@ -25,5 +25,6 @@ for name in $PANTRIES; do
   echo "push the changes forward into testing"
   git checkout testing
   git merge master
+  git push origin testing       # Just the HEAD, baby
   echo
 done
