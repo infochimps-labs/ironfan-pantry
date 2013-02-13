@@ -89,6 +89,14 @@ file node[:jenkins][:server][:home_dir] + '/.profile' do
   group         node[:jenkins][:server][:group]
 end
 
+# FIXME: This should be another recipe
+execute "set timezone" do
+  command <<-eof
+    echo 'US/Central' > /etc/timezone
+    dpkg-reconfigure --frontend noninteractive tzdata
+  eof
+end
+
 #
 # Jenkins Jobs
 #
@@ -130,4 +138,3 @@ if node[:jenkins_integration][:ironfan_ci][:broken]
     tasks       %w[ launch_broken.sh ]
   end
 end
-
