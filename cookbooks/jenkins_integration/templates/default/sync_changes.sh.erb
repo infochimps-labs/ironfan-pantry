@@ -14,12 +14,11 @@ echo
 
 echo "Getting testing cookbooks:"
 pantry_branch "testing"
-git checkout master
+git checkout testing
 bundle exec berks install --path cookbooks; echo
 echo
 
 echo "Finding cookbook differences between testing and staging:"
-pantry_branch "master"
 changed=''
 echo > $CHANGED_COOKBOOKS
 for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
@@ -32,9 +31,8 @@ done
 if [ "nothing$changed" == "nothing" ]; then
   echo "Nothing changed - very suspicious"
   exit 1
-else
-  echo $changed | tee $CHANGED_COOKBOOKS
 fi
+echo $changed > tee $CHANGED_COOKBOOKS
 echo
 
 echo "Uploading changed cookbooks: $changed"
