@@ -65,3 +65,32 @@ namespace :all do
     end
   end
 end
+
+desc "Install the postcommit hook that ensures VERSION bumps happen"
+task :ensure_postcommit_hook do
+  hook = <<-eos.gsub(/^ {#{4}}/, '')
+    #!/usr/bin/env bash
+    #
+    # Ensure that all cookbook changes include a bump to the relevant
+    #   cookbook's VERSION file.
+    #
+
+    echo "Looking for version bumps in changed code"
+
+    changes=`git diff --name-only master origin/staging -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
+    if [ "x$changes" = "x" ]; then
+      echo "No cookbook changes between master and staging"
+      exit 0
+    fi
+
+    for cookbook in $changes; do
+      if git diff --quiet master origin/staging -- cookbooks/$cookbook/VERSION; then
+        echo "INFO: changes found without VERSION, bumping version in $cookbook"
+        rake $cookbook:version:bump
+      fi
+    done
+  eos
+  target = File.join('.git','hooks','post-commit')
+  File.open(target,'w') {|f| f.write(hook) }
+  File.chmod(0775,target)
+end
