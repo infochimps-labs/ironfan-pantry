@@ -32,7 +32,7 @@ if [ "nothing$changed" == "nothing" ]; then
   echo "Nothing changed - very suspicious"
   exit 1
 fi
-echo $changed > tee $CHANGED_COOKBOOKS
+echo $changed > $CHANGED_COOKBOOKS
 knife cookbook upload $changed
 echo
 
