@@ -77,7 +77,7 @@ task :ensure_postcommit_hook do
 
     echo "Looking for version bumps in changed code"
 
-    git fetch origin
+    timeout 5s git fetch origin
 
     changes=`git diff --name-only master origin/testing -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
     if [ "x$changes" = "x" ]; then
