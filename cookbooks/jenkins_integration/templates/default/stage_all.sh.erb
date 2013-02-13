@@ -3,10 +3,6 @@ set -e
 
 source `dirname $0`/shared.inc
 
-changed=`cat $CHANGED_COOKBOOKS`
-
-pantry_branch "testing"
-
 function matroshka {
   echo Push the testing branch into the staging one. Ensure that staging remains a
   echo subset of testing, which remains a subset of master, by also pulling in
@@ -25,11 +21,15 @@ function matroshka {
   echo
 }
 
+changed=`cat $CHANGED_COOKBOOKS`
+
+pantry_branch "testing"
+
 for homebase in $HOMEBASES; do
   cd $WORKSPACE/$homebase
   pwd
   echo "Install testing cookbooks, upload and freeze those which changed this run"
-  bundle exec berks install --path cookbooks
+  bundle exec berks install --path cookbooks; echo
   knife cookbook upload -V --freeze $changed
   echo
 

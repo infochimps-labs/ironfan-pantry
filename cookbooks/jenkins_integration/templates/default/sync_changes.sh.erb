@@ -9,13 +9,13 @@ cd $TEST_PATH
 echo "Getting staging cookbooks:"
 pantry_branch "staging"
 git checkout staging
-bundle exec berks install --path staged_cookbooks
+bundle exec berks install --path staged_cookbooks; echo
 echo
 
 echo "Getting testing cookbooks:"
 pantry_branch "testing"
 git checkout master
-bundle exec berks install --path cookbooks
+bundle exec berks install --path cookbooks; echo
 echo
 
 echo "Finding cookbook differences between testing and staging:"
@@ -32,8 +32,9 @@ done
 if [ "nothing$changed" == "nothing" ]; then
   echo "Nothing changed - very suspicious"
   exit 1
+else
+  echo $changed | tee $CHANGED_COOKBOOKS
 fi
-echo $changed | tee $CHANGED_COOKBOOKS
 echo
 
 echo "Uploading changed cookbooks: $changed"
@@ -44,8 +45,8 @@ echo
 #   never gonna give you less than the latest roles
 echo "Uploading changed roles:"
 # rake roles
+changed=''
 for file in `git diff --name-only staging roles/`; do
-  changed=''
   if [ -f $file ]; then 
     rake role from file $file
     changed="$changed$file "
@@ -53,5 +54,7 @@ for file in `git diff --name-only staging roles/`; do
 done
 if [ "nothing$changed" == "nothing" ]; then
   echo "Nothing changed"
+else
+  echo $changed
 fi
 echo

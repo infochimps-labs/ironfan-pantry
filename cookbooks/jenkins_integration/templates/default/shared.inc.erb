@@ -22,11 +22,13 @@ TEST_REPO="<%= node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
 TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
 
 function switch_branches {
+  echo "Switching to $1 on $2"
   for repo in $2; do
     cd $WORKSPACE/$repo
     git checkout $1
     cd - > /dev/null
   done
+  echo
 }
 function pantry_branch {
   switch_branches $1 "$PANTRIES"
