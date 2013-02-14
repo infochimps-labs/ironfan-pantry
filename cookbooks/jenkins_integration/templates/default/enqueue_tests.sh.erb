@@ -22,7 +22,7 @@ for name in $ALL_PATHS; do
   echo
 
   echo "push the changes forward into testing"
-  git checkout testing
+  git checkout -f testing
   git merge master
   git push origin testing       # Just the HEAD, baby
   echo
