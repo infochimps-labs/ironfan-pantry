@@ -29,7 +29,7 @@ for homebase in $HOMEBASES; do
   cd $WORKSPACE/$homebase
   pwd
   echo "Install testing cookbooks, upload and freeze those which changed this run"
-  bundle exec berks install --path cookbooks; echo
+  berkshelf --path cookbooks
   knife cookbook upload -V --freeze $changed
   echo
 

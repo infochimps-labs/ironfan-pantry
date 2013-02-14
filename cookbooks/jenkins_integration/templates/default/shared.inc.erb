@@ -48,6 +48,17 @@ export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
 function knife {
   bundle exec knife "$@"
 }
+function berkshelf {
+  bundle exec berks install "$@"; echo
+}
+function ensure_bundle {
+  if ! bundle check; then
+    echo "Installing bundle:"
+    PARAMS="--path $WORKSPACE/vendor --no-color --without=development,support"
+    # Only install from source if cache fails
+    bundle install $PARAMS --local || bundle install $PARAMS
+  fi
+}
 
 # Use the local copies of repos for Berkshelf operations
 export USE_LOCAL=true

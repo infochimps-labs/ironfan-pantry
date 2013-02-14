@@ -31,10 +31,5 @@ echo "Get submodules"
 git checkout master
 git submodule update --init
 
-if ! bundle check; then
-  echo "Installing bundle:"
-  PARAMS="--path $WORKSPACE/vendor --no-color --without=development,support"
-  # Only install from source if cache fails
-  bundle install $PARAMS --local || bundle install $PARAMS
-fi
+ensure_bundle
 echo

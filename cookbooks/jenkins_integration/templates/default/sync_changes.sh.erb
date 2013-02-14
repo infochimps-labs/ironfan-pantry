@@ -9,13 +9,15 @@ cd $TEST_PATH
 echo "Getting staging cookbooks:"
 pantry_branch "staging"
 git checkout -f staging
-bundle exec berks install --path staged_cookbooks; echo
+ensure_bundle
+berkshelf --path staged_cookbooks
 echo
 
 echo "Getting testing cookbooks:"
 pantry_branch "testing"
 git checkout -f testing
-bundle exec berks install --path cookbooks; echo
+ensure_bundle
+berkshelf --path cookbooks
 echo
 
 echo "Uploading changed cookbooks:"
