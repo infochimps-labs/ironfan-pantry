@@ -26,7 +26,7 @@ def cleanup(bucket, retention, dt)
     if days < 1
       break # If 0, keep all backups 
     end
-    backups=`s3cmd ls s3://#{bucket}/hbase_backups/#{type}/ | grep "DIR" | awk '{print $2}'`
+    backups=`s3cmd -c /etc/s3cfg ls s3://#{bucket}/hbase_backups/#{type}/ | grep "DIR" | awk '{print $2}'`
     backups.split("\n").each do |backup|
       begin
         backup_date = Date.strptime(backup.split('/')[-1], "%Y%m%d")
