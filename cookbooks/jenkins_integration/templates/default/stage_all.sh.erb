@@ -7,13 +7,13 @@ function matroshka {
   echo Push the testing branch into the staging one. Ensure that staging remains a
   echo subset of testing, which remains a subset of master, by also pulling in
   echo changes from those branches. If this all works, push the results to origin.
-  git checkout staging
+  git checkout -f staging
   git merge testing
 
-  git checkout testing
+  git checkout -f testing
   git merge staging
 
-  git checkout master
+  git checkout -f master
   git pull              # There may be development changes
   git merge testing
 
@@ -34,7 +34,7 @@ for homebase in $HOMEBASES; do
   echo
 
   echo "Record the cookbook versions to the staging environment"
-  git checkout staging
+  git checkout -f staging
   VERSIONS=environments/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
   for target in `ls -1d cookbooks/*`; do
