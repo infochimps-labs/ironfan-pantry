@@ -8,7 +8,7 @@ REPOS="<%=( node[:jenkins_integration][:ironfan_ci][:pantries] +
 for repo in $REPOS; do
   $ROOT_DIR/checkout.sh $repo
 done
-# FIXME: These probably need to be expanded for all repos
+
 for name in $ALL_PATHS; do
   cd $WORKSPACE/$name
   pwd
