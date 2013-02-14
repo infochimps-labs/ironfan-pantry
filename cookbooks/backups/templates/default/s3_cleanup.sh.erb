@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Clean up old buckets of cool stuff from S3.  This isn't very flexible and assumes the following S3 directory stucture: 
+# s3://<bucket>/<app>_backup/<date>.  (eg: s3://bucket.o.chicken/namenode_backup/20130101)
+#
+# This should be reworked using an actual client.  
+
+s3Target="s3://<%= @node[:backups][:s3] %>/<%= @type %>_backups/"
+days=<%= @retention %>
+
+if [ ${days} -lt 1 ]; then 
+  exit 1
+fi
+
+OLD=$(date -d "$(date -d "${days} days ago" +%Y%m%d)" +%s)
+BACKUPS=$(s3cmd ls ${s3Target} | grep "DIR" | awk '{print $2}')
+
+for backup in ${BACKUPS}; do
+  bn=$(basename ${backup})
+  if [ $(date -d "${bn}" +%s) -le ${OLD} ]; then
+    s3cmd -c /etc/s3cfg -r del ${backup}
+  fi
+done
+
