@@ -65,13 +65,9 @@ for name in $HOMEBASES; do
     echo "Nothing changed - very suspicious"
     exit 1
   fi
-end
 
-echo "Install testing cookbooks, upload and freeze those which changed this run"
-for name in $HOMEBASES; do
-  cd $WORKSPACE/$name; pwd
-  berkshelf --path cookbooks
-  knife cookbook upload -V --freeze $changed
+  echo "Upload and freeze cookbooks that changed this run"
+  knife cookbook upload -V --freeze $changed || exit 1
   echo
 done
 
