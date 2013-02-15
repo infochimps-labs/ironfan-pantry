@@ -88,7 +88,7 @@ task :ensure_postcommit_hook do
     for cookbook in $changes; do
       if git diff --quiet master origin/testing -- cookbooks/$cookbook/VERSION; then
         echo "INFO: changes found without VERSION, bumping version in $cookbook"
-        rake $cookbook:version:bump
+        bundle exec rake $cookbook:version:bump
       fi
     done
   eos
