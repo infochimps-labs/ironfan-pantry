@@ -52,6 +52,12 @@ today = Date.today().strftime("%A")
 start = nil
 type = nil
 
+if tables == '*'
+  # This is the mega hacky, but it is independant of Stargate / Thrift
+  tlist = `echo "list" | hbase shell | sed -n -e '/TABLE/,/seconds/ p' | head -n -1 | tail -n +2`
+  tables = tlist.split("\n").map {|t| t.strip}
+end
+
 tables.each do |table|
   if config.has_key?(table)
     full = config[table]['full']
