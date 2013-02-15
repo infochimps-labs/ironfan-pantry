@@ -10,8 +10,7 @@ for repo in $REPOS; do
 done
 
 for name in $ALL_PATHS; do
-  cd $WORKSPACE/$name
-  pwd
+  cd $WORKSPACE/$name; pwd
 
   echo "make sure master is a descendant of testing:"
   git merge testing | grep 'Already up-to-date'
@@ -30,8 +29,9 @@ done
 
 echo "Getting staging cookbooks:"
 pantry_branch "staging"
-for homebase in $HOMEBASES; do
-  cd $WORKSPACE/$homebase; pwd
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
+
   git checkout -f staging
   ensure_bundle
   berkshelf --path staged_cookbooks
@@ -40,8 +40,8 @@ end
 
 echo "Getting testing cookbooks:"
 pantry_branch "testing"
-for homebase in $HOMEBASES; do
-  cd $WORKSPACE/$homebase; pwd
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
   git checkout -f testing
   ensure_bundle
   berkshelf --path cookbooks
@@ -49,8 +49,8 @@ for homebase in $HOMEBASES; do
 end
 
 echo "Detecting changed cookbooks:"
-for homebase in $HOMEBASES; do
-  cd $WORKSPACE/$homebase; pwd
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
   changed=''
   for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
     cb_path=cookbooks/$cookbook
@@ -68,8 +68,8 @@ for homebase in $HOMEBASES; do
 end
 
 echo "Install testing cookbooks, upload and freeze those which changed this run"
-for homebase in $HOMEBASES; do
-  cd $WORKSPACE/$homebase; pwd
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
   berkshelf --path cookbooks
   knife cookbook upload -V --freeze $changed
   echo

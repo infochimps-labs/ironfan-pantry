@@ -9,11 +9,9 @@ default[:jenkins_integration][:ironfan_ci][:target]     = 'testharness-simple'
 default[:jenkins_integration][:ironfan_ci][:broken]     = nil   # Set to launch a known-broken facet
 default[:jenkins_integration][:ironfan_ci][:branch]     = 'master'
 default[:jenkins_integration][:ironfan_ci][:schedule]   = '@midnight'
+default[:jenkins_integration][:ironfan_ci][:max_wait]   = 60*20 # 20 minutes
 
 pantries        = %w[ git@github.com:infochimps-labs/ironfan-pantry.git ]
 homebases       = %w[ git@github.com:infochimps-labs/ironfan-homebase.git ]
 default[:jenkins_integration][:ironfan_ci][:pantries]   = pantries
 default[:jenkins_integration][:ironfan_ci][:homebases]  = homebases
-
-# # Plugins that we need for the Ironfan CI job to work correctly
-# node.default[:jenkins][:server][:plugins] += %w[ join parameterized-trigger ]

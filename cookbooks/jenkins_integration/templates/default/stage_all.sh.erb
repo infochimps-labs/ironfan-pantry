@@ -25,8 +25,10 @@ changed=`cat $CHANGED_COOKBOOKS`
 
 pantry_branch "testing"
 
-for homebase in $HOMEBASES; do
-  echo "Record the cookbook versions to the staging environment"
+echo "Record the cookbook versions to the staging environment"
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
+
   git checkout -f staging
   VERSIONS=environments/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
@@ -42,9 +44,9 @@ for homebase in $HOMEBASES; do
   matroshka
 done
 
-for pantry in $PANTRIES; do
-  cd $WORKSPACE/$pantry
-  pwd
+for name in $PANTRIES; do
+  cd $WORKSPACE/$name; pwd
+
   matroshka
 done
 

@@ -34,7 +34,7 @@ while true; do
   # FIXME: inaccurate (only counts wait time). Not really worth fixing yet.
   echo "Waited $WAIT seconds while chef finishes running"
 
-  kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log
+  kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log 
   if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
     echo
     kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE >> tmp.client.log
@@ -46,5 +46,8 @@ while true; do
     cat tmp.client.log
     echo
     klean_exit 0
+  elif $WAIT > $MAX_WAIT
+    echo "FATAL: waited too long for results."
+    klean_exit 1
   fi
 done

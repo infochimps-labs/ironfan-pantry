@@ -4,6 +4,7 @@
 #
 source `dirname $0`/shared.inc
 export FACET=<%= node[:jenkins_integration][:ironfan_ci][:target] %>
+export MAX_WAIT=<%= node[:jenkins_integration][:ironfan_ci][:max_wait] %>
 
 cd $TEST_PATH
 

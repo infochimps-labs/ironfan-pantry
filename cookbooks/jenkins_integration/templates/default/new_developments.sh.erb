@@ -11,18 +11,21 @@ done
 # Only continue if something needs testing
 EXIT_CODE=1
 for name in $PANTRIES; do
-  cd $WORKSPACE/$name
-  pwd
+  cd $WORKSPACE/$name; pwd
+
   echo "find all cookbook differences between master and staging:"
   changes=`git diff --name-only staging -- cookbooks/*/ | cut -d/ -f2 | sort | uniq`
   if [ "x$changes" = "x" ]; then
     echo "No cookbook changes between master and staging"
+    echo
     continue
   fi
+  echo
 
   echo "Changes found"
   echo $changes
   if [ $EXIT_CODE == "1" ]; then EXIT_CODE=0; fi
+  echo
 
   echo "ensure each change includes a version bump in master:"
   git checkout master
@@ -35,7 +38,6 @@ for name in $PANTRIES; do
   done
   git push origin master
   echo
-
 done
 
 if [ $EXIT_CODE == "1" ]; then echo "ERROR: No changes found for testing"; fi
