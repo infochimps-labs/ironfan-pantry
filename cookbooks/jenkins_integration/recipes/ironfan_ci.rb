@@ -124,8 +124,7 @@ end
 
 jenkins_job "Ironfan Cookbooks - 2 - Test and stage" do
   templates     shared_templates
-  tasks         %w[ enqueue_tests.sh sync_changes.sh 
-                    launch_instance.sh stage_all.sh ]
+  tasks         %w[ enqueue_tests.sh launch_instance.sh stage_all.sh ]
   if node[:jenkins_integration][:ironfan_ci][:broken]
     downstream  [ "Ironfan Cookbooks - 3 - Test known broken" ]
   end

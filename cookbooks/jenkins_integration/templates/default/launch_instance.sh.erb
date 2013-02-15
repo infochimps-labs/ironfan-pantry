@@ -6,4 +6,19 @@ source `dirname $0`/shared.inc
 export FACET=<%= node[:jenkins_integration][:ironfan_ci][:target] %>
 
 cd $TEST_PATH
+
+echo "Uploading changed roles:"
+changed=''
+for file in `git diff --name-only staging roles/`; do
+  # Don't treat a removed role as changed
+  if [ -f $file ]; then
+    rake role from file $file
+    changed="$changed$file "
+  fi
+done
+if [ "nothing$changed" == "nothing" ]; then
+  echo "Nothing changed"
+fi
+echo
+
 source $ROOT_DIR/launch.inc
