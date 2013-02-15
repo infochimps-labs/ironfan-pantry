@@ -26,13 +26,6 @@ changed=`cat $CHANGED_COOKBOOKS`
 pantry_branch "testing"
 
 for homebase in $HOMEBASES; do
-  cd $WORKSPACE/$homebase
-  pwd
-  echo "Install testing cookbooks, upload and freeze those which changed this run"
-  berkshelf --path cookbooks
-  knife cookbook upload -V --freeze $changed
-  echo
-
   echo "Record the cookbook versions to the staging environment"
   git checkout -f staging
   VERSIONS=environments/cookbook_versions.rb
