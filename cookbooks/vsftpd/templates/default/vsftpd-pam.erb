@@ -1,0 +1,2 @@
+auth required pam_pwdfile.so pwdfile <%= node[:vsftpd][:user_passwd_file] %>
+account required pam_permit.so

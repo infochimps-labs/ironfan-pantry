@@ -1,0 +1,72 @@
+<% if node[:vsftpd][:listen_ipv6_exclusively] %>
+listen_ipv6=YES
+<% else %>
+listen=YES
+<% end %>
+<% if node[:vsftpd][:pasv] %>
+pasv_enable=YES
+pasv_min_port=<%= node[:vsftpd][:pasv_min_port] %>
+pasv_max_port=<%= node[:vsftpd][:pasv_max_port] %>
+pasv_address=<%= node[:vsftpd][:ipaddress] %>
+<% end %>
+anonymous_enable=<%= node[:vsftpd][:anonymous_enable] ? 'YES' : 'NO' %>
+<% if node[:vsftpd][:anon_root] %>
+anon_root=<%= node[:vsftpd][:anon_root] %>
+<% end %>
+anon_upload_enable=<%= node[:vsftpd][:anon_upload_enable] ? 'YES' : 'NO' %>
+anon_mkdir_write_enable=<%= node[:vsftpd][:anonymous_enable] ? 'YES' : 'NO' %>
+local_enable=<%= node[:vsftpd][:local_enable] ? 'YES' : 'NO' %>
+write_enable=<%= node[:vsftpd][:write_enable] ? 'YES' : 'NO' %>
+local_umask=<%= node[:vsftpd][:local_umask] %>
+dirmessage_enable=<%= node[:vsftpd][:dirmessage_enable] ? 'YES' : 'NO' %>
+use_localtime=<%= node[:vsftpd][:use_localtime] ? 'YES' : 'NO' %>
+# Logging
+syslog_enable=<%= node[:vsftpd][:syslog_enable] ? 'YES' : 'NO' %>
+xferlog_enable=<%= node[:vsftpd][:xferlog_enable] ? 'YES' : 'NO' %>
+dual_log_enable=<%= node[:vsftpd][:dual_log_enable] ? 'YES' : 'NO' %>
+vsftpd_log_file=<%= File.join(node[:vsftpd][:log_dir], 'vsftpd.log') %>
+xferlog_file=<%= File.join(node[:vsftpd][:log_dir], 'xfer.log') %>
+xferlog_std_format=<%= node[:vsftpd][:xferlog_std_format] ? 'YES' : 'NO' %>
+log_ftp_protocol=<%= node[:vsftpd][:log_ftp_protocol] ? 'YES' : 'NO' %>
+
+connect_from_port_20=<%= node[:vsftpd][:connect_from_port_20] ? 'YES' : 'NO' %>
+chown_uploads=<%= node[:vsftpd][:chown_uploads] ? 'YES' : 'NO' %>
+chown_username=<%= node[:vsftpd][:chown_username] %>
+chmod_enable=<%= node[:vsftpd][:chmod_enable] ? 'YES' : 'NO' %>
+idle_session_timeout=<%= node[:vsftpd][:idle_session_timeout] %>
+data_connection_timeout=<%= node[:vsftpd][:data_connection_timeout] %>
+nopriv_user=<%= node[:vsftpd][:nopriv_user] %>
+async_abor_enable=<%= node[:vsftpd][:async_abor_enable] ? 'YES' : 'NO' %>
+max_per_ip=<%= node[:vsftpd][:max_per_ip] %>
+chroot_local_user=<%= node[:vsftpd][:chroot_local_user] ? 'YES' : 'NO' %>
+passwd_chroot_enable=<%= node[:vsftpd][:passwd_chroot_enable] ? 'YES' : 'NO' %>
+chroot_list_enable=<%= node[:vsftpd][:chroot_list_enable] ? 'YES' : 'NO' %>
+chroot_list_file=<%= node[:vsftpd][:chroot_list_file] %>
+pam_service_name=<%= node[:vsftpd][:pam_service_name] %>
+setproctitle_enable=<%= node[:vsftpd][:setproctitle_enable] ? 'YES' : 'NO' %>
+hide_ids=<%= node[:vsftpd][:hide_ids] ? 'YES' : 'NO' %>
+<% if node[:vsftpd][:ssl_enable] %>
+ssl_enable=YES
+rsa_cert_file=<%= node[:vsftpd][:ssl_cert_path] %>
+rsa_private_key_file=<%= node[:vsftpd][:ssl_private_key_path] %>
+require_ssl_reuse=<%= node[:vsftpd][:require_ssl_reuse] ? 'YES' : 'NO' %>
+ssl_sslv2=<%= node[:vsftpd][:ssl_sslv2] ? 'YES' : 'NO' %>
+ssl_sslv3=<%= node[:vsftpd][:ssl_sslv3] ? 'YES' : 'NO' %>
+ssl_tlsv1=<%= node[:vsftpd][:ssl_tlsv1] ? 'YES' : 'NO' %>
+debug_ssl=<%= node[:vsftpd][:debug_ssl] ? 'YES' : 'NO' %>
+ssl_ciphers=<%= node[:vsftpd][:ssl_ciphers] %>
+ssl_request_cert=<%= node[:vsftpd][:ssl_request_cert] ? 'YES' : 'NO' %>
+<% end %>
+<% if node[:vsftpd][:virtual_users_enable] || (node[:vsftpd][:virtual_users] && node[:vsftpd][:virtual_users].any?) %>
+user_config_dir=<%= node[:vsftpd][:user_config_dir] %>
+guest_enable=<%= node[:vsftpd][:guest_enable] ? 'YES' : 'NO' %>
+guest_username=<%= node[:vsftpd][:guest_username] %>
+virtual_use_local_privs=<%= node[:vsftpd][:virtual_use_local_privs] ? 'YES' : 'NO' %>
+user_sub_token=<%= node[:vsftpd][:user_sub_token] %>
+<% end %>
+<% if node['vsftpd']['local_root'] %>
+local_root=<%= node[:vsftpd][:local_root] %>
+<% end %>
+<% if node[:vsftpd][:deny_file].count >= 1 %>
+deny_file={<%= node[:vsftpd][:deny_file].join(",") %>}
+<% end %>
