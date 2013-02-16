@@ -30,7 +30,7 @@ for name in $HOMEBASES; do
   cd $WORKSPACE/$name; pwd
 
   git checkout -f staging
-  VERSIONS=environments/cookbook_versions.rb
+  VERSIONS=environments/inc/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
   for target in `ls -1d cookbooks/*`; do
     cookbook=${target#cookbooks/}
