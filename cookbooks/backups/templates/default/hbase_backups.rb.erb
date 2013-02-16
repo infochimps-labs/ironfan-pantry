@@ -26,12 +26,17 @@ def cleanup(bucket, retention, dt)
     if days < 1
       break # If 0, keep all backups 
     end
-    backups=`s3cmd ls s3://#{bucket}/hbase_backups/#{type}/ | grep "DIR" | awk '{print $2}'`
-    backups.each do |backup|
-      backup_date = Date.strptime(backup.split('/')[-1], "%Y%m%d")
+    backups=`s3cmd -c /etc/s3cfg ls s3://#{bucket}/hbase_backups/#{type}/ | grep "DIR" | awk '{print $2}'`
+    backups.split("\n").each do |backup|
+      begin
+        backup_date = Date.strptime(backup.split('/')[-1], "%Y%m%d")
+      rescue ArgumentError
+         `s3cmd -c /etc/s3cfg -r del #{backup}`
+         next
+      end
+
       if (today - backup_date) > days
-#        `s3cmd -r del #{backup}`
-        puts "s3cmd -r del #{backup}"
+        `s3cmd -c /etc/s3cfg -r del #{backup}`
       end
     end
   end
@@ -46,6 +51,12 @@ dt = Date.today().strftime("%Y%m%d")
 today = Date.today().strftime("%A")
 start = nil
 type = nil
+
+if tables == '*'
+  # This is the mega hacky, but it is independant of Stargate / Thrift
+  tlist = `echo "list" | hbase shell | sed -n -e '/TABLE/,/seconds/ p' | head -n -1 | tail -n +2`
+  tables = tlist.split("\n").map {|t| t.strip}
+end
 
 tables.each do |table|
   if config.has_key?(table)

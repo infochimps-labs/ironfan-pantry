@@ -5,8 +5,10 @@
 
 package 's3cmd'
 
-template "/root/.s3cfg" do
+template "/etc/s3cfg" do
+  owner         "root"
+  group         "hadoop"
   source        "s3cfg.erb"
-  mode          "0600"
+  mode          "0640"
   variables ( { :aws => node[:aws] } ) 
 end

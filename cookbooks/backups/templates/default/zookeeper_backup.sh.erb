@@ -14,7 +14,7 @@ if [ ! -d ${workDir} ]; then
 fi
 
 tar -cf ${workDir}/<%= node.name %>.zookeeper.${dt}.tar ${snapshot} ${txLog}
-s3cmd put ${workDir}/<%= node.name %>.zookeeper.${dt}.tar ${s3Target}
+s3cmd -c /etc/s3cfg put ${workDir}/<%= node.name %>.zookeeper.${dt}.tar ${s3Target}
 
 rm $workDir/<%= node.name %>.zookeeper.${dt}.tar
 

@@ -16,6 +16,22 @@ cron "zookeeper backups" do
   day		node[:backups][:zookeeper][:day]
   month		node[:backups][:zookeeper][:month]
   weekday	node[:backups][:zookeeper][:weekday]
-  command	"/usr/local/sbin/#{node[:backups][:zookeeper][:cluster_name]}_zookeeper_backup.sh"
+  command	"/usr/local/sbin/#{node[:backups][:zookeeper][:cluster_name]}_zookeeper_backup.sh >> /tmp/#{node[:backups][:zookeeper][:cluster_name]}_zookeeper_backup.$(date +\\%Y\\%m\\%d).out 2>&1"
+end
+
+# Cleanup 
+template "/usr/local/sbin/#{node[:backups][:zookeeper][:cluster_name]}_zookeeper_s3_cleanup.sh" do
+  source        "s3_cleanup.sh.erb"
+  mode          "0744"
+  variables(:retention => node[:backups][:retention][:zookeeper], :type => "zookeeper")
+end
+
+cron "zookeeper s3 cleanup" do
+  minute        node[:backups][:retention][:minute]
+  hour          node[:backups][:retention][:hour]
+  day           node[:backups][:retention][:day]
+  month         node[:backups][:retention][:month]
+  weekday       node[:backups][:retention][:weekday]
+  command       "/usr/local/sbin/#{node[:backups][:zookeeper][:cluster_name]}_zookeeper_s3_cleanup.sh >> /tmp/#{node[:backups][:zookeeper][:cluster_name]}_zookeeper_s3_cleanup.$(date +\\%Y\\%m\\%d).out 2>&1"
 end
 

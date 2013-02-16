@@ -11,8 +11,6 @@ depends          "nginx"
 depends          "database", ">= 1.0.0"
 depends          "mysql", ">= 1.2.0"
 depends          "silverware"
-depends          "chef_gem"
-depends          "install_from", ">= 3.1.4"
 
 recipe           "zabbix::default",                    "Sets up Zabbix directory structure & user."
 recipe           "zabbix::agent_prebuild",             "Downloads, configures, & launches pre-built Zabbix agent"

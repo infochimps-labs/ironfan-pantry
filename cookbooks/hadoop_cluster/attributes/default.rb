@@ -117,6 +117,9 @@ default[:hadoop][:lzo][:version] = "0.4.16"
 default[:hadoop][:elephant_bird][:github]  = "https://github.com/kevinweil/elephant-bird/tarball/v2.2.2"
 default[:hadoop][:elephant_bird][:version] = "2.2.2"
 default[:hadoop][:elephant_bird][:archive] = "kevinweil-elephant-bird-ca8154e"
+default[:hadoop][:elephant_bird][:protobuf_url] = "http://protobuf.googlecode.com/files/protobuf-2.3.0.tar.gz"
+default[:hadoop][:elephant_bird][:protobuf_ver] = "2.3.0"
+
 
 #
 # System

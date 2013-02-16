@@ -26,11 +26,11 @@ default[:backups][:namenode][:weekday     ] 	= "*"
 #
 
 default[:backups][:hbase][:cluster_name            ]     = "hbase"
-default[:backups][:hbase][:conf                    ]     = "/etc/hbase_backup.yaml"
+default[:backups][:hbase][:conf                    ]     = "/etc/hbase_backup.yaml" # YAML for cleanup 
 default[:backups][:hbase][:full                    ]     = ["Sunday"]
 default[:backups][:hbase][:differential            ]     = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 default[:backups][:hbase][:incrimental             ]     = []
-default[:backups][:hbase][:tables                  ]     = []
+default[:backups][:hbase][:tables                  ]     = "*" # Will also accept a list.  ["table1", "table2"]
 default[:backups][:hbase][:versions                ]     = "2147483647"
 default[:backups][:hbase][:minute                  ]     = "0"
 default[:backups][:hbase][:hour                    ]     = "2"
@@ -66,3 +66,14 @@ default[:backups][:elasticsearch][:day         ]     = "*"
 default[:backups][:elasticsearch][:month       ]     = "*"
 default[:backups][:elasticsearch][:weekday     ]     = "0"
 
+#
+# Retention
+# 
+
+default[:backups][:retention][:minute   ]     = "0"
+default[:backups][:retention][:hour     ]     = "4"
+default[:backups][:retention][:day      ]     = "*"
+default[:backups][:retention][:month    ]     = "*"
+default[:backups][:retention][:weekday  ]     = "*"
+default[:backups][:retention][:namenode ]     = "7" # Retention in days
+default[:backups][:retention][:zookeeper]     = "5" # Retention in days

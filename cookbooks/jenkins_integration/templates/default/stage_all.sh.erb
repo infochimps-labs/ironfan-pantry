@@ -3,41 +3,51 @@ set -e
 
 source `dirname $0`/shared.inc
 
-changed=`cat $ROOT_DIR/changed_cookbooks`
+function matroshka {
+  echo Push the testing branch into the staging one. Ensure that staging remains a
+  echo subset of testing, which remains a subset of master, by also pulling in
+  echo changes from those branches. If this all works, push the results to origin.
+  git checkout -f staging
+  git merge testing
+
+  git checkout -f testing
+  git merge staging
+
+  git checkout -f master
+  git pull              # There may be development changes
+  git merge testing
+
+  git push
+  echo
+}
+
+changed=`cat $CHANGED_COOKBOOKS`
 
 pantry_branch "testing"
 
-for homebase in $HOMEBASES; do
-  cd $WORKSPACE/$homebase
-  # Install testing cookbooks, upload and freeze those which changed this run
-  time bundle exec berks install --path cookbooks
-  time knife cookbook upload --freeze $changed
+echo "Record the cookbook versions to the staging environment"
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
 
-  # Record the cookbook versions to the staging evnironment
-  git checkout staging
-  VERSIONS=environments/cookbook_versions.rb
+  git checkout -f staging
+  VERSIONS=environments/inc/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
   for target in `ls -1d cookbooks/*`; do
     cookbook=${target#cookbooks/}
-    echo -e "\$versions['$cookbook']\t= '`cat cookbooks/$cookbook/VERSION`'" >> $VERSIONS
+    version=`cat cookbooks/$cookbook/VERSION`
+    echo -e "\$cookbooks['$cookbook']\t= '$version'" >> $VERSIONS
   done
-  knife environment from file environments/staging.rb
+  knife environment from file staging.rb
   git commit $VERSIONS -m"$VERSIONS: updating staged versions"
-
-  # Ensure that staging remains a subset of testing, which remains a subset of master
-  git checkout testing
-  git merge staging
-  git checkout master
-  git pull
-  git merge testing
-  git push
   echo
+
+  matroshka
 done
 
-for pantry in $PANTRIES; do
-  cd $WORKSPACE/$pantry
-  git checkout staging
-  git merge testing
-  git push
-  echo
+for name in $PANTRIES; do
+  cd $WORKSPACE/$name; pwd
+
+  matroshka
 done
+
+echo "Everything has converged successfully. Enjoy your new staging version."

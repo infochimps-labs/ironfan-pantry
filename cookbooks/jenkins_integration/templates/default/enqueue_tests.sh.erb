@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Bump the pantries from master to staging
+# Prepare the pantries and homebases for cookbook testing
 source `dirname $0`/shared.inc
 
 REPOS="<%=( node[:jenkins_integration][:ironfan_ci][:pantries] +
@@ -10,13 +10,64 @@ for repo in $REPOS; do
 done
 
 for name in $ALL_PATHS; do
-  cd $WORKSPACE/$name
-  $ROOT_DIR/bundler.sh
+  cd $WORKSPACE/$name; pwd
+
+  echo "make sure master is a descendant of testing:"
+  git merge testing | grep 'Already up-to-date'
+  if [ $? -ne '0' ]; then
+    echo "FATAL: master is not a descendant of testing" >&2
+    exit 1
+  fi
+  echo
+
+  echo "push the changes forward into testing"
+  git checkout -f testing
+  git merge master
+  git push origin testing       # Just the HEAD, baby
+  echo
 done
 
-# FIXME: We should probably have a `rake enqueue_testing` framework 
-#   in the homebases too; build it as soon as demand occurs
-for name in $PANTRIES; do
-  cd $WORKSPACE/$name
-  rake enqueue_testing
+echo "Getting staging cookbooks:"
+pantry_branch "staging"
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
+
+  git checkout -f staging
+  ensure_bundle
+  berkshelf --path staged_cookbooks
+  echo
+end
+
+echo "Getting testing cookbooks:"
+pantry_branch "testing"
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
+  git checkout -f testing
+  ensure_bundle
+  berkshelf --path cookbooks
+  echo
+end
+
+echo "Detecting changed cookbooks:"
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
+  changed=''
+  for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
+    cb_path=cookbooks/$cookbook
+    # Don't treat a removed cookbook as changed
+    test_path="[ -d $cb_path ]"
+    no_change="diff -qr $cb_path staged_$cb_path"
+    if $test_path && ! $no_change > /dev/null; then
+      changed="$changed$cookbook "
+    fi
+  done
+  if [ "nothing$changed" == "nothing" ]; then
+    echo "Nothing changed - very suspicious"
+    exit 1
+  fi
+
+  echo "Upload and freeze cookbooks that changed this run"
+  knife cookbook upload -V --freeze $changed || exit 1
+  echo
 done
+

@@ -17,7 +17,23 @@
 # limitations under the License.
 #
 
-package "protobuf-compiler"
+execute "run ldconfig" do
+  action :nothing
+  command "ldconfig"
+end
+
+case node[:platform_version] 
+when "11.04"
+  package "protobuf-compiler"
+else
+  install_from_release('protobuf-compiler') do
+    release_url node[:hadoop][:elephant_bird][:protobuf_url]
+    version     node[:hadoop][:elephant_bird][:protobuf_ver]  
+    action      [ :configure_with_autoconf, :install_with_make, :install ]
+    not_if      { File.exists?("/usr/local/lib/libprotobuf.so") } 
+    notifies    :run,  resources(:execute => "run ldconfig"), :immediately
+  end
+end
 
 github  = node[:hadoop][:elephant_bird][:github]
 archive = node[:hadoop][:elephant_bird][:archive]

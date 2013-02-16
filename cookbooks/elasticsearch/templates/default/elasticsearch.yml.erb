@@ -42,7 +42,7 @@ gateway:
   #
   # Set gateway.type to one of: [none, local, fs, hadoop, s3]
   #
-  type:                         s3
+  type:                         <%= @elasticsearch[:gateway_type] %>
   #
   # recovery begins when recover_after_nodes are present and then either
   # recovery_after_time has passed *or* expected_nodes have shown up.
