@@ -26,19 +26,21 @@ def cleanup(bucket, retention, dt)
     if days < 1
       break # If 0, keep all backups 
     end
-    backups=`s3cmd -c /etc/s3cfg ls s3://#{bucket}/hbase_backups/#{type}/ | grep "DIR" | awk '{print $2}'`
-    backups.split("\n").each do |backup|
-      begin
-        backup_date = Date.strptime(backup.split('/')[-1], "%Y%m%d")
-      rescue ArgumentError
-         `s3cmd -c /etc/s3cfg -r del #{backup}`
-         next
-      end
 
-      if (today - backup_date) > days
+    distcp=`s3cmd -c /etc/s3cfg ls s3://#{bucket}/hbase_backups/#{type}/ | grep "_distcp" | awk '{print $NF}'`
+    distcp.split("\n").each do |distcp|
+      `s3cmd -c /etc/s3cfg -r del #{distcp}`
+    end
+
+    backups=`s3cmd -c /etc/s3cfg ls s3://#{bucket}/hbase_backups/#{type}/ | grep "DIR" | awk '{print $2}'`
+    backups = backups.split("\n").sort
+    if backups.length > days
+      backups[0..(backups.length - days.to_i - 1)].each do |backup|
         `s3cmd -c /etc/s3cfg -r del #{backup}`
+        `s3cmd -c /etc/s3cfg -r del #{backup}_\\$folder\\$`
       end
     end
+
   end
 end
 
