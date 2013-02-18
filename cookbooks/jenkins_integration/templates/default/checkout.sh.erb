@@ -1,35 +1,36 @@
 #!/usr/bin/env bash
-# Usage: checkout.sh name git-repo-path
 source `dirname $0`/shared.inc
 
-name=${1##*/}
-name=${name%.git}
+for repo in $REPOS; do
+  name=${repo##*/}
+  name=${name%.git}
 
-if [ ! -d $name ]; then
-  echo "Checking out $1:"
-  git clone $1
-  cd $name
+  if [ ! -d $name ]; then
+    echo "Checking out $1:"
+    git clone $1
+    cd $name
 
-  echo "get remotes:"
-  for remote in `git branch -r | grep -v origin/master`; do
-    git checkout -t remotes/$remote
-  done
-else
-  echo "Updating $1:"
-  cd $name
-  git checkout -f master
-  git pull
-
-  echo "update remotes:"
-  for remote in `git branch -r | grep -v origin/master`; do
-    git checkout -f ${remote#*/}
+    echo "get remotes:"
+    for remote in `git branch -r | grep -v origin/master`; do
+      git checkout -t remotes/$remote
+    done
+  else
+    echo "Updating $1:"
+    cd $name
+    git checkout -f master
     git pull
-  done
-fi
 
-echo "Get submodules"
-git checkout -f master
-git submodule update --init
+    echo "update remotes:"
+    for remote in `git branch -r | grep -v origin/master`; do
+      git checkout -f ${remote#*/}
+      git pull
+    done
+  fi
 
-ensure_bundle
-echo
+  echo "Get submodules"
+  git checkout -f master
+  git submodule update --init
+
+  ensure_bundle
+  echo
+done

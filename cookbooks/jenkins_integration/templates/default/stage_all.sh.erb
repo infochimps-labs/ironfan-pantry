@@ -3,11 +3,10 @@ set -e
 
 source `dirname $0`/shared.inc
 
-function matroshka {
-  echo Push the testing branch into the staging one. Ensure that staging remains a
-  echo subset of testing, which remains a subset of master, by also pulling in
-  echo changes from those branches. If this all works, push the results to origin.
-  git checkout -f staging
+echo "Advance testing code to staging, ensuring matryoshka remains intact:"
+switch_all_branches "staging"
+for name in $ALL_REPOS; do
+  cd $WORKSPACE/$name; pwd
   git merge testing
 
   git checkout -f testing
@@ -19,20 +18,14 @@ function matroshka {
 
   git push
   echo
-}
-
-# Advance all the successfully tested code to staging
-for name in $ALL_REPOS; do
-  cd $WORKSPACE/$name; pwd
-  matroshka
 done
 
-# Advance the staging environments to use successfully tested code
+echo "Upload the new staging environments:"
 for name in $HOMEBASES; do
   cd $WORKSPACE/$name; pwd
   git checkout -f staging
   knife environment from file staging.rb
-  git commit $VERSIONS -m"$VERSIONS: updating staged versions"
+  echo
 done
 
 echo "Everything has converged successfully. Enjoy your new staging version."

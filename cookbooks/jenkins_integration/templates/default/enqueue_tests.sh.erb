@@ -3,6 +3,7 @@
 # Advance changes into testing, or bomb if no changes
 # 
 source `dirname $0`/shared.inc
+
 function switch_all_branches {
   echo "Switching to $1 on all repos:"
   for name in $ALL_PATHS; do
@@ -19,11 +20,7 @@ function install_berkshelves {
     ensure_bundle
     bundle exec berks install --path $1; echo
     echo
-  end
-}
-
-function find_differences {
-  echo $changes
+  done
 }
 
 # FIXME: It'd be nice if this didn't die except on a true error,
@@ -33,7 +30,6 @@ function find_differences {
 #   well.
 EXIT_CODE=1
 echo "Find and validate new pantry changes, or die:"
-switch_all_branches "master"
 for name in $PANTRIES; do
   cd $WORKSPACE/$name; pwd
 
@@ -67,7 +63,13 @@ if [ ! $EXIT_CODE ]; then
   exit $EXIT_CODE
 fi
 
+echo "Get all cookbooks into place in homebases:"
+staging="staging_cookbooks"
 testing="cookbooks"
+
+switch_all_branches "staging"
+install_berkshelves $staging
+switch_all_branches "master"
 install_berkshelves $testing
 
 echo "Record the testing cookbook versions:"
@@ -84,40 +86,33 @@ for name in $HOMEBASES; do
   echo
 done
 
-echo "Push updates to development, advance all changes to staging:"
+echo "Push updates to development:"
 for name in $ALL_PATHS; do
   cd $WORKSPACE/$name; pwd
   git pull
   git push origin master
-
-  git checkout testing
-  git merge master
-  git push origin testing
   echo
 done
 
-echo "Make sure the matroshka doll is intact:"
+echo "Advance all changes to testing (after ensuring proper matryoshka):"
+switch_all_branches "testing"
 for name in $ALL_PATHS; do
-  cd $WORKSPACE/$name
-  if ! git merge testing | grep 'Already up-to-date'; then
-    echo "FATAL: master is not a descendant of testing" >&2
-    exit 1
-  elif ! git merge staging | grep 'Already up-to-date'; then
+  cd $WORKSPACE/$name; pwd
+  if ! git merge staging | grep 'Already up-to-date'; then
     echo "FATAL: master is not a descendant of staging" >&2
     exit 1
   else
     echo "`pwd` is intact"
   fi
   echo
+
+  git merge master
+  git push origin testing
+  echo
 done
-echo
 
 echo "Find, validate, upload, and freeze changed cookbooks:"
-staging="staged_cookbooks"
-switch_all_branches "staging"
-install_berkshelves $staging
 switch_all_branches "testing"
-
 for name in $HOMEBASES; do
   cd $WORKSPACE/$name; pwd
   changed=''
@@ -140,8 +135,6 @@ for name in $HOMEBASES; do
     continue
   fi
   echo "$changed in testing"
-  # - Force upload and freeze all changed cookbooks
-  # - Upload testing environment
 
   echo "Upload and freeze cookbooks that changed:"
   knife cookbook upload -V --freeze --force $changed || exit 1
