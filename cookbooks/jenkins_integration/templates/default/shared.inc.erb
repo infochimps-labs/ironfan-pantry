@@ -21,6 +21,9 @@ export ALL_PATHS="$PANTRIES $HOMEBASES"
 
 export USE_LOCAL=true
 export LOCAL_PATH=..
+function switch_to {
+  cd $WORKSPACE/$1; pwd
+}
 function ensure_bundle {
   if ! bundle check; then
     echo "Installing bundle:"
@@ -31,6 +34,24 @@ function ensure_bundle {
 }
 function berkshelf {
   bundle exec berks install "$@"; echo
+}
+function change_all_branches {
+  echo "Switching to $1 on all repos:"
+  for name in $ALL_PATHS; do
+    switch_to $name
+    git checkout -f $1
+    cd - > /dev/null
+  done
+  echo
+}
+function install_berkshelves {
+  echo "Installing cookbooks at $1"
+  for name in $HOMEBASES; do
+    switch_to $name
+    ensure_bundle
+    bundle exec berks install --path $1; echo
+  done
+  echo
 }
 
 

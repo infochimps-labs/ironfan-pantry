@@ -4,25 +4,6 @@
 # 
 source `dirname $0`/shared.inc
 
-function switch_all_branches {
-  echo "Switching to $1 on all repos:"
-  for name in $ALL_PATHS; do
-    cd $WORKSPACE/$name; pwd
-    git checkout -f $1
-    cd - > /dev/null
-    echo
-  done
-}
-function install_berkshelves {
-  echo "Installing cookbooks at $1"
-  for name in $HOMEBASES; do
-    cd $WORKSPACE/$name; pwd
-    ensure_bundle
-    bundle exec berks install --path $1; echo
-    echo
-  done
-}
-
 # FIXME: It'd be nice if this didn't die except on a true error,
 #   and instead conditionally triggered the downstream on changes.
 # FIXME: This dodges the need for rake *:version:bump in homebases. 
@@ -31,7 +12,7 @@ function install_berkshelves {
 EXIT_CODE=1
 echo "Find and validate new pantry changes, or die:"
 for name in $PANTRIES; do
-  cd $WORKSPACE/$name; pwd
+  switch_to $name
 
   # if echo $name | grep homebase;
   # then cookbooks='org_cookbooks';
@@ -67,14 +48,14 @@ echo "Get all cookbooks into place in homebases:"
 staging="staging_cookbooks"
 testing="cookbooks"
 
-switch_all_branches "staging"
+change_all_branches "staging"
 install_berkshelves $staging
-switch_all_branches "master"
+change_all_branches "master"
 install_berkshelves $testing
 
 echo "Record the testing cookbook versions:"
 for name in $HOMEBASES; do
-  cd $WORKSPACE/$name; pwd
+  switch_to $name
 
   VERSIONS=environments/inc/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
@@ -88,16 +69,16 @@ done
 
 echo "Push updates to development:"
 for name in $ALL_PATHS; do
-  cd $WORKSPACE/$name; pwd
+  switch_to $name
   git pull
   git push origin master
   echo
 done
 
 echo "Advance all changes to testing (after ensuring proper matryoshka):"
-switch_all_branches "testing"
+change_all_branches "testing"
 for name in $ALL_PATHS; do
-  cd $WORKSPACE/$name; pwd
+  switch_to $name
   if ! git merge staging | grep 'Already up-to-date'; then
     echo "FATAL: master is not a descendant of staging" >&2
     exit 1
@@ -112,9 +93,9 @@ for name in $ALL_PATHS; do
 done
 
 echo "Find, validate, upload, and freeze changed cookbooks:"
-switch_all_branches "testing"
+change_all_branches "testing"
 for name in $HOMEBASES; do
-  cd $WORKSPACE/$name; pwd
+  switch_to $name
   changed=''
   for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
     test_cb=$testing/$cookbook
@@ -143,7 +124,7 @@ done
 
 echo "Upload testing environment"
 for name in $HOMEBASES; do
-  cd $WORKSPACE/$name; pwd
+  switch_to $name
   knife environment from file testing.rb || exit 1
   echo
 done

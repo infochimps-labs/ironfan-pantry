@@ -8,10 +8,11 @@ for repo in $REPOS; do
   name=${repo##*/}
   name=${name%.git}
 
+  cd $WORKSPACE
   if [ ! -d $name ]; then
     echo "Checking out $repo:"
     git clone $repo
-    cd $WORKSPACE/$name
+    switch_to $name
 
     echo "get remotes:"
     for remote in `git branch -r | grep -v origin/master`; do
@@ -19,7 +20,7 @@ for repo in $REPOS; do
     done
   else
     echo "Updating $repo:"
-    cd $WORKSPACE/$name
+    switch_to $name
     git checkout -f master
     git pull
 

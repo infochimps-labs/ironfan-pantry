@@ -6,7 +6,7 @@ source `dirname $0`/shared.inc
 echo "Advance testing code to staging, ensuring matryoshka remains intact:"
 switch_all_branches "staging"
 for name in $ALL_REPOS; do
-  cd $WORKSPACE/$name; pwd
+  switch_to $name
   git merge testing
 
   git checkout -f testing
@@ -22,7 +22,7 @@ done
 
 echo "Upload the new staging environments:"
 for name in $HOMEBASES; do
-  cd $WORKSPACE/$name; pwd
+  switch_to $name
   git checkout -f staging
   knife environment from file staging.rb
   echo
