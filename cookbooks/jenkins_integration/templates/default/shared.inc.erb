@@ -1,56 +1,25 @@
+#
+`# Core components
+# 
 ROOT_DIR=`dirname $0`
 WORKSPACE=$ROOT_DIR/workspace
-CHANGED_COOKBOOKS=$WORKSPACE/changed_cookbooks
 
 #
-# Convenience functions for switching branches on all homebases or pantries,
-#   and supporting shared variables for all homebases or pantries
-#
-<%- 
-def repo_name(repo)
-  repo[/\/([a-z-]*)\.git/,1]
-end
-def repo_names(repo)
-  repo.map {|r| repo_name r }.join(' ')
-end
-%>
-PANTRIES="<%= repo_names node[:jenkins_integration][:ironfan_ci][:pantries] %>"
-HOMEBASES="<%= repo_names node[:jenkins_integration][:ironfan_ci][:homebases] %>"
-ALL_PATHS="$PANTRIES $HOMEBASES"
+# Repositories
+# 
+<%- def repo_name(repo)
+      repo[/\/([a-z-]*)\.git/,1]
+    end
+    def repo_names(repo)
+      repo.map {|r| repo_name r }.join(' ')
+    end %>
+export PANTRIES="<%= repo_names node[:jenkins_integration][:ironfan_ci][:pantries] %>"
+export HOMEBASES="<%= repo_names node[:jenkins_integration][:ironfan_ci][:homebases] %>"
+export TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
+export ALL_PATHS="$PANTRIES $HOMEBASES"
 
-TEST_REPO="<%= node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
-TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
-
-function switch_branches {
-  echo "Switching to $1 on $2"
-  for repo in $2; do
-    cd $WORKSPACE/$repo
-    git checkout $1
-    cd - > /dev/null
-  done
-  echo
-}
-function pantry_branch {
-  switch_branches $1 "$PANTRIES"
-}
-function homebase_branch {
-  switch_branches $1 "$HOMEBASES"
-}
-function switch_all_branches {
-  switch_branches $1 "$ALL_PATHS"
-}
-
-#
-# Shared variables and convenience functions for knife commands.
-#
-export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
-
-function knife {
-  bundle exec knife "$@"
-}
-function berkshelf {
-  bundle exec berks install "$@"; echo
-}
+export USE_LOCAL=true
+export LOCAL_PATH=..
 function ensure_bundle {
   if ! bundle check; then
     echo "Installing bundle:"
@@ -59,7 +28,18 @@ function ensure_bundle {
     bundle install $PARAMS --local || bundle install $PARAMS
   fi
 }
+function berkshelf {
+  bundle exec berks install "$@"; echo
+}
 
-# Use the local copies of repos for Berkshelf operations
-export USE_LOCAL=true
-export LOCAL_PATH=..
+
+# 
+# Launch
+# 
+export MAX_WAIT=<%= node[:jenkins_integration][:ironfan_ci][:max_wait] %>
+export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
+
+function knife {
+  bundle exec knife "$@"
+}
+

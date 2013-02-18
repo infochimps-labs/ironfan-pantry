@@ -12,7 +12,7 @@ define(:jenkins_job,
   :path         => nil,         # Path to clone to, overrides base_path
   :project      => nil,         # Source project URL
   :parameters   => {},          # If the job is parameterized, list those params
-  :repository   => nil,         # Source repository
+  :repositories => [],          # Source repositories
   :triggers     => {},          # Triggers to start this job
   :tasks        => [],          # Array of shell scripts templates to run
   :templates    => [],          # Array of templates to deploy

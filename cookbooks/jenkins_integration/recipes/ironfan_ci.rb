@@ -107,33 +107,35 @@ end
 #   node[:jenkins_integration][:ironfan_ci][:homebases].unshift
 #   node[:jenkins_integration][:ironfan_ci][:test_homebase] ).uniq
 
-# 1. Check out every homebase and pantry, getting all branches
-#   a. Enqueue testing on each pantry's cookbooks
-# 2. Sync changes to testing environment (including versions)
-# 3. Launch test instance
-# 4. Stage homebases and pantries
-#   a. Homebases: Upload cookbook and freeze at that version
-#   b. All: Commit testing cookbook versions to staging
+all_repos = node[:jenkins_integration][:ironfan_ci][:pantries] +
+            node[:jenkins_integration][:ironfan_ci][:homebases]
 shared_templates = %w[ shared.inc launch.inc checkout.sh cookbook_versions.rb.h ]
-jenkins_job "Ironfan Cookbooks - 1 - Check for new code" do
+
+# Advance changes into testing positions, or bomb if no changes
+jenkins_job "Ironfan Cookbooks - 1 - Prepare testing" do
+  repositories  all_repos
   templates     shared_templates
-  tasks         %w[ new_developments.sh ]
+  tasks         %w[ checkout_all.sh enqueue_tests.sh ]
   triggers      :schedule => node[:jenkins_integration][:ironfan_ci][:schedule]
   downstream    [ "Ironfan Cookbooks - 2 - Test and stage" ]
 end
 
+# 2a. Launch a testing server instance, and bomb if its initial chef-client dies
+# 2b. Push all testing results into staging environments and branches
 jenkins_job "Ironfan Cookbooks - 2 - Test and stage" do
+  repositories  all_repos
   templates     shared_templates
-  tasks         %w[ enqueue_tests.sh launch_instance.sh stage_all.sh ]
+  tasks         %w[ checkout_all.sh launch_instance.sh stage_all.sh ]
   if node[:jenkins_integration][:ironfan_ci][:broken]
     downstream  [ "Ironfan Cookbooks - 3 - Test known broken" ]
   end
 end
 
-# Launch known broken instance [launch_broken.sh]
+# 3. Launch a known broken instance
 if node[:jenkins_integration][:ironfan_ci][:broken]
   jenkins_job "Ironfan Cookbooks - 3 - Test known broken" do
-    templates   shared_templates
-    tasks       %w[ launch_broken.sh ]
+    repositories        [ node[:jenkins_integration][:ironfan_ci][:test_homebase] ]
+    templates           shared_templates
+    tasks               %w[ checkout_all.sh launch_broken.sh ]
   end
 end

@@ -1,73 +1,156 @@
 #!/usr/bin/env bash
-# Prepare the pantries and homebases for cookbook testing
+#
+# Advance changes into testing, or bomb if no changes
+# 
 source `dirname $0`/shared.inc
+function switch_all_branches {
+  echo "Switching to $1 on all repos:"
+  for name in $ALL_PATHS; do
+    cd $WORKSPACE/$name; pwd
+    git checkout -f $1
+    cd - > /dev/null
+    echo
+  done
+}
+function install_berkshelves {
+  echo "Installing cookbooks at $1"
+  for name in $HOMEBASES; do
+    cd $WORKSPACE/$name; pwd
+    ensure_bundle
+    bundle exec berks install --path $1; echo
+    echo
+  end
+}
 
-REPOS="<%=( node[:jenkins_integration][:ironfan_ci][:pantries] +
-            node[:jenkins_integration][:ironfan_ci][:homebases] ).join(' ') %>"
+function find_differences {
+  echo $changes
+}
 
-for repo in $REPOS; do
-  $ROOT_DIR/checkout.sh $repo
-done
-
-for name in $ALL_PATHS; do
+# FIXME: It'd be nice if this didn't die except on a true error,
+#   and instead conditionally triggered the downstream on changes.
+# FIXME: This dodges the need for rake *:version:bump in homebases. 
+#   Add that, then come back and make this work with homebases as 
+#   well.
+EXIT_CODE=1
+echo "Find and validate new pantry changes, or die:"
+switch_all_branches "master"
+for name in $PANTRIES; do
   cd $WORKSPACE/$name; pwd
 
-  echo "make sure master is a descendant of testing:"
-  git merge testing | grep 'Already up-to-date'
-  if [ $? -ne '0' ]; then
-    echo "FATAL: master is not a descendant of testing" >&2
-    exit 1
+  # if echo $name | grep homebase;
+  # then cookbooks='org_cookbooks';
+  # else cookbooks='cookbooks'; fi
+  cookbooks='cookbooks'
+
+  changes=`git diff --name-only staging -- $cookbooks/*/ | cut -d/ -f2 | sort | uniq`
+  if [ "x$changes" = "x" ]; then
+    echo "No cookbook changes between master and staging"
+    echo
+    continue
   fi
   echo
 
-  echo "push the changes forward into testing"
-  git checkout -f testing
-  git merge master
-  git push origin testing       # Just the HEAD, baby
+  echo "Changes found: $changes"
+  EXIT_CODE=0
+  echo
+
+  for cookbook in $changes; do
+    if git diff --quiet staging -- cookbooks/$cookbook/VERSION; then
+      echo "WARNING: changes found but no version change in $cookbook"
+      rake $cookbook:version:bump
+    fi
+  done
+  echo
+done
+if [ ! $EXIT_CODE ]; then
+  echo "ERROR: No changes found for testing";
+  exit $EXIT_CODE
+fi
+
+testing="cookbooks"
+install_berkshelves $testing
+
+echo "Record the testing cookbook versions:"
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
+
+  VERSIONS=environments/inc/cookbook_versions.rb
+  cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
+  for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
+    version=`cat $testing/$cookbook/VERSION`
+    echo -e "\$cookbooks['$cookbook']\t= '$version'" >> $VERSIONS
+  done
+  git commit $VERSIONS -m"$VERSIONS: updating testing cookbook versions"
   echo
 done
 
-echo "Getting staging cookbooks:"
-pantry_branch "staging"
-for name in $HOMEBASES; do
+echo "Push updates to development, advance all changes to staging:"
+for name in $ALL_PATHS; do
   cd $WORKSPACE/$name; pwd
+  git pull
+  git push origin master
 
-  git checkout -f staging
-  ensure_bundle
-  berkshelf --path staged_cookbooks
+  git checkout testing
+  git merge master
+  git push origin testing
   echo
-end
+done
 
-echo "Getting testing cookbooks:"
-pantry_branch "testing"
-for name in $HOMEBASES; do
-  cd $WORKSPACE/$name; pwd
-  git checkout -f testing
-  ensure_bundle
-  berkshelf --path cookbooks
+echo "Make sure the matroshka doll is intact:"
+for name in $ALL_PATHS; do
+  cd $WORKSPACE/$name
+  if ! git merge testing | grep 'Already up-to-date'; then
+    echo "FATAL: master is not a descendant of testing" >&2
+    exit 1
+  elif ! git merge staging | grep 'Already up-to-date'; then
+    echo "FATAL: master is not a descendant of staging" >&2
+    exit 1
+  else
+    echo "`pwd` is intact"
+  fi
   echo
-end
+done
+echo
 
-echo "Detecting changed cookbooks:"
+echo "Find, validate, upload, and freeze changed cookbooks:"
+staging="staged_cookbooks"
+switch_all_branches "staging"
+install_berkshelves $staging
+switch_all_branches "testing"
+
 for name in $HOMEBASES; do
   cd $WORKSPACE/$name; pwd
   changed=''
-  for cookbook in `ls -1d cookbooks/*/ | cut -d/ -f2`; do
-    cb_path=cookbooks/$cookbook
-    # Don't treat a removed cookbook as changed
-    test_path="[ -d $cb_path ]"
-    no_change="diff -qr $cb_path staged_$cb_path"
-    if $test_path && ! $no_change > /dev/null; then
+  for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
+    test_cb=$testing/$cookbook
+    stage_cb=$staging/$cookbook
+    # If $testing/$cookbook and $staging/$cookbook aren't identical
+    no_change="diff -qr"
+    if ! $no_change $test_cb $stage_cb > /dev/null 2>&1; then
+      # make sure VERSIONs aren't identical either
+      if $no_change $test_cb/VERSION $stage_cb/VERSION > /dev/null 2>&1; then
+        echo "FATAL: testing has changes, same VERSION in $cookbook"
+        exit 1
+      fi
       changed="$changed$cookbook "
     fi
   done
   if [ "nothing$changed" == "nothing" ]; then
-    echo "Nothing changed - very suspicious"
-    exit 1
+    echo "WARNING: Nothing changed - very suspicious"
+    continue
   fi
+  echo "$changed in testing"
+  # - Force upload and freeze all changed cookbooks
+  # - Upload testing environment
 
-  echo "Upload and freeze cookbooks that changed this run"
-  knife cookbook upload -V --freeze $changed || exit 1
+  echo "Upload and freeze cookbooks that changed:"
+  knife cookbook upload -V --freeze --force $changed || exit 1
   echo
 done
 
+echo "Upload testing environment"
+for name in $HOMEBASES; do
+  cd $WORKSPACE/$name; pwd
+  knife environment from file testing.rb || exit 1
+  echo
+done

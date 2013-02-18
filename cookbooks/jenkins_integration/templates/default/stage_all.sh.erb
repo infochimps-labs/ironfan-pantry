@@ -21,33 +21,18 @@ function matroshka {
   echo
 }
 
-changed=`cat $CHANGED_COOKBOOKS`
-
-pantry_branch "testing"
-
-echo "Record the cookbook versions to the staging environment"
-for name in $HOMEBASES; do
+# Advance all the successfully tested code to staging
+for name in $ALL_REPOS; do
   cd $WORKSPACE/$name; pwd
-
-  git checkout -f staging
-  VERSIONS=environments/inc/cookbook_versions.rb
-  cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
-  for target in `ls -1d cookbooks/*`; do
-    cookbook=${target#cookbooks/}
-    version=`cat cookbooks/$cookbook/VERSION`
-    echo -e "\$cookbooks['$cookbook']\t= '$version'" >> $VERSIONS
-  done
-  knife environment from file staging.rb
-  git commit $VERSIONS -m"$VERSIONS: updating staged versions"
-  echo
-
   matroshka
 done
 
-for name in $PANTRIES; do
+# Advance the staging environments to use successfully tested code
+for name in $HOMEBASES; do
   cd $WORKSPACE/$name; pwd
-
-  matroshka
+  git checkout -f staging
+  knife environment from file staging.rb
+  git commit $VERSIONS -m"$VERSIONS: updating staged versions"
 done
 
 echo "Everything has converged successfully. Enjoy your new staging version."
