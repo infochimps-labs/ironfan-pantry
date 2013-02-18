@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 source `dirname $0`/shared.inc
 
+echo "Getting all repositories (inc. bundled code & branches) up-to-date: $REPOS"
+echo
+
 for repo in $REPOS; do
   name=${repo##*/}
   name=${name%.git}
 
   if [ ! -d $name ]; then
-    echo "Checking out $1:"
-    git clone $1
-    cd $name
+    echo "Checking out $repo:"
+    git clone $repo
+    cd $WORKSPACE/$name
 
     echo "get remotes:"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -t remotes/$remote
     done
   else
-    echo "Updating $1:"
-    cd $name
+    echo "Updating $repo:"
+    cd $WORKSPACE/$name
     git checkout -f master
     git pull
 
