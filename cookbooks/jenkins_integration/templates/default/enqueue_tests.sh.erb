@@ -43,10 +43,10 @@ if [ ! $changes_found ]; then failure 1 "No changes found for testing"; fi
 h1 "Get all cookbooks into place in homebases"
 staging="staging_cookbooks"
 testing="cookbooks"
-change_all_branches "staging"
-install_berkshelves $staging
-change_all_branches "master"
-install_berkshelves $testing
+change_all_branches "staging" h2
+install_berkshelves $staging h2
+change_all_branches "master" h2
+install_berkshelves $testing h2
 
 h1 "Record the testing cookbook versions"
 for name in $HOMEBASES; do
@@ -58,7 +58,7 @@ for name in $HOMEBASES; do
     version=`cat $testing/$cookbook/VERSION`
     echo -e "\$cookbooks['$cookbook']\t= '$version'" >> $VERSIONS
   done
-  if git diff $VERSIONS > /dev/null; then
+  if ! git diff $VERSIONS > /dev/null; then
     git commit $VERSIONS -m"$VERSIONS: updating testing cookbook versions"
   fi
 done
@@ -106,7 +106,7 @@ for name in $HOMEBASES; do
     warning "Nothing changed - very suspicious"
     continue
   fi
-  h2 "Upload and freeze changed cookbooks: $changed"
+  item "Upload and freeze changed cookbooks"
   knife cookbook upload -V --freeze --force $changed
 done
 

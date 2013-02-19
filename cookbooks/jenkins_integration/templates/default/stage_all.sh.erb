@@ -24,6 +24,7 @@ for name in $HOMEBASES; do
   switch_to $name
   h2 `pwd`
   git checkout -f staging
+  ensure_bundle
   knife environment from file staging.rb
 done
 

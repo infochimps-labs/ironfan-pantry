@@ -8,7 +8,7 @@ switch_to $TEST_PATH
 
 $ROOT_DIR/launch.sh $BROKEN
 
-if [ $? == 2 ]; then
+if [ $? -eq 2 ]; then
   success "Failed as expected (chef-client bombed)"
 else
   failure 1 "Unexpected failure type!"
