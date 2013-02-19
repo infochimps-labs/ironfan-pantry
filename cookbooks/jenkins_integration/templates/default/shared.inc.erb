@@ -18,14 +18,13 @@ SHARED_DIR=<%= node[:jenkins][:server][:home_dir] %>/shared
 export REPOS="<%= @pantries.join(' ') %> <%= @homebases.join(' ') %>"
 export PANTRIES="<%= repo_names @pantries %>"
 export HOMEBASES="<%= repo_names @homebases %>"
-export TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
 export ALL_PATHS="$PANTRIES $HOMEBASES"
+export TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
 
-export USE_LOCAL=true
-export LOCAL_PATH=..
 function switch_to {
   cd $WORKSPACE/$1; pwd
 }
+
 function ensure_bundle {
   if ! bundle check; then
     echo "Installing bundle:"
@@ -34,6 +33,7 @@ function ensure_bundle {
     bundle install $PARAMS --local || bundle install $PARAMS
   fi
 }
+
 function change_all_branches {
   echo "Switching to $1 on all repos:"
   for name in $ALL_PATHS; do
@@ -42,6 +42,9 @@ function change_all_branches {
     cd - > /dev/null
   done
 }
+
+export USE_LOCAL=true
+export LOCAL_PATH=..
 function install_berkshelves {
   echo "Installing cookbooks at $1"
   for name in $HOMEBASES; do
@@ -50,7 +53,6 @@ function install_berkshelves {
     bundle exec berks install --path $1; echo
   done
 }
-
 
 # 
 # Launch
