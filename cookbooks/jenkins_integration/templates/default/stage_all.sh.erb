@@ -1,12 +1,11 @@
 #!/usr/bin/env bash
 source `dirname $0`/shared.inc
-big_boy_pants
 
 h1 "Advance testing code to staging, ensuring matryoshka remains intact"
 change_all_branches "staging"
 for name in $ALL_REPOS; do
   switch_to $name
-  h2 `pwd`
+  item "In $name"
   git merge testing
 
   git checkout -f testing
@@ -22,7 +21,7 @@ done
 h1 "Upload the new staging environments"
 for name in $HOMEBASES; do
   switch_to $name
-  h2 `pwd`
+  item "In $name"
   git checkout -f staging
   ensure_bundle
   knife environment from file staging.rb

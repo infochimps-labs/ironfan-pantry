@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 source `dirname $0`/shared.inc
-big_boy_pants
 
 h1 "Getting all repositories (inc. bundled code & branches) up-to-date"
 
@@ -14,7 +13,7 @@ for repo in $REPOS; do
     git clone $repo
     switch_to $name
 
-    h3 "get remotes"
+    item "get remotes"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -t remotes/$remote
     done
@@ -24,16 +23,17 @@ for repo in $REPOS; do
     git checkout -f master
     git pull
 
-    h3 "update remotes"
+    item "update remotes"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -f ${remote#*/}
       git pull
     done
   fi
 
-  h3 "Get submodules"
+  item "Get submodules"
   git checkout -f master
   git submodule update --init
 
+  item "Ensure bundle is loaded"
   ensure_bundle
 done
