@@ -73,6 +73,27 @@
     </hudson.tasks.Shell>
   </builders>
   <%- end %>
+  <%- unless @conditional.empty? %>
+  <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.2.1">
+    <%= @conditional[:regexp] %>
+    <condition class="org.jenkins_ci.plugins.text_finder_run_condition.TextFinderCondition" plugin="text-finder-run-condition@0.1">
+      <regexp><%= @conditional[:regexp] %></regexp>
+      <checkConsoleOutput>true</checkConsoleOutput>
+    </condition>
+    <buildStep class="hudson.plugins.parameterizedtrigger.TriggerBuilder" plugin="parameterized-trigger@2.16">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          <configs class="java.util.Collections$EmptyList"/>
+          <projects><%= @conditional[:target] %></projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+        </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+      </configs>
+    </buildStep>
+    <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$DontRun" plugin="run-condition@0.10"/>
+  </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
+  <%- end %>
   <publishers>
     <%- @downstream.each do |task| %>
     <hudson.tasks.BuildTrigger>

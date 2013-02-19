@@ -11,6 +11,7 @@ h1 "Find and validate new pantry changes, or die"
 #   Add that, then come back and make this work with homebases as 
 #   well.
 changes_found=0
+echo '' > $WORKSPACE/development_changes
 for name in $PANTRIES; do
   switch_to $name
   # if echo $name | grep homebase;
@@ -35,7 +36,7 @@ for name in $PANTRIES; do
     fi
   done
 done
-if [ ! $changes_found ]; then failure 1 "No changes found for testing"; fi
+if [ $changes_found -ne 1 ]; then success "No changes found for testing" fi
 
 h1 "Get all cookbooks into place in homebases"
 staging="staging_cookbooks"
@@ -120,4 +121,4 @@ for file in `git diff --name-only staging roles/`; do
 done
 if [ "nothing$changed" == "nothing" ]; then item "Nothing changed"; fi
 
-success "All tests enqueued successfully"
+success <%= cookbook_ci[:koan][:testing] %>

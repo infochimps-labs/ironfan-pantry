@@ -6,4 +6,4 @@ long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 recipe           "jenkins_integration::default",        "Base of jenkins_integration"
-recipe           "jenkins_integration::ironfan_ci",     "Ironfan Continuous Integration"
+recipe           "jenkins_integration::cookbook_ci",    "Ironfan Cookbook CI"
