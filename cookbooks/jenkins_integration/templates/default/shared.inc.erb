@@ -2,9 +2,9 @@
 #
 # Core components
 # 
-ROOT_DIR=`dirname $0`
-WORKSPACE=$ROOT_DIR/workspace
-SHARED_DIR=<%= node[:jenkins][:server][:home_dir] %>/shared
+export ROOT_DIR=`dirname $0`
+export WORKSPACE=$ROOT_DIR/workspace
+export SHARED_DIR=<%= node[:jenkins][:server][:home_dir] %>/shared
 
 #
 # Repositories
