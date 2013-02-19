@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
+#
 # Launch a testing instance, and wait to see if chef-client
 #   ran to completion successfully.
+#
+
+source `dirname $0`/shared.inc
 
 export FACET=$1
 export CHEF_LOG=/var/log/chef/client.log
