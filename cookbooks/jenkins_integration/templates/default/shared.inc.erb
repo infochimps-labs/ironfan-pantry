@@ -24,8 +24,9 @@ export TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_ho
 function switch_to { cd $WORKSPACE/$1; }
 
 function ensure_bundle {
+  level=$2; if [ ! $level ]; then level='echo'; fi
   if ! bundle check; then
-    echo "Installing bundle:"
+    $level "Installing bundle"
     PARAMS="--path $SHARED_DIR --no-color"
     # Only install from source if cache fails
     bundle install $PARAMS --local || bundle install $PARAMS
@@ -33,11 +34,12 @@ function ensure_bundle {
 }
 
 function change_all_branches {
-  echo "Switching to $1 on all repos:"
+  level=$2; if [ ! $level ]; then level='echo'; fi
+  $level "Switching to $1 on all repos"
   for name in $ALL_PATHS; do
     switch_to $name
     item `pwd`
-    git checkout -f $1 > /dev/null
+    git checkout -f $1 2> /dev/null
     cd - > /dev/null
   done
 }

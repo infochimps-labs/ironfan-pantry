@@ -11,6 +11,6 @@ $ROOT_DIR/launch.sh $BROKEN
 if [ $? == 2 ]; then
   success "Failed as expected (chef-client bombed)"
 else
-  failure 1 "FATAL: Unexpected failure type!"
+  failure 1 "Unexpected failure type!"
 fi
 

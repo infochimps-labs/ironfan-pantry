@@ -16,7 +16,7 @@ function kc {
   knife cluster "$@"
 }
 function klean_up {
-  echo "Killing $FACET:"
+  h1 "Killing $FACET"
   kc kill $FACET --yes
 }
 function klean_success {
@@ -28,16 +28,16 @@ function klean_failure {
   failure "$@"
 }
 
-h1 "List all clusters:"
+h1 "List all clusters"
 kc list -f
 
-h1 "Show $CLUSTER cluster:"
+h1 "Show $CLUSTER cluster"
 kc show $CLUSTER
 
-h1 "Launch $FACET:"
+h1 "Launch $FACET"
 kc launch $FACET || klean_failure 1 "FATAL: knife cluster launch failed"
 
-h1 "Wait while chef finishes running:"
+h1 "Wait while chef finishes running"
 WAIT=0
 while true; do
   sleep 15

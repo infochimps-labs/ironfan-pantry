@@ -6,7 +6,7 @@ source `dirname $0`/shared.inc
 
 big_boy_pants
 
-h1 "Find and validate new pantry changes, or die:"
+h1 "Find and validate new pantry changes, or die"
 # FIXME: It'd be nice if this didn't die except on a true error,
 #   and instead conditionally triggered the downstream on changes.
 # FIXME: This dodges the need for rake *:version:bump in homebases. 
@@ -27,7 +27,7 @@ for name in $PANTRIES; do
     continue
   fi
 
-  item "Changes found: $changes"
+  item "Changes found: `echo $changes | tr '\n' ' '`"
   changes_found=1
 
   item "Ensure changes have version bump"
@@ -40,7 +40,7 @@ for name in $PANTRIES; do
 done
 if [ ! $changes_found ]; then failure 1 "No changes found for testing"; fi
 
-h1 "Get all cookbooks into place in homebases:"
+h1 "Get all cookbooks into place in homebases"
 staging="staging_cookbooks"
 testing="cookbooks"
 change_all_branches "staging"
@@ -48,7 +48,7 @@ install_berkshelves $staging
 change_all_branches "master"
 install_berkshelves $testing
 
-h1 "Record the testing cookbook versions:"
+h1 "Record the testing cookbook versions"
 for name in $HOMEBASES; do
   switch_to $name
   h2 `pwd`
@@ -58,10 +58,12 @@ for name in $HOMEBASES; do
     version=`cat $testing/$cookbook/VERSION`
     echo -e "\$cookbooks['$cookbook']\t= '$version'" >> $VERSIONS
   done
-  git commit $VERSIONS -m"$VERSIONS: updating testing cookbook versions"
+  if git diff $VERSIONS > /dev/null; then
+    git commit $VERSIONS -m"$VERSIONS: updating testing cookbook versions"
+  fi
 done
 
-h1 "Push updates to development:"
+h1 "Push updates to development"
 for name in $ALL_PATHS; do
   switch_to $name
   h2 `pwd`
@@ -69,7 +71,7 @@ for name in $ALL_PATHS; do
   git push origin master
 done
 
-h1 "Advance all changes to testing (after ensuring proper matryoshka):"
+h1 "Advance all changes to testing (after ensuring proper matryoshka)"
 change_all_branches "testing"
 for name in $ALL_PATHS; do
   switch_to $name
@@ -82,7 +84,7 @@ for name in $ALL_PATHS; do
   git push origin testing
 done
 
-h1 "Find, validate, upload, and freeze changed cookbooks:"
+h1 "Find, validate, upload, and freeze changed cookbooks"
 for name in $HOMEBASES; do
   switch_to $name
   h2 `pwd`
@@ -115,7 +117,7 @@ for name in $HOMEBASES; do
   knife environment from file testing.rb
 done
 
-h1 "Uploading changed roles (test universe only):"
+h1 "Uploading changed roles (test universe only)"
 switch_to $TEST_PATH
 item `pwd`
 changed=''
