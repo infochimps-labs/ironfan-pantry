@@ -32,9 +32,6 @@ function ensure_bundle {
     bundle install $PARAMS --local || bundle install $PARAMS
   fi
 }
-function berkshelf {
-  bundle exec berks install "$@"; echo
-}
 function change_all_branches {
   echo "Switching to $1 on all repos:"
   for name in $ALL_PATHS; do
@@ -42,7 +39,6 @@ function change_all_branches {
     git checkout -f $1
     cd - > /dev/null
   done
-  echo
 }
 function install_berkshelves {
   echo "Installing cookbooks at $1"
@@ -51,7 +47,6 @@ function install_berkshelves {
     ensure_bundle
     bundle exec berks install --path $1; echo
   done
-  echo
 }
 
 

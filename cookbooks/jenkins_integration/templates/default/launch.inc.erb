@@ -10,16 +10,21 @@ function kc {
   knife cluster "$@"
 }
 function klean_exit {
+  echo "Killing $FACET:"
   kc kill $FACET --yes
+  echo
   exit $@
 }
 
+echo "List all clusters:"
 kc list -f
 echo
 
+echo "Show $CLUSTER cluster:"
 kc show $CLUSTER
 echo
 
+echo "Launch $FACET:"
 kc launch $FACET
 if [ $? -ne 0 ] ; then
   echo "FATAL: knife cluster launch failed"
@@ -27,6 +32,7 @@ if [ $? -ne 0 ] ; then
 fi
 echo
 
+echo "Wait while chef finishes running:"
 WAIT=0
 while true; do
   sleep 15
@@ -47,6 +53,7 @@ while true; do
     echo
     klean_exit 0
   elif $WAIT > $MAX_WAIT
+    echo
     echo "FATAL: waited too long for results."
     klean_exit 1
   fi
