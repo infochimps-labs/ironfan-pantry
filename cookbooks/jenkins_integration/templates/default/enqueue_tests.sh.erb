@@ -13,7 +13,6 @@ h1 "Find and validate new pantry changes, or die"
 changes_found=0
 for name in $PANTRIES; do
   switch_to $name
-  item "In $name"
   # if echo $name | grep homebase;
   # then cookbooks='org_cookbooks';
   # else cookbooks='cookbooks'; fi
@@ -49,7 +48,6 @@ install_berkshelves $testing h2
 h1 "Record the testing cookbook versions"
 for name in $HOMEBASES; do
   switch_to $name
-  item "In $name"
   VERSIONS=environments/inc/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
   for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
@@ -64,7 +62,6 @@ done
 h1 "Push updates to development"
 for name in $ALL_PATHS; do
   switch_to $name
-  item "In $name"
   git pull
   git push origin master
 done
@@ -74,7 +71,6 @@ change_all_branches "testing" h2
 h2 "Merge master into staging"
 for name in $ALL_PATHS; do
   switch_to $name
-  item "In $name"
   if ! git merge staging | grep 'Already up-to-date' > /dev/null; then
     echo "FATAL: master is not a descendant of staging" >&2
     exit 1
@@ -86,7 +82,6 @@ done
 h1 "Find, validate, upload, and freeze changed cookbooks"
 for name in $HOMEBASES; do
   switch_to $name
-  item "In $name"
   changed=''
   for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
     test_cb=$testing/$cookbook
@@ -111,13 +106,11 @@ done
 h1 "Upload testing environment"
 for name in $HOMEBASES; do
   switch_to $name
-  item "In $name"
   knife environment from file testing.rb
 done
 
 h1 "Uploading changed roles (test universe only)"
 switch_to $TEST_PATH
-item "In $TEST_PATH"
 changed=''
 for file in `git diff --name-only staging roles/`; do
   if [ -f $file ]; then         # Don't treat a removed role as changed
