@@ -21,9 +21,7 @@ export HOMEBASES="<%= repo_names @homebases %>"
 export ALL_PATHS="$PANTRIES $HOMEBASES"
 export TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
 
-function switch_to {
-  cd $WORKSPACE/$1; pwd
-}
+function switch_to { cd $WORKSPACE/$1; }
 
 function ensure_bundle {
   if ! bundle check; then

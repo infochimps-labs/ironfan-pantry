@@ -3,26 +3,26 @@
 # Advance changes into testing, or bomb if no changes
 # 
 source `dirname $0`/shared.inc
+
 big_boy_pants
 
+h1 "Find and validate new pantry changes, or die:"
 # FIXME: It'd be nice if this didn't die except on a true error,
 #   and instead conditionally triggered the downstream on changes.
 # FIXME: This dodges the need for rake *:version:bump in homebases. 
 #   Add that, then come back and make this work with homebases as 
 #   well.
 no_changes=0
-h1 "Find and validate new pantry changes, or die:"
-change_all_branches "master"
 for name in $PANTRIES; do
-  h2 `switch_to $name`
-
+  switch_to $name
+  h2 `pwd`
   # if echo $name | grep homebase;
   # then cookbooks='org_cookbooks';
   # else cookbooks='cookbooks'; fi
   cookbooks='cookbooks'
 
   changes=`git diff --name-only staging -- $cookbooks/*/ | cut -d/ -f2 | sort | uniq`
-  if [ "x$changes" = "x" ]; then
+  if [ "no$changes" == "no" ]; then
     item "No cookbook changes between master and staging"
     continue
   fi
@@ -50,8 +50,8 @@ install_berkshelves $testing
 
 h1 "Record the testing cookbook versions:"
 for name in $HOMEBASES; do
-  h2 `switch_to $name`
-
+  switch_to $name
+  h2 `pwd`
   VERSIONS=environments/inc/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
   for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
@@ -63,7 +63,8 @@ done
 
 h1 "Push updates to development:"
 for name in $ALL_PATHS; do
-  h2 `switch_to $name`
+  switch_to $name
+  h2 `pwd`
   git pull
   git push origin master
 done
@@ -71,7 +72,8 @@ done
 h1 "Advance all changes to testing (after ensuring proper matryoshka):"
 change_all_branches "testing"
 for name in $ALL_PATHS; do
-  h2 `switch_to $name`
+  switch_to $name
+  h2 `pwd`
   if ! git merge staging | grep 'Already up-to-date' > /dev/null; then
     echo "FATAL: master is not a descendant of staging" >&2
     exit 1
@@ -82,7 +84,8 @@ done
 
 h1 "Find, validate, upload, and freeze changed cookbooks:"
 for name in $HOMEBASES; do
-  h2 `switch_to $name`
+  switch_to $name
+  h2 `pwd`
   changed=''
   for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
     test_cb=$testing/$cookbook
@@ -107,7 +110,8 @@ done
 
 h1 "Upload testing environment"
 for name in $HOMEBASES; do
-  h2 `switch_to $name`
+  switch_to $name
+  h2 `pwd`
   knife environment from file testing.rb
 done
 

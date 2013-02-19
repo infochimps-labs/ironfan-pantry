@@ -5,7 +5,8 @@ big_boy_pants
 h1 "Advance testing code to staging, ensuring matryoshka remains intact:"
 change_all_branches "staging"
 for name in $ALL_REPOS; do
-  h2 `switch_to $name`
+  switch_to $name
+  h2 `pwd`
   git merge testing
 
   git checkout -f testing
@@ -20,7 +21,8 @@ done
 
 h1 "Upload the new staging environments:"
 for name in $HOMEBASES; do
-  h2 `switch_to $name`
+  switch_to $name
+  h2 `pwd`
   git checkout -f staging
   knife environment from file staging.rb
 done
