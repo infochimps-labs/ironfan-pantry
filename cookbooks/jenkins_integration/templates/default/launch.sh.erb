@@ -54,7 +54,7 @@ while true; do
     cat tmp.client.log
     echo
     klean_exit 0
-  elif $WAIT > $MAX_WAIT
+  elif $WAIT > $MAX_WAIT; then
     echo
     echo "FATAL: waited too long for results."
     klean_exit 1
