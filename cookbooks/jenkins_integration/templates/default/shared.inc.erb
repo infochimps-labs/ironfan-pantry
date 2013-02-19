@@ -11,12 +11,8 @@ export SHARED_DIR=<%= node[:jenkins][:server][:home_dir] %>/shared
 #
 # Repositories
 # 
-<%- def repo_name(repo)
-      repo[/\/([a-z-]*)\.git/,1]
-    end
-    def repo_names(repo)
-      repo.map {|r| repo_name r }.join(' ')
-    end %>
+<%- def repo_name(repo)   repo[/\/([a-z-]*)\.git/,1];                   end
+    def repo_names(repo)  repo.map {|r| repo_name r }.join(' ');        end %>
 export REPOS="<%= @pantries.join(' ') %> <%= @homebases.join(' ') %>"
 export PANTRIES="<%= repo_names @pantries %>"
 export HOMEBASES="<%= repo_names @homebases %>"

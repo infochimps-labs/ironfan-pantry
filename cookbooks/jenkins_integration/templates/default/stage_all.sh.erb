@@ -3,7 +3,7 @@ source `dirname $0`/shared.inc
 
 h1 "Advance testing code to staging, ensuring matryoshka remains intact"
 change_all_branches "staging"
-for name in $REPOS; do
+for name in $ALL_PATHS; do
   switch_to $name
   git merge testing
 
