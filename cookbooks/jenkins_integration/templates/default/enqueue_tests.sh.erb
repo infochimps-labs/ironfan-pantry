@@ -3,7 +3,7 @@
 # Advance changes into testing, or bomb if no changes
 # 
 source `dirname $0`/shared.inc
-set -o errexit
+big_boy_pants
 
 # FIXME: It'd be nice if this didn't die except on a true error,
 #   and instead conditionally triggered the downstream on changes.
@@ -114,14 +114,11 @@ h1 "Uploading changed roles (test universe only):"
 item `switch_to $TEST_PATH`
 changed=''
 for file in `git diff --name-only staging roles/`; do
-  # Don't treat a removed role as changed
-  if [ -f $file ]; then
+  if [ -f $file ]; then         # Don't treat a removed role as changed
     rake role from file $file
     changed="$changed$file "
   fi
 done
-if [ "nothing$changed" == "nothing" ]; then
-  item "Nothing changed"
-fi
+if [ "nothing$changed" == "nothing" ]; then item "Nothing changed"; fi
 
 success "All tests enqueued successfully"
