@@ -116,7 +116,8 @@ for name in $HOMEBASES; do
 done
 
 h1 "Uploading changed roles (test universe only):"
-item `switch_to $TEST_PATH`
+switch_to $TEST_PATH
+item `pwd`
 changed=''
 for file in `git diff --name-only staging roles/`; do
   if [ -f $file ]; then         # Don't treat a removed role as changed

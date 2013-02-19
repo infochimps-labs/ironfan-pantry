@@ -36,7 +36,8 @@ function change_all_branches {
   echo "Switching to $1 on all repos:"
   for name in $ALL_PATHS; do
     switch_to $name
-    git checkout -f $1
+    item `pwd`
+    git checkout -f $1 > /dev/null
     cd - > /dev/null
   done
 }
@@ -47,8 +48,9 @@ function install_berkshelves {
   echo "Installing cookbooks at $1"
   for name in $HOMEBASES; do
     switch_to $name
-    ensure_bundle
-    bundle exec berks install --path $1; echo
+    item `pwd`
+    ensure_bundle > /dev/null
+    bundle exec berks install --path $1 > /dev/null
   done
 }
 
