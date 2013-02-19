@@ -3,10 +3,10 @@ set -o errexit
 
 source `dirname $0`/shared.inc
 
-echo "Advance testing code to staging, ensuring matryoshka remains intact:"
+h1 "Advance testing code to staging, ensuring matryoshka remains intact:"
 change_all_branches "staging"
 for name in $ALL_REPOS; do
-  switch_to $name
+  h2 `switch_to $name`
   git merge testing
 
   git checkout -f testing
@@ -18,14 +18,12 @@ for name in $ALL_REPOS; do
 
   git push
 done
-echo
 
-echo "Upload the new staging environments:"
+h1 "Upload the new staging environments:"
 for name in $HOMEBASES; do
-  switch_to $name
+  h2 `switch_to $name`
   git checkout -f staging
   knife environment from file staging.rb
 done
-echo
 
-echo "Everything has converged successfully. Enjoy your new staging version."
+success "Everything has converged successfully. Enjoy your new staging version."

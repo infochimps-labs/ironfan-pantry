@@ -2,37 +2,36 @@
 source `dirname $0`/shared.inc
 set -o errexit
 
-echo "Getting all repositories (inc. bundled code & branches) up-to-date: $REPOS"
-echo
+h1 "Getting all repositories (inc. bundled code & branches) up-to-date: $REPOS"
 
 for repo in $REPOS; do
   name=${repo##*/}
   name=${name%.git}
 
-  cd $WORKSPACE
+  item `switch_to $WORKSPACE`
   if [ ! -d $name ]; then
-    echo "Checking out $repo:"
+    h2 "Checking out $repo:"
     git clone $repo
     switch_to $name
 
-    echo "get remotes:"
+    h2 "get remotes:"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -t remotes/$remote
     done
   else
-    echo "Updating $repo:"
+    h2 "Updating $repo:"
     switch_to $name
     git checkout -f master
     git pull
 
-    echo "update remotes:"
+    h2 "update remotes:"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -f ${remote#*/}
       git pull
     done
   fi
 
-  echo "Get submodules"
+  h2 "Get submodules"
   git checkout -f master
   git submodule update --init
 

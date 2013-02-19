@@ -10,10 +10,10 @@ set -o errexit
 # FIXME: This dodges the need for rake *:version:bump in homebases. 
 #   Add that, then come back and make this work with homebases as 
 #   well.
-EXIT_CODE=1
-echo "Find and validate new pantry changes, or die:"
+no_changes=0
+h1 "Find and validate new pantry changes, or die:"
 for name in $PANTRIES; do
-  switch_to $name
+  h2 `switch_to $name`
 
   # if echo $name | grep homebase;
   # then cookbooks='org_cookbooks';
@@ -22,39 +22,34 @@ for name in $PANTRIES; do
 
   changes=`git diff --name-only staging -- $cookbooks/*/ | cut -d/ -f2 | sort | uniq`
   if [ "x$changes" = "x" ]; then
-    echo "No cookbook changes between master and staging"
+    item "No cookbook changes between master and staging"
     continue
   fi
 
-  echo "Changes found: $changes"
-  EXIT_CODE=0
+  item "Changes found: $changes"
+  no_changes=1
 
+  item "Ensure changes have version bump"
   for cookbook in $changes; do
     if git diff --quiet staging -- cookbooks/$cookbook/VERSION; then
-      echo "WARNING: changes found but no version change in $cookbook"
+      warning "Changes found but no version change in $cookbook"
       rake $cookbook:version:bump
     fi
   done
 done
-if [ ! $EXIT_CODE ]; then
-  echo "ERROR: No changes found for testing";
-  exit $EXIT_CODE
-fi
-echo
+if [ no_changes ]; then failure 1 "ERROR: No changes found for testing"; fi
 
-echo "Get all cookbooks into place in homebases:"
+h1 "Get all cookbooks into place in homebases:"
 staging="staging_cookbooks"
 testing="cookbooks"
-
 change_all_branches "staging"
 install_berkshelves $staging
 change_all_branches "master"
 install_berkshelves $testing
-echo
 
-echo "Record the testing cookbook versions:"
+h1 "Record the testing cookbook versions:"
 for name in $HOMEBASES; do
-  switch_to $name
+  h2 `switch_to $name`
 
   VERSIONS=environments/inc/cookbook_versions.rb
   cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
@@ -64,20 +59,18 @@ for name in $HOMEBASES; do
   done
   git commit $VERSIONS -m"$VERSIONS: updating testing cookbook versions"
 done
-echo
 
-echo "Push updates to development:"
+h1 "Push updates to development:"
 for name in $ALL_PATHS; do
-  switch_to $name
+  h2 `switch_to $name`
   git pull
   git push origin master
 done
-echo
 
-echo "Advance all changes to testing (after ensuring proper matryoshka):"
+h1 "Advance all changes to testing (after ensuring proper matryoshka):"
 change_all_branches "testing"
 for name in $ALL_PATHS; do
-  switch_to $name
+  h2 `switch_to $name`
   if ! git merge staging | grep 'Already up-to-date' > /dev/null; then
     echo "FATAL: master is not a descendant of staging" >&2
     exit 1
@@ -85,11 +78,10 @@ for name in $ALL_PATHS; do
   git merge master
   git push origin testing
 done
-echo
 
-echo "Find, validate, upload, and freeze changed cookbooks:"
+h1 "Find, validate, upload, and freeze changed cookbooks:"
 for name in $HOMEBASES; do
-  switch_to $name
+  h2 `switch_to $name`
   changed=''
   for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
     test_cb=$testing/$cookbook
@@ -99,32 +91,27 @@ for name in $HOMEBASES; do
     if ! $no_change $test_cb $stage_cb > /dev/null 2>&1; then
       # make sure VERSIONs aren't identical either
       if $no_change $test_cb/VERSION $stage_cb/VERSION > /dev/null 2>&1; then
-        echo "FATAL: testing version of $cookbook has changes, but same VERSION as staging"
-        exit 1
+        failure 1 "testing version of $cookbook has changes, but same VERSION as staging"
       fi
       changed="$changed$cookbook "
     fi
   done
   if [ "nothing$changed" == "nothing" ]; then
-    echo "WARNING: Nothing changed - very suspicious"
+    warning "Nothing changed - very suspicious"
     continue
   fi
-  echo "Upload and freeze changed cookbooks: $changed"
-#   knife cookbook upload -V --freeze --force $changed || exit 1
+  h2 "Upload and freeze changed cookbooks: $changed"
   knife cookbook upload -V --freeze --force $changed
 done
-echo
 
-echo "Upload testing environment"
+h1 "Upload testing environment"
 for name in $HOMEBASES; do
-  switch_to $name
-#   knife environment from file testing.rb || exit 1
+  h2 `switch_to $name`
   knife environment from file testing.rb
 done
-echo
 
-echo "Uploading changed roles (test universe only):"
-switch_to $TEST_PATH
+h1 "Uploading changed roles (test universe only):"
+item `switch_to $TEST_PATH`
 changed=''
 for file in `git diff --name-only staging roles/`; do
   # Don't treat a removed role as changed
@@ -134,6 +121,7 @@ for file in `git diff --name-only staging roles/`; do
   fi
 done
 if [ "nothing$changed" == "nothing" ]; then
-  echo "Nothing changed"
+  item "Nothing changed"
 fi
-echo
+
+success "All tests enqueued successfully"

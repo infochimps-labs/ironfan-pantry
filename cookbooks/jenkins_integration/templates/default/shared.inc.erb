@@ -66,3 +66,40 @@ export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
 function knife {
   bundle exec knife "$@"
 }
+
+#
+# Formatting
+#
+function header {
+  wrapper=`for i in $(seq $1); do echo -n '#'; done`
+  echo "$wrapper $2 $wrapper"
+}
+function item {
+  echo "- $1"
+}
+function success {
+  echo
+  echo "SUCCESS: $1"
+  exit 0
+}
+function failure {
+  echo
+  echo "FAILURE: $2"
+  exit $1
+}
+function warning {
+  echo "WARNING: $1"
+}
+function h1 {
+  echo
+  header 1 $1
+}
+function h2 {
+  header 2 $1
+}
+function h3 {
+  header 3 $1
+}
+function h4 {
+  header 4 $1
+}

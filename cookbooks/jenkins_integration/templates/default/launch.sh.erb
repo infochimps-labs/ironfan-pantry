@@ -15,52 +15,47 @@ export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 function kc {
   knife cluster "$@"
 }
-function klean_exit {
+function klean_up {
   echo "Killing $FACET:"
   kc kill $FACET --yes
-  echo
-  exit $@
+}
+function klean_success {
+  klean_up
+  success $1
+}
+function klean_failure {
+  klean_up
+  failure "$@"
 }
 
-echo "List all clusters:"
+h1 "List all clusters:"
 kc list -f
-echo
 
-echo "Show $CLUSTER cluster:"
+h1 "Show $CLUSTER cluster:"
 kc show $CLUSTER
-echo
 
-echo "Launch $FACET:"
-kc launch $FACET
-if [ $? -ne 0 ] ; then
-  echo "FATAL: knife cluster launch failed"
-  klean_exit 1
-fi
-echo
+h1 "Launch $FACET:"
+kc launch $FACET || klean_failure 1 "FATAL: knife cluster launch failed"
 
-echo "Wait while chef finishes running:"
+h1 "Wait while chef finishes running:"
 WAIT=0
 while true; do
   sleep 15
   WAIT=$((WAIT+15))
   # FIXME: inaccurate (only counts wait time). Not really worth fixing yet.
-  echo "Waited $WAIT seconds while chef finishes running"
+  item "Waited $WAIT seconds while chef finishes running"
 
   kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log 
   if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
-    echo
     kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE >> tmp.client.log
-    cat tmp.client.log
     echo
-    klean_exit 2
+    cat tmp.client.log
+    klean_failure 2 "$FACET initial chef-client failed"
   elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
     echo
     cat tmp.client.log
-    echo
-    klean_exit 0
+    klean_success "$FACET initial chef-client run completed successfully"
   elif [ $WAIT -gt $MAX_WAIT ]; then
-    echo
-    echo "FATAL: waited too long for results."
-    klean_exit 1
+    klean_failure 1 "Waited too long for results."
   fi
 done
