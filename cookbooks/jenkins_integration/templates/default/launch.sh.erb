@@ -48,7 +48,7 @@ while true; do
     kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE >> tmp.client.log
     cat tmp.client.log
     echo
-    klean_exit 1
+    klean_exit 2
   elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
     echo
     cat tmp.client.log

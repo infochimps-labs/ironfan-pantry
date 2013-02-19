@@ -3,6 +3,7 @@
 # 
 ROOT_DIR=`dirname $0`
 WORKSPACE=$ROOT_DIR/workspace
+SHARED_DIR=<%= node[:jenkins][:server][:home_dir] %>
 
 #
 # Repositories
@@ -27,7 +28,7 @@ function switch_to {
 function ensure_bundle {
   if ! bundle check; then
     echo "Installing bundle:"
-    PARAMS="--path $WORKSPACE/vendor --no-color --without=development,support"
+    PARAMS="--path $SHARED_DIR --no-color"
     # Only install from source if cache fails
     bundle install $PARAMS --local || bundle install $PARAMS
   fi
