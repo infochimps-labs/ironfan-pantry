@@ -123,7 +123,7 @@ item `pwd`
 changed=''
 for file in `git diff --name-only staging roles/`; do
   if [ -f $file ]; then         # Don't treat a removed role as changed
-    rake role from file $file
+    knife role from file $file
     changed="$changed$file "
   fi
 done
