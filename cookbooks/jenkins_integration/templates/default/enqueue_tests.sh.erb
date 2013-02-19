@@ -121,4 +121,4 @@ for file in `git diff --name-only staging roles/`; do
 done
 if [ "nothing$changed" == "nothing" ]; then item "Nothing changed"; fi
 
-success <%= cookbook_ci[:koan][:testing] %>
+success $TEST_KOAN

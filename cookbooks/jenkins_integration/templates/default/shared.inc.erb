@@ -104,3 +104,6 @@ function h3 {
 function h4 {
   header 4 $*
 }
+
+export TEST_KOAN="<%= node[:jenkins_integration][:cookbook_ci][:koan][:testing] %>"
+export STAGE_KOAN="<%= node[:jenkins_integration][:cookbook_ci][:koan][:staging] %>"
