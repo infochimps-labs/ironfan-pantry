@@ -53,10 +53,12 @@ function install_berkshelves {
 # 
 # Launch
 # 
+export TARGET=<%= node[:jenkins_integration][:ironfan_ci][:target] %>
+export BROKEN=<%= node[:jenkins_integration][:ironfan_ci][:broken] %>
+
 export MAX_WAIT=<%= node[:jenkins_integration][:ironfan_ci][:max_wait] %>
 export CHEF_USER=<%= node[:jenkins_integration][:ironfan_ci][:chef_user] %>
 
 function knife {
   bundle exec knife "$@"
 }
-

@@ -109,7 +109,7 @@ end
 
 all_repos = node[:jenkins_integration][:ironfan_ci][:pantries] +
             node[:jenkins_integration][:ironfan_ci][:homebases]
-shared_templates = %w[ shared.inc launch.inc cookbook_versions.rb.h ]
+shared_templates = %w[ shared.inc launch.sh cookbook_versions.rb.h ]
 
 # Advance changes into testing positions, or bomb if no changes
 jenkins_job "Ironfan Cookbooks - 1 - Prepare testing" do

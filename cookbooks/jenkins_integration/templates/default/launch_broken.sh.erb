@@ -3,8 +3,16 @@
 # Launch a known-broken instance
 #
 source `dirname $0`/shared.inc
-export FACET=<%= node[:jenkins_integration][:ironfan_ci][:broken] %>
 
 switch_to $TEST_PATH
 
-source $ROOT_DIR/launch.inc
+$ROOT_DIR/launch.sh $BROKEN
+
+if [ $? == 2 ]; then
+  echo "Failed as expected"
+  exit 0
+else
+  echo "Unexpected failure type!"
+  exit 1
+fi
+

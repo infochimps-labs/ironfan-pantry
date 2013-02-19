@@ -17,15 +17,15 @@ for name in $ALL_REPOS; do
   git merge testing
 
   git push
-  echo
 done
+echo
 
 echo "Upload the new staging environments:"
 for name in $HOMEBASES; do
   switch_to $name
   git checkout -f staging
   knife environment from file staging.rb
-  echo
 done
+echo
 
 echo "Everything has converged successfully. Enjoy your new staging version."

@@ -110,13 +110,30 @@ for name in $HOMEBASES; do
     continue
   fi
   echo "Upload and freeze changed cookbooks: $changed"
-  knife cookbook upload -V --freeze --force $changed || exit 1
+#   knife cookbook upload -V --freeze --force $changed || exit 1
+  knife cookbook upload -V --freeze --force $changed
 done
 echo
 
 echo "Upload testing environment"
 for name in $HOMEBASES; do
   switch_to $name
-  knife environment from file testing.rb || exit 1
+#   knife environment from file testing.rb || exit 1
+  knife environment from file testing.rb
 done
+echo
+
+echo "Uploading changed roles (test universe only):"
+switch_to $TEST_PATH
+changed=''
+for file in `git diff --name-only staging roles/`; do
+  # Don't treat a removed role as changed
+  if [ -f $file ]; then
+    rake role from file $file
+    changed="$changed$file "
+  fi
+done
+if [ "nothing$changed" == "nothing" ]; then
+  echo "Nothing changed"
+fi
 echo
