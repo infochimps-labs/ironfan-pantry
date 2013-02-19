@@ -75,7 +75,6 @@
   <%- end %>
   <%- unless @conditional.empty? %>
   <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.2.1">
-    <%= @conditional[:regexp] %>
     <condition class="org.jenkins_ci.plugins.text_finder_run_condition.TextFinderCondition" plugin="text-finder-run-condition@0.1">
       <regexp><%= @conditional[:regexp] %></regexp>
       <checkConsoleOutput>true</checkConsoleOutput>
