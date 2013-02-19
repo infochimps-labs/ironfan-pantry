@@ -24,8 +24,7 @@ for name in $PANTRIES; do
     continue
   fi
 
-  item "Changes found"
-  echo ${changes//\\n/ }        # Don't include newlines
+  item "Changes found: ${changes//\\n/ }"       # Don't include newlines
   changes_found=1
 
   item "Ensure changes have version bump"
