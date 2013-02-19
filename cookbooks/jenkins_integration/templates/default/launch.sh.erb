@@ -28,7 +28,6 @@ kc show $CLUSTER
 
 h2 "Launch $FACET"
 kc launch $FACET || ( klean_up; failure 1 "knife cluster launch failed" )
-echo # FIXME: very minor bug in ironfan output
 
 h2 "Wait while chef finishes running"
 WAIT=0
@@ -38,6 +37,7 @@ while true; do
 
   kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log
   if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
+    echo
     h2 "Dumping log of failed run"
     cat tmp.client.log
     info "Fetching stack trace"
@@ -45,6 +45,7 @@ while true; do
     klean_up
     failure 2 "$FACET initial chef-client failed"
   elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
+    echo
     h2 "Dumping log of successful run"
     cat tmp.client.log
     klean_up
