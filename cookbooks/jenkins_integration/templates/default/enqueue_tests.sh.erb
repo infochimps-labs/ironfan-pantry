@@ -12,7 +12,7 @@ h1 "Find and validate new pantry changes, or die:"
 # FIXME: This dodges the need for rake *:version:bump in homebases. 
 #   Add that, then come back and make this work with homebases as 
 #   well.
-no_changes=0
+changes_found=0
 for name in $PANTRIES; do
   switch_to $name
   h2 `pwd`
@@ -28,7 +28,7 @@ for name in $PANTRIES; do
   fi
 
   item "Changes found: $changes"
-  no_changes=1
+  changes_found=1
 
   item "Ensure changes have version bump"
   for cookbook in $changes; do
@@ -38,7 +38,7 @@ for name in $PANTRIES; do
     fi
   done
 done
-if [ $no_changes ]; then failure 1 "ERROR: No changes found for testing"; fi
+if [ ! $changes_found ]; then failure 1 "No changes found for testing"; fi
 
 h1 "Get all cookbooks into place in homebases:"
 staging="staging_cookbooks"
