@@ -27,7 +27,7 @@ h2 "Show $CLUSTER cluster"
 kc show $CLUSTER
 
 h2 "Launch $FACET"
-kc launch $FACET || klean_up && failure 1 "FATAL: knife cluster launch failed"
+kc launch $FACET || ( klean_up; failure 1 "knife cluster launch failed" )
 
 h2 "Wait while chef finishes running"
 WAIT=0
