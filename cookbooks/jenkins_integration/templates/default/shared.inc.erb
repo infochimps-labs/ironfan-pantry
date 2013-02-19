@@ -26,9 +26,8 @@ function switch_to {
 }
 
 function ensure_bundle {
-  level=$2; if [ ! $level ]; then level='echo'; fi
   if ! bundle check; then
-    $level "Installing bundle"
+    ${2:-echo} "Installing bundle"
     PARAMS="--path $SHARED_DIR --no-color"
     # Only install from source if cache fails
     bundle install $PARAMS --local || bundle install $PARAMS
@@ -36,8 +35,7 @@ function ensure_bundle {
 }
 
 function change_all_branches {
-  level=$2; if [ ! $level ]; then level='echo'; fi
-  $level "Switching to $1 on all repos"
+  ${2:-echo} "Switching to $1 on all repos"
   for name in $ALL_PATHS; do
     switch_to $name
     git checkout -f $1 2> /dev/null
@@ -48,7 +46,7 @@ function change_all_branches {
 export USE_LOCAL=true
 export LOCAL_PATH=..
 function install_berkshelves {
-  echo "Installing cookbooks at $1"
+  ${2:-echo} "Installing cookbooks at $1"
   for name in $HOMEBASES; do
     switch_to $name
     ensure_bundle > /dev/null
