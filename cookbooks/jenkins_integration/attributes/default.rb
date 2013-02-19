@@ -15,3 +15,5 @@ pantries        = %w[ git@github.com:infochimps-labs/ironfan-pantry.git ]
 homebases       = %w[ git@github.com:infochimps-labs/ironfan-homebase.git ]
 default[:jenkins_integration][:ironfan_ci][:pantries]   = pantries
 default[:jenkins_integration][:ironfan_ci][:homebases]  = homebases
+
+node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ]
