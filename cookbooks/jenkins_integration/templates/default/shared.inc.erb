@@ -2,6 +2,8 @@
 #
 # Core components
 # 
+set -o errexit  # big boy pants (die on any error)
+
 export ROOT_DIR=`dirname $0`
 export WORKSPACE=$ROOT_DIR/workspace
 export SHARED_DIR=<%= node[:jenkins][:server][:home_dir] %>/shared
@@ -108,9 +110,3 @@ function h3 {
 function h4 {
   header 4 $*
 }
-
-#
-# Error control
-#
-h1 "Putting on big boy pants (die on any error)"
-set -o errexit
