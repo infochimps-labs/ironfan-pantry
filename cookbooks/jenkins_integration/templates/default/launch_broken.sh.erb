@@ -4,9 +4,8 @@
 #
 source `dirname $0`/shared.inc
 
+h1 "Launching known broken instance, expecting failure"
 switch_to $TEST_PATH
-item "In $TEST_PATH"
-
 $ROOT_DIR/launch.sh $BROKEN || return=$?  # Don't die, just record
 
 if [ $return -eq 2 ]; then

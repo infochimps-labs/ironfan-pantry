@@ -21,7 +21,11 @@ export HOMEBASES="<%= repo_names @homebases %>"
 export ALL_PATHS="$PANTRIES $HOMEBASES"
 export TEST_PATH="<%= repo_name node[:jenkins_integration][:ironfan_ci][:test_homebase] %>"
 
-function switch_to { cd $WORKSPACE/$1; }
+function switch_to { 
+  level=$2; if [ ! $level ]; then level='item'; fi
+  cd $WORKSPACE/$1
+  $level "In $1"
+}
 
 function ensure_bundle {
   level=$2; if [ ! $level ]; then level='echo'; fi
@@ -38,7 +42,6 @@ function change_all_branches {
   $level "Switching to $1 on all repos"
   for name in $ALL_PATHS; do
     switch_to $name
-    item `pwd`
     git checkout -f $1 2> /dev/null
     cd - > /dev/null
   done
@@ -50,7 +53,6 @@ function install_berkshelves {
   echo "Installing cookbooks at $1"
   for name in $HOMEBASES; do
     switch_to $name
-    item `pwd`
     ensure_bundle > /dev/null
     bundle exec berks install --path $1 > /dev/null
   done
