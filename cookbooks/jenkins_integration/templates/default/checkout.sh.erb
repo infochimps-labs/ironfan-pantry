@@ -10,21 +10,21 @@ for repo in $REPOS; do
 
   cd $WORKSPACE
   if [ ! -d $name ]; then
-    h2 "Checking out $name:"
+    h2 "Checking out $name"
     git clone $repo
     switch_to $name
 
-    h3 "get remotes:"
+    h3 "get remotes"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -t remotes/$remote
     done
   else
-    h2 "Updating $name:"
+    h2 "Updating $name"
     switch_to $name
     git checkout -f master
     git pull
 
-    h3 "update remotes:"
+    h3 "update remotes"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -f ${remote#*/}
       git pull
