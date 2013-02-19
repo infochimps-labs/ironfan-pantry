@@ -7,9 +7,9 @@ source `dirname $0`/shared.inc
 switch_to $TEST_PATH
 item "In $TEST_PATH"
 
-$ROOT_DIR/launch.sh $BROKEN
+$ROOT_DIR/launch.sh $BROKEN || return=$?  # Don't die, just record
 
-if [ $? -eq 2 ]; then
+if [ $return -eq 2 ]; then
   success "Failed as expected (chef-client bombed)"
 else
   failure 1 "Unexpected failure type!"
