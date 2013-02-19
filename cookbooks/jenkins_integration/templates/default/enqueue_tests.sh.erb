@@ -3,7 +3,7 @@
 # Advance changes into testing, or bomb if no changes
 # 
 source `dirname $0`/shared.inc
-set -e
+set -o errexit
 
 # FIXME: It'd be nice if this didn't die except on a true error,
 #   and instead conditionally triggered the downstream on changes.

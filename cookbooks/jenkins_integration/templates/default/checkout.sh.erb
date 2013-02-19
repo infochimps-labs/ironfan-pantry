@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 source `dirname $0`/shared.inc
-set -e
+set -o errexit
 
 echo "Getting all repositories (inc. bundled code & branches) up-to-date: $REPOS"
 echo

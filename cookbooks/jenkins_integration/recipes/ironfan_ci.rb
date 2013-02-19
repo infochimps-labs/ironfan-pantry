@@ -107,13 +107,11 @@ end
 #   node[:jenkins_integration][:ironfan_ci][:homebases].unshift
 #   node[:jenkins_integration][:ironfan_ci][:test_homebase] ).uniq
 
-all_repos = node[:jenkins_integration][:ironfan_ci][:pantries] +
-            node[:jenkins_integration][:ironfan_ci][:homebases]
 shared_templates = %w[ shared.inc launch.sh cookbook_versions.rb.h ]
-
 # Advance changes into testing positions, or bomb if no changes
 jenkins_job "Ironfan Cookbooks - 1 - Prepare testing" do
-  repositories  all_repos
+  pantries      node[:jenkins_integration][:ironfan_ci][:pantries]
+  homebases     node[:jenkins_integration][:ironfan_ci][:homebases]
   templates     shared_templates
   tasks         %w[ checkout.sh enqueue_tests.sh ]
   triggers      :schedule => node[:jenkins_integration][:ironfan_ci][:schedule]
@@ -122,7 +120,8 @@ end
 
 # Launch a testing server and push testing into staging if successful
 jenkins_job "Ironfan Cookbooks - 2 - Test and stage" do
-  repositories  all_repos
+  pantries      node[:jenkins_integration][:ironfan_ci][:pantries]
+  homebases     node[:jenkins_integration][:ironfan_ci][:homebases]
   templates     shared_templates
   tasks         %w[ checkout.sh launch_instance.sh stage_all.sh ]
   if node[:jenkins_integration][:ironfan_ci][:broken]
@@ -133,7 +132,7 @@ end
 # Launch a known broken instance
 if node[:jenkins_integration][:ironfan_ci][:broken]
   jenkins_job "Ironfan Cookbooks - 3 - Test known broken" do
-    repositories        [ node[:jenkins_integration][:ironfan_ci][:test_homebase] ]
+    homebases           [ node[:jenkins_integration][:ironfan_ci][:test_homebase] ]
     templates           shared_templates
     tasks               %w[ checkout.sh launch_broken.sh ]
   end

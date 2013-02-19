@@ -8,10 +8,12 @@ define(:jenkins_job,
   :downstream   => [],          # What downstream jobs to kick off on a good run
   :final        => [],          # What final jobs to kick off when downstreams are done
   :final_params => {},          # What parameters to pass to final jobs
+  :homebases    => {},          # Ironfan homebases to clone for testing
   :merge        => nil,         # What branch to attempt to merge and push
   :path         => nil,         # Path to clone to, overrides base_path
   :project      => nil,         # Source project URL
   :parameters   => {},          # If the job is parameterized, list those params
+  :pantries     => {},          # Ironfan pantries to clone for testing
   :repositories => [],          # Source repositories
   :triggers     => {},          # Triggers to start this job
   :tasks        => [],          # Array of shell scripts templates to run
