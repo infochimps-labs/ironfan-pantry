@@ -87,22 +87,15 @@ function warning {
   echo "WARNING: $*"
 }
 function header {
+  echo
   wrapper=`for i in $(seq $1); do echo -n '#'; done`
   echo "$wrapper ${*:2} $wrapper"
 }
 function h1 {
-  echo
   header 1 $*
 }
 function h2 {
-  echo
   header 2 $*
-}
-function h3 {
-  header 3 $*
-}
-function h4 {
-  header 4 $*
 }
 
 export TEST_KOAN="<%= node[:jenkins_integration][:cookbook_ci][:koan][:testing] %>"
