@@ -38,7 +38,7 @@ for name in $PANTRIES; do
     fi
   done
 done
-if [ no_changes ]; then failure 1 "ERROR: No changes found for testing"; fi
+if [ $no_changes ]; then failure 1 "ERROR: No changes found for testing"; fi
 
 h1 "Get all cookbooks into place in homebases:"
 staging="staging_cookbooks"
