@@ -72,10 +72,11 @@ for name in $ALL_PATHS; do
 done
 
 h1 "Advance all changes to testing (after ensuring proper matryoshka)"
-change_all_branches "testing"
+change_all_branches "testing" h2
+h2 "Merge master into staging"
 for name in $ALL_PATHS; do
   switch_to $name
-  h2 `pwd`
+  item `pwd`
   if ! git merge staging | grep 'Already up-to-date' > /dev/null; then
     echo "FATAL: master is not a descendant of staging" >&2
     exit 1
@@ -87,7 +88,7 @@ done
 h1 "Find, validate, upload, and freeze changed cookbooks"
 for name in $HOMEBASES; do
   switch_to $name
-  h2 `pwd`
+  item `pwd`
   changed=''
   for cookbook in `ls -1d $testing/*/ | cut -d/ -f2`; do
     test_cb=$testing/$cookbook
@@ -106,14 +107,13 @@ for name in $HOMEBASES; do
     warning "Nothing changed - very suspicious"
     continue
   fi
-  item "Upload and freeze changed cookbooks"
   knife cookbook upload -V --freeze --force $changed
 done
 
 h1 "Upload testing environment"
 for name in $HOMEBASES; do
   switch_to $name
-  h2 `pwd`
+  item `pwd`
   knife environment from file testing.rb
 done
 
