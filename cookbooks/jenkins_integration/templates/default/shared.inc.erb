@@ -70,38 +70,39 @@ function knife {
 #
 # Formatting
 #
-function header {
-  wrapper=`for i in $(seq $1); do echo -n '#'; done`
-  echo "$wrapper $2 $wrapper"
-}
 function item {
-  echo "- $1"
+  echo "- $*"
 }
 function success {
   echo
-  echo "SUCCESS: $1"
+  echo "SUCCESS: $*"
   exit 0
 }
 function failure {
   echo
-  echo "FAILURE: $2"
+  echo "FAILURE: ${*:2}"
   exit $1
 }
 function warning {
-  echo "WARNING: $1"
+  echo "WARNING: $*"
+}
+function header {
+  wrapper=`for i in $(seq $1); do echo -n '#'; done`
+  echo "$wrapper ${*:2} $wrapper"
 }
 function h1 {
   echo
-  header 1 $1
+  header 1 $*
 }
 function h2 {
-  header 2 $1
+  echo
+  header 2 $*
 }
 function h3 {
-  header 3 $1
+  header 3 $*
 }
 function h4 {
-  header 4 $1
+  header 4 $*
 }
 
 #

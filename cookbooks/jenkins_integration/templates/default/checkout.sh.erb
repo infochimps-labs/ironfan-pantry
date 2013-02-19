@@ -2,39 +2,38 @@
 source `dirname $0`/shared.inc
 big_boy_pants
 
-h1 "Getting all repositories (inc. bundled code & branches) up-to-date: $REPOS"
+h1 "Getting all repositories (inc. bundled code & branches) up-to-date:"
 
 for repo in $REPOS; do
   name=${repo##*/}
   name=${name%.git}
 
-  item `switch_to $WORKSPACE`
+  cd $WORKSPACE
   if [ ! -d $name ]; then
-    h2 "Checking out $repo:"
+    h2 "Checking out $name:"
     git clone $repo
     switch_to $name
 
-    h2 "get remotes:"
+    h3 "get remotes:"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -t remotes/$remote
     done
   else
-    h2 "Updating $repo:"
+    h2 "Updating $name:"
     switch_to $name
     git checkout -f master
     git pull
 
-    h2 "update remotes:"
+    h3 "update remotes:"
     for remote in `git branch -r | grep -v origin/master`; do
       git checkout -f ${remote#*/}
       git pull
     done
   fi
 
-  h2 "Get submodules"
+  h3 "Get submodules"
   git checkout -f master
   git submodule update --init
 
   ensure_bundle
-  echo
 done
