@@ -4,7 +4,7 @@ set -o errexit
 source `dirname $0`/shared.inc
 
 echo "Advance testing code to staging, ensuring matryoshka remains intact:"
-switch_all_branches "staging"
+change_all_branches "staging"
 for name in $ALL_REPOS; do
   switch_to $name
   git merge testing
