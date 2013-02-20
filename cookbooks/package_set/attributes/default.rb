@@ -70,15 +70,12 @@ default[:package_set][:pkgs][:dev]       = \
       when 'centos'
         %w[ emacs-nox elinks w3m ctags-etags ]
       else
-        %w[ tree git zip openssl wget curl runit libyaml-dev libxslt1-dev ]
+        %w[ tree git zip openssl wget curl runit libyaml-dev libxslt1-dev dstat elinks colordiff ]
     end
 default[:package_set][:gems][:dev]       = %w[
   extlib json yajl-ruby awesome_print addressable cheat rest-client
   yard jeweler rspec watchr pry wirble hirb highline formatador
-  configliere gorillib wukong swineherd hackboxen
-  ] + [
-    { :name => 'activesupport', :version => '3.1.0', },
-    { :name => 'activemodel',   :version => '3.1.0', },
+  configliere gorillib wukong swineherd hackboxen activesupport activemodel
   ]
 
 default[:package_set][:pkgs][:sysadmin]  = \
