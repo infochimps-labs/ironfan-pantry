@@ -31,6 +31,7 @@ begin
 rescue LoadError
   case node[:platform]
   when 'ubuntu', 'debian'
+    execute("apt-get update").run_action(:run)
     package(node[:zabbix][:database][:debian_package]) {action :nothing }.run_action(:install)
   when 'centos'
     package("mysql-devel") {action :nothing }.run_action(:install)
