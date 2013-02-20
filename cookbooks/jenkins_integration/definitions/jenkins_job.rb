@@ -5,14 +5,17 @@
 #   instead of developing this DSL->XML transformation further
 define(:jenkins_job,
   :branch       => 'master',    # Which branch to build
+  :conditional  => {},          # Array of parameters for a conditional downstream build
   :downstream   => [],          # What downstream jobs to kick off on a good run
   :final        => [],          # What final jobs to kick off when downstreams are done
   :final_params => {},          # What parameters to pass to final jobs
+  :homebases    => [],          # Ironfan homebases to clone for testing
   :merge        => nil,         # What branch to attempt to merge and push
   :path         => nil,         # Path to clone to, overrides base_path
   :project      => nil,         # Source project URL
   :parameters   => {},          # If the job is parameterized, list those params
-  :repository   => nil,         # Source repository
+  :pantries     => [],          # Ironfan pantries to clone for testing
+  :repositories => [],          # Source repositories
   :triggers     => {},          # Triggers to start this job
   :tasks        => [],          # Array of shell scripts templates to run
   :templates    => [],          # Array of templates to deploy
@@ -23,6 +26,9 @@ define(:jenkins_job,
   params[:downstream]   = params[:downstream].map {|r| r.gsub(' ','_') }
   params[:final]        = params[:final].map {|r| r.gsub(' ','_') }
   params[:path]         ||= "#{node[:jenkins][:lib_dir]}/jobs/#{params[:name]}"
+  if params[:conditional][:target]
+    params[:conditional][:target] = params[:conditional][:target].gsub(' ','_')
+  end
 
   directory params[:path] do
     owner       node[:jenkins][:server][:user]

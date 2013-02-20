@@ -1,13 +1,10 @@
 #!/usr/bin/env bash
-set -e
-
 source `dirname $0`/shared.inc
 
-function matroshka {
-  echo Push the testing branch into the staging one. Ensure that staging remains a
-  echo subset of testing, which remains a subset of master, by also pulling in
-  echo changes from those branches. If this all works, push the results to origin.
-  git checkout -f staging
+h1 "Advance testing code to staging, ensuring matryoshka remains intact"
+change_all_branches "staging"
+for name in $ALL_PATHS; do
+  switch_to $name
   git merge testing
 
   git checkout -f testing
@@ -18,36 +15,14 @@ function matroshka {
   git merge testing
 
   git push
-  echo
-}
+done
 
-changed=`cat $CHANGED_COOKBOOKS`
-
-pantry_branch "testing"
-
-echo "Record the cookbook versions to the staging environment"
+h1 "Upload the new staging environments"
 for name in $HOMEBASES; do
-  cd $WORKSPACE/$name; pwd
-
+  switch_to $name
   git checkout -f staging
-  VERSIONS=environments/inc/cookbook_versions.rb
-  cat $ROOT_DIR/cookbook_versions.rb.h > $VERSIONS
-  for target in `ls -1d cookbooks/*`; do
-    cookbook=${target#cookbooks/}
-    version=`cat cookbooks/$cookbook/VERSION`
-    echo -e "\$cookbooks['$cookbook']\t= '$version'" >> $VERSIONS
-  done
+  ensure_bundle
   knife environment from file staging.rb
-  git commit $VERSIONS -m"$VERSIONS: updating staged versions"
-  echo
-
-  matroshka
 done
 
-for name in $PANTRIES; do
-  cd $WORKSPACE/$name; pwd
-
-  matroshka
-done
-
-echo "Everything has converged successfully. Enjoy your new staging version."
+success $STAGE_KOAN

@@ -6,6 +6,7 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 description      "Installs/Configures Zabbix server, client, & web frontend."
 
+depends          "apt"
 depends          "apache2"
 depends          "nginx"
 depends          "database", ">= 1.0.0"

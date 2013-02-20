@@ -3,9 +3,16 @@
 # Launch a known-broken instance
 #
 source `dirname $0`/shared.inc
-export FACET=<%= node[:jenkins_integration][:ironfan_ci][:broken] %>
 
-$ROOT_DIR/checkout.sh $TEST_REPO
+h1 "Launching known broken instance, expecting failure"
+switch_to $TEST_PATH
+$ROOT_DIR/launch.sh $BROKEN || return=$?  # Don't die, just record
 
-cd $TEST_PATH
-source $ROOT_DIR/launch.inc
+if [ $return -eq 2 ]; then
+  success "Failed as expected (chef-client bombed)"
+elif [ $return -eq 0 ]; then
+  failure 2 "Unexpected success!"
+else
+  failure 1 "Unexpected failure type!"
+fi
+

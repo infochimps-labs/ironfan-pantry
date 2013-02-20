@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+#
+# Launch a testing instance, and wait to see if chef-client
+#   ran to completion successfully.
+#
+
+source `dirname $0`/shared.inc
+
+export FACET=$1
+export CHEF_LOG=/var/log/chef/client.log
+export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
+export CLUSTER=${FACET%-*}
+export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
+
+function kc {
+  knife cluster "$@"
+}
+function klean_up {
+  h2 "Killing $FACET"
+  kc kill $FACET --yes
+}
+
+h2 "Show $CLUSTER cluster"
+kc show $CLUSTER
+
+h2 "Launch $FACET"
+kc launch $FACET || ( klean_up; failure 1 "knife cluster launch failed" )
+
+h2 "Wait while chef finishes running"
+WAIT=0
+while true; do
+  sleep 15; WAIT=$((WAIT+15))  # FIXME: inaccurate (only counts wait time)
+  item "Waited $WAIT seconds"
+
+  kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log
+  if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
+    echo
+    h2 "Dumping log of failed run"
+    cat tmp.client.log
+    info "Fetching stack trace"
+    kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE
+    klean_up
+    failure 2 "$FACET initial chef-client failed"
+  elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
+    echo
+    h2 "Dumping log of successful run"
+    cat tmp.client.log
+    klean_up
+    success "$FACET initial chef-client run completed successfully"
+  elif [ $WAIT -gt $MAX_WAIT ]; then
+    klean_up
+    failure 1 "Waited too long for results."
+  fi
+done
