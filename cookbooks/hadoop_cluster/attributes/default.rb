@@ -114,9 +114,10 @@ default[:hadoop][:lzo][:github]  = "https://github.com/twitter/hadoop-lzo/tarbal
 default[:hadoop][:lzo][:archive] = "twitter-hadoop-lzo-9ab0565"
 default[:hadoop][:lzo][:version] = "0.4.16"
 
-default[:hadoop][:elephant_bird][:github]  = "https://github.com/kevinweil/elephant-bird/tarball/v2.2.2"
-default[:hadoop][:elephant_bird][:version] = "2.2.2"
-default[:hadoop][:elephant_bird][:archive] = "kevinweil-elephant-bird-ca8154e"
+default[:hadoop][:elephant_bird][:build_dir] = "/usr/local/share/elephant-bird"
+default[:hadoop][:elephant_bird][:git_repo]    = "https://github.com/kevinweil/elephant-bird.git"
+default[:hadoop][:elephant_bird][:version]   = "3.0.6"
+
 default[:hadoop][:elephant_bird][:protobuf_url] = "http://protobuf.googlecode.com/files/protobuf-2.3.0.tar.gz"
 default[:hadoop][:elephant_bird][:protobuf_ver] = "2.3.0"
 

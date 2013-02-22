@@ -30,38 +30,34 @@ else
     release_url node[:hadoop][:elephant_bird][:protobuf_url]
     version     node[:hadoop][:elephant_bird][:protobuf_ver]  
     action      [ :configure_with_autoconf, :install_with_make, :install ]
-    not_if      { File.exists?("/usr/local/lib/libprotobuf.so") } 
+    not_if      { File.exists?("/usr/local/lib/libprotobuf.so") }
     notifies    :run,  resources(:execute => "run ldconfig"), :immediately
   end
 end
 
-github  = node[:hadoop][:elephant_bird][:github]
-archive = node[:hadoop][:elephant_bird][:archive]
+git_repo = node[:hadoop][:elephant_bird][:git_repo]
+build_dir = node[:hadoop][:elephant_bird][:build_dir]
 version = node[:hadoop][:elephant_bird][:version]
 
-# git_private_repo 'elephant_bird' do
-#   repository github
-#   branch version
-#   path "/usr/local/src/#{archive}"
-# end
-
-remote_file "/usr/local/src/#{archive}.tar.gz" do
-  source github
-  mode "0644"
+git build_dir do
+  repository    git_repo
+  action        :sync
+  group         'admin'
+  revision      "elephant-bird-#{version}"
 end
 
-execute "tar zxvf #{archive}.tar.gz" do
-  cwd "/usr/local/src"
-  creates "/usr/local/src/#{archive}"
+bash 'compile elephant-bird' do
+  user         'root'
+  cwd          build_dir
+  code "mvn package -DskipTests=true"
+  not_if { File.exists? File.join(build_dir, "elephant-bird-core-#{version}.jar") }
 end
 
-execute "ant jar" do
-  cwd "/usr/local/src/#{archive}"
-  environment( 'JAVA_HOME' => node[:java][:java_home] )
-  creates "/usr/local/src/#{archive}/build/elephant-bird-#{version}.jar"
-end
-
-execute "cp elephant-bird-#{node[:hadoop][:elephant_bird][:version]}.jar /usr/lib/hadoop-0.20/lib" do
-  cwd "/usr/local/src/#{node[:hadoop][:elephant_bird][:archive]}/build"
-  creates "/usr/lib/hadoop-0.20/lib/elephant-bird-#{node[:hadoop][:elephant_bird][:version]}.jar"
+bash 'install elephant-bird' do
+  user         'root'
+  cwd          build_dir
+  code([
+        "cp ./core/target/elephant-bird-core-#{version}.jar",
+        File.join(node[:hadoop][:home_dir], 'lib'),
+        ].join(" "))
 end
