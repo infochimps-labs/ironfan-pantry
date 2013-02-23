@@ -105,9 +105,9 @@ index:
     # A shard is flushed to local disk (the lucene index is committed) once this
     # number of operations accumulate in the translog. defaults to 5000.
     # This may be worth increasing for a high-speed flow.
-    flush_threshold_ops:        <%= @elasticsearch[:flush_threshold] %>
-    # flush_threshold_size:     500mb
-    # flush_threshold_period:   60m
+    flush_threshold_ops:      <%= @elasticsearch[:flush_threshold] || @elasticsearch[:flush_threshold_ops] %>
+    flush_threshold_size:     <%= @elasticsearch[:flush_threshold_size] %>
+    flush_threshold_period:   <%= @elasticsearch[:flush_threshold_period] %>
 
   merge:
     policy:
@@ -120,6 +120,8 @@ index:
       # (lower than 10) for indices that are interactively maintained. Defaults
       # to 10.
       max_merge_at_once:         <%= @elasticsearch[:merge_factor] %>
+      segments_per_tier:         <%= @elasticsearch[:merge_factor] %>
+      
       # Use the compound file format. If not set, controlled by the actually
       # store used, this is because the compound format was created to reduce
       # the number of open file handles when using file based storage. The file
@@ -135,7 +137,7 @@ index:
       # single level. If you set this too large, it could greatly increase the
       # merging cost during indexing (if you flush many small
       # segments). Defaults to 2mb.
-      floor_segment:           2.7mb
+      floor_segment:           <%= @elasticsearch[:floor_segment] %>
       # Largest segment (by total byte size) that may be merged with other
       # segments. Defaults to 5gb.
       # max_merged_segment:

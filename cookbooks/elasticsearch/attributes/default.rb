@@ -56,10 +56,14 @@ default[:elasticsearch][:ulimit_mlock]            = nil  # locked memory limit -
 
 default[:elasticsearch][:default_replicas]        = 1    # replicas are in addition to the original, so 1 replica means 2 copies of each shard
 default[:elasticsearch][:default_shards]          = 12   # 12 shards per index * 2 replicas distributes evenly across 2, 3, 4, 6, 8, 12 or 24 nodes
-default[:elasticsearch][:flush_threshold]         = 5000
+default[:elasticsearch][:flush_threshold_ops]     = 5000
+default[:elasticsearch][:flush_threshold_size]    = "200mb"
+default[:elasticsearch][:flush_threshold_period]  = "60s"
 default[:elasticsearch][:cache_filter_size]       = "20%"  # can be a percent ("10%") or a number ("128m")
 default[:elasticsearch][:index_buffer_size]       = "10%"  # can be a percent ("10%") or a number ("128m") (changed 2012-10 to default 10%, same as es default)
-default[:elasticsearch][:merge_factor]            = 4
+default[:elasticsearch][:merge_factor]            = 10
+default[:elasticsearch][:floor_segment]           = "2.7mb"
+
 default[:elasticsearch][:max_thread_count]        = nil    # Maximum value given that max_thread_count must be < max_merge_count (changed 2012-10 to default nil)
 default[:elasticsearch][:term_index_interval]     = 1024
 default[:elasticsearch][:refresh_interval]        = "1s"
