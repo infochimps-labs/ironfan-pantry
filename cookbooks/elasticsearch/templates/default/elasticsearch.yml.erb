@@ -3,7 +3,7 @@
 # ElasticSearch config file
 #
 
-cluster.name:                  <%= @elasticsearch[:cluster_name] %>
+cluster.name:                  <%= @elasticsearch[:realm] %>
 
 # File paths
 path:
@@ -53,7 +53,6 @@ gateway:
   # use with type: s3
   s3:
     bucket:                     <%= @elasticsearch[:s3_gateway_bucket] %>
-
 
 cluster:
   # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/439afb06f3e85aa7/431a8543811d7848?lnk=gst&q=configuration#431a8543811d7848

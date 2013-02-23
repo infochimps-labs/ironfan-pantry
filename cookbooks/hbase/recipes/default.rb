@@ -54,6 +54,6 @@ link("#{node[:hbase][:home_dir]}/hbase.jar"      ){ to "hbase-0.90.4-cdh3u2.jar"
 link("#{node[:hbase][:home_dir]}/hbase-tests.jar"){ to "hbase-0.90.4-cdh3u2-tests.jar" }
 
 # Stuff the HBase jars into the classpath
-node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/conf'
-node[:hbase][:exported_jars]   = [ "#{node[:hbase][:home_dir]}/hbase.jar", "#{node[:hbase][:home_dir]}/hbase-tests.jar", ]
-node[:hbase][:exported_confs]  = [ "#{node[:hbase][:conf_dir]}/hbase-default.xml", "#{node[:hbase][:conf_dir]}/hbase-site.xml",]
+node.set[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/conf'
+node.set[:hbase][:exported_jars]   = [ "#{node[:hbase][:home_dir]}/hbase.jar", "#{node[:hbase][:home_dir]}/hbase-tests.jar", ]
+node.set[:hbase][:exported_confs]  = [ "#{node[:hbase][:conf_dir]}/hbase-default.xml", "#{node[:hbase][:conf_dir]}/hbase-site.xml",]
