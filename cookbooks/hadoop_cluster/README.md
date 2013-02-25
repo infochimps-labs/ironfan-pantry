@@ -45,8 +45,7 @@ painlessly set up Hadoop clusters.
      to :start in the cluster definition and run a "knife cluster
      sync."
   4. After all workers have launched, rerun chef-client on all
-     launched workers, including the first if you have just launched
-     it.
+     launched workers, including the first.
 
 ### Tunables
 
