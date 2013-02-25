@@ -32,14 +32,14 @@ painlessly set up Hadoop clusters.
 #### Launching the First Worker
 
   1. Set the :run_state to :stop for all hadoop daemons in the
-     master in the cluster definition.
+     worker in the cluster definition.
   2. Launch the first worker.
   3. Rerun chef-client and ensure the EBS volumes have resized.
 
 #### Launching the Rest of the Workers    
    
-  1. Set the :run_state to :stop for all hadoop daemons in the
-     master in the cluster definition.
+  1. Leave the :run_state as :stop for all hadoop daemons in the
+     worker in the cluster definition.
   2. Launch all additional workers.
   3. Set the :run_state for :hadoop_tasktracker and :hadoop_datanode
      to :start in the cluster definition and run a "knife cluster
