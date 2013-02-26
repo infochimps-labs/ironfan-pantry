@@ -22,6 +22,7 @@
 #
 # NOTE: this is a filthy albeit very useful hack that has no presence on a production cluster.
 #
+# We're also still proving it out, so caveat chefor.
 
 #
 # You may find yourself in a world where there is no rack, there is no locality,
@@ -42,6 +43,10 @@
 # same HDFS the whole time.
 #
 # Notes:
+#
+# * DO NOT DO THIS UNLESS YOUR HDFS IS PERSISTENT-STORAGE BACKED. Use EBS
+#   volumes or the equivalent; don't use this if your machines keep blocks on an
+#   ephemeral drive.
 #
 # * make sure to over-provision storage for machines on the first rack: shutting
 #   down the ephemeral rack causes all the data to replicate (the replication
@@ -75,8 +80,26 @@ if node[:hadoop][:define_topology]
   template "#{node[:hadoop][:conf_dir]}/hadoop-topologizer.rb" do
     owner         "root"
     mode          "0755"
-    variables({   :hadoop => hadoop_config_hash,
-        :hadoop_datanodes => discover_all(:hadoop, :datanode) })
+    variables({
+      :hadoop       => hadoop_config_hash,
+      :datanodes    => discover_all(:hadoop, :datanode),
+      :tasktrackers => discover_all(:hadoop, :tasktracker), })
     source        "hadoop-topologizer.rb.erb"
   end
 end
+
+
+#
+# From Tom White's [HDFS Reliability](http://blog.cloudera.com/wp-content/uploads/2010/03/HDFS_Reliability.pdf) whitepaper:
+#
+# > Block replicas (referred to as "replicas" in this document) are written to
+# > distinct data nodes (to cope with data node failure), or distinct racks (to
+# > cope with rack failure). The rack placement policy is managed by the name
+# > node, and replicas are placed as follows:
+# >
+# > 1. The first replica is placed on a random node in the cluster, unless the write originates from within the cluster, in which case it goes to the local node.
+# > 2. The second replica is written to a different rack from the first, chosen at random.
+# > 3. The third replica is written to the same rack as the second replica, but on a different node.
+# > 4. Fourth and subsequent replicas are placed on random nodes, although racks with many replicas are biased against, so replicas are spread out across the cluster.
+#
+# If there are not enough racks, a random node is used. Hadoop will never store two replicas on the same node.

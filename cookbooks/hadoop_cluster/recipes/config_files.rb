@@ -25,9 +25,15 @@
 # Find these variables in ../hadoop_cluster/libraries/hadoop_cluster.rb
 #
 
-node.set[:hadoop][:namenode   ][:addr] = discover(:hadoop, :namenode   ).private_hostname rescue nil
-node.set[:hadoop][:jobtracker ][:addr] = discover(:hadoop, :jobtracker ).private_ip rescue nil
-node.set[:hadoop][:secondarynn][:addr] = discover(:hadoop, :secondarynn).private_ip rescue nil
+namenode     = discover(:hadoop, :namenode   )
+secondarynn  = discover(:hadoop, :secondarynn)
+jobtracker   = discover(:hadoop, :jobtracker )
+datanodes    = discover_all(:hadoop, :datanode)
+tasktrackers = discover_all(:hadoop, :tasktracker)
+
+node.set[:hadoop][:namenode   ][:addr] = namenode.private_hostname    rescue nil
+node.set[:hadoop][:jobtracker ][:addr] = jobtracker.private_hostname  rescue nil
+node.set[:hadoop][:secondarynn][:addr] = secondarynn.private_hostname rescue nil
 
 %w[ core-site.xml     hdfs-site.xml     mapred-site.xml
     hadoop-env.sh     fairscheduler.xml hadoop-metrics.properties
@@ -36,7 +42,14 @@ node.set[:hadoop][:secondarynn][:addr] = discover(:hadoop, :secondarynn).private
   template "#{node[:hadoop][:conf_dir]}/#{conf_file}" do
     owner "root"
     mode "0644"
-    variables(:hadoop => hadoop_config_hash)
+    variables({
+        :hadoop       => hadoop_config_hash,
+        :namenodes    => [namenode].compact,
+        :jobtrackers  => [jobtracker].compact,
+        :secondarynns => [secondarynn].compact,
+        :datanodes    => datanodes,
+        :tasktrackers => tasktrackers,
+      })
     source "#{conf_file}.erb"
     hadoop_services.each do |svc|
       if startable?(node[:hadoop][svc])

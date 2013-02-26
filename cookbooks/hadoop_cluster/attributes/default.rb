@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-# This file describes
 #
+# Basic hadoop configuration: layout, users, etc.
 #
 # See hadoop_cluster/attributes/tunables.rb for the hairy, hairy tuning variables.
 
@@ -48,6 +48,7 @@ default[:hadoop][:namenode   ][:data_dirs]       = []
 default[:hadoop][:secondarynn][:data_dirs]       = []
 default[:hadoop][:jobtracker ][:system_hdfsdir]  = '/hadoop/mapred/system'  # note: on the HDFS
 default[:hadoop][:jobtracker ][:staging_hdfsdir] = '/hadoop/mapred/staging' # note: on the HDFS
+default[:hadoop][:jobtracker ][:jobstat_hdfsdir] = '/hadoop/jobstat'        # note: on the HDFS
 default[:hadoop][:datanode   ][:data_dirs]       = []
 default[:hadoop][:tasktracker][:scratch_dirs]    = []
 

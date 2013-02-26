@@ -18,10 +18,25 @@ module HadoopCluster
 
   # hash of hadoop options suitable for passing to template files
   def hadoop_config_hash
-    Mash.new({
-        :aws              => (node[:aws] && node[:aws].to_hash),
-        :extra_classpaths => node[:hadoop][:extra_classpaths].map{|nm, classpath| classpath }.flatten,
-      }).merge(node[:hadoop])
+    if node[:hadoop][:java_child_opts] then
+      Chef::Log.warn %Q{=> node[:hadoop][:java_child_opts] is no longer used. Set your memory usage with :map_heap_mb and :reduce_heap_mb, and other java options with :java_extra_child_opts}
+    end
+    hsh = Mash.new()
+    hsh[:extra_classpaths]  = node[:hadoop][:extra_classpaths].map{|nm, classpath| classpath }.flatten
+    hsh.merge!(child_java_opts)
+    hsh.merge!(node[:hadoop].to_hash)
+    hsh
+  end
+
+  def child_java_opts
+    opts = []
+    opts << "-Xss#{tunables[:java_stack_size]}"
+    opts << "-Xprof -verbose:gc -Xloggc:/tmp/hdp-task-gc-@taskid@.log" if node[:hadoop][:task_profile]
+    opts << '-XX:+UseCompressedOops -XX:MaxNewSize=200m -server' if node[:hadoop][:tweak_jvm]
+    opts << node[:hadoop][:java_extra_child_opts].to_s
+    #
+    { :java_map_opts    => "-Xmx#{node[:hadoop][:map_heap_mb]   }m #{opts.join(" ")}"
+      :java_reduce_opts => "-Xmx#{node[:hadoop][:reduce_heap_mb]}m #{opts.join(" ")}" }
   end
 
   # Create a symlink to a directory, wiping away any existing dir that's in the way

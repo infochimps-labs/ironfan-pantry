@@ -10,6 +10,7 @@
 <property> <name>dfs.datanode.address</name>             <value>0.0.0.0:<%= @hadoop[:datanode][:xcvr_port]      %></value></property>
 <property> <name>dfs.datanode.http.address</name>        <value>0.0.0.0:<%= @hadoop[:datanode][:dash_port] %></value></property>
 <property> <name>dfs.datanode.ipc.address</name>         <value>0.0.0.0:<%= @hadoop[:datanode][:ipc_port]  %></value></property>
+<property> <name>dfs.thrift.address</name>		 <value>0.0.0.0:<%= @hadoop[:thrift][:port] %></value> </property>
 
 <property><name>dfs.name.dir</name>                      <value><%= @hadoop[:namenode][:data_dirs].join(",") %></value><final>true</final></property>
 <property><name>dfs.data.dir</name>                      <value><%= @hadoop[:datanode][:data_dirs].join(",") %></value><final>true</final></property>
@@ -28,9 +29,8 @@
 
 <property><name>dfs.hosts.exclude</name>                 <value><%= @hadoop[:conf_dir] %>/dfs.hosts.exclude %></value><final>true</final></property>
 
-<property> <name>dfs.namenode.plugins</name> <value><%= @hadoop[:namenode][:plugins].join(",") %></value> <description>Comma-separated list of namenode plugins to be activated. </description> </property>
-<property> <name>dfs.datanode.plugins</name> <value><%= @hadoop[:datanode][:plugins].join(",") %></value> <description>Comma-separated list of datanode plugins to be activated. </description> </property>
-<property> <name>dfs.thrift.address</name> <value>0.0.0.0:<%= @hadoop[:thrift][:port] %></value> </property>
+<property> <name>dfs.namenode.plugins</name>		 <value><%= @hadoop[:namenode][:plugins].join(",") %></value></property>
+<property> <name>dfs.datanode.plugins</name>		 <value><%= @hadoop[:datanode][:plugins].join(",") %></value></property>
 
 <!-- <property><name>dfs.hosts</name>                    <value><%= @hadoop[:conf_dir] %>/dfs.hosts</value><final>true</final></property> -->
 

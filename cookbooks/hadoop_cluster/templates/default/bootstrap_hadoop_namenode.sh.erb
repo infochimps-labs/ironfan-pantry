@@ -116,10 +116,10 @@ else
   echo "   /tmp /user /user/hive/warehouse $hadoop_users"
   sudo -u "$hdfs_user" hadoop fs -mkdir           /tmp /user /user/hive/warehouse $hadoop_users
   sudo -u "$hdfs_user" hadoop fs -chmod a+w       /tmp /user /user/hive/warehouse
-  echo "   /hadoop/mapred/system /hadoop/mapred/staging"
-  sudo -u "$hdfs_user" hadoop fs -mkdir           <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %>
-  sudo -u "$hdfs_user" hadoop fs -chmod 700       <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %>
-  sudo -u "$hdfs_user" hadoop fs -chown -R mapred <%= ::File.dirname(@hadoop[:jobtracker][:system_hdfsdir]) %>
+  echo "   <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %> <%= @hadoop[:jobtracker ][:jobstat_hdfsdir] %>"
+  sudo -u "$hdfs_user" hadoop fs -mkdir           <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %> <%= @hadoop[:jobtracker ][:jobstat_hdfsdir] %>
+  sudo -u "$hdfs_user" hadoop fs -chmod 700       <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %> <%= @hadoop[:jobtracker ][:jobstat_hdfsdir] %>
+  sudo -u "$hdfs_user" hadoop fs -chown -R mapred <%= ::File.dirname(@hadoop[:jobtracker][:system_hdfsdir]) %> <%= @hadoop[:jobtracker ][:jobstat_hdfsdir] %>
   echo "   /hadoop/hbase"
   sudo -u "$hdfs_user" hadoop fs -mkdir           /hadoop/hbase
   sudo -u "$hdfs_user" hadoop fs -chown -R hbase  /hadoop/hbase

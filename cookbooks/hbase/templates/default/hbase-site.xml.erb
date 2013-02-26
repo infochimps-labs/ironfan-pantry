@@ -28,11 +28,11 @@
   <property> <name>hbase.zookeeper.quorum</name>                               <value><%= @zookeeper_addrs.join(",")                     %></value> </property>
   <property> <name>hbase.rest.readonly</name>                                  <value><%= @hbase[:stargate    ][:readonly]               %></value> </property>
   
-  <property> <name>hbase.master.port</name>                                    <value><%= @hbase[:master      ][:bind_port]                   %></value> </property>
+  <property> <name>hbase.master.port</name>                                    <value><%= @hbase[:master      ][:bind_port]              %></value> </property>
   <property> <name>hbase.master.info.port</name>                               <value><%= @hbase[:master      ][:dash_port]              %></value> </property>
-  <property> <name>hbase.regionserver.port</name>                              <value><%= @hbase[:regionserver][:bind_port]                   %></value> </property>
+  <property> <name>hbase.regionserver.port</name>                              <value><%= @hbase[:regionserver][:bind_port]              %></value> </property>
   <property> <name>hbase.regionserver.info.port</name>                         <value><%= @hbase[:regionserver][:dash_port]              %></value> </property>
-  <property> <name>hbase.rest.port</name>                                      <value><%= @hbase[:stargate    ][:bind_port]                   %></value> </property>
+  <property> <name>hbase.rest.port</name>                                      <value><%= @hbase[:stargate    ][:bind_port]              %></value> </property>
   <property> <name>hbase.zookeeper.peerport</name>                             <value><%= @hbase[:zookeeper   ][:peer_port]              %></value> </property>
   <property> <name>hbase.zookeeper.leaderport</name>                           <value><%= @hbase[:zookeeper   ][:leader_port]            %></value> </property>
   <property> <name>hbase.zookeeper.property.clientPort</name>                  <value><%= @hbase[:zookeeper   ][:client_port]            %></value> </property>
@@ -70,9 +70,10 @@
 
   <property> <name>hbase.mapreduce.hfileoutputformat.blocksize</name>          <value><%= @hbase[:regionserver][:hfile_block_size]       %></value> </property>
   <property> <name>hfile.block.cache.size</name>                               <value><%= @hbase[:regionserver][:block_cache_size]       %></value> </property>
-<%- if @hbase[:regionserver][:required_codecs].to_s != "" %>
-  <property> <name>hbase.regionserver.codecs</name>                            <value><%= @hbase[:regionserver][:required_codecs]        %></value> </property><% end %>
   <property> <name>hbase.hash.type</name>                                      <value><%= @hbase[:regionserver][:hash_type]              %></value> </property>
+<%- if @hbase[:regionserver][:required_codecs].to_s != "" %>
+  <property> <name>hbase.regionserver.codecs</name>                            <value><%= @hbase[:regionserver][:required_codecs]        %></value> </property>
+<%- end %>
 
   <property> <name>zookeeper.session.timeout</name>                            <value><%= @hbase[:zookeeper   ][:session_timeout]        %></value> </property>
   <property> <name>zookeeper.znode.parent</name>                               <value><%= @hbase[:zookeeper   ][:znode_parent]           %></value> </property>

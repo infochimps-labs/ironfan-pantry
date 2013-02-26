@@ -1,0 +1,151 @@
+#
+# This file is advisory -- it's not used by hadoop, but it's a machine- and
+# human-readable summary of the configuration
+#
+
+<%- self.extend Ironfan::Discovery  %>
+
+cluster:
+  <%- { :namenode => @namenodes, :secondarynn => @secondarynns, :jobtracker => @jobtrackers, :datanode => @datanodes, :tasktracker => @tasktrackers }.each do |subsys_name, subsyses| %>
+  <%= subsys_name %>s:
+    <%- subsyses.each do |subsys| %>
+    - realm:                <%= subsys.realm   %>
+      announced_at:         <%= subsys.timestamp %>
+      cluster:              <%= subsys.cluster %>
+      facet:                <%= subsys.facet   %>
+      facet_index:          <%= subsys.facet_index.to_i %>
+      node_name:            <%= subsys.node.name %>
+      public_ip:            <%= subsys.public_ip %>
+      private_ip:           <%= subsys.private_ip %>
+
+    <%- end %>
+  <%- end %>
+
+  topology:
+    fake_topology:          <%= @hadoop[:define_topology] %>
+    fake_rack_size:         <%= @hadoop[:fake_rack_size] %>
+
+machine:
+  ipaddress:                <%= node[:ipaddress] %>
+  fqdn:                     <%= node[:fqdn] %>
+  private_ips:              <%= node[:cloud][:private_ips] %>
+  public_ips:               <%= node[:cloud][:public_ips] %>
+
+  home_dir:                 <%= @hadoop[:home_dir] %>
+  conf_dir:                 <%= @hadoop[:conf_dir] %>
+  log_dir:                  <%= @hadoop[:log_dir] %>
+  pid_dir:                  <%= @hadoop[:pid_dir] %>
+
+  ram:                      <%= @hadoop[:tunables][:ram] %>
+  cores:                    <%= @hadoop[:tunables][:cores] %>
+  # disk_thru:
+  # ntwk_thru
+
+
+daemons:
+  namenode:
+    ipc_port:               <%= @hadoop[:namenode][:ipc_port] %>
+    dash_port:              <%= @hadoop[:namenode][:dash_port] %>
+    jmx_dash_port:          <%= @hadoop[:namenode][:jmx_dash_port] %>
+    #
+    run_state:              <%= @hadoop[:namenode][:run_state] %>
+    handler_count:          <%= @hadoop[:namenode][:handler_count] %>
+    java_heap_size_max:     <%= @hadoop[:namenode][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>
+    data_dirs:              <%= @hadoop[:namenode][:data_dirs] %>
+
+  secondarynn:
+    ipc_port:               <%= @hadoop[:secondarynn][:ipc_port] %>
+    dash_port:              <%= @hadoop[:secondarynn][:dash_port] %>
+    jmx_dash_port:          <%= @hadoop[:secondarynn][:jmx_dash_port] %>
+    #
+    run_state:              <%= @hadoop[:secondarynn][:run_state] %>
+    java_heap_size_max:     <%= @hadoop[:secondarynn][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>
+    data_dirs:              <%= @hadoop[:secondarynn][:data_dirs] %>
+
+  jobtracker:
+    ipc_port:               <%= @hadoop[:jobtracker][:port] %>
+    dash_port:              <%= @hadoop[:jobtracker][:dash_port] %>
+    jmx_dash_port:          <%= @hadoop[:jobtracker][:jmx_dash_port] %>
+    #
+    run_state:              <%= @hadoop[:jobtracker][:run_state] %>
+    handler_count:          <%= @hadoop[:jobtracker][:handler_count] %>
+    java_heap_size_max:     <%= @hadoop[:jobtracker][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>
+
+  datanode:
+    ipc_port:               <%= @hadoop[:datanode][:ipc_port] %>
+    xcvr_port:              <%= @hadoop[:datanode][:xcvr_port] %>
+    dash_port:              <%= @hadoop[:datanode][:dash_port] %>
+    jmx_dash_port:          <%= @hadoop[:datanode][:jmx_dash_port] %>
+    #
+    run_state:              <%= @hadoop[:datanode][:run_state] %>
+    handler_count:          <%= @hadoop[:datanode][:handler_count] %>
+    max_xcievers:           4096
+    java_heap_size_max:     <%= @hadoop[:datanode][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>
+    data_dirs:              <%= @hadoop[:datanode][:data_dirs] %>
+
+  tasktracker:
+    dash_port:              <%= @hadoop[:datanode][:dash_port] %>
+    jmx_dash_port:          <%= @hadoop[:datanode][:jmx_dash_port] %>
+    #
+    run_state:              <%= @hadoop[:tasktracker][:run_state] %>
+    # handler count, kinda
+    http_threads:           <%= @hadoop[:tasktracker][:http_threads] %>
+    java_heap_size_max:     <%= @hadoop[:tasktracker][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>
+    scratch_dirs:           <%= @hadoop[:tasktracker][:scratch_dirs] %>
+
+dfs:
+  s3_block_size:            <%= @hadoop[:s3_block_size]   || @hadoop[:hdfs_block_size] %>
+  hdfs_block_size:          <%= @hadoop[:hdfs_block_size] %>
+  dfs_replication:          <%= @hadoop[:dfs_replication] %>
+  file_buffer_size:         65536
+
+mapred:
+
+  # Mapper tuning:
+
+  io_sort_mb:               <%= @hadoop[:io_sort_mb] %>
+  io_sort_record_frac:      0.15
+  io_sort_spill_frac:       0.80
+  min_split_size:           <%= @hadoop[:min_split_size] %>
+
+  # Reducer tuning:
+
+  io_sort_factor:           <%= @hadoop[:io_sort_factor] %>
+  shuffle_heap_frac:        <%= @hadoop[:shuffle_heap_frac] %>
+  shuffle_merge_frac:       0.66
+  reduce_heap_frac:         <%= @hadoop[:reduce_heap_frac] %>
+  reducer_parallel_copies:  <%= @hadoop[:reducer_parallel_copies] %>
+
+  # Child jobs
+
+  max_map_tasks:            <%= @hadoop[:max_map_tasks] %>
+  max_reduce_tasks:         <%= @hadoop[:max_reduce_tasks] %>
+
+  map_heap_mb:              <%= @hadoop[:map_heap_mb] %>
+  reduce_heap_mb:           <%= @hadoop[:reduce_heap_mb] %>
+  java_child_ulimit:        <%= @hadoop[:java_child_ulimit] %>
+  java_stack_size:          <%= @hadoop[:java_stack_size] %>
+
+  java_map_opts:            <%= @hadoop[:java_map_opts] %>
+  java_reduce_opts:         <%= @hadoop[:java_reduce_opts] %>
+
+  # Compression
+
+  compress_mapout_codec:    <%= @hadoop[:compress_mapout] ? @hadoop[:compress_mapout_codec].inspect : '' %>
+  compress_output_codec:    <%= @hadoop[:compress_output] ? @hadoop[:compress_output_codec].inspect : '' %>
+
+  codecs:                   <%= @hadoop[:codecs].inspect %>
+
+  # Scheduling
+
+  map_speculative_exec:    true
+  reduce_speculative_exec: false
+  slowstart_frac:          0.05
+
+  task_scheduler:          'org.apache.hadoop.mapred.FairScheduler'
+
+  # Ergonomics
+
+  trash_interval:          1440
+  dashboard_is_admin:      false
+  balancer_max_bandwidth:   <%= @hadoop[:balancer][:max_bandwidth] %>
