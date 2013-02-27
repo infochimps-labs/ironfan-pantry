@@ -30,6 +30,7 @@ if node[:platform_family] == 'debian'
     keyserver       "keyserver.ubuntu.com"
     action          :add
   end
+  package ("python2.6-dev")
 end
 
 package("hue-common")
