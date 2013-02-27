@@ -18,7 +18,7 @@ node:
   # node.data: is this a data esnode (stores, indexes data)? default true
   data:                         <%= @elasticsearch[:is_datanode] %>
   # eligible for master election
-  # master:                     true
+  master:                       <%= @elasticsearch[:master_electable] %>
 
   # tags for shard allocation, etc
   ironfan_cluster:              <%= node[:cluster_name] %>

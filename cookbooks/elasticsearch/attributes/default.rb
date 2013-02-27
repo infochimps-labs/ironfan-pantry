@@ -85,6 +85,8 @@ default[:elasticsearch][:api_port]                = "9300"
 default[:elasticsearch][:jmx_dash_port]           = '9400-9500'
 default[:elasticsearch][:proxy_port]              = "8200"
 default[:elasticsearch][:proxy_hostname]          = "elasticsearch.yourdomain.com"
+default[:elasticsearch][:master_electable]        = true
+
 
 # For use with nginx. Block all ports except this one if using authentication.
 default[:elasticsearch][:auth_port]               = "9301"
