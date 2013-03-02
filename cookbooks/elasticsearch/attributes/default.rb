@@ -26,7 +26,7 @@ default[:groups]['elasticsearch'][:gid]           = 61021
 #
 
 default[:elasticsearch][:version]                 = "0.19.8"
-default[:elasticsearch][:release_url_checksum]    = nil
+default[:elasticsearch][:checksum]                = nil
 default[:elasticsearch][:release_url]             = "http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-:version:.tar.gz"
 default[:elasticsearch][:snapshot]                = false
 default[:elasticsearch][:git_repo]                = "https://github.com/elasticsearch/elasticsearch.git"
@@ -85,6 +85,8 @@ default[:elasticsearch][:api_port]                = "9300"
 default[:elasticsearch][:jmx_dash_port]           = '9400-9500'
 default[:elasticsearch][:proxy_port]              = "8200"
 default[:elasticsearch][:proxy_hostname]          = "elasticsearch.yourdomain.com"
+default[:elasticsearch][:master_electable]        = true
+
 
 # For use with nginx. Block all ports except this one if using authentication.
 default[:elasticsearch][:auth_port]               = "9301"

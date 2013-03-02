@@ -21,6 +21,8 @@
 
 # Assume mysql is running on the local machine.
 share_dir           = node[:hadoop][:hue][:share_dir]
+pip                 = File.join(node[:hadoop][:hue][:share_dir],
+                                "build/env/bin/pip")
 hue_exec            = File.join(share_dir, "build/env/bin/hue")
 config_dump_file    = '/tmp/hue_config_dump.json'
 mysql_hue_username  = node[:hadoop][:hue][:mysql_hue_username]
@@ -36,6 +38,13 @@ check_database_exists = "SHOW DATABASES;"
 create_user_and_database_sql = [
                                 "CREATE DATABASE IF NOT EXISTS #{mysql_database_name}",
                                 "USE #{mysql_database_name}",
+
+                                # Remove the anonymous user so we can
+                                # log in. For the sake of idempotency,
+                                # first we'll have to create the user
+                                # with a harmless permission.
+                                "GRANT USAGE ON *.* TO ''@'localhost'",
+                                "DROP USER ''@'localhost'",
                                 
                                 # This will create the user if it does not already exist.
                                 [
@@ -60,6 +69,19 @@ configure_bash_commands = [create_user_and_database, hue_sync].join(" && ")
 #--------------------------------------------------------------------------------
 # execution
 #--------------------------------------------------------------------------------
+
+# Reinstall to ensure that MySQLdb is compiled against the correct
+# version. See
+# 
+# http://mysql-python.sourceforge.net/FAQ.html#importerror
+script "reinstall mysql-python" do
+  interpreter "bash"
+  user "root"
+  code <<-EOF
+    #{pip} uninstall -y MySQL-python
+    #{pip} install MySQL-python
+  EOF
+end
 
 execute "create and configure mysql database and hue user" do
   user node[:hadoop][:hue][:user]
