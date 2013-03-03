@@ -36,7 +36,6 @@ default[:elasticsearch][:git_repo]                = "https://github.com/elastics
 default[:elasticsearch][:plugins]                 = [
   { name: 'bigdesk',                 org: 'lukas-vlcek',                     },
   { name: 'elasticsearch-head',      org: 'Aconex',        dir: 'head',      },
-  { name: 'elasticsearch-paramedic', org: 'karmi',         dir: 'paramedic', },
   { name: 'elasticsearch-cloud-aws', org: 'elasticsearch', dir: 'cloud-aws', version: '1.8.0', },
 ]
 # Options are [none, local, fs, hadoop, s3]
