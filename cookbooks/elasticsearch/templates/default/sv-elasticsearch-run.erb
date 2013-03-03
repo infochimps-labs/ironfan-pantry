@@ -10,9 +10,8 @@ export ES_INCLUDE=$ES_CONF_DIR/elasticsearch.in.sh
 export JAVA_HOME=<%= @options[:java_home] %>
 
 # Where does data live?
-ES_DATA_ROOT=<%= @options[:data_root] %>
-export ES_DATA_DIR=$ES_DATA_ROOT/data
-export ES_WORK_DIR=$ES_DATA_ROOT/work
+export ES_DATA_DIR=<%= @options[:data_dir] %>/data
+export ES_WORK_DIR=<%= @options[:scratch_dir] %>/work
 
 # bump the # of open files way way up
 ulimit -n 65536

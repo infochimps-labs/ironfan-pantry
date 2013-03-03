@@ -1,4 +1,4 @@
-rootLogger: INFO, console, file
+rootLogger: <%= node[:elasticsearch][:log_level][:overall] %>, console, file
 
 #
 # Put the name of any module -- using its config path -- in the section below.
@@ -37,9 +37,11 @@ logger:
   plugins:      <%= node[:elasticsearch][:log_level][:default] %>
 
   # Volume for these is insane if below the levels given:
-  httpclient:   INFO
+  httpclient:    INFO
   com.amazonaws: WARN
+  org.apache:    INFO
 
+  
 appender:
   console:
     type: console

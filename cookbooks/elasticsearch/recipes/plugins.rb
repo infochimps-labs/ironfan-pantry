@@ -25,11 +25,28 @@ directory "#{node[:elasticsearch][:home_dir]}/plugins" do
   mode          0755
 end
 
+Chef::Log.info node[:elasticsearch][:plugins].inspect
+
 node[:elasticsearch][:plugins].each do |plugin|
-  bash "install #{plugin} plugin for elasticsearch" do
+  if plugin.respond_to?(:to_hash)
+    plugin_hsh = Mash.new(plugin.to_hash)
+    plugin_hsh[:dir] ||= plugin_hsh[:name]
+    plugin_hsh[:url] ||= [plugin_hsh[:org], plugin_hsh[:name], plugin_hsh[:version]].compact.join('/')
+  else
+    plugin_hsh =
+      case plugin
+      when %r{\A([^/]+)/([^/]+)/([^/]+)\z} then { name: $2, org: $1, version: $3, dir: $2, url: plugin }
+      when %r{\A([^/]+)/([^/]+)\z}         then { name: $2, org: $1,              dir: $2, url: plugin }
+      else                                      { name: plugin,                            url: plugin }
+      end
+    Chef::Log.warn "Please specify a hash, not a string, for plugin names: instead of #{plugin}, something like '#{plugin_hsh.inspect}' (see cookbooks/elasticsearch/attributes/default.rb)"
+  end
+  Chef::Log.info plugin_hsh
+  #
+  bash "install #{plugin_hsh[:name]} plugin for elasticsearch" do
     user          "root"
     cwd           "#{node[:elasticsearch][:home_dir]}"
-    code          "./bin/plugin -install #{plugin}"
-    not_if{ File.exist?("#{node[:elasticsearch][:home_dir]}/plugins/#{plugin}")  }
+    code          "./bin/plugin -install #{plugin_hsh[:url]}"
+    not_if{ plugin_hsh[:dir] && File.exist?("#{node[:elasticsearch][:home_dir]}/plugins/#{plugin_hsh[:dir]}")  }
   end
 end

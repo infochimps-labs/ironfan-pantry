@@ -1,6 +1,6 @@
 export ES_CONF_DIR=${ES_CONF_DIR-<%= @elasticsearch[:conf_dir] %>}
-export ES_DATA_DIR=${ES_DATA_DIR-<%= @elasticsearch[:data_root] %>/data}
-export ES_WORK_DIR=${ES_WORK_DIR-<%= @elasticsearch[:data_root] %>/work}
+export ES_DATA_DIR=${ES_DATA_DIR-<%= @elasticsearch[:data_dir] %>/data}
+export ES_WORK_DIR=${ES_WORK_DIR-<%= @elasticsearch[:scratch_dir] %>/work}
 
 export CLASSPATH=$ES_HOME/plugins/cloud-aws.zip
 CLASSPATH=$CLASSPATH:$ES_HOME/lib/elasticsearch-*.jar:$ES_HOME/lib/*:$ES_HOME/lib/sigar/*

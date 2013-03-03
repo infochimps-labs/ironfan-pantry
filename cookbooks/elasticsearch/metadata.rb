@@ -32,10 +32,15 @@ attribute "elasticsearch/version",
   :description           => "",
   :default               => "0.18.5"
 
-attribute "elasticsearch/data_root",
+attribute "elasticsearch/data_dir",
   :display_name          => "",
-  :description           => "",
-  :default               => "/mnt/elasticsearch"
+  :description           => "Where to place the data. Set using volume_dirs helper",
+  :default               => nil
+
+attribute "elasticsearch/scratch_dir",
+  :display_name          => "",
+  :description           => "Where to place temporary files. Set using volume_dirs helper",
+  :default               => nil
 
 attribute "elasticsearch/java_home",
   :display_name          => "",

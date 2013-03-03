@@ -29,21 +29,21 @@ include_recipe 'tuning'
 volume_dirs('elasticsearch.data') do
   type          :local
   selects       :single
-  mode          "0700"
+  mode          "0755"
 end
 
-volume_dirs('elasticsearch.work') do
+volume_dirs('elasticsearch.scratch') do
   type          :local
   selects       :single
   mode          "0700"
 end
 
-# FIXME: Is this supposed to be handled by volume_dirs?
-directory "#{node[:elasticsearch][:data_root]}" do
-  owner         "elasticsearch"
-  group         "elasticsearch"
-  mode          0755
+if node[:elasticsearch][:data_root]
+  Chef::Log.warn "The attribute node[:elasticsearch][:data_root] (#{node[:elasticsearch][:data_root]}) is now called node[:elasticsearch][:data_dir], and set by the 'volume_dirs' helper."
+  Chef::Log.warn "Please change your role overrides. You may have to remove the node attribute with `knife node edit #{node.name}`."
 end
+
+Chef::Log.info node[:elasticsearch].to_hash.inspect
 
 #
 # Service
