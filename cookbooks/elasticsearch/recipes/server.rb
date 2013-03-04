@@ -27,7 +27,7 @@ include_recipe 'tuning'
 #
 
 volume_dirs('elasticsearch.data') do
-  type          :local
+  type          :persistent
   selects       :single
   mode          "0755"
 end

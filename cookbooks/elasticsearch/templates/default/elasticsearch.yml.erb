@@ -50,8 +50,8 @@ gateway:
   # recovery begins when recover_after_nodes are present and then either
   # recovery_after_time has passed *or* expected_nodes have shown up.
   recover_after_nodes:          <%= @elasticsearch[:recovery_after_nodes] %>
-  recovery_after_time:          <%= @elasticsearch[:recovery_after_time]  %>    # 5m
-  expected_nodes:               <%= @elasticsearch[:expected_nodes] %>          # 2
+  recovery_after_time:          <%= @elasticsearch[:recovery_after_time]  %>
+  expected_nodes:               <%= @elasticsearch[:expected_nodes] %>
   #
   # use with type: s3
   s3:
@@ -62,15 +62,15 @@ cluster:
   routing:
     allocation:
       # initial recovery (eg full-cluster restart)
-      node_initial_primaries_recoveries: 4
+      node_initial_primaries_recoveries: 6
       # peer-to-peer recovery (from shard seed to shard peers)
-      node_concurrent_recoveries:        4
+      node_concurrent_recoveries:        6
 # Concurrent streams when recovering a shard from a peer:
 indices.recovery:
-  concurrent_streams:           5
+  concurrent_streams:           6
   # max_size_per_sec:           0
   compress:                     true
-  
+
 
 # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/1f3001f43266879a/06d62ea3ceb4db30?lnk=gst&q=translog#06d62ea3ceb4db30
 indices:
@@ -112,10 +112,10 @@ index:
     flush_threshold_size:     <%= @elasticsearch[:flush_threshold_size] %>
     flush_threshold_period:   <%= @elasticsearch[:flush_threshold_period] %>
 
-  # store.compress:
-  #   stored:                   true
-  #   tv:                       true
-    
+  store.compress:
+    stored:                   true
+    tv:                       true
+
   merge:
     policy:
       # Determines how often segment indices are merged by index operation. With
@@ -128,7 +128,7 @@ index:
       # to 10.
       max_merge_at_once:         <%= @elasticsearch[:merge_factor] %>
       segments_per_tier:         <%= @elasticsearch[:merge_factor] %>
-      
+
       # Use the compound file format. If not set, controlled by the actually
       # store used, this is because the compound format was created to reduce
       # the number of open file handles when using file based storage. The file
@@ -178,28 +178,25 @@ index:
     # index.gateway.snapshot_on_close flag can control if while shutting down, a
     # gateway snapshot should be performed. It defaults to true.
     snapshot_on_close:          <%= @elasticsearch[:snapshot_on_close] %>
-    
+
 # http://www.elasticsearch.com/docs/elasticsearch/modules/node/network/
 network:
   bind_host:                    0.0.0.0
   publish_host:                 0.0.0.0
-  #
-  tcp:
-    # no_delay:                 true
-    # keep_alive:               true
-    # reuse_address             true
-    # send_buffer_size          ~
-    # receive_buffer_size:      ~
 
 # http://www.elasticsearch.org/guide/reference/api/admin-cluster-nodes-shutdown.html
 action:
   disable_shutdown:            false
 
+threadpool:
+  bulk:
+    keep_alive:                 10s
+
 # http://www.elasticsearch.com/docs/elasticsearch/modules/transport/
 transport:
   tcp:
     port:                       9300-9400
-    connect_timeout:            10s
+    connect_timeout:            2s
     # enable lzf compression in esnode-esnode communication?
     compress:                   <%= @elasticsearch[:compress_transport] %>
 
@@ -207,31 +204,13 @@ transport:
     low:  6  # default 2 -- batch oriented APIs (like recovery or batch) with high payload that will cause regular requests (like search or single index) to take longer
     med:  6  # default 6 -- connections for for the typical search / single doc index
     high: 2  # default 1 -- connections for for ping type requests (like fault detection)
-    
-    
-# http://www.massapi.com/source/elasticsearch-elasticsearch-3b987f9/modules/elasticsearch/src/main/java/org/elasticsearch/transport/netty/NettyTransport.java.html
-worker_count:  8
-    
+
 # http://www.elasticsearch.com/docs/elasticsearch/modules/jmx/
 jmx:
   # Create an RMI connector?
   create_connector:             true
   port:                         <%= @elasticsearch[:jmx_dash_port] %>
   domain:                       elasticsearch
-
-# http://www.elasticsearch.com/docs/elasticsearch/modules/threadpool/
-threadpool:
-  # #
-  # # threadpool.type should be one of [cached, scaling, blocking]:
-  # #
-  # # * Cached:  An unbounded thread pool that reuses previously constructed threads.
-  # # * Scaling: A bounded thread pool that reuses previously created free threads.
-  # # * Blocking: A bounded thread pool that reuses previously created free
-  # #   threads. Pending requests block for an available thread (different than
-  # #   the scaling one, where the request is added to a queue and does not
-  # #   block).
-  # #
-  # type:                       cached
 
 # http://www.elasticsearch.com/docs/elasticsearch/modules/discovery/
 discovery:
@@ -261,20 +240,6 @@ discovery:
       ping_timeout:             <%= @elasticsearch[:fd_ping_timeout] %>
       # # How many ping failures / timeouts cause a node to be considered failed. Defaults to 3.
       ping_retries:             <%= @elasticsearch[:fd_ping_retries] %>
-
-  #
-  # # ec2 discovery can cause big trouble with the hadoop loader:
-  # # discovery churn can hit API usage limits
-  # # Be sure to set your cloud keys if you're using ec2
-  # #
-  # ec2:
-  #   # security groups used for discovery
-  #   groups:                   <%= @elasticsearch[:cluster_name] %>-datanode
-  #   # require *all* (false) or *any* (true) of those groups?
-  #   any_group:                true
-  #   # private_ip, public_ip, private_dns, public_dns
-  #   host_type:                private_ip
-  #   availability_zones:       us-east-1d
 
 <%- if @aws  %>
 # Necessary if you will use either of
@@ -315,4 +280,3 @@ monitor.jvm.gc.ParNew.debug:               400ms
 monitor.jvm.gc.ConcurrentMarkSweep.warn:    10s
 monitor.jvm.gc.ConcurrentMarkSweep.info:     2s  # 5s
 monitor.jvm.gc.ConcurrentMarkSweep.debug:    2s
-
