@@ -47,7 +47,7 @@ end
 
 # JMX should listen on the public interface
 # node[:hbase][:jmx_dash_addr] = public_ip_of(node)
-node[:hbase][:jmx_dash_addr] = node[:cloud].public_hostname
+node.set[:hbase][:jmx_dash_addr] = node[:cloud].public_hostname
 
 # FIXME: don't hardcode these...
 link("#{node[:hbase][:home_dir]}/hbase.jar"      ){ to "hbase-0.90.4-cdh3u2.jar"       }
