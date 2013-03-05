@@ -62,26 +62,28 @@ cluster:
   routing:
     allocation:
       # initial recovery (eg full-cluster restart)
-      node_initial_primaries_recoveries: 6
+      node_initial_primaries_recoveries: 10
       # peer-to-peer recovery (from shard seed to shard peers)
       node_concurrent_recoveries:        6
+      # # let nodes that have come back up take place in recovery
+      # allow_rebalance:                   always
+
 # Concurrent streams when recovering a shard from a peer:
 indices.recovery:
-  concurrent_streams:           6
-  # max_size_per_sec:           0
+  concurrent_streams:           3
   compress:                     true
-
-
+  
 # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/1f3001f43266879a/06d62ea3ceb4db30?lnk=gst&q=translog#06d62ea3ceb4db30
 indices:
   cache:
     filter:
+      # Percent of memory on the node to cache filter results; this is a
+      # node-level setting (and different from index.cache.*)
       size:                    <%= @elasticsearch[:cache_filter_size] %>
   memory:
     # Increase if you are bulk loading
     # A number ('512m') or percent ('10%'). You can set limits on a percentage
     # with max_index_buffer_size and min_index_buffer_size. 10% by default.
-    # 512m for writing:
     index_buffer_size:          <%= @elasticsearch[:index_buffer_size]   %>
 
 cache:
@@ -103,6 +105,9 @@ bootstrap:
 index:
   number_of_shards:             <%= @elasticsearch[:default_shards]   %>
   number_of_replicas:           <%= @elasticsearch[:default_replicas] %>
+  # The field cache can OOM your machine in a moment when too large, but when
+  # you have the RAM field values are one of the most important things to cache.
+  cache.field.max_size:         <%= @elasticsearch[:cache_field_max_size] %>
   #
   translog:
     # A shard is flushed to local disk (the lucene index is committed) once this
@@ -188,10 +193,6 @@ network:
 action:
   disable_shutdown:            false
 
-threadpool:
-  bulk:
-    keep_alive:                 10s
-
 # http://www.elasticsearch.com/docs/elasticsearch/modules/transport/
 transport:
   tcp:
@@ -201,9 +202,13 @@ transport:
     compress:                   <%= @elasticsearch[:compress_transport] %>
 
   connections_per_node:
-    low:  6  # default 2 -- batch oriented APIs (like recovery or batch) with high payload that will cause regular requests (like search or single index) to take longer
+    low:  2  # default 2 -- batch oriented APIs (like recovery or batch) with high payload that will cause regular requests (like search or single index) to take longer
     med:  6  # default 6 -- connections for for the typical search / single doc index
-    high: 2  # default 1 -- connections for for ping type requests (like fault detection)
+    high: 1  # default 1 -- connections for for ping type requests (like fault detection)
+
+# threadpool:
+#   bulk:
+#     keep_alive:              5m
 
 # http://www.elasticsearch.com/docs/elasticsearch/modules/jmx/
 jmx:
@@ -226,7 +231,7 @@ discovery:
       multicast:
         enabled:                false
       unicast:
-        hosts:                  <%= @elasticsearch[:seeds].compact.map(&:to_s).join(",") %>
+        hosts:                  <%= @elasticsearch[:seeds].compact.map(&:to_s).sort.join(",") %>
     minimum_master_nodes:       <%= (@elasticsearch[:seeds].compact.length > 2) ? (1+(@elasticsearch[:seeds].compact.length / 2)) : 1 %>
     <%- end %>
     # There are two fault detection processes running. The first is by the
@@ -275,8 +280,8 @@ index.search.slowlog.threshold.fetch.trace:     200ms
 
 # Make a note in logs if GC pause times exceed these thresholds
 monitor.jvm.gc.ParNew.warn:               1000ms
-monitor.jvm.gc.ParNew.info:                400ms # 700ms
+monitor.jvm.gc.ParNew.info:                700ms
 monitor.jvm.gc.ParNew.debug:               400ms
 monitor.jvm.gc.ConcurrentMarkSweep.warn:    10s
-monitor.jvm.gc.ConcurrentMarkSweep.info:     2s  # 5s
+monitor.jvm.gc.ConcurrentMarkSweep.info:     5s
 monitor.jvm.gc.ConcurrentMarkSweep.debug:    2s

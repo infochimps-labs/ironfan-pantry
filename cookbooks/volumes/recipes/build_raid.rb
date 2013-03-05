@@ -21,9 +21,12 @@
 
 include_recipe 'xfs'
 
-# workaround for a 2013-03 collision between mdadm apt package and postfix(!).
-# people of the near future: you can probably remove this
-execute("apt-get update").run_action(:run)
+#
+# apt-get update immediately
+#  workaround for a 2013-03 collision between mdadm apt package and postfix(!).
+#  People of the near future: you can probably remove this
+#
+execute("apt-get update"){ action :nothing }.run_action(:run)
 
 #
 # install mdadm immediately

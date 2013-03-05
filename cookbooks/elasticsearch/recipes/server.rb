@@ -47,8 +47,6 @@ if ((node[:elasticsearch][:data_root]) ||
     to make this work again, or halt the ES datanode and move its data to the right place.}
 end
 
-Chef::Log.info node[:elasticsearch].to_hash.inspect
-
 #
 # Service
 #
