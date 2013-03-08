@@ -19,9 +19,7 @@
 # limitations under the License.
 #
 
-node[:package_set][:install].keys.each do |installed_package|
-  node.set[:package_set][:install][installed_package] = installed_package.to_s
-end
+node[:package_set][:install].map!(&:to_s)
 
 node[:package_set][:pkgs].each do |set_name, pkgs|
   next unless node[:package_set][:install].include?(set_name.to_s)
