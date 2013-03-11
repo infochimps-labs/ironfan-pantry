@@ -7,8 +7,8 @@ $ws_user ||= 'flip'
 # Assumes $ws_user has been set
 #
 define(:osx_application,
-  :user       => $ws_user,      # user to install as
-  ) do
+  :user       => $ws_user      # user to install as
+) do
 
   node[:chimpstation_pkg][params[:name]].each{|k,v| params[k.to_sym] = v unless params.has_key?(k.to_sym) }
 
