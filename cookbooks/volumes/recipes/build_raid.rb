@@ -24,7 +24,14 @@ include_recipe 'xfs'
 #
 # install mdadm immediately
 #
-package('mdadm'){ action :nothing }.run_action(:install)
+begin
+  package('mdadm'){ action :nothing }.run_action(:install)
+rescue Chef::Exceptions::Exec
+  include_recipe 'apt'
+  execute("apt-get update").run_action(:run)
+  retried = true
+  retry unless retried
+end
 
 #
 # Assemble raid groups using volumes defined in node metadata -- see volumes/libraries/volumes.rb
