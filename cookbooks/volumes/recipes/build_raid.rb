@@ -24,13 +24,15 @@ include_recipe 'xfs'
 #
 # install mdadm immediately
 #
+retried = false
 begin
   package('mdadm'){ action :nothing }.run_action(:install)
 rescue Chef::Exceptions::Exec
+  raise if retried
   include_recipe 'apt'
   execute("apt-get update").run_action(:run)
+  retry
   retried = true
-  retry unless retried
 end
 
 #
