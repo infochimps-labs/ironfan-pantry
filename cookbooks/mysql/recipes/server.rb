@@ -26,7 +26,7 @@ node.set_unless['mysql']['server_debian_password'] = secure_password
 node.set_unless['mysql']['server_root_password']   = secure_password
 node.set_unless['mysql']['server_repl_password']   = secure_password
 
-if platform?(%w{debian ubuntu})
+if node[:platform_family] == 'debian'
 
   directory "/var/cache/local/preseeding" do
     owner "root"
@@ -48,7 +48,7 @@ if platform?(%w{debian ubuntu})
     notifies :run, resources(:execute => "preseed mysql-server"), :immediately
   end
 
-  template "#{node['mysql']['conf_dir']}/debian.cnf" do
+  template "#{node['mysql']['conf_dir']}/mysql/debian.cnf" do
     source "debian.cnf.erb"
     owner "root"
     group node['mysql']['root_group']
@@ -61,16 +61,25 @@ package node['mysql']['package_name'] do
   action :install
 end
 
-directory "#{node['mysql']['conf_dir']}/mysql/conf.d" do
-  owner "mysql"
-  group "mysql"
-  action :create
-  recursive true
+if node[:platform_family] == 'debian'
+  directory "#{node['mysql']['conf_dir']}/mysql/conf.d" do
+    owner "mysql"
+    group "mysql"
+    action :create
+    recursive true
+  end
+else
+  directory "#{node['mysql']['conf_dir']}/mysql/conf.d" do
+    owner "mysql"
+    group "mysql"
+    action :create
+    recursive true
+  end
 end
 
 service "mysql" do
   service_name node['mysql']['service_name']
-  if (platform?("ubuntu") && node.platform_version.to_f >= 10.04)
+  if (node[:platform_family] == "debian" && node.platform_version.to_f >= 10.04)
     restart_command "restart mysql"
     stop_command "stop mysql"
     start_command "start mysql"
@@ -79,16 +88,16 @@ service "mysql" do
   action [ :enable ]
 end
 
-skip_federated = case node['platform']
-                 when 'fedora', 'ubuntu', 'amazon'
+skip_federated = case node[:platform_family]
+                 when 'debian'
                    true
-                 when 'centos', 'redhat', 'scientific'
+                 when 'rhel'
                    node['platform_version'].to_f < 6.0
                  else
                    false
                  end
 
-template "#{node['mysql']['conf_dir']}/my.cnf" do
+template "#{node['mysql']['conf_dir']}/mysql/my.cnf" do
   source "my.cnf.erb"
   owner "root"
   group node['mysql']['root_group']
@@ -108,7 +117,7 @@ end
 
 # set the root password on platforms 
 # that don't support pre-seeding
-unless platform?(%w{debian ubuntu})
+unless node[:platform_family] == 'ubuntu'
 
   execute "assign-root-password" do
     command "#{node['mysql']['mysqladmin_bin']} -u root password \"#{node['mysql']['server_root_password']}\""

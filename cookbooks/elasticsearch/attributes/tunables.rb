@@ -249,6 +249,15 @@
 # places shards and replicas intelligently as guided by attributes you associate
 # with each node.
 
+#
+# curl -XPUT 'localhost:9200/_cluster/settings?pretty=true' -d '{ "persistent": {
+#   "cluster.routing.allocation": {
+#     "allow_rebalance": "always",
+#     "cluster_concurrent_rebalance": 20, "node_concurrent_recoveries": 20, "node_initial_primaries_recoveres": 30  },
+#    "indices.recovery": { "concurrent_streams": 3, "compress": true } } }'
+#
+
+
 # ===========================================================================
 #
 # ## Snapshots:

@@ -1,9 +1,11 @@
-# -*- coding: utf-8 -*-
 # -*- YAML -*-
 # ElasticSearch config file
 #
 
-cluster.name:                  <%= @elasticsearch[:cluster_name] %>
+cluster.name:                  <%= @elasticsearch[:realm] %>
+<%- if  @elasticsearch[:is_datanode] %>
+node.name:                     <%= node.name %>
+<%- end %>
 
 # File paths
 path:
@@ -12,19 +14,20 @@ path:
   logs:                         <%= @elasticsearch[:log_dir] %>
   # data dir and work dir are set in in the elasticsearch.in.sh
 
-
 # http://www.elasticsearch.com/docs/elasticsearch/modules/node/
 node:
   # node.data: is this a data esnode (stores, indexes data)? default true
   data:                         <%= @elasticsearch[:is_datanode] %>
   # eligible for master election
-  # master:                     true
+  master:                       <%= @elasticsearch[:master_electable] %>
 
   # tags for shard allocation, etc
   ironfan_cluster:              <%= node[:cluster_name] %>
   ironfan_facet:                <%= node[:facet_name]   %>
   ironfan_facet_idx:            <%= node[:facet_index]  %>
   ironfan_name:                 <%= node.name %>
+
+  max_local_storage_nodes:      1
 
 # http://www.elasticsearch.com/docs/elasticsearch/modules/http/
 http:
@@ -47,37 +50,40 @@ gateway:
   # recovery begins when recover_after_nodes are present and then either
   # recovery_after_time has passed *or* expected_nodes have shown up.
   recover_after_nodes:          <%= @elasticsearch[:recovery_after_nodes] %>
-  recovery_after_time:          <%= @elasticsearch[:recovery_after_time]  %>    # 5m
-  expected_nodes:               <%= @elasticsearch[:expected_nodes] %>          # 2
+  recovery_after_time:          <%= @elasticsearch[:recovery_after_time]  %>
+  expected_nodes:               <%= @elasticsearch[:expected_nodes] %>
   #
   # use with type: s3
   s3:
     bucket:                     <%= @elasticsearch[:s3_gateway_bucket] %>
-
 
 cluster:
   # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/439afb06f3e85aa7/431a8543811d7848?lnk=gst&q=configuration#431a8543811d7848
   routing:
     allocation:
       # initial recovery (eg full-cluster restart)
-      node_initial_primaries_recoveries: 4
+      node_initial_primaries_recoveries: 10
       # peer-to-peer recovery (from shard seed to shard peers)
-      concurrent_recoveries:   5
+      node_concurrent_recoveries:        6
+      # # let nodes that have come back up take place in recovery
+      # allow_rebalance:                   always
+
 # Concurrent streams when recovering a shard from a peer:
-# indices.recovery.concurrent_streams: 5
-
-
+indices.recovery:
+  concurrent_streams:           3
+  compress:                     true
+  
 # http://groups.google.com/a/elasticsearch.com/group/users/browse_thread/thread/1f3001f43266879a/06d62ea3ceb4db30?lnk=gst&q=translog#06d62ea3ceb4db30
 indices:
   cache:
     filter:
+      # Percent of memory on the node to cache filter results; this is a
+      # node-level setting (and different from index.cache.*)
       size:                    <%= @elasticsearch[:cache_filter_size] %>
   memory:
     # Increase if you are bulk loading
     # A number ('512m') or percent ('10%'). You can set limits on a percentage
     # with max_index_buffer_size and min_index_buffer_size. 10% by default.
-    # 512m for writing:
-    # index_buffer_size:        512m
     index_buffer_size:          <%= @elasticsearch[:index_buffer_size]   %>
 
 cache:
@@ -89,26 +95,31 @@ cache:
     # direct:                         true
     # warm_cache:                     false
 
-<%- unless @elasticsearch[:ulimit_mlock].nil? %>
 bootstrap:
   # For a node that is dedicated to elasticsearch, Setting this to true; and in
   # a parent shell set `ulimit -l unlimited`; and enabling JNA can make memory
   # allocation significantly more efficient. Be sure you understand the
   # ramifications of doing this, especially how it interacts with swappiness.
-  mlockall:                     true
-<%- end %>
+  mlockall:                     <%= @elasticsearch[:ulimit_mlock].nil? ? "false" : "true" %>
 
 index:
   number_of_shards:             <%= @elasticsearch[:default_shards]   %>
   number_of_replicas:           <%= @elasticsearch[:default_replicas] %>
+  # The field cache can OOM your machine in a moment when too large, but when
+  # you have the RAM field values are one of the most important things to cache.
+  index.cache.field.type:         <%= @elasticsearch[:index.cache.field.type] %>
   #
   translog:
     # A shard is flushed to local disk (the lucene index is committed) once this
     # number of operations accumulate in the translog. defaults to 5000.
     # This may be worth increasing for a high-speed flow.
-    flush_threshold_ops:        <%= @elasticsearch[:flush_threshold] %>
-    # flush_threshold_size:     500mb
-    # flush_threshold_period:   60m
+    flush_threshold_ops:      <%= @elasticsearch[:flush_threshold] || @elasticsearch[:flush_threshold_ops] %>
+    flush_threshold_size:     <%= @elasticsearch[:flush_threshold_size] %>
+    flush_threshold_period:   <%= @elasticsearch[:flush_threshold_period] %>
+
+  store.compress:
+    stored:                   true
+    tv:                       true
 
   merge:
     policy:
@@ -121,6 +132,8 @@ index:
       # (lower than 10) for indices that are interactively maintained. Defaults
       # to 10.
       max_merge_at_once:         <%= @elasticsearch[:merge_factor] %>
+      segments_per_tier:         <%= @elasticsearch[:merge_factor] %>
+
       # Use the compound file format. If not set, controlled by the actually
       # store used, this is because the compound format was created to reduce
       # the number of open file handles when using file based storage. The file
@@ -136,7 +149,7 @@ index:
       # single level. If you set this too large, it could greatly increase the
       # merging cost during indexing (if you flush many small
       # segments). Defaults to 2mb.
-      floor_segment:           2.7mb
+      floor_segment:           <%= @elasticsearch[:floor_segment] %>
       # Largest segment (by total byte size) that may be merged with other
       # segments. Defaults to 5gb.
       # max_merged_segment:
@@ -150,15 +163,6 @@ index:
   # API, which enables near real time search).  Default '1s'; set to -1 to
   # disable automatic refresh (you must instead initiate refresh via API)
   refresh_interval:         <%= @elasticsearch[:refresh_interval] %>
-
-  shard:
-    recovery:
-      # Each recovery of a shard consists of copying over the index
-      # files. Currently, all are copied over concurrently. The new
-      # index.shard.recovery.concurrent_streams allows to set the number of
-      # concurrent streams (index files) that can be recovered from a node
-      # (globally on the node level). It defaults to 5.
-      concurrent_streams:       7
 
   engine:
     robin:
@@ -184,14 +188,6 @@ index:
 network:
   bind_host:                    0.0.0.0
   publish_host:                 0.0.0.0
-  #
-  # tcp:
-  #   no_delay:                 true
-  #   keep_alive:               ~
-  #   reuse_address             true
-  #   send_buffer_size          ~
-  #   receive_buffer_size:      ~
-  #   connect_timeout:          ~
 
 # http://www.elasticsearch.org/guide/reference/api/admin-cluster-nodes-shutdown.html
 action:
@@ -201,10 +197,18 @@ action:
 transport:
   tcp:
     port:                       9300-9400
-    # Set to 30 from >= v0.14.0
-    connect_timeout:            2m
-    # # enable lzf compression in esnode-esnode communication?
-    compress:                   true
+    connect_timeout:            2s
+    # enable lzf compression in esnode-esnode communication?
+    compress:                   <%= @elasticsearch[:compress_transport] %>
+
+  connections_per_node:
+    low:  2  # default 2 -- batch oriented APIs (like recovery or batch) with high payload that will cause regular requests (like search or single index) to take longer
+    med:  6  # default 6 -- connections for for the typical search / single doc index
+    high: 1  # default 1 -- connections for for ping type requests (like fault detection)
+
+# threadpool:
+#   bulk:
+#     keep_alive:              5m
 
 # http://www.elasticsearch.com/docs/elasticsearch/modules/jmx/
 jmx:
@@ -213,35 +217,23 @@ jmx:
   port:                         <%= @elasticsearch[:jmx_dash_port] %>
   domain:                       elasticsearch
 
-# http://www.elasticsearch.com/docs/elasticsearch/modules/threadpool/
-threadpool:
-  # #
-  # # threadpool.type should be one of [cached, scaling, blocking]:
-  # #
-  # # * Cached:  An unbounded thread pool that reuses previously constructed threads.
-  # # * Scaling: A bounded thread pool that reuses previously created free threads.
-  # # * Blocking: A bounded thread pool that reuses previously created free
-  # #   threads. Pending requests block for an available thread (different than
-  # #   the scaling one, where the request is added to a queue and does not
-  # #   block).
-  # #
-  # type:                       cached
-
 # http://www.elasticsearch.com/docs/elasticsearch/modules/discovery/
 discovery:
   # set to 'zen' or 'ec2'
   type:                         zen
   zen:
+    <%- if @elasticsearch[:seeds].nil? %>
     ping:
-      <%- if @elasticsearch[:seeds].nil? %>
       multicast:
         enabled:                true
-      <%- else %>
+    <%- else %>
+    ping:
       multicast:
         enabled:                false
       unicast:
-        hosts:                  <%= @elasticsearch[:seeds].compact.map(&:to_s).join(",") %>
-      <%- end %>
+        hosts:                  <%= @elasticsearch[:seeds].compact.map(&:to_s).sort.join(",") %>
+    minimum_master_nodes:       <%= (@elasticsearch[:seeds].compact.length > 2) ? (1+(@elasticsearch[:seeds].compact.length / 2)) : 1 %>
+    <%- end %>
     # There are two fault detection processes running. The first is by the
     # master, to ping all the other nodes in the cluster and verify that they
     # are alive. And on the other end, each node pings to master to verify if
@@ -253,19 +245,6 @@ discovery:
       ping_timeout:             <%= @elasticsearch[:fd_ping_timeout] %>
       # # How many ping failures / timeouts cause a node to be considered failed. Defaults to 3.
       ping_retries:             <%= @elasticsearch[:fd_ping_retries] %>
-  #
-  # # ec2 discovery can cause big trouble with the hadoop loader:
-  # # discovery churn can hit API usage limits
-  # # Be sure to set your cloud keys if you're using ec2
-  # #
-  # ec2:
-  #   # security groups used for discovery
-  #   groups:                   <%= @elasticsearch[:cluster_name] %>-datanode
-  #   # require *all* (false) or *any* (true) of those groups?
-  #   any_group:                true
-  #   # private_ip, public_ip, private_dns, public_dns
-  #   host_type:                private_ip
-  #   availability_zones:       us-east-1d
 
 <%- if @aws  %>
 # Necessary if you will use either of
@@ -286,23 +265,23 @@ cloud:
 
 # Uncomment to record slow queries, useful for improving your app responsiveness
 #
-# index.search.slowlog.level: TRACE
-# index.search.slowlog.threshold.query.warn: 10s
-# index.search.slowlog.threshold.query.info: 5s
-# index.search.slowlog.threshold.query.debug: 2s
-# index.search.slowlog.threshold.query.trace: 500ms
-#
-# index.search.slowlog.threshold.fetch.warn: 1s
-# index.search.slowlog.threshold.fetch.info: 800ms
-# index.search.slowlog.threshold.fetch.debug: 500ms
-# index.search.slowlog.threshold.fetch.trace: 200ms
+index.search.slowlog.level: TRACE
+index.search.slowlog.threshold.query.warn:      10s
+index.search.slowlog.threshold.query.info:      5s
+index.search.slowlog.threshold.query.debug:     2s
+index.search.slowlog.threshold.query.trace:     500ms
+
+index.search.slowlog.threshold.fetch.warn:      1s
+index.search.slowlog.threshold.fetch.info:      800ms
+index.search.slowlog.threshold.fetch.debug:     500ms
+index.search.slowlog.threshold.fetch.trace:     200ms
 
 # GC Logging
 
 # Make a note in logs if GC pause times exceed these thresholds
-monitor.jvm.gc.ParNew.warn: 		  1000ms
-monitor.jvm.gc.ParNew.info: 		   700ms
-monitor.jvm.gc.ParNew.debug: 		   400ms
+monitor.jvm.gc.ParNew.warn:               1000ms
+monitor.jvm.gc.ParNew.info:                700ms
+monitor.jvm.gc.ParNew.debug:               400ms
 monitor.jvm.gc.ConcurrentMarkSweep.warn:    10s
 monitor.jvm.gc.ConcurrentMarkSweep.info:     5s
 monitor.jvm.gc.ConcurrentMarkSweep.debug:    2s

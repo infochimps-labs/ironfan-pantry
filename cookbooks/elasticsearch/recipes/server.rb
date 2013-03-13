@@ -27,22 +27,24 @@ include_recipe 'tuning'
 #
 
 volume_dirs('elasticsearch.data') do
+  type          :persistent
+  selects       :single
+  mode          "0755"
+end
+
+volume_dirs('elasticsearch.scratch') do
   type          :local
   selects       :single
   mode          "0700"
 end
 
-volume_dirs('elasticsearch.work') do
-  type          :local
-  selects       :single
-  mode          "0700"
-end
-
-# FIXME: Is this supposed to be handled by volume_dirs?
-directory "#{node[:elasticsearch][:data_root]}" do
-  owner         "elasticsearch"
-  group         "elasticsearch"
-  mode          0755
+if ((node[:elasticsearch][:data_root]) ||
+    (File.exist?('/mnt/elasticsearch/data') && (not node[:elasticsearch][:data_dir])))
+  raise %Q{In order to make the world safe for local (non-s3) gateway recovery, the attribute node[:elasticsearch][:data_root] (#{node[:elasticsearch][:data_root]}) is now invalid.
+    Data locations are set with the 'volume_dirs' helper, which sets node[:elasticsearch][:data_dir] (formerly :data_root/data) & node[:elasticsearch][:scratch_dir] (formerly :data_root/work).
+    Please change your role overrides; you may have to remove the node attribute with `knife node edit #{node.name}`. If your elasticsearch data tree starts at say '/mnt/elasticsearch/data', set
+      :elasticsearch => { :data_dir => '/mnt/elasticsearch/data' }
+    to make this work again, or halt the ES datanode and move its data to the right place.}
 end
 
 #

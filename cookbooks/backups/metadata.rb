@@ -7,6 +7,7 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 description      "Backups -- coordinates backups of your stuff"
 
 depends		 "hbase"
+depends		 "mongodb"
 depends		 "hadoop_cluster"
 
 recipe           "backups::default",       "Default Recipe"
@@ -15,6 +16,7 @@ recipe           "backups::s3cfg",         "S3 Configuration Recipe"
 recipe           "backups::hbase",         "HBase Backup Recipe"
 recipe           "backups::zookeeper",     "Zookeeper Backup Recipe"
 recipe           "backups::elasticsearch", "Elasticsearch Backup Recipe"
+recipe           "backups::mongodb",       "MongoDB backup Recipe"
 
 %w[ debian ubuntu ].each do |os|
   supports os

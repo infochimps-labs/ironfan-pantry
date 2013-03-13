@@ -13,7 +13,7 @@ if [ ${days} -lt 1 ]; then
 fi
 
 OLD=$(date -d "$(date -d "${days} days ago" +%Y%m%d)" +%s)
-BACKUPS=$(s3cmd ls ${s3Target} | grep "DIR" | awk '{print $2}')
+BACKUPS=$(s3cmd -c /etc/s3cfg ls ${s3Target} | grep "DIR" | awk '{print $2}')
 
 for backup in ${BACKUPS}; do
   bn=$(basename ${backup})

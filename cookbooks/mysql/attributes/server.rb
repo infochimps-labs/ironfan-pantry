@@ -19,8 +19,8 @@
 
 default['mysql']['bind_address']               = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress
 
-case node["platform"]
-when "centos", "redhat", "fedora", "suse", "scientific", "amazon"
+case node[:platform_family]
+when 'rhel'
   default['mysql']['package_name']            = "mysql-server"
   default['mysql']['service_name']            = "mysqld"
   default['mysql']['basedir']                 = "/usr"
@@ -34,7 +34,7 @@ when "centos", "redhat", "fedora", "suse", "scientific", "amazon"
   set['mysql']['pid_file']                    = "/var/run/mysqld/mysqld.pid"
   set['mysql']['old_passwords']               = 1
   set['mysql']['grants_path']                 = "/etc/mysql_grants.sql"
-when "freebsd"
+when 'freebsd'
   default['mysql']['package_name']            = "mysql55-server"
   default['mysql']['service_name']            = "mysql-server"
   default['mysql']['basedir']                 = "/usr/local"
@@ -57,7 +57,7 @@ else
   default['mysql']['mysqladmin_bin']          = "/usr/bin/mysqladmin"
   default['mysql']['mysql_bin']               = "/usr/bin/mysql"
 
-  set['mysql']['conf_dir']                    = '/etc/mysql'
+  set['mysql']['conf_dir']                    = '/etc'
   set['mysql']['socket']                      = "/var/run/mysqld/mysqld.sock"
   set['mysql']['pid_file']                    = "/var/run/mysqld/mysqld.pid"
   set['mysql']['old_passwords']               = 0
