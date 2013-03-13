@@ -19,7 +19,8 @@
 # limitations under the License.
 #
 
-node[:package_set][:install].map!(&:to_s)
+Chef::Log.info node[:package_set][:install]
+# node[:package_set][:install].map!(&:to_s)
 
 node[:package_set][:pkgs].each do |set_name, pkgs|
   next unless node[:package_set][:install].include?(set_name.to_s)
