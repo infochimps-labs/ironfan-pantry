@@ -11,7 +11,8 @@ default[:elasticsearch][:log_dir]                 = "/var/log/elasticsearch"
 default[:elasticsearch][:lib_dir]                 = "/var/lib/elasticsearch"
 default[:elasticsearch][:pid_dir]                 = "/var/run/elasticsearch"
 #
-default[:elasticsearch][:data_root]               = "/mnt/elasticsearch"
+default[:elasticsearch][:data_dir]                = nil # set by volume_dirs
+default[:elasticsearch][:scratch_dir]             = nil # set by volume_dirs
 
 #
 # User
@@ -30,7 +31,13 @@ default[:elasticsearch][:checksum]                = nil
 default[:elasticsearch][:release_url]             = "http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-:version:.tar.gz"
 default[:elasticsearch][:snapshot]                = false
 default[:elasticsearch][:git_repo]                = "https://github.com/elasticsearch/elasticsearch.git"
-default[:elasticsearch][:plugins]                 = ["elasticsearch/elasticsearch-cloud-aws/1.8.0"]
+
+# The syntax for this has changed. Use a hash, as in the examples shown:
+default[:elasticsearch][:plugins]                 = [
+  { name: 'bigdesk',                 org: 'lukas-vlcek',                     version: '2.0.0'  },
+  { name: 'elasticsearch-head',      org: 'Aconex',        dir: 'head',      },
+  { name: 'elasticsearch-cloud-aws', org: 'elasticsearch', dir: 'cloud-aws', version: '1.8.0', },
+]
 # Options are [none, local, fs, hadoop, s3]
 default[:elasticsearch][:gateway_type]            = 's3'
 
@@ -61,6 +68,7 @@ default[:elasticsearch][:flush_threshold_size]    = "200mb"
 default[:elasticsearch][:flush_threshold_period]  = "60s"
 default[:elasticsearch][:cache_filter_size]       = "20%"  # can be a percent ("10%") or a number ("128m")
 default[:elasticsearch][:index_buffer_size]       = "10%"  # can be a percent ("10%") or a number ("128m") (changed 2012-10 to default 10%, same as es default)
+default[:elasticsearch][:cache_field_max_size]    = nil    # The field cache can OOM your machine in a moment when too large, but when you have the RAM field values are one of the most important things to cache. Consider setting this to a very high value to be safe; certainly, set it on indexes that are very large.
 default[:elasticsearch][:merge_factor]            = 10
 default[:elasticsearch][:floor_segment]           = "2.7mb"
 
@@ -70,6 +78,8 @@ default[:elasticsearch][:refresh_interval]        = "1s"
 default[:elasticsearch][:snapshot_interval]       = "10s"
 default[:elasticsearch][:snapshot_on_close]       = "true"
 
+default[:elasticsearch][:compress_transport]      = "true"
+
 default[:elasticsearch][:seeds]                   = nil
 
 default[:elasticsearch][:recovery_after_nodes]    = 2
@@ -78,7 +88,7 @@ default[:elasticsearch][:expected_nodes]          = 2
 
 default[:elasticsearch][:fd_ping_interval]        = "2s"
 default[:elasticsearch][:fd_ping_timeout]         = "60s"
-default[:elasticsearch][:fd_ping_retries]         = 6
+default[:elasticsearch][:fd_ping_retries]         = 3
 
 default[:elasticsearch][:http_ports]              = "9200-9300"
 default[:elasticsearch][:api_port]                = "9300"
@@ -98,6 +108,8 @@ default[:elasticsearch][:gc_logging]              = false  # useful for performa
 # most of the log lines are manageable at level 'DEBUG'
 # the voluminous ones are broken out separately
 default[:elasticsearch][:log_level][:default]         = 'DEBUG'
+
+default[:elasticsearch][:log_level][:overall]         = 'INFO'
 
 default[:elasticsearch][:log_level][:index_store]     = 'INFO'
 default[:elasticsearch][:log_level][:action_shard]    = 'INFO'

@@ -22,6 +22,13 @@
 include_recipe 'xfs'
 
 #
+# apt-get update immediately
+#  workaround for a 2013-03 collision between mdadm apt package and postfix(!).
+#  People of the near future: you can probably remove this
+#
+execute("apt-get update"){ action :nothing }.run_action(:run)
+
+#
 # install mdadm immediately
 #
 retried = false
@@ -40,15 +47,21 @@ end
 #
 Silverware.raid_groups(node).each do |rg_name, rg|
 
-  sub_vols = sub_volumes(node, rg)
+  sub_vols = sub_volumes(node, rg).values.reject{|sv| sv.device.nil? }
 
-  Chef::Log.debug(rg.inspect)
-  Chef::Log.debug( sub_vols.values.inspect )
+  Chef::Log.debug( rg.inspect )
+  Chef::Log.debug( sub_vols.inspect )
+
+  #
+  # * failing on apt-get install of mdadm? Run `sudo apt-get update` and re-run chef.
+  # * failing on mount of ebs volumes with "mount: Structure needs cleaning"? Run `sudo mkfs.xfs -f /dev/md1` and re-run chef.
+  #
 
   #
   # unmount all devices tagged for that raid group
   #
-  sub_vols.each do |_, sub_vol|
+  sub_vols.each do |sub_vol|
+    next if sub_vol.mount_point.to_s == ''
     act = mount sub_vol.mount_point do
       device sub_vol.device
       action :nothing
@@ -61,7 +74,7 @@ Silverware.raid_groups(node).each do |rg_name, rg|
   # Create the raid array
   #
   act = mdadm(rg.device) do
-    devices   sub_vols.values.map(&:device)
+    devices   sub_vols.map(&:device)
     level     0
     action    :nothing
   end
@@ -78,11 +91,13 @@ Silverware.raid_groups(node).each do |rg_name, rg|
   #   code      "blockdev --setra #{raid_group.read_ahead} #{raid_group.device}"
   # end
 
+  # Chef::Log.debug([rg.formattable?, rg.ready_to_format?, rg[:formatted], `file -s #{rg.device}`].inspect)
+
   if rg.formattable?
     if rg.ready_to_format?
       act = bash "format #{rg.name} (#{rg.sub_volumes})" do
         user      "root"
-        # Returns success iff the drive is formatted XFS
+        # Returns success iff the drive is formatted XFS.
         code      %Q{ mkfs.xfs -f #{rg.device} ; file -s #{rg.device} | grep XFS }
         not_if("file -s #{rg.device} | grep XFS")
         action(:nothing)

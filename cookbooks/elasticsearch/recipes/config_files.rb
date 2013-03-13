@@ -34,8 +34,6 @@ node.set[:elasticsearch][:seeds] = discover_all(:elasticsearch, :datanode).map(&
 Chef::Log.warn("No elasticsearch seeds!") if node[:elasticsearch][:seeds].empty?
 template "/etc/elasticsearch/elasticsearch.yml" do
   source        "elasticsearch.yml.erb"
-  owner         "elasticsearch"
-  group         "elasticsearch"
   mode          0644
   variables     ({
     :elasticsearch      => node[:elasticsearch],

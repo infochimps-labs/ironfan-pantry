@@ -26,7 +26,7 @@
 <property><name>dfs.datanode.socket.write.timeout</name> <value>0</value></property>
 <property><name>dfs.balance.bandwidthPerSec</name>       <value><%= @hadoop[:balancer][:max_bandwidth] %></value></property>
 
-<property><name>dfs.hosts.exclude</name>                 <value><%= @hadoop[:conf_dir] %>/dfs.hosts.exclude %></value><final>true</final></property>
+<property><name>dfs.hosts.exclude</name>                 <value><%= @hadoop[:conf_dir] %>/dfs.hosts.exclude</value><final>true</final></property>
 
 <property> <name>dfs.namenode.plugins</name> <value><%= @hadoop[:namenode][:plugins].join(",") %></value> <description>Comma-separated list of namenode plugins to be activated. </description> </property>
 <property> <name>dfs.datanode.plugins</name> <value><%= @hadoop[:datanode][:plugins].join(",") %></value> <description>Comma-separated list of datanode plugins to be activated. </description> </property>

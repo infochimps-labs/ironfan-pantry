@@ -56,71 +56,37 @@ default[:package_set][:install]          = %w[ ]
 #
 
 
-default[:package_set][:pkgs][:base]      =  \
-  case node.platform
-    when 'centos'
-      %w[ tree git zip openssl wget curl runit libxslt-devel ]
-    else
-      %w[ tree git zip openssl wget curl runit libyaml-dev libxslt1-dev ]
-  end
-default[:package_set][:gems][:base]      = [ { name: "bundler", version: "1.1" } ]
+default[:package_set][:pkgs][:base]     = %w[ tree git zip openssl wget curl runit libyaml-dev libxslt1-dev ]
+default[:package_set][:pkgs][:dev]      = %w[ elinks colordiff ]
+default[:package_set][:pkgs][:sysadmin] = %w[ tree dstat chkconfig ifstat htop sysstat nmap python-software-properties ]
+default[:package_set][:pkgs][:text]     = %w[ libidn11-dev libxml2-dev libxml2-utils libxslt1-dev tidy ]
+default[:package_set][:pkgs][:python]   = %w[ python-dev python-setuptools python-simplejson ]
+default[:package_set][:pkgs][:ec2]      = %w[ s3cmd ec2-ami-tools ec2-api-tools ]
+default[:package_set][:pkgs][:vagrant]  = %w[ ifstat htop tree chkconfig sysstat nmap ]
+default[:package_set][:pkgs][:emacs]    = %w[ emacs23-nox emacs23-el python-mode org-mode ]
+default[:package_set][:pkgs][:datatools] = %w[
+    r-base r-base-dev x11-apps eog texlive-common texlive-binaries dvipng
+    ghostscript latex libfreetype6 python-gtk2 python-gtk2-dev python-wxgtk2.8
+  ]
 
-default[:package_set][:pkgs][:dev]       = \
-    case node.platform
-      when 'centos'
-        %w[ emacs-nox elinks w3m ctags-etags ]
-      else
-        %w[ tree git zip openssl wget curl runit libyaml-dev libxslt1-dev dstat elinks colordiff ]
-    end
+default[:package_set][:gems][:base]      = [ { name: "bundler", version: "1.1" } ]
 default[:package_set][:gems][:dev]       = %w[
   extlib json yajl-ruby awesome_print addressable cheat rest-client
   yard jeweler rspec watchr pry wirble hirb highline formatador
   configliere gorillib wukong swineherd hackboxen activesupport activemodel
   ]
-
-default[:package_set][:pkgs][:sysadmin]  = \
-    case node.platform
-      when 'centos'
-        %w[ dstat tree chkconfig sysstat nmap ]
-      else
-        %w[ ifstat htop tree chkconfig sysstat nmap python-software-properties ]
-    end
 default[:package_set][:gems][:sysadmin]  = %w[]
-
-default[:package_set][:pkgs][:text]      = \
-    case node.platform
-      when 'centos'
-        %w[ libidn-devel libxml2-devel libxslt-devel tidy ]
-      else
-        %w[ libidn11-dev libxml2-dev libxml2-utils libxslt1-dev tidy ]
-    end
 default[:package_set][:gems][:text]      = %w[ nokogiri erubis i18n ]
-
-default[:package_set][:pkgs][:ec2]       = %w[ s3cmd ec2-ami-tools ec2-api-tools ]
 default[:package_set][:gems][:ec2]       = %w[ fog right_aws ironfan ]
-
-default[:package_set][:pkgs][:vagrant]   = %w[ ifstat htop tree chkconfig sysstat nmap ]
 default[:package_set][:gems][:vagrant]   = %w[ vagrant veewee ironfan ]
-
-default[:package_set][:pkgs][:python]    = \
-    case node.platform
-      when 'centos'
-        %w[ python-devel python-setuptools python-simplejson ]
-      else
-        %w[ python-dev python-setuptools python-simplejson ]
-    end
-
 default[:package_set][:gems][:wukong]    = %w[ log4r RedCloth guard htmlentities log4r log_buddy redcarpet simplecov multi_json ]
 
-default[:package_set][:pkgs][:datatools] = %w[
-  r-base r-base-dev x11-apps eog texlive-common texlive-binaries dvipng
-  ghostscript latex libfreetype6 python-gtk2 python-gtk2-dev python-wxgtk2.8
-]
-
-default[:package_set][:pkgs][:emacs]     = \
-    case node.platform
-      when 'centos'
-        %w[ emacs-nox emacs-el ]
-      else
-        %w[ emacs23-nox emacs23-el python-mode org-mode ]
-    end
+case node.platform
+when 'centos'
+  default[:package_set][:pkgs][:base]     = %w[ tree git zip openssl wget curl runit libxslt-devel ]
+  default[:package_set][:pkgs][:dev]      = %w[ elinks w3m ctags-etags emacs-nox  ]
+  default[:package_set][:pkgs][:sysadmin] = %w[ tree chkconfig dstat sysstat nmap ]
+  default[:package_set][:pkgs][:text]     = %w[ libidn-devel libxml2-devel libxslt-devel tidy ]
+  default[:package_set][:pkgs][:python]   = %w[ python-devel python-setuptools python-simplejson ]
+  default[:package_set][:pkgs][:emacs]    = %w[ emacs-nox emacs-el ctags-etags ]
+end
