@@ -1,8 +1,8 @@
 #
 # Cookbook Name::       zabbix
-# Description::         Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache.
-# Recipe::              web_apache
-# Author::              Dhruv Bansal (<dhruv@infochimps.com>), Nacer Laradji (<nacer.laradji@gmail.com>)
+# Description::         Installs and launches Zabbix server.
+# Recipe::              java_gateway
+# Author::              Dhruv Bansal (<dhruv.bansal@infochimps.com>))
 #
 # Copyright 2012-2013, Infochimps
 #
@@ -19,15 +19,15 @@
 # limitations under the License.
 #
 
-# Execute apache2 receipe + mod_php5 receipe
-include_recipe 'apache2'
-include_recipe 'apache2::mod_php5'
+include_recipe("zabbix::default")
 
-if node[:zabbix][:web][:fqdn] != nil
-  #install vhost for zabbix frontend
-  web_app "#{node.zabbix.web.fqdn}" do
-    server_name node.zabbix.web.fqdn
-    server_aliases "zabbix"
-    docroot node.zabbix.web.home_dir
-  end
+standard_dirs('zabbix.java_gateway') do
+  directories :log_dir
 end
+
+template "/usr/local/sbin/zabbix_java/settings.sh" do
+  source 'zabbix_java_gateway_settings.sh.erb'
+  mode   '755'
+end
+
+runit_service "zabbix_java"

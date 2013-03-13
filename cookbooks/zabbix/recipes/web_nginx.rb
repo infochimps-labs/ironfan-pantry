@@ -21,14 +21,14 @@
 
 include_recipe 'nginx'
 
-template File.join(node[:nginx][:dir], "zabbix.conf") do
+template File.join(node[:nginx][:dir], "sites-available", "zabbix.conf") do
   source 'zabbix_web.nginx.conf.erb'
   action :create
 end
 
 nginx_site 'zabbix.conf' do
   action :enable
-  notifies :restart, 'service[nginx]', :immediate
+  notifies :restart, 'service[nginx]', :delayed
 end
 
 nginx_site 'default' do
@@ -38,7 +38,10 @@ end
 runit_service "zabbix_web"
 
 announce(:zabbix, :web, {
-  logs:  { php_cgi: node.zabbix.web.log_dir },
+  logs:  { 
+    php_cgi: { path: File.join(node.zabbix.web.log_dir, 'php.*')   },
+    nginx:   { path: File.join(node.zabbix.web.log_dir, 'nginx.*') }
+  },
   ports: {
     php_cgi: {
       port:      node.zabbix.web.port,

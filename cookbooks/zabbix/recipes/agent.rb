@@ -36,36 +36,42 @@ server_ips       = all_zabbix_server_ips()
 zabbix_server_ip = server_ips.first
 template(File.join(node[:zabbix][:conf_dir], "zabbix_agentd.conf")) do
   source    "zabbix_agentd.conf.erb"
-  mode      "644"
+  group     node[:zabbix][:group]
+  mode      "640"
   notifies  :restart, "service[zabbix_agentd]", :delayed
   variables :server_ips => server_ips
 end
 
+# We'd like to use runit to manage the zabbix_agentd process but it
+# unfortunately cannot launch without daemonizing itself.
 template "/etc/init.d/zabbix_agentd" do
   source "zabbix_agentd.init.erb"
-  mode   "754"
+  group  node[:zabbix][:group]
+  mode   "755"
 end
 
 service "zabbix_agentd" do
   supports :status => true, :start => true, :stop => true
-  case node.platform
-  when 'centos'
-    action [ :start ]
-  else
-    action [ :start, :enable ]
-  end
+  action [ :start, :enable ]
 end
 
 if node.zabbix.agent.unmonitor_on_shutdown
-  template File.join(node[:zabbix][:conf_dir], "external_scripts", "unmonitor_zabbix_host.rb") do
-    source    "unmonitor_zabbix_host.rb.erb"
-    mode      '0776'
-    variables :ip => zabbix_server_ip
-    action    :create
-  end
-  template "/etc/init/unmonitor_zabbix_host.conf" do
-    source 'unmonitor_zabbix_host.conf.erb'
-    action :create
+  case node.platform
+  when 'ubuntu', 'debian'
+    template File.join(node[:zabbix][:conf_dir], "external_scripts", "unmonitor_zabbix_host.rb") do
+      source    "unmonitor_zabbix_host.rb.erb"
+      mode      '0770'
+      variables :ip => zabbix_server_ip
+      action    :create
+    end
+    template "/etc/init/unmonitor_zabbix_host.conf" do
+      source 'unmonitor_zabbix_host.conf.erb'
+      group  node[:zabbix][:group]
+      mode   "0644"
+      action :create
+    end
+  else
+    Chef::Log.error("Cannot create a system shutdown task to unmonitor the corresponding Zabbix host on platform: #{node.platform}")
   end
 end
 
@@ -74,7 +80,7 @@ announce(:zabbix, :agent, {
   realm:  discovery_realm(:zabbix, :server),
   logs:   { agent:  node.zabbix.agent.log_dir },
   ports:  { agent:  {
-      port:     10051,
+      port:     node.zabbix.agent.port,
       monitor:  false
     }
   },

@@ -38,7 +38,7 @@ install_from_release('zabbix') do
   action        :configure
   release_url   node.zabbix.release_url
   version       node.zabbix.server.version
-  notifies      :run, 'bash[chown_zabbix_web]', :immediately
+  notifies      :run, 'bash[chown_zabbix_web]', :delayed
   not_if        { File.exist?(node.zabbix.web.home_dir) }
 end
 
@@ -50,21 +50,21 @@ end
 template File.join(node.zabbix.web.home_dir, 'conf', 'zabbix.conf.php') do
   source 'zabbix.conf.php.erb'
   owner  node.zabbix.web.user
-  group  node.zabbix.web.user
-  mode   '0600'
+  mode   '0400'
   action :create
+end
+
+case node.zabbix.web.install_method
+when 'nginx'
+  include_recipe "zabbix::web_#{node.zabbix.web.install_method}"
+else
+  warn "Invalid install method '#{node.zabbix.web.install_method}'.  Only 'nginx' is supported for Zabbix web."
 end
 
 template File.join(node.zabbix.conf_dir, "php.ini") do
   source   'php.ini.erb'
   owner    node.zabbix.web.user
+  mode     '0400'
   action   :create
   notifies :restart, resources(service: 'zabbix_web'), :delayed
-end
-
-case node.zabbix.web.install_method
-when 'nginx', 'apache'
-  include_recipe "zabbix::web_#{node.zabbix.web.install_method}"
-else
-  warn "Invalid install method '#{node.zabbix.web.install_method}'.  Only 'nginx' and 'apache' are supported for Zabbix web."
 end

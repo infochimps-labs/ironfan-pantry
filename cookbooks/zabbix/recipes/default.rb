@@ -26,7 +26,7 @@ end
 
 # These directories are used by both server & agent installations
 standard_dirs('zabbix') do
-  directories :conf_dir
+  directories :conf_dir, :pid_dir
 end
 %w[include external_scripts alert_scripts].each do |sub_dir|
   directory File.join(node[:zabbix][:conf_dir], sub_dir) do

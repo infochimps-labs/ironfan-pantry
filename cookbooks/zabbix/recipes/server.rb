@@ -32,22 +32,26 @@ else
   warn "Invalid method '#{node.zabbix.server.install_method}'.  Only the 'source' install method is supported for Zabbix server."
 end
 
+include_recipe "zabbix::java_gateway"
+
 template File.join(node[:zabbix][:conf_dir], 'zabbix_server.conf') do
   source   "zabbix_server.conf.erb"
-  owner    "root"
-  group    "root"
-  mode     "644"
+  group    node[:zabbix][:group]
+  mode     "640"
   notifies :restart, "service[zabbix_server]", :delayed
 end
 
+# We'd like to use runit to manage the zabbix_server but it
+# unfortunately cannot launch without daemonizing itself.
 template "/etc/init.d/zabbix_server" do
   source 'zabbix_server.init.erb'
-  mode   '754'
+  group  node[:zabbix][:group]
+  mode   '755'
 end
 
 service "zabbix_server" do
-  supports :status => true, :start => true, :stop => true, :restart => true
-  action [ :enable ]
+  supports :start => true, :stop => true, :restart => true
+  action [ :start, :enable ]
 end
 
 announce(:zabbix, :server, {
@@ -57,14 +61,14 @@ announce(:zabbix, :server, {
       port:    node.zabbix.server.port,
       monitor: false
     },
-    trapper: {
-      port:    node.zabbix.server.trapper_port,
-      monitor: false
-    },
-    java_gateway: {
-      port:    node.zabbix.server.java_gateway_port,
-      monitor: false
-    }
+    java_gateway: node.zabbix.java_gateway.port,
   },
-  daemons: { :server => 'zabbix_server' }
+  daemons: { 
+    server: 'zabbix_server',
+    java_gateway: {
+      name: 'java',
+      user: 'zabbix',
+      cmd:  'zabbix-java-gateway'
+    }
+  }
 })

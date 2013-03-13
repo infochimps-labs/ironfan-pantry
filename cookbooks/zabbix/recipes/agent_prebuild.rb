@@ -34,6 +34,6 @@ install_from_release('zabbix_agent') do
   release_url      node.zabbix.agent.prebuild_url.gsub(/:kernel:/,node.zabbix.agent.prebuild_kernel).gsub(/:arch:/,zabbix_arch)
   version          node.zabbix.agent.version
   has_binaries     %w[bin/zabbix_sender bin/zabbix_get sbin/zabbix_agent sbin/zabbix_agentd]
-  strip_components 0            # the tarball is flat
-  not_if           { File.exist?('/usr/local/sbin/zabbix_agentd') }
+  strip_components 0            # the tarball is flat!
+  not_if           { File.exist?('/usr/local/bin/zabbix_agentd') }
 end

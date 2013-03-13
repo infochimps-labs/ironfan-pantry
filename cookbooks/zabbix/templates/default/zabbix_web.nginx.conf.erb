@@ -6,7 +6,7 @@ server {
   access_log <%= node.zabbix.web.log_dir %>/nginx.access.log;
   error_log  <%= node.zabbix.web.log_dir %>/nginx.error.log;
   
-  root /opt/zabbix/web;
+  root <%= node.zabbix.web.home_dir %>;
 
   location / {
     index index.html index.php;
@@ -15,6 +15,6 @@ server {
   location ~ \.php$ {
     include fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    fastcgi_pass <%= node.zabbix.web.bind_ip || node.ipaddress%>:<%= node.zabbix.web.port %>;
+    fastcgi_pass <%= node.zabbix.web.bind_ip || node.ipaddress %>:<%= node.zabbix.web.port %>;
   }
 }

@@ -35,4 +35,5 @@ install_from_release('zabbix') do
   release_url   node.zabbix.release_url
   version       node.zabbix.agent.version
   autoconf_opts ['--enable-agent'].concat(node.zabbix.agent.configure_options)
+  not_if        { File.exist?('/usr/local/bin/zabbix_agentd') }
 end

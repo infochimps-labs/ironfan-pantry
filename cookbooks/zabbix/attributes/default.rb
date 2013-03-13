@@ -10,6 +10,7 @@ default[:zabbix][:conf_dir]    = '/etc/zabbix'
 default[:zabbix][:release_url] = "http://sourceforge.net/projects/zabbix/files/ZABBIX%20Latest%20Stable/:version:/zabbix-:version:.tar.gz"
 
 default[:zabbix][:user]             = "zabbix"
+default[:zabbix][:group]            = "zabbix"
 default[:users ]['zabbix'][:uid]    = 447
 default[:groups]['zabbix'][:gid]    = 447
 
@@ -21,13 +22,15 @@ default[:zabbix][:server][:version]           = "2.0.4"
 default[:zabbix][:server][:install_method]    = "source"
 default[:zabbix][:server][:configure_options] = [ "--with-libcurl","--with-net-snmp","--with-mysql","--enable-java" ]
 default[:zabbix][:server][:log_dir]           = '/var/log/zabbix_server'
-default[:zabbix][:server][:port]              = 10050
-default[:zabbix][:server][:trapper_port]      = 10051
-default[:zabbix][:server][:java_gateway_port] = 10052
+default[:zabbix][:server][:port]              = 10051
+
+# Java Gateway
+default[:zabbix][:java_gateway][:port]    = 10052
+default[:zabbix][:java_gateway][:log_dir] = '/var/log/zabbix_java'
 
 # Database
 default[:zabbix][:database][:host]            = "localhost"
-default[:zabbix][:database][:port]            = "3306"
+default[:zabbix][:database][:port]            = 3306
 default[:zabbix][:database][:root_user]       = "root"
 default[:zabbix][:database][:root_password]   = nil
 default[:zabbix][:database][:user]            = "zabbix"
@@ -38,6 +41,7 @@ default[:zabbix][:database][:install_method]  = 'mysql'
 default[:zabbix][:database][:debian_package]  = "libmysqlclient-dev"
 
 # Agent
+default[:zabbix][:agent][:port]                   = 10050
 default[:zabbix][:agent][:servers]                = []
 default[:zabbix][:agent][:configure_options]      = ["--with-libcurl"]
 default[:zabbix][:agent][:version]                = "2.0.4"
@@ -46,6 +50,7 @@ default[:zabbix][:agent][:log_dir]                = '/var/log/zabbix_agent'
 default[:zabbix][:agent][:create_host]            = true
 default[:zabbix][:agent][:unmonitor_on_shutdown]  = false
 default[:zabbix][:agent][:unsafe_user_parameters] = true
+default[:zabbix][:agent][:enable_remote_commands] = true
 default[:zabbix][:agent][:prebuild_url]           = "http://www.zabbix.com/downloads/:version:/zabbix_agents_:version:.:kernel:.:arch:.tar.gz"
 default[:zabbix][:agent][:prebuild_kernel]        = "linux2_6"
 
@@ -55,13 +60,12 @@ default[:zabbix][:web][:bind_ip]        = nil
 default[:zabbix][:web][:port]           = 9101
 default[:zabbix][:web][:log_dir]        = '/var/log/zabbix_web'
 default[:zabbix][:web][:home_dir]       = File.join(zabbix_home_dir, 'frontends', 'php')
-default[:zabbix][:web][:install_method] = 'apache'
+default[:zabbix][:web][:install_method] = 'nginx'
 default[:zabbix][:web][:timezone]       = 'Europe/London' # UTC
 default[:zabbix][:web][:user]           = 'www-data'      # should match user for nginx/apache
 
 # API
 default[:zabbix][:api][:path]       = 'api_jsonrpc.php'
-default[:zabbix][:api][:userid]     = '1' # leave as '1' to override default Zabbix admin user
 default[:zabbix][:api][:username]   = 'admin'
 default[:zabbix][:api][:first_name] = 'Zabbix'
 default[:zabbix][:api][:last_name]  = 'Administrator'

@@ -66,7 +66,7 @@ attribute :expand_cmd,    :kind_of => String
 
 # Number of path components to strip (for more control use
 # 'expand_cmd')
-attribute :strip_components, :kind_of => Integer, :default => nil
+attribute :strip_components, :kind_of => Integer, :default => 1
 
 # Release file name, eg /usr/local/src/pig-0.8.0.tar.gz
 attribute :release_file,  :kind_of => String

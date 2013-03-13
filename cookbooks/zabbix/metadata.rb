@@ -12,6 +12,7 @@ depends          "nginx"
 depends          "database", ">= 1.0.0"
 depends          "mysql", ">= 1.2.0"
 depends          "silverware"
+depends          "install_from", ">= 3.1.9"
 
 recipe           "zabbix::default",                    "Sets up Zabbix directory structure & user."
 recipe           "zabbix::agent_prebuild",             "Downloads, configures, & launches pre-built Zabbix agent"
@@ -58,7 +59,7 @@ attribute "zabbix/agent/configure_options",
   :display_name          => "",
   :description           => "Options passed to ./configure script when building agent.",
   :type                  => "array",
-  :default               => ["--prefix=/opt/zabbix", "--with-libcurl"]
+  :default               => ["--with-libcurl"]
 
 attribute "zabbix/agent/branch",
   :display_name          => "",
@@ -119,7 +120,7 @@ attribute "zabbix/server/configure_options",
   :display_name          => "",
   :description           => "Options passed to the ./configure script when building the Zabbix server.",
   :type                  => "array",
-  :default               => ["--prefix=/opt/zabbix", "--with-libcurl", "--with-net-snmp", "--with-mysql "]
+  :default               =>  ["--with-libcurl","--with-net-snmp","--with-mysql","--enable-java" ]
 
 attribute "zabbix/server/log_dir",
   :display_name          => "",
