@@ -21,16 +21,16 @@
 # to debian_before_squeeze? and ubuntu_before_lucid?
 ::Chef::Recipe.send(:include, Opscode::Mysql::Helpers)
 
-mysql_packages = case node['platform']
-when "centos", "redhat", "suse", "fedora", "scientific", "amazon"
+mysql_packages = case node[:platform_family]
+when 'rhel'
   %w{mysql mysql-devel}
-when "ubuntu","debian"
+when 'debian'
   if debian_before_squeeze? || ubuntu_before_lucid?
     %w{mysql-client libmysqlclient15-dev}
   else
     %w{mysql-client libmysqlclient-dev}
   end
-when "freebsd"
+when 'freebsd'
   %w{mysql55-client}
 else
   %w{mysql-client libmysqlclient-dev}
@@ -42,12 +42,11 @@ mysql_packages.each do |mysql_pack|
   end
 end
 
-if platform?(%w{ redhat centos fedora suse scientific amazon })
-  package 'ruby-mysql'
-elsif platform?(%w{ debian ubuntu })
-  package "libmysql-ruby"
+case node[:platform_family]
+when 'rhel'   then package 'ruby-mysql'
+when 'debian' then package 'libmysql-ruby'
 else
-  gem_package "mysql" do
+  gem_package 'mysql' do
     action :install
   end
 end

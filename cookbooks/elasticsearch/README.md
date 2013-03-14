@@ -108,7 +108,8 @@ Cookbook dependencies:
 
 * `[:elasticsearch][:version]`        -  (default: "0.18.5")
 * `[:elasticsearch][:realm]`        -  (default: cluster name)
-* `[:elasticsearch][:data_root]`      -  (default: "/mnt/elasticsearch")
+* `[:elasticsearch][:data_dir]`      -  (default: nil)
+* `[:elasticsearch][:scratch_dir]`     -  (default: nil)
 * `[:elasticsearch][:java_home]`      -  (default: "/usr/lib/jvm/java-6-sun/jre")
 * `[:elasticsearch][:git_repo]`       -  (default: "https://github.com/elasticsearch/elasticsearch.git")
 * `[:elasticsearch][:java_heap_size_max]` -  (default: "1000")

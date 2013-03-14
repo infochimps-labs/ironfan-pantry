@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+mongoHost="<%= @mongodb_fqdn %>"
+dt=$(date +%Y%m%d)
+s3Target="s3://<%= @node[:backups][:s3] %>/mongodb_backups/${dt}/"
+workDir="<%= @node[:backups][:location] %>/mongodb-${dt}"
+
+if [ ! -d ${workDir} ]; then
+    mkdir -p ${workDir}
+fi
+
+/opt/mongodb-1.8.0/bin/mongodump --host ${mongoHost} --out ${workDir}/mongodump
+
+cd $workDir
+tar -czf mongodb.${dt}.tgz ./mongodump
+s3cmd -c /etc/s3cfg put ${workDir}/mongodb.${dt}.tgz ${s3Target}
+
+rm -r $workDir/mongodb.${dt}.tgz ${workDir}/mongodump
+
+exit 0

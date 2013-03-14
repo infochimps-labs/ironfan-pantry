@@ -30,7 +30,7 @@ default[:backups][:hbase][:conf                    ]     = "/etc/hbase_backup.ya
 default[:backups][:hbase][:full                    ]     = ["Sunday"]
 default[:backups][:hbase][:differential            ]     = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 default[:backups][:hbase][:incrimental             ]     = []
-default[:backups][:hbase][:tables                  ]     = "*" # Will also accept a list.  ["table1", "table2"]
+default[:backups][:hbase][:tables                  ]     = '"*"' # Will also accept a list.  ["table1", "table2"]
 default[:backups][:hbase][:versions                ]     = "2147483647"
 default[:backups][:hbase][:minute                  ]     = "0"
 default[:backups][:hbase][:hour                    ]     = "2"
@@ -67,6 +67,16 @@ default[:backups][:elasticsearch][:month       ]     = "*"
 default[:backups][:elasticsearch][:weekday     ]     = "0"
 
 #
+# MongoDB
+#
+
+default[:backups][:mongodb][:minute      ]     = "*"
+default[:backups][:mongodb][:hour        ]     = "4"
+default[:backups][:mongodb][:day         ]     = "*/3"
+default[:backups][:mongodb][:month       ]     = "*"
+default[:backups][:mongodb][:weekday     ]     = "*"
+
+#
 # Retention
 # 
 
@@ -77,3 +87,4 @@ default[:backups][:retention][:month    ]     = "*"
 default[:backups][:retention][:weekday  ]     = "*"
 default[:backups][:retention][:namenode ]     = "7" # Retention in days
 default[:backups][:retention][:zookeeper]     = "5" # Retention in days
+default[:backups][:retention][:mongodb  ]     = "14" # Retention in days
