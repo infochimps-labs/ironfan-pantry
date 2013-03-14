@@ -107,7 +107,7 @@ index:
   number_of_replicas:           <%= @elasticsearch[:default_replicas] %>
   # The field cache can OOM your machine in a moment when too large, but when
   # you have the RAM field values are one of the most important things to cache.
-  index.cache.field.type:         <%= @elasticsearch[:index.cache.field.type] %>
+  index.cache.field.type:         <%= @elasticsearch[:index_cache_field_type] %>
   #
   translog:
     # A shard is flushed to local disk (the lucene index is committed) once this
