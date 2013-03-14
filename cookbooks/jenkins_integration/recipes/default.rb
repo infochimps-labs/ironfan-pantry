@@ -94,3 +94,5 @@ execute "set timezone" do
   eof
 end
 
+# `git up` syncs all local branches with remotes
+gem_package 'git-up'

@@ -12,23 +12,18 @@ for repo in $REPOS; do
     h2 "Checking out $name"
     git clone $repo
     switch_to $name
-
-    item "get remotes"
-    for remote in `git branch -r | grep -v origin/master`; do
-      git checkout -t remotes/$remote
-    done
   else
     h2 "Updating $name"
     switch_to $name
-    git checkout -f master
-    git pull
-
-    item "update remotes"
-    for remote in `git branch -r | grep -v origin/master`; do
-      git checkout -f ${remote#*/}
-      git pull
-    done
+    git up
   fi
+
+  # This doesn't remove old branches, which may eventually
+  #   cause a collision - fix it if/when it happens
+  item "track all remote branches"
+  for remote in `git branch -r | grep -v origin/master`; do
+    git checkout -f ${remote#*/}
+  done
 
   item "Get submodules"
   git checkout -f master
