@@ -22,25 +22,9 @@
 include_recipe 'xfs'
 
 #
-# apt-get update immediately
-#  workaround for a 2013-03 collision between mdadm apt package and postfix(!).
-#  People of the near future: you can probably remove this
-#
-execute("apt-get update"){ action :nothing }.run_action(:run)
-
-#
 # install mdadm immediately
 #
-retried = false
-begin
-  package('mdadm'){ action :nothing }.run_action(:install)
-rescue Chef::Exceptions::Exec
-  raise if retried
-  include_recipe 'apt'
-  execute("apt-get update").run_action(:run)
-  retry
-  retried = true
-end
+package('mdadm'){ action :nothing }.run_action(:install)
 
 #
 # Assemble raid groups using volumes defined in node metadata -- see volumes/libraries/volumes.rb
