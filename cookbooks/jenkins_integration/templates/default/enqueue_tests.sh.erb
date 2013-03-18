@@ -59,22 +59,23 @@ for name in $HOMEBASES; do
   fi
 done
 
-h1 "Push updates to development"
+h1 "Push updates to development (after ensuring proper matryoshka)"
 for name in $ALL_PATHS; do
   switch_to $name
   git pull
-  git push origin master
-done
-
-h1 "Advance all changes to testing (after ensuring proper matryoshka)"
-change_all_branches "testing" h2
-h2 "Merge master into staging"
-for name in $ALL_PATHS; do
-  switch_to $name
+  git merge -s ours testing  # Edge case: master updated with revert, as testing is queuing
   if ! git merge staging | grep 'Already up-to-date' > /dev/null; then
     echo "FATAL: master is not a descendant of staging" >&2
     exit 1
   fi
+  git push origin master
+done
+
+h1 "Advance all changes to testing"
+change_all_branches "testing" h2
+h2 "Merge master into testing"
+for name in $ALL_PATHS; do
+  switch_to $name
   git merge master
   git push origin testing
 done
