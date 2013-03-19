@@ -62,7 +62,7 @@ for name in $HOMEBASES; do
     version=`cat $testing/$cookbook/VERSION`
     echo -e "\$cookbooks['$cookbook']\t= '$version'" >> $VERSIONS
   done
-  if ! git diff $VERSIONS > /dev/null; then
+  if git diff $VERSIONS > /dev/null; then
     git commit $VERSIONS -m"$VERSIONS: updating testing cookbook versions"
   fi
 done
