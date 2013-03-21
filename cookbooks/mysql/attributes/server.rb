@@ -17,6 +17,10 @@
 # limitations under the License.
 #
 
+default['mysql']['server_debian_password'] = nil
+default['mysql']['server_root_password']   = nil
+default['mysql']['server_repl_password']   = nil
+
 default['mysql']['bind_address']               = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress
 
 case node[:platform_family]
