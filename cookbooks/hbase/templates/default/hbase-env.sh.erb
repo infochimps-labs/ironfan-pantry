@@ -30,7 +30,7 @@ this_file="`readlink -f $BASH_SOURCE`"
 if [ "$HBASE_ENV_SOURCED" == "" ] || [ "$HBASE_ENV_SOURCED" != "$this_file" ] ; then
 
 # The java implementation to use.  Java 1.6 required.
-# export JAVA_HOME=<%= node[:java][:java_home] %>
+export JAVA_HOME=<%= node[:java][:java_home] %>
 
 # Extra Java CLASSPATH elements.  Optional.
 # export HBASE_CLASSPATH=
