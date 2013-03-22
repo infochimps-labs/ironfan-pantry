@@ -99,10 +99,10 @@ org.apache.cassandra.thrift.CassandraDaemon 2>&1
 # # Here are the main options for tuning the size of the young generation.
 #   -XX:NewSize=21m                         ## Initial size of the young generation. (You may use suffixes such as m, g, e.g. -XX:NewSize=32m)
 #   -XX:MaxNewSize=42m                      ## Maximal size of the young generation.
-#   -XX:NewRatio=n                          ## sets the ratio of young generation to old generation to 1:n (for example n = 3 means you’ll have 25% new generation and 75% old generation.
+#   -XX:NewRatio=n                          ## sets the ratio of young generation to old generation to 1:n (for example n = 3 means you'll have 25% new generation and 75% old generation.
 #
 # # The size of the survivor space and the migration is controlled by the following options:
-#   -XX:SurvivorRatio=8                     ## sets the ratio of “young eden” to “young survivors” to 1:n.
+#   -XX:SurvivorRatio=8                     ## sets the ratio of "young eden" to "young survivors" to 1:n.
 #   -XX:MaxTenuringThreshold=1              ## controls at what age (that is, number of survived garbage collections) objects migrate to the old generation.
 #
 #   -XX:CMSInitiatingOccupancyFraction=pct  ## Controls the percentage of the old generation when the CMS is triggered.
