@@ -24,7 +24,7 @@ class Chef::Resource::Template ; include FlumeCluster ; end
 # :hadoop, :hbase, :zookeeper, :jruby
 [:flume].each do |component|
   next if node[component].nil? || node[component].empty?
-  Chef::Log.info( [ component, node[component][:exported_jars] ].inspect )
+  Chef::Log.debug( [ component, node[component][:exported_jars] ].inspect )
   [node[component][:exported_jars]].flatten.compact.each do |export|
     link "#{node[:flume][:home_dir]}/lib/#{File.basename(export)}" do
       to  export
