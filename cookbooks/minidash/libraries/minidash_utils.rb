@@ -14,7 +14,7 @@ module Ironfan
       else
         url = nil
       end
-      node[:minidash][:links][component] = url
+      node.set[:minidash][:links][component] = url
     end
 
     # Index into a (potentially deep) hash, using each key in turn. The key can
