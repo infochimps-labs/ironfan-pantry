@@ -32,6 +32,7 @@ module Ironfan
       opts           = Mash.new(opts)
       opts[:realm] ||= node[sys][subsys][:announce_as] rescue nil
       opts[:realm] ||= node[sys][:announce_as] rescue nil
+      opts[:realm] ||= node[:announce_as] rescue nil
       opts[:realm] ||= node[:cluster_name] rescue nil
       component = Component.new(node, sys, subsys, opts)
       Chef::Log.info("Announcing component #{component.fullname}")
@@ -82,8 +83,20 @@ module Ironfan
     end
 
     def discovery_realm(sys, subsys=nil)
-      realm   = (node[:discovers][sys][subsys] rescue nil) unless subsys.nil?
-      realm ||= (node[:discovers][sys] rescue nil) if (node[:discovers][sys].kind_of? String rescue false)
+      # New ways
+      realm ||= node[sys][subsys][:discover_as] rescue nil
+      realm ||= node[sys][:discover_as] rescue nil
+      realm ||= node[:discover_as] rescue nil
+
+      # FIXME: Old ways, remove once propagated everywhere
+      unless node[:discovers].nil?
+        Chef::Log.warn "node[:discovers] is deprecated, use node[:discover_as] instead"
+        Chef::Log.warn "node[:discovers] = #{node[discovers].to_hash}"
+        realm ||= (node[:discovers][sys][subsys] rescue nil) unless subsys.nil?
+        realm ||= (node[:discovers][sys] rescue nil) if (node[:discovers][sys].kind_of? String rescue false)
+      end
+
+      # Final default
       realm ||= node[:cluster_name]
     end
 
