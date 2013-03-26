@@ -91,7 +91,7 @@ module Ironfan
       # FIXME: Old ways, remove once propagated everywhere
       unless node[:discovers].nil?
         Chef::Log.warn "node[:discovers] is deprecated, use node[:discover_as] instead"
-        Chef::Log.warn "node[:discovers] = #{node[discovers].to_hash}"
+        Chef::Log.warn "node[:discovers] = #{node[:discovers].to_hash}"
         realm ||= (node[:discovers][sys][subsys] rescue nil) unless subsys.nil?
         realm ||= (node[:discovers][sys] rescue nil) if (node[:discovers][sys].kind_of? String rescue false)
       end
