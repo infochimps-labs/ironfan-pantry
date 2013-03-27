@@ -114,23 +114,27 @@ module Ironfan
   protected
 
     def tagged_realm(tag, sys, subsys)
-      # FIXME: deprecated, remove in 4.0
-      realm ||= case tag
-        when :discover_in; old_discovery_realm(sys, subsys)
-        when :announce_in; old_announcement_realm(sys, subsys)
-      end
+      has_sys           = node.key? sys
+      has_subsys        = node[sys].key? subsys if has_sys
 
-      if node.key? sys
-        realm ||= node[sys][subsys][tag] if node[sys].key? subsys
-        realm ||= node[sys][tag]
-      end
+      # In descending order of precedence
+      realm ||= node[sys][subsys][tag]  if has_subsys
+      realm ||= node[sys][tag]          if has_sys
       realm ||= node[tag]
+      realm ||= old_tagged_realm(tag, sys, subsys)      # FIXME: deprecated, remove in 4.0
       realm ||= node[:cluster_name]
     end
 
     # 
     # FIXME: Deprecated realm declarations, remove in 4.0
     # 
+    def old_tagged_realm(tag, sys, subsys)
+      case tag
+        when :discover_in; old_discovery_realm(sys, subsys)
+        when :announce_in; old_announcement_realm(sys, subsys)
+      end
+    end
+
     def old_discovery_realm(sys, subsys)
       if node[:discovers][sys]
         qualifier = ":#{sys}"; qualifier += "][:#{subsys}" if subsys
