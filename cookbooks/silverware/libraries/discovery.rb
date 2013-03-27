@@ -116,8 +116,8 @@ module Ironfan
     def tagged_realm(tag, sys, subsys)
       # FIXME: deprecated, remove in 4.0
       realm ||= case tag
-        when :discover_in; old_discovery_realm(sys, subsy)
-        when :announce_in; old_announcement_realm(sys, subsy)
+        when :discover_in; old_discovery_realm(sys, subsys)
+        when :announce_in; old_announcement_realm(sys, subsys)
       end
 
       if node.key? sys
