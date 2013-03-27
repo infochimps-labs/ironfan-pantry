@@ -133,7 +133,8 @@ module Ironfan
     # 
     def old_discovery_realm(sys, subsys)
       if node[:discovers][sys]
-        Chef::Log.warn "DEPRECATED: using node[:discovers][sys][subsys] is deprecated, and will be removed in silverware v4.0. Please     switch your calls to use node[sys][subsys][:discover_in] instead."
+        qualifier = ":#{sys}"; qualifier += "][:#{subsys}" if subsys
+        Chef::Log.warn "DEPRECATED: using node[:discovers][#{qualifier}] is deprecated, and will be removed in silverware v4.0. Please switch your calls to use node[#{qualifier}][:discover_in] instead."
         realm   = (node[:discovers][sys][subsys] rescue nil) unless subsys.nil?
         realm ||= (node[:discovers][sys] rescue nil) if (node[:discovers][sys].kind_of? String rescue false)
         realm ||= node[:cluster_name]
@@ -142,7 +143,8 @@ module Ironfan
 
     def old_announcement_realm(sys, subsys)
       if (node[sys][subsys].key? :announce_as rescue false) || (node[subsys].key? :announce_as rescue false)
-        Chef::Log.warn "DEPRECATED: using node[sys][subsys][:announce_as] is deprecated, and will be removed in silverware v4.0. Please switch your calls to use node[sys][subsys][:announce_in] instead."
+        qualifier = sys.to_s; qualifier += "][#{subsys}" if subsys
+        Chef::Log.warn "DEPRECATED: using node[#{qualifier}][:announce_as] is deprecated, and will be removed in silverware v4.0. Please switch your calls to use node[#{qualifier}][:announce_in] instead."
         realm   = node[sys][subsys][:announce_as] rescue nil
         realm ||= node[sys][:announce_as] rescue nil
         realm ||= node[:cluster_name] rescue nil
