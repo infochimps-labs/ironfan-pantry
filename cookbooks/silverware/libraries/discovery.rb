@@ -30,10 +30,7 @@ module Ironfan
     #
     def announce(sys, subsys, opts={}, &block)
       opts           = Mash.new(opts)
-      opts[:realm] ||= node[sys][subsys][:announce_as] rescue nil
-      opts[:realm] ||= node[sys][:announce_as] rescue nil
-      opts[:realm] ||= node[:announce_as] rescue nil
-      opts[:realm] ||= node[:cluster_name] rescue nil
+      opts[:realm] ||= announcement_realm(sys, subsys)
       component = Component.new(node, sys, subsys, opts)
       Chef::Log.info("Announcing component #{component.fullname}")
       #
@@ -82,22 +79,12 @@ module Ironfan
       discover(*args) or raise("Cannot find #{realm}-#{sys}-#{subsys}")
     end
 
+    def announcement_realm(sys, subsys=nil)
+      tagged_realm(:announce_in, sys, subsys)
+    end
+
     def discovery_realm(sys, subsys=nil)
-      # New ways
-      realm ||= node[sys][subsys][:discover_as] rescue nil
-      realm ||= node[sys][:discover_as] rescue nil
-      realm ||= node[:discover_as] rescue nil
-
-      # FIXME: Old ways, remove once propagated everywhere
-      unless node[:discovers].nil?
-        Chef::Log.warn "node[:discovers] is deprecated, use node[:discover_as] instead"
-        Chef::Log.warn "node[:discovers] = #{node[:discovers].to_hash}"
-        realm ||= (node[:discovers][sys][subsys] rescue nil) unless subsys.nil?
-        realm ||= (node[:discovers][sys] rescue nil) if (node[:discovers][sys].kind_of? String rescue false)
-      end
-
-      # Final default
-      realm ||= node[:cluster_name]
+      tagged_realm(:discover_in, sys, subsys)
     end
 
     def node_components(server)
@@ -125,6 +112,43 @@ module Ironfan
     end
 
   protected
+
+    def tagged_realm(tag, sys, subsys)
+      # FIXME: deprecated, remove in 4.0
+      realm ||= case tag
+        when :discover_in; old_discovery_realm(sys, subsy)
+        when :announce_in; old_announcement_realm(sys, subsy)
+      end
+
+      if node.key? sys
+        realm ||= node[sys][subsys][tag] if node[sys].key? subsys
+        realm ||= node[sys][tag]
+      end
+      realm ||= node[tag]
+      realm ||= node[:cluster_name]
+    end
+
+    # 
+    # FIXME: Deprecated realm declarations, remove in 4.0
+    # 
+    def old_discovery_realm(sys, subsys)
+      if node[:discovers][sys]
+        Chef::Log.warn "DEPRECATED: using node[:discovers][sys][subsys] is deprecated, and will be removed in silverware v4.0. Please     switch your calls to use node[sys][subsys][:discover_in] instead."
+        realm   = (node[:discovers][sys][subsys] rescue nil) unless subsys.nil?
+        realm ||= (node[:discovers][sys] rescue nil) if (node[:discovers][sys].kind_of? String rescue false)
+        realm ||= node[:cluster_name]
+      end
+    end
+
+    def old_announcement_realm(sys, subsys)
+      if (node[sys][subsys].key? :announce_as rescue false) || (node[subsys].key? :announce_as rescue false)
+        Chef::Log.warn "DEPRECATED: using node[sys][subsys][:announce_as] is deprecated, and will be removed in silverware v4.0. Please switch your calls to use node[sys][subsys][:announce_in] instead."
+        realm   = node[sys][subsys][:announce_as] rescue nil
+        realm ||= node[sys][:announce_as] rescue nil
+        realm ||= node[:cluster_name] rescue nil
+      end
+    end
+
     #
     # all nodes that have announced the given component, in ascending order of
     # timestamp (most recent is last)

@@ -16,4 +16,4 @@ default[:users]['root'][:primary_group] =
 
 default[:announces] ||= Mash.new
 
-default[:discovers] ||= Mash.new
+default[:discovers] ||= Mash.new        # FIXME: Deprecated, remove in 4.0
