@@ -37,6 +37,7 @@ link node[:flume][:conf_dir] do
   to            File.join(node[:flume][:home_dir], 'conf')
   action        :create
 end
+directory(File.join(node[:flume][:home_dir], 'lib')){ action :create }
 
 file File.join(node[:flume][:prefix_root], 'bin', 'flume') do
   content       %Q{#!/bin/sh \nexec #{node[:flume][:home_dir]}/bin/flume "$@"\n}
