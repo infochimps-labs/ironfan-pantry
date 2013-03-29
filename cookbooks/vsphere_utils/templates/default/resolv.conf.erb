@@ -1,0 +1,11 @@
+# Managed by Chef
+
+<% node[:vsphere_utils][:dns][:nameservers].each do |s| %>
+nameserver <%= s %>
+<% end %>
+<% if node[:vsphere_utils][:dns][:search] -%>
+search <%= node[:vsphere_utils][:dns][:search] %> 
+<% end -%>
+<% if node[:vsphere_utils][:dns][:domain] -%>
+domain <%= node[:vsphere_utils][:dns][:domain] %> 
+<% end -%>

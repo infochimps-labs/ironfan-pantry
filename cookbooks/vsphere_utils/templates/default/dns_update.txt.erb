@@ -1,0 +1,10 @@
+server <%= node[:vsphere_utils][:dns][:master] %>
+<% if node[:vsphere_utils][:dns][:keyname] -%>
+key <%= node[:vsphere_utils][:dns][:keyname] %> <%= node[:vsphere_utils][:dns][:secret] %>
+<% end -%>
+update delete <%= node[:hostname] %>.<%= node[:vsphere_utils][:domain] %>
+update add <%= node[:hostname] %>.<%= node[:vsphere_utils][:domain] %> <%= node[:vsphere_utils][:dns][:ttl] %> A <%= node[:ipaddress] %>
+send
+update delete <%= node[:ipaddress].split('.').reverse.join(".") %>.in-addr.arpa
+update add <%= node[:ipaddress].split('.').reverse.join(".") %>.in-addr.arpa <%= node[:vsphere_utils][:dns][:ttl] %> ptr <%= node[:hostname] %>.<%= node[:vsphere_utils][:domain] %>.
+send
