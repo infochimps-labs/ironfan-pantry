@@ -25,6 +25,8 @@ include_recipe 'flume::default'
 # install into eg. /usr/local/share/flume-git
 #
 
+Chef::Log.info "Trying to install flume version #{node[:flume][:release_url]} from #{node[:flume][:version]}"
+
 install_from_release(:flume) do
   release_url   node[:flume][:release_url]
   version       node[:flume][:version]
@@ -32,12 +34,12 @@ install_from_release(:flume) do
   action        :install
 end
 
-directory(File.dirname(node[:flume][:conf_dir])){ action :create }
+directory(File.dirname(node[:flume][:conf_dir]))
+
 link node[:flume][:conf_dir] do
   to            File.join(node[:flume][:home_dir], 'conf')
   action        :create
 end
-directory(File.join(node[:flume][:home_dir], 'lib')){ action :create }
 
 file File.join(node[:flume][:prefix_root], 'bin', 'flume') do
   content       %Q{#!/bin/sh \nexec #{node[:flume][:home_dir]}/bin/flume "$@"\n}
