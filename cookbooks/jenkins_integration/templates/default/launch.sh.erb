@@ -9,6 +9,7 @@ source `dirname $0`/shared.inc
 export FACET=$1
 export CHEF_LOG=/var/log/chef/client.log
 export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
+export CHEF_FAILEDRUN=/var/chef/cache/failed-run-data.json
 export CLUSTER=${FACET%-*}
 export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
@@ -33,6 +34,7 @@ while true; do
   item "Waited $WAIT seconds"
 
   kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log
+  # We'd prefer to just dump the stacktrace, which is short and to the point
   if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
     echo
     h2 "Dumping log of failed run"
@@ -41,14 +43,28 @@ while true; do
     kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE
     klean_up
     failure 2 "$FACET initial chef-client failed"
+  # . . . but sometimes a run fails without one, and we have to dump the node log instead.
+  elif grep -q "FATAL: Saving node information to $CHEF_FAILEDRUN" tmp.client.log; then
+    echo
+    h2 "Dumping log of failed run"
+    cat tmp.client.log
+    info "Fetching stack trace"
+    kc ssh $FACET $CREDENTIALS sudo cat $CHEF_FAILEDRUN
+    klean_up
+    failure 2 "$FACET initial chef-client failed"
+  # We'd prefer to see that the latest run succeeded
   elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
     echo
     h2 "Dumping log of successful run"
     cat tmp.client.log
     klean_up
     success "$FACET initial chef-client run completed successfully"
+  # . . . but we're not going to wait forever.
   elif [ $WAIT -gt $MAX_WAIT ]; then
     klean_up
+    echo
+    h2 "Dumping log of unfinished run"
+    cat tmp.client.log
     failure 1 "Waited too long for results."
   fi
 done
