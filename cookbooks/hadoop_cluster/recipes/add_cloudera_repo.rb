@@ -20,7 +20,7 @@
 #
 
 case node[:platform]
-when 'centos'
+when 'centos', 'redhat'
   execute "yum clean all" do
     action :nothing
   end
