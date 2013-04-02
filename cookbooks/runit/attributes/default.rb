@@ -18,7 +18,7 @@
 #
 
 case platform
-when "centos"
+when "centos", "redhat"
   default[:runit][:sv_bin] = "/sbin/sv"
   default[:runit][:chpst_bin] = "/sbin/chpst"
   default[:runit][:service_dir] = "/etc/service"
