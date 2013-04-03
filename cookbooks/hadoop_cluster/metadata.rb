@@ -8,6 +8,7 @@ description      "Hadoop: distributed massive-scale data processing framework. S
 
 depends          "java"
 depends          "apt"
+depends          "yum"
 depends          "runit"
 depends          "volumes"
 depends          "tuning"

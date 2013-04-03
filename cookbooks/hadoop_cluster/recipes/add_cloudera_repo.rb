@@ -21,14 +21,23 @@
 
 case node[:platform]
 when 'centos', 'redhat'
+  include_recipe 'yum'
   execute "yum clean all" do
     action :nothing
   end
 
-  remote_file "/etc/yum.repos.d/cloudera-cdh3.repo" do
-    source "http://archive.cloudera.com/redhat/6/x86_64/cdh/cloudera-cdh3.repo"
-    mode "0644"
-    notifies :run, resources(:execute => "yum clean all"), :immediately
+  yum_key node[:yum][:cloudera][:gpg_keyname] do
+    url node[:yum][:cloudera][:gpg_key]
+    action:add
+  end
+
+  yum_repository "cloudera" do
+    description "Cloudera distribution for #{node[:yum][:cloudera][:release_name]}"
+    name node[:yum][:cloudera][:release_name] 
+    key node[:yum][:cloudera][:gpg_keyname]
+    url node[:yum][:cloudera][:mirror_list]
+    mirrorlist true
+    action :add
   end
 
 when 'ubuntu'

@@ -110,6 +110,11 @@ default[:hadoop][:deb_version]          = '0.20.2+923.142-1~maverick-cdh3'
 default[:apt][:cloudera][:force_distro] = 'maverick'
 default[:apt][:cloudera][:release_name] = 'cdh3u2'
 
+default[:yum][:cloudera][:gpg_key]      = 'http://archive.cloudera.com/redhat/cdh/RPM-GPG-KEY-cloudera'
+default[:yum][:cloudera][:gpg_keyname]  = 'RPM-GPG-KEY-cloudera'
+default[:yum][:cloudera][:mirror_list]  = 'http://archive.cloudera.com/redhat/cdh/3u2/mirrors'
+default[:yum][:cloudera][:release_name] = 'cdh3u2'
+
 default[:hadoop][:lzo][:github]  = "https://github.com/twitter/hadoop-lzo/tarball/9ab0565"
 default[:hadoop][:lzo][:archive] = "twitter-hadoop-lzo-9ab0565"
 default[:hadoop][:lzo][:version] = "0.4.16"
