@@ -49,7 +49,9 @@ hadoop_tmp_dir="<%=    @hadoop[:tmp_dir] %>"
 hadoop_log_dir="<%=    @hadoop[:log_dir] %>"
 sentinel="$hadoop_tmp_dir/made_initial_dirs.log"
 
+<% if ["ubuntu", "debian"].include?(node[:platform]) -%>
 for foo in hadoop-0.20-{tasktracker,datanode,namenode,secondarynamenode,jobtracker} ; do echo $foo ; sudo update-rc.d -f $foo remove ; done ; true
+<% end -%>
 
 make_hadoop_dir_if_not_exists() {
   dir="$1"
