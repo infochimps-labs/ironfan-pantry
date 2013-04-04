@@ -20,7 +20,11 @@
 #
 
 %w[libcurl4-openssl-dev].each do |pkg|
-  package pkg
+  package pkg if platform?("ubuntu", "debian")
+end
+
+%w[libcurl-devel].each do |pkg|
+  package pkg if platform?("redhat", "centos")
 end
 
 %w[rubberband tire].each do |gem_pkg|
