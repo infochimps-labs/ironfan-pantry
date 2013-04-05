@@ -4,7 +4,7 @@ clusterName="<%= @node[:backups][:elasticsearch][:cluster_name] %>"
 esNodes="<%= @elasticsearch_hosts.compact.map(&:to_s).sort.join(",") %>"
 dt=$(date +%Y%m%d)
 s3Target="s3://<%= @node[:backups][:s3] %>/elasticsearch_backups/${dt}/"
-esTables="<%= @node[:backups][:elasticsearch][:indices].join(',') if @node[:backups][:elasticsearch][:indices] %>"
+esTables="<%= @node[:backups][:elasticsearch][:indexes].join(',') %>"
 
 workDir="/mnt/backups/${clusterName}-elasticsearch-${dt}/"
 
