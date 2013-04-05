@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+clusterName="<%= @node[:backups][:elasticsearch][:cluster_name] %>"
+esNodes="<%= @elasticsearch_hosts.compact.map(&:to_s).sort.join(",") %>"
+dt=$(date +%Y%m%d)
+s3Target="s3://<%= @node[:backups][:s3] %>/elasticsearch_backups/${dt}/"
+esTables="<%= @node[:backups][:elasticsearch][:indices].join(',') if @node[:backups][:elasticsearch][:indices] %>"
+
+workDir="/mnt/backups/${clusterName}-elasticsearch-${dt}/"
+
+if [ ! -d ${workDir} ]; then
+    mkdir -p ${workDir}
+fi
+
+time java -cp <%= node[:elasticsearch][:home_dir] %>/lib/"*":<%= node[:elasticsearch][:home_dir] %>/lib/ esbackup ${esNodes} ${esTables} ${workDir}
+
+cd $workDir
+
+s3cmd -c /etc/s3cfg -r put ${workDir}/* ${s3Target}
+
+rm -r ${workDir}
+
+exit 0
+

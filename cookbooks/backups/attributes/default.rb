@@ -59,7 +59,7 @@ default[:backups][:zookeeper][:weekday     ]     = "*"
 
 default[:backups][:elasticsearch][:cluster_name]     = "elasticsearch"
 default[:backups][:elasticsearch][:scroll      ]     = "1000"
-default[:backups][:elasticsearch][:indexes     ]     = []
+default[:backups][:elasticsearch][:indexes     ]     = ["_all"]
 default[:backups][:elasticsearch][:minute      ]     = "0"
 default[:backups][:elasticsearch][:hour        ]     = "4"
 default[:backups][:elasticsearch][:day         ]     = "*"
@@ -80,11 +80,12 @@ default[:backups][:mongodb][:weekday     ]     = "*"
 # Retention
 # 
 
-default[:backups][:retention][:minute   ]     = "0"
-default[:backups][:retention][:hour     ]     = "4"
-default[:backups][:retention][:day      ]     = "*"
-default[:backups][:retention][:month    ]     = "*"
-default[:backups][:retention][:weekday  ]     = "*"
-default[:backups][:retention][:namenode ]     = "7" # Retention in days
-default[:backups][:retention][:zookeeper]     = "5" # Retention in days
-default[:backups][:retention][:mongodb  ]     = "14" # Retention in days
+default[:backups][:retention][:minute       ]     = "0"
+default[:backups][:retention][:hour         ]     = "4"
+default[:backups][:retention][:day          ]     = "*"
+default[:backups][:retention][:month        ]     = "*"
+default[:backups][:retention][:weekday      ]     = "*"
+default[:backups][:retention][:namenode     ]     = "7"  # Retention in days
+default[:backups][:retention][:zookeeper    ]     = "5"  # Retention in days
+default[:backups][:retention][:mongodb      ]     = "14" # Retention in days
+default[:backups][:retention][:elasticsearch]     = "7"  # Number of backups to keep
