@@ -37,7 +37,7 @@ case "$1" in
 	#
 #	echo -n "Restarting $DESC: zabbix_agent"
 	$0 stop
-	sleep 3
+	sleep 5
 	$0 start
 #	start-stop-daemon --stop --quiet --pidfile \
 #		/tmp/$NAME.pid --user zabbix --exec $DAEMON

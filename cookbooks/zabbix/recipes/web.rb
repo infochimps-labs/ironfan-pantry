@@ -48,10 +48,11 @@ bash "chown_zabbix_web" do
 end
 
 template File.join(node.zabbix.web.home_dir, 'conf', 'zabbix.conf.php') do
-  source 'zabbix.conf.php.erb'
-  owner  node.zabbix.web.user
-  mode   '0400'
-  action :create
+  source    'zabbix.conf.php.erb'
+  owner     node.zabbix.web.user
+  mode      '0400'
+  action    :create
+  notifies  :restart, "service[zabbix_web]", :delayed
 end
 
 case node.zabbix.web.install_method
@@ -66,5 +67,5 @@ template File.join(node.zabbix.conf_dir, "php.ini") do
   owner    node.zabbix.web.user
   mode     '0400'
   action   :create
-  notifies :restart, resources(service: 'zabbix_web'), :delayed
+  notifies :restart, "service[zabbix_web]", :delayed
 end

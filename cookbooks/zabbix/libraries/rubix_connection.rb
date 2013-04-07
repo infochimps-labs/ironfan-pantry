@@ -53,21 +53,5 @@ class Chef
       @connected_to_zabbix
     end
   end
-
-  class Recipe
-    
-    include ::Chef::RubixConnection
-    
-    def all_zabbix_server_ips
-      realm                 = (node[:discovers][:zabbix][:server]                       rescue nil)
-      servers_as_attributes = (node.zabbix.agent.servers                                rescue [])
-      discovered_servers    = (discover_all(:zabbix, :server, realm).map(&:private_ip)  rescue [])
-      servers_as_attributes + discovered_servers
-    end
-
-    def default_zabbix_server_ip
-      all_zabbix_server_ips.first
-    end
-  end
   
 end

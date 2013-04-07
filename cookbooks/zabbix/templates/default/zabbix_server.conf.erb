@@ -186,7 +186,7 @@ DBPort=<%= node.zabbix.database.port %>
 #
 # Mandatory: no
 # Default:
-JavaGateway=<%= node.ipaddress %>
+<% if node.zabbix.java_gateway.install %>JavaGateway=<%= node.ipaddress %><% else %>#JavaGateway=<% end %>
 
 ### Option: JavaGatewayPort
 #	Port that Zabbix Java gateway listens on.
@@ -194,7 +194,7 @@ JavaGateway=<%= node.ipaddress %>
 # Mandatory: no
 # Range: 1024-32767
 # Default:
-JavaGatewayPort=<%= node.zabbix.java_gateway.port %>
+<% if node.zabbix.java_gateway.install %>JavaGatewayPort=<%= node.zabbix.java_gateway.port %><% else %>#JavaGatewayPort=<% end %>
 
 ### Option: StartJavaPollers
 #	Number of pre-forked instances of Java pollers.
@@ -202,7 +202,7 @@ JavaGatewayPort=<%= node.zabbix.java_gateway.port %>
 # Mandatory: no
 # Range: 0-1000
 # Default:
-StartJavaPollers=5
+<% if node.zabbix.java_gateway.install %>StartJavaPollers=5<% else %>#StartJavaPollers=<% end %>
 
 ### Option: SNMPTrapperFile
 #	Temporary file used for passing data from SNMP trap daemon to the server.

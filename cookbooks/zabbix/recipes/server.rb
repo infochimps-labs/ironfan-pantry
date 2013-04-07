@@ -32,7 +32,7 @@ else
   warn "Invalid method '#{node.zabbix.server.install_method}'.  Only the 'source' install method is supported for Zabbix server."
 end
 
-include_recipe "zabbix::java_gateway"
+include_recipe "zabbix::java_gateway" if node[:zabbix][:java_gateway][:install]
 
 template File.join(node[:zabbix][:conf_dir], 'zabbix_server.conf') do
   source   "zabbix_server.conf.erb"
@@ -44,9 +44,10 @@ end
 # We'd like to use runit to manage the zabbix_server but it
 # unfortunately cannot launch without daemonizing itself.
 template "/etc/init.d/zabbix_server" do
-  source 'zabbix_server.init.erb'
-  group  node[:zabbix][:group]
-  mode   '755'
+  source    'zabbix_server.init.erb'
+  group     node[:zabbix][:group]
+  mode      '755'
+  notifies  :restart, "service[zabbix_server]", :delayed
 end
 
 service "zabbix_server" do
@@ -54,21 +55,27 @@ service "zabbix_server" do
   action [ :start, :enable ]
 end
 
-announce(:zabbix, :server, {
-  logs:  { server: node.zabbix.server.log_dir },
-  ports: {
-    server: {
-      port:    node.zabbix.server.port,
-      monitor: false
-    },
-    java_gateway: node.zabbix.java_gateway.port,
-  },
-  daemons: { 
-    server: 'zabbix_server',
-    java_gateway: {
-      name: 'java',
-      user: 'zabbix',
-      cmd:  'zabbix-java-gateway'
-    }
+announced_ports = {
+  server: {
+    port:    node.zabbix.server.port,
+    monitor: false
   }
+}
+announced_daemons = { server: 'zabbix_server' }
+announced_logs    = { server: node.zabbix.server.log_dir }
+
+if node[:zabbix][:java_gateway][:install]
+  announced_ports[:java_gateway]   = node.zabbix.java_gateway.port
+  announced_daemons[:java_gateway] = {
+    name: 'java',
+    user: 'zabbix',
+    cmd:  'zabbix-java-gateway'
+  }
+  announced_logs[:java_gateway] = node[:zabbix][:java_gateway][:log_dir]
+end
+
+announce(:zabbix, :server, {
+  logs:    announced_logs,
+  ports:   announced_ports,
+  daemons: announced_daemons,
 })

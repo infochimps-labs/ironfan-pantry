@@ -20,11 +20,12 @@ default[:groups]['zabbix'][:gid]    = 447
 # attributes here.
 default[:zabbix][:server][:version]           = "2.0.4"
 default[:zabbix][:server][:install_method]    = "source"
-default[:zabbix][:server][:configure_options] = [ "--with-libcurl","--with-net-snmp","--with-mysql","--enable-java" ]
+default[:zabbix][:server][:configure_options] = [ "--with-libcurl","--with-net-snmp","--with-mysql", "--enable-java"]
 default[:zabbix][:server][:log_dir]           = '/var/log/zabbix_server'
 default[:zabbix][:server][:port]              = 10051
 
 # Java Gateway
+default[:zabbix][:java_gateway][:install] = true
 default[:zabbix][:java_gateway][:port]    = 10052
 default[:zabbix][:java_gateway][:log_dir] = '/var/log/zabbix_java'
 
@@ -37,8 +38,6 @@ default[:zabbix][:database][:user]            = "zabbix"
 default[:zabbix][:database][:password]        = nil
 default[:zabbix][:database][:name]            = "zabbix"
 default[:zabbix][:database][:install_method]  = 'mysql'
-# FIXME: need libmysqlclient-dev for Ubuntu 12.04
-default[:zabbix][:database][:debian_package]  = "libmysqlclient-dev"
 
 # Agent
 default[:zabbix][:agent][:port]                   = 10050

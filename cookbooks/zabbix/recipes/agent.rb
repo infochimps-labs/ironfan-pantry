@@ -32,22 +32,23 @@ else
   warn "Invalid install method '#{node.zabbix.agent.install_method}'.  Only 'source' and 'prebuild' are supported for Zabbix agent."
 end
 
-server_ips       = all_zabbix_server_ips()
-zabbix_server_ip = server_ips.first
+zabbix_servers = discover_all(:zabbix, :server)
+
 template(File.join(node[:zabbix][:conf_dir], "zabbix_agentd.conf")) do
   source    "zabbix_agentd.conf.erb"
   group     node[:zabbix][:group]
   mode      "640"
   notifies  :restart, "service[zabbix_agentd]", :delayed
-  variables :server_ips => server_ips
+  variables :server_ips => zabbix_servers.map(&:private_ip)
 end
 
 # We'd like to use runit to manage the zabbix_agentd process but it
 # unfortunately cannot launch without daemonizing itself.
 template "/etc/init.d/zabbix_agentd" do
-  source "zabbix_agentd.init.erb"
-  group  node[:zabbix][:group]
-  mode   "755"
+  source    "zabbix_agentd.init.erb"
+  group     node[:zabbix][:group]
+  mode      "755"
+  notifies  :restart, "service[zabbix_agentd]", :delayed
 end
 
 service "zabbix_agentd" do
@@ -55,25 +56,7 @@ service "zabbix_agentd" do
   action [ :start, :enable ]
 end
 
-if node.zabbix.agent.unmonitor_on_shutdown
-  case node.platform
-  when 'ubuntu', 'debian'
-    template File.join(node[:zabbix][:conf_dir], "external_scripts", "unmonitor_zabbix_host.rb") do
-      source    "unmonitor_zabbix_host.rb.erb"
-      mode      '0770'
-      variables :ip => zabbix_server_ip
-      action    :create
-    end
-    template "/etc/init/unmonitor_zabbix_host.conf" do
-      source 'unmonitor_zabbix_host.conf.erb'
-      group  node[:zabbix][:group]
-      mode   "0644"
-      action :create
-    end
-  else
-    Chef::Log.error("Cannot create a system shutdown task to unmonitor the corresponding Zabbix host on platform: #{node.platform}")
-  end
-end
+include_recipe "zabbix::unmonitor_this_host_on_shutdown" if node.zabbix.agent.unmonitor_on_shutdown
 
 announce(:zabbix, :agent, {
   # register in the same realm, for discovery purposes

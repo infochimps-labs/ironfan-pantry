@@ -28,6 +28,7 @@ end
 template "/usr/local/sbin/zabbix_java/settings.sh" do
   source 'zabbix_java_gateway_settings.sh.erb'
   mode   '755'
+  notifies  :restart, "service[zabbix_java]", :delayed
 end
 
 runit_service "zabbix_java"

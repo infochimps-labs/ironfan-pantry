@@ -23,7 +23,6 @@ recipe           "zabbix::database",                   "Configures Zabbix databa
 recipe           "zabbix::server",                     "Installs and launches Zabbix server."
 recipe           "zabbix::server_source",              "Downloads, builds, configures, & launches Zabbix server from source."
 recipe           "zabbix::web",                        "Configures PHP-driven, reverse-proxied Zabbix web frontend."
-recipe           "zabbix::web_apache",                 "Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache."
 recipe           "zabbix::web_nginx",                  "Configures PHP-driven, reverse-proxied Zabbix web frontend using nginx."
 
 %w[ debian ubuntu ].each do |os|

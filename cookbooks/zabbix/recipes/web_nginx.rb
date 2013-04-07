@@ -24,10 +24,11 @@ include_recipe 'nginx'
 template File.join(node[:nginx][:dir], "sites-available", "zabbix.conf") do
   source 'zabbix_web.nginx.conf.erb'
   action :create
+  notifies  :restart, "service[nginx]", :delayed
 end
 
 nginx_site 'zabbix.conf' do
-  action :enable
+  action   :enable
   notifies :restart, 'service[nginx]', :delayed
 end
 
