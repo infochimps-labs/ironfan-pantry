@@ -53,12 +53,6 @@ file "/etc/profile.d/jdk.sh" do
   mode 0755
 end
 
-outfile = tarball_url.split("/")[-1]
-execute "download jdk bin file" do
-  command "wget --no-cookies --header 'Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com' --no-check-certificate -O #{Chef::Config[:file_cache_path]}/#{outfile} #{tarball_url}"
-  action :run
-end unless File.exist?(outfile)
-
 java_ark "jdk" do
   url tarball_url
   checksum tarball_checksum
