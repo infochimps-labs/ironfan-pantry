@@ -47,7 +47,7 @@ announce(:statsd, :server,
 
 # FIXME: this interface could use some help
 begin
-  graphite_carbon = discover(:graphite, :carbon).info[:info]
+  graphite_carbon = discover(:graphite, :carbon).info
 rescue StandardError => err
   graphite_carbon = { :port => '2003', :addr => '127.0.0.1' }
   Log.error("\n  !!!!\n  Could not find graphite carbon server. If it's on this machine, make sure its role preceded the statds server role.\n #{err}\n  !!!!")
