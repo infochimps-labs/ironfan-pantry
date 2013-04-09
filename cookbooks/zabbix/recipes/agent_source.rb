@@ -25,7 +25,7 @@ when "ubuntu","debian"
   %w{ fping libcurl3 libiksemel-dev libiksemel3 libsnmp-dev libiksemel-utils libcurl4-openssl-dev }.each do |pck|
     package "#{pck}"
   end
-when "centos"
+when "centos", "redhat"
   # do nothing special?
 else
   log "No #{node.platform} support yet"
@@ -60,7 +60,7 @@ end
 case node.platform
 when 'debian','ubuntu'
   init_template = "zabbix_agentd.init.erb"
-when 'centos'
+when 'centos', 'redhat'
   init_template = "zabbix_agentd.init.centos.erb"
 else
   log("No init.d for #{node.platform}, trying the Debian-style") { level :warn }
@@ -77,7 +77,7 @@ end
 service "zabbix_agentd" do
   supports :status => true, :start => true, :stop => true
   case node.platform
-  when 'centos'
+  when 'centos', 'redhat'
     action [ :start ]
   else
     action [ :start, :enable ]

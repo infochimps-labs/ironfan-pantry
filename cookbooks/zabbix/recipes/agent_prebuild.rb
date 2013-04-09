@@ -54,7 +54,7 @@ end
 service "zabbix_agentd" do
   supports :status => true, :start => true, :stop => true
   case node.platform
-  when 'centos'
+  when 'centos', 'redhat'
     action [ :start ]
   else
     action [ :start, :enable ]

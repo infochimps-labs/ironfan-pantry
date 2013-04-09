@@ -9,7 +9,6 @@ class Chef
     CONNECTIONS = {  }
     
     def connect_to_zabbix_server ip
-      return false unless ip
       # Use an already existing connection if we have one.
       if ::Chef::RubixConnection::CONNECTIONS[ip]
         Rubix.connection = ::Chef::RubixConnection::CONNECTIONS[ip]
@@ -34,7 +33,7 @@ class Chef
 
       # Hook up Rubix's logger to Chef's logger.
       ::Rubix.logger = Chef::Log.logger
-
+      
       url = File.join(ip, node.zabbix.api.path)
       begin
         timeout(5) do

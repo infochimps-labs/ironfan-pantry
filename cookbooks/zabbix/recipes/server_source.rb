@@ -27,7 +27,7 @@ when "ubuntu","debian"
       action :install
     end
   end
-when "centos"
+when "centos", "redhat"
   %w{ libcurl-devel net-snmp-devel }.each do |pck|
     package "#{pck}" do
       action :install
@@ -62,7 +62,7 @@ end
 case node.platform
 when 'debian','ubuntu'
   init_template = "zabbix_server.init.erb"
-when 'centos'
+when 'centos', 'redhat'
   init_template = "zabbix_server.init.centos.erb"
 else
   log("No init.d for #{node.platform}, trying the Debian-style") { level :warn }
