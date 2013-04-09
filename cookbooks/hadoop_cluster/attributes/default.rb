@@ -187,3 +187,5 @@ default[:hadoop][:hive][:conf_dir]                 = '/etc/hive/conf'
 # this to work.
 default[:hadoop][:hive][:mysql_connector_jar]      = nil
 default[:hadoop][:hive][:mysql_connector_location] = nil
+
+default[:hue][:use_https] = false
