@@ -7,7 +7,7 @@ default[:jenkins_integration][:git][:email]     = 'jenkins@example.org'
 default[:jenkins_integration][:security]        = 'local_users'
 default[:jenkins_integration][:deploy_key]      = nil           # Set this in cluster
 
-node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ]
+node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor ]
 
 # 
 # Cookbook CI
