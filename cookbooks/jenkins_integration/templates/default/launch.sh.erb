@@ -14,7 +14,7 @@ export CLUSTER=${FACET%-*}
 export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
 function kc {
-  knife cluster "$@"
+  knife cluster "$@" --color
 }
 function klean_up {
   h2 "Killing $FACET"
