@@ -10,7 +10,7 @@ for instance in $BROKEN; do
   $ROOT_DIR/launch.sh $BROKEN || return=$?  # Don't die, just record
 
   if [ $return -eq 2 ]; then
-    next
+    continue
   elif [ $return -eq 0 ]; then
     failure 2 "Unexpected success!"
   else
