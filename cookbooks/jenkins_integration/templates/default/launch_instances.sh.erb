@@ -4,6 +4,8 @@
 #
 source `dirname $0`/shared.inc
 
-h1 "Launching testing instance"
+h1 "Launching testing instances"
 switch_to $TEST_PATH
-$ROOT_DIR/launch.sh $TARGET
+for instance in $TARGET; do
+  $ROOT_DIR/launch.sh $instance || failure $?
+end

@@ -57,8 +57,8 @@ function install_berkshelves {
 # 
 # Launch
 # 
-export TARGET=<%= node[:jenkins_integration][:cookbook_ci][:target] %>
-export BROKEN=<%= node[:jenkins_integration][:cookbook_ci][:broken] %>
+export TARGETS="<%= Array(node[:jenkins_integration][:cookbook_ci][:targets]).join(' ') %>"
+export BROKEN="<%= Array(node[:jenkins_integration][:cookbook_ci][:broken]).join(' ') %>"
 
 export MAX_WAIT=<%= node[:jenkins_integration][:cookbook_ci][:max_wait] %>
 export CHEF_USER=<%= node[:jenkins_integration][:cookbook_ci][:chef_user] %>
