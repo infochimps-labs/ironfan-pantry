@@ -28,7 +28,7 @@ function switch_to {
 function ensure_bundle {
   if ! bundle check; then
     ${2:-echo} "Installing bundle"
-    PARAMS="--path $SHARED_DIR --no-color"
+    PARAMS="--path $SHARED_DIR"
     # Only install from source if cache fails
     bundle install $PARAMS --local || bundle install $PARAMS
   fi
@@ -64,7 +64,7 @@ export MAX_WAIT=<%= node[:jenkins_integration][:cookbook_ci][:max_wait] %>
 export CHEF_USER=<%= node[:jenkins_integration][:cookbook_ci][:chef_user] %>
 
 function knife {
-  bundle exec knife "$@" --color
+  bundle exec knife "$@"
 }
 function kc {
   knife cluster "$@"
