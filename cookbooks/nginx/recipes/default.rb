@@ -74,8 +74,3 @@ service "nginx" do
   supports :status => true, :restart => true, :reload => true
   action [ :enable, :start ]
 end
-
-announce(:nginx, :default, {
-           :logs  => { :server => node[:nginx][:log_dir] },
-        })
-
