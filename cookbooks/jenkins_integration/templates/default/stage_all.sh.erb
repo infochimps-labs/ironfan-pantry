@@ -5,24 +5,24 @@ h1 "Advance testing code to staging, ensuring matryoshka remains intact"
 change_all_branches "staging"
 for name in $ALL_PATHS; do
   switch_to $name
-  git merge testing
+  indent git merge testing
 
-  git checkout -f testing
-  git merge staging
+  indent git checkout -f testing
+  indent git merge staging
 
-  git checkout -f master
-  git pull              # There may be development changes
-  git merge testing
+  indent git checkout -f master
+  indent git pull              # There may be development changes
+  indent git merge testing
 
-  git push
+  indent git push
 done
 
 h1 "Upload the new staging environments"
 for name in $HOMEBASES; do
   switch_to $name
-  git checkout -f staging
-  ensure_bundle
-  knife environment from file staging.rb
+  indent git checkout -f staging
+  indent ensure_bundle
+  indent knife environment from file staging.rb
 done
 
 success $STAGE_KOAN

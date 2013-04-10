@@ -64,7 +64,14 @@ export MAX_WAIT=<%= node[:jenkins_integration][:cookbook_ci][:max_wait] %>
 export CHEF_USER=<%= node[:jenkins_integration][:cookbook_ci][:chef_user] %>
 
 function knife {
-  bundle exec knife "$@"
+  bundle exec knife "$@" --color
+}
+function kc {
+  knife cluster "$@"
+}
+function klean_up {
+  h2 "Killing $FACET"
+  kc kill $FACET --yes
 }
 
 #
@@ -96,6 +103,9 @@ function h1 {
 }
 function h2 {
   header 2 $*
+}
+function indent {
+  $* |& sed "s/^/    /"
 }
 
 export TEST_KOAN="<%= node[:jenkins_integration][:cookbook_ci][:koan][:testing] %>"
