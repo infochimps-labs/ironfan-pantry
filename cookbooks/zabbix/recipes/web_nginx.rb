@@ -23,7 +23,7 @@ include_recipe 'nginx'
 
 template "/etc/zabbix/php.ini" do
   source 'php.ini.erb'
-  owner 'www-data'
+  owner node[:zabbix][:web][:user]
   action :create
   notifies :restart, 'service[zabbix_web]', :delayed
 end

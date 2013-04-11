@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+include_recipe 'nginx::install_from_package' if node[:zabbix][:web][:install_method] == 'nginx'
+
 case node[:platform]
 when "ubuntu","debian"
   bash "apt-get-y-update" do
@@ -43,14 +45,14 @@ script "zabbix_fix_web_right" do
   cwd "/opt"
   action :nothing
   code <<-EOH
-  chown www-data -R /opt/zabbix-#{node.zabbix.server.version}/frontends/php
+  chown #{node[:zabbix][:web][:user]} -R /opt/zabbix-#{node.zabbix.server.version}/frontends/php
   EOH
 end
 
 # Give access to www-data to zabbix frontend config folder
 directory "/opt/zabbix-#{node.zabbix.server.version}/frontends/php" do
-  owner "www-data"
-  group "www-data"
+  owner node[:zabbix][:web][:user]
+  group node[:zabbix][:web][:group]
   mode "0755"
   recursive true
   action :create
@@ -59,8 +61,8 @@ end
 
 [node.zabbix.web.log_dir, "/opt/zabbix-#{node.zabbix.server.version}/frontends/php/conf"].each do |d|
   directory d do
-    owner 'www-data'
-    group 'www-data'
+    owner node[:zabbix][:web][:user]
+    group node[:zabbix][:web][:group]
     mode '0755'
     action :create
     recursive true
@@ -69,8 +71,8 @@ end
 
 template "/opt/zabbix-#{node.zabbix.server.version}/frontends/php/conf/zabbix.conf.php" do
   source "zabbix.conf.php.erb"
-  owner 'www-data'
-  group 'www-data'
+  owner node[:zabbix][:web][:user]
+  group node[:zabbix][:web][:group]
   mode '0600'
   action :create
 end
