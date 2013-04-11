@@ -62,7 +62,7 @@
     <hudson.tasks.Shell>
       <command>#!/usr/bin/env bash -e
       function section {
-        printf "\x1b[47;1m %-42s \x1b[0m\n" "$*"   # Grey background
+        echo -e "\x1b[30;1m$*\x1b[0m"   # Bold text
       }
       echo
       <%- @tasks.each do |t| %>
