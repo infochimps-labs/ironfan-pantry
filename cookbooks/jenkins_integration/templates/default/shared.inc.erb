@@ -64,7 +64,7 @@ export MAX_WAIT=<%= node[:jenkins_integration][:cookbook_ci][:max_wait] %>
 export CHEF_USER=<%= node[:jenkins_integration][:cookbook_ci][:chef_user] %>
 
 function knife {
-  bundle exec knife "$@"
+  script -q -c 'bundle exec knife '"$*" /dev/null       # fake a tty for color
 }
 function kc {
   knife cluster "$@"
