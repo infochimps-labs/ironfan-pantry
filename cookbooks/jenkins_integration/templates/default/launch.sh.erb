@@ -28,8 +28,8 @@ indent kc launch $FACET || ( klean_up; failure 1 "knife cluster launch failed" )
 h2 "Wait while chef finishes running"
 WAIT=0
 while true; do
-  sleep 15; WAIT=$((WAIT+15))  # FIXME: inaccurate (only counts wait time)
-  item "Waited $WAIT seconds"
+  sleep 60; WAIT=$((WAIT+1))  # FIXME: inaccurate (only counts wait time)
+  item "Waited $WAIT minutes"
 
   kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log
   # We'd prefer to just dump the stacktrace, which is short and to the point
