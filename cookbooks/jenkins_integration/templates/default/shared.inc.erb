@@ -96,7 +96,7 @@ function warning {
 function header {
   echo
   wrapper=`for i in $(seq $1); do echo -n '#'; done`
-  echo "$wrapper ${*:2} $wrapper"
+  echo -e "\x1b[30;1m$wrapper ${*:2} $wrapper\x1b[0m"
 }
 function h1 {
   header 1 $*
@@ -105,7 +105,7 @@ function h2 {
   header 2 $*
 }
 function indent {
-  $* |& sed "s/^/    /"
+  "$@" |& sed "s/^/    /"
 }
 
 export TEST_KOAN="<%= node[:jenkins_integration][:cookbook_ci][:koan][:testing] %>"
