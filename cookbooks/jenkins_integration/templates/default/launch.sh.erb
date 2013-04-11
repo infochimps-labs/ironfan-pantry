@@ -11,7 +11,13 @@ export CHEF_LOG=/var/log/chef/client.log
 export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
 export CHEF_FAILEDRUN=/var/chef/cache/failed-run-data.json
 export CLUSTER=${FACET%-*}
-export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
+
+# FIXME: This works around the difference in SSH_USER names by platform.
+#   It is officially ugly as hell, and deserves to be shot in the face
+#   as soon as a gun can be procured.
+[[ $FACET =~ 'gorra' ]] && SSH_USER='root' || SSH_USER='ubuntu'
+export SSH_USER
+export CREDENTIALS="-x $SSH_USER -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
 h2 "Show $CLUSTER cluster"
 indent kc show $CLUSTER

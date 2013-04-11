@@ -4,10 +4,10 @@
 #
 source `dirname $0`/shared.inc
 
-h1 "Launching known broken instance, expecting failure"
+h1 "Launching known broken instances, expecting failure"
 switch_to $TEST_PATH
 for instance in $BROKEN; do
-  $ROOT_DIR/launch.sh $BROKEN || return=$?  # Don't die, just record
+  $ROOT_DIR/launch.sh $instance || return=$?  # Don't die, just record
 
   if [ $return -eq 2 ]; then
     continue
@@ -18,4 +18,4 @@ for instance in $BROKEN; do
   fi
 done
 
-success "All broken failed as expected (chef-client bombed)"
+success "All broken instances failed as expected (chef-client bombed)"
