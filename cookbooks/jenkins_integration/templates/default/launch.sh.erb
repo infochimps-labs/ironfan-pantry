@@ -37,7 +37,7 @@ while true; do
     echo
     h2 "Dumping log of failed run"
     indent cat tmp.client.log
-    info "Fetching stack trace"
+    item "Fetching stack trace"
     indent kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE
     klean_up
     failure 2 "$FACET initial chef-client failed"
@@ -46,7 +46,7 @@ while true; do
     echo
     h2 "Dumping log of failed run"
     indent cat tmp.client.log
-    info "Fetching stack trace"
+    item "Fetching stack trace"
     indent kc ssh $FACET $CREDENTIALS sudo cat $CHEF_FAILEDRUN
     klean_up
     failure 2 "$FACET initial chef-client failed"
