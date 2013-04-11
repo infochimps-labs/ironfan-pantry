@@ -52,6 +52,7 @@ function install_berkshelves {
     ensure_bundle > /dev/null
     bundle exec berks install --path $1 > /dev/null
   done
+  echo
 }
 
 # 
