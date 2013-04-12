@@ -22,7 +22,6 @@
 include_recipe 'java' ; complain_if_not_sun_java(:hbase)
 include_recipe 'silverware'
 include_recipe 'volumes'
-include_recipe 'ganglia'
 
 include_recipe 'hadoop_cluster'
 include_recipe 'hadoop_cluster::add_cloudera_repo'
