@@ -77,6 +77,18 @@ default[:backups][:mongodb][:month       ]     = "*"
 default[:backups][:mongodb][:weekday     ]     = "*"
 
 #
+# EBS
+#
+
+default[:backups][:ebs][:minute    ]     = "*"
+default[:backups][:ebs][:hour      ]     = "2"
+default[:backups][:ebs][:day       ]     = "*"
+default[:backups][:ebs][:month     ]     = "*"
+default[:backups][:ebs][:weekday   ]     = "*"
+#default[:backups][:ebs][:xfs_freeze]     = nil
+default[:backups][:ebs][:xfs_freeze]     = "/usr/sbin/xfs_freeze"
+
+#
 # Retention
 # 
 
@@ -89,3 +101,4 @@ default[:backups][:retention][:namenode     ]     = "7"  # Retention in days
 default[:backups][:retention][:zookeeper    ]     = "5"  # Retention in days
 default[:backups][:retention][:mongodb      ]     = "14" # Retention in days
 default[:backups][:retention][:elasticsearch]     = "7"  # Number of backups to keep
+default[:backups][:retention][:ebs]               = "7"  # Number of ebs backups to keep
