@@ -22,7 +22,7 @@ to_snapshot.each do |vol|
 
   begin
     <% if node[:backups][:ebs][:xfs_freeze] -%>
-    system("<%= node[:backups][:ebs][:xfs_freeze] %> -f #{v.tags["mount_point"]}")
+    system("<%= node[:backups][:ebs][:xfs_freeze] %> -f #{vol.tags["mount_point"]}")
     <% end -%>
     snapshot = @fog.snapshots.new
     snapshot.description = "<%= @node[:node_name] %> : Automated EBS snapshot - #{stamp}"
@@ -35,7 +35,7 @@ to_snapshot.each do |vol|
     @fog.tags.create(:resource_id => snapshot.id, :key => "node-snapshot", :value => "<%= @node[:node_name] %>-snapshots")
   ensure
     <% if node[:backups][:ebs][:xfs_freeze] -%>
-    system("<%= node[:backups][:ebs][:xfs_freeze] %> -u #{v.tags["mount_point"]}") 
+    system("<%= node[:backups][:ebs][:xfs_freeze] %> -u #{vol.tags["mount_point"]}") 
     <% end -%>
   end
 end
