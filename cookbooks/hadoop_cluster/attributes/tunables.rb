@@ -96,6 +96,9 @@ default[:hadoop][:log_retention_hours ]              = 240
 default[:hadoop][:define_topology]                   = false
 default[:hadoop][:fake_rack_size]                    = 4
 
+# how many jobs' histories to keep in memory on the job tracker
+default[:hadoop][:max_job_histories_in_mem]          = 100
+
 #
 # Tune cluster settings for size of instance
 #
