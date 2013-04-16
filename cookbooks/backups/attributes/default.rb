@@ -70,7 +70,7 @@ default[:backups][:elasticsearch][:weekday     ]     = "0"
 # MongoDB
 #
 
-default[:backups][:mongodb][:minute      ]     = "*"
+default[:backups][:mongodb][:minute      ]     = "0"
 default[:backups][:mongodb][:hour        ]     = "4"
 default[:backups][:mongodb][:day         ]     = "*/3"
 default[:backups][:mongodb][:month       ]     = "*"
@@ -80,7 +80,7 @@ default[:backups][:mongodb][:weekday     ]     = "*"
 # EBS
 #
 
-default[:backups][:ebs][:minute    ]     = "*"
+default[:backups][:ebs][:minute    ]     = "0"
 default[:backups][:ebs][:hour      ]     = "2"
 default[:backups][:ebs][:day       ]     = "*"
 default[:backups][:ebs][:month     ]     = "*"
