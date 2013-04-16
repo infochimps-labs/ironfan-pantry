@@ -51,6 +51,13 @@ when "debian"
   include_recipe "postgresql::server_debian"
 end
 
+bash "Allow SELinux" do
+  user  'root'
+  code  "restorecon -R -v #{node['postgresql']['dir']}"
+  only_if { File.exist?("/sbin/restorecon") } 
+  action :run
+end
+
 template "#{node['postgresql']['dir']}/postgresql.conf" do
   source "postgresql.conf.erb"
   owner "postgres"
