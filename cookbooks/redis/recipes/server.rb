@@ -23,8 +23,13 @@ daemon_user(:redis) do
   home          node[:redis][:data_dir]
 end
 
-include_recipe 'yum::epel' if platform?('centos', 'redhat')
-package "redis-server"
+case node[:platform]
+when "centos", "redhat"
+  include_recipe 'yum::epel'
+  package "redis"
+when "debian", "ubuntu"
+  package "redis-server"
+end
 
 include_recipe 'runit'
 include_recipe 'silverware'
