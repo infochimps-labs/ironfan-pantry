@@ -159,6 +159,11 @@ default[:hadoop][:thrift][:port] = 10090
 default[:hadoop][:jobtracker][:plugins] = []
 default[:hadoop][:jobtracker][:thrift_port] = 9290
 
+# configures mapred.jobtracker.completeuserjobs.maximum in
+# mapred-site.xml. This controls the size of the metadata for each
+# job.
+default[:hadoop][:jobtracker][:split_metainfo_max_size] = 10_000_000
+
 # Other recipes can add to this under their own special key, for instance
 #  node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'
 default[:hadoop][:extra_classpaths]  = { }

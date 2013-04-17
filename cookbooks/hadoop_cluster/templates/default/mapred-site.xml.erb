@@ -64,6 +64,10 @@
 <property> <name>mapred.jobtracker.retirejob.check</name>         <value>300000</value></property>
 <property> <name>mapred.jobtracker.completeuserjobs.maximum</name><value><%= @hadoop[:max_job_histories_in_mem] %></value></property>
 
+<property> <name>mapreduce.jobtracker.split.metainfo.maxsize</name><value><%= @hadoop[:split_metainfo_max_size] %></value></property>
+
+<property> <name>mapred.jobtracker.completeuserjobs.maximum</name><value><%= @hadoop[:max_job_histories_in_mem] %></value></property>
+
 <!-- for Hue -->
 
 <property> <name>jobtracker.thrift.address</name>                 <value>0.0.0.0:<%= @hadoop[:jobtracker][:thrift_port] %></value></property>
