@@ -164,6 +164,9 @@ default[:hadoop][:jobtracker][:thrift_port] = 9290
 # job.
 default[:hadoop][:jobtracker][:split_metainfo_max_size] = 10_000_000
 
+default[:hadoop][:jobtracker][:retired_jobs_cache_size] = 1000
+default[:hadoop][:jobtracker][:recover_jobs_on_restart] = "false"
+
 # Other recipes can add to this under their own special key, for instance
 #  node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'
 default[:hadoop][:extra_classpaths]  = { }
