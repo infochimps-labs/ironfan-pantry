@@ -14,6 +14,11 @@
 <!-- Hive Execution Parameters -->
 
 <property>
+  <name>hive.exec.max.created.files</name>
+  <value><%= @hive[:max_created_files] %></value>
+</property>
+
+<property>
   <name>javax.jdo.option.ConnectionURL</name>
   <value>jdbc:mysql://<%= @private_ip %>:3306/metastore</value>
   <description>JDBC connect string for a JbDBC metastore</description>

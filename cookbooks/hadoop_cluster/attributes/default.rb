@@ -185,6 +185,8 @@ default[:hadoop][:hive][:mysql_root_username]      = 'root'
 default[:hadoop][:hive][:mysql_database]           = 'metastore'
 default[:hadoop][:hive][:input_format]             = 'org.apache.hadoop.hive.ql.io.HiveInputFormat'
 
+default[:hadoop][:hive][:max_created_files]        = 100_000
+
 # located in :hive => :home_dir
 default[:hadoop][:hive][:mysql_upgrade_script]     = 'scripts/metastore/upgrade/mysql/hive-schema-0.7.0.mysql.sql'
 
