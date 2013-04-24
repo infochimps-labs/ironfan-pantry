@@ -41,6 +41,12 @@
 </property>
 
 <property>
+  <name>hive.stats.autogather</name>
+  <value><%= @hive[:stats_autogather]</value>
+  <description>collect statistics upon table creation</description>
+</property>
+
+<property>
   <name>hive.hwi.war.file</name>
   <value>/usr/lib/hive/lib/hive-hwi-0.7.1-<%= node[:apt][:cloudera][:release_name] %>.war</value>
   <description>This is the WAR file with the jsp content for Hive Web Interface</description>

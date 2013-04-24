@@ -190,6 +190,9 @@ default[:hadoop][:hive][:max_created_files]        = 100_000
 # located in :hive => :home_dir
 default[:hadoop][:hive][:mysql_upgrade_script]     = 'scripts/metastore/upgrade/mysql/hive-schema-0.7.0.mysql.sql'
 
+# hive.stats.autogather
+default[:hadoop][:hive][:stats_autogather]         = false
+
 default[:hadoop][:hive][:home_dir]                 = '/usr/lib/hive'
 default[:hadoop][:hive][:conf_dir]                 = '/etc/hive/conf'
 
