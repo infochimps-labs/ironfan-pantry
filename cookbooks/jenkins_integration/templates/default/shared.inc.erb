@@ -106,7 +106,7 @@ function h2 {
   header 2 $*
 }
 function indent {
-  "$@" |& sed "s/^/    /"
+  "$@" |& sed "s/^/    /"; return ${PIPESTATUS[0]}
 }
 
 export TEST_KOAN="<%= node[:jenkins_integration][:cookbook_ci][:koan][:testing] %>"

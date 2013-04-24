@@ -107,13 +107,13 @@ for name in $HOMEBASES; do
     warning "Nothing changed - very suspicious"
     continue
   fi
-  indent knife cookbook upload -V --freeze --force $changed
+  indent knife cookbook upload -V --freeze --force $changed || failure $? "Upload failed, aborting."
 done
 
 h1 "Upload testing environment"
 for name in $HOMEBASES; do
   switch_to $name
-  indent knife environment from file testing.rb
+  indent knife environment from file testing.rb || failure $? "Upload failed, aborting."
 done
 
 h1 "Uploading changed roles (test universe only)"
@@ -121,7 +121,7 @@ switch_to $TEST_PATH
 changed=''
 for file in `git diff --name-only staging roles/`; do
   if [ -f $file ]; then         # Don't treat a removed role as changed
-    indent knife role from file $file
+    indent knife role from file $file || failure $? "Upload failed, aborting."
     changed="$changed$file "
   fi
 done
