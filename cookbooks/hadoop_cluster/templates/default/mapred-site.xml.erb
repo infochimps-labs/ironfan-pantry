@@ -57,7 +57,8 @@
 <property> <name>mapred.submit.replication</name>                 <value>10</value></property>
 
 <property> <name>mapred.jobtracker.taskScheduler</name>           <value>org.apache.hadoop.mapred.FairScheduler</value></property>
-<property> <name>mapred.fairscheduler.allocation.file</name>      <value><%= @hadoop[:conf_dir] %>/fairscheduler.xml</value></property<property> <name>mapred.fairscheduler.preemption</name>      <value><%= @hadoop[:fair_scheduler][:preemption] %>/fairscheduler.xml</value></property>
+<property> <name>mapred.fairscheduler.allocation.file</name>      <value><%= @hadoop[:conf_dir] %>/fairscheduler.xml</value></property>
+<property> <name>mapred.fairscheduler.preemption</name>           <value><%= @hadoop[:fair_scheduler][:preemption] %></value></property>
 
 <property> <name>mapred.userlog.retain.hours</name>               <value><%= @hadoop[:log_retention_hours] %></value></property>
 <property> <name>mapred.jobtracker.retirejob.interval</name>      <value><%= (@hadoop[:log_retention_hours].to_f * 60 * 60 * 1000).to_i %></value></property>
