@@ -79,6 +79,12 @@ default[:hadoop][:tasktracker][:jmx_dash_port]     = 8009
 default[:hadoop][:balancer   ][:jmx_dash_port]     = 8007
 
 #
+# scheduling
+#
+
+default[:hadoop][:fair_scheduler][:preemption]     = "false"
+
+#
 # Users
 #
 
