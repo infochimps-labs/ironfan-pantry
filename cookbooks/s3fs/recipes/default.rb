@@ -42,7 +42,8 @@ node[:s3fs][:mounts].each_pair do |s3bucket, target|
     options node[:s3fs][:options]
     dump 0 
     pass 0 
-    action [ :umount, :mount ]
+    action [ :mount ]
+    not_if "cat /proc/mounts | grep #{target}"
   end
 
 end
