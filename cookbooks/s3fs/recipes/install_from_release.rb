@@ -40,4 +40,5 @@ install_from_release(:s3fs) do
   release_url   node[:s3fs][:release_url]
   version       node[:s3fs][:version]
   action        [ :configure_with_autoconf, :install_with_make ]
+  not_if{ ::File.exists?("/usr/local/bin/s3fs") }
 end

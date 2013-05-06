@@ -47,6 +47,6 @@ node[:s3fs][:mounts].each_pair do |s3bucket, target|
     options node[:s3fs][:options]
     dump 0 
     pass 0 
-    action [:mount, :enable]
+    action :mount
   end
 end
