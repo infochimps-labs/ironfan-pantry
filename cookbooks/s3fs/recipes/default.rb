@@ -32,13 +32,8 @@ node[:s3fs][:mounts].each_pair do |s3bucket, target|
   directory target do
     action :create
     group  'root' 
-    mode   0644
+    mode   0755
     owner  'root'
-  end
-
-  mount target do
-    device "s3fs##{s3bucket}"
-    action :umount
   end
 
   mount target do
@@ -47,6 +42,7 @@ node[:s3fs][:mounts].each_pair do |s3bucket, target|
     options node[:s3fs][:options]
     dump 0 
     pass 0 
-    action :mount
+    action [ :umount, :mount ]
   end
+
 end
