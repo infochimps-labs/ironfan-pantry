@@ -48,6 +48,11 @@ module Ironfan
       server[:cloud][:public_ips].first  rescue server[:ipaddress]
     end
 
+    # The globally-accessable DNS name for the given server
+    def public_hostname_of(server)
+      server[:cloud][:public_hostname]   rescue public_ip_of(server)
+    end
+
     #
     # Attribute helpers
     #
