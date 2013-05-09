@@ -42,7 +42,7 @@ module Ironfan
     register!
     dsl_attr(:flavor,    :kind_of => Symbol, :coerce => :to_sym)
     dsl_attr(:port_num,  :kind_of => String)
-    dsl_attr(:addrs,     :kind_of => Array,  :default => [ NodeUtils.public_hostname_of(node) ] )
+    dsl_attr(:addrs,     :kind_of => Array)
 
     ALLOWED_FLAVORS = [ :ssh, :ntp, :ldap, :smtp, :ftp, :http, :pop, :nntp, :imap, :tcp, :https, :telnet ]
     def self.allowed_flavors() ALLOWED_FLAVORS ; end
