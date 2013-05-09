@@ -69,6 +69,9 @@ announce(:elasticsearch, :datanode) if node[:elasticsearch][:is_datanode]
 announce(:elasticsearch, :httpnode) if node[:elasticsearch][:is_httpnode]
 
 ports = {
+  :transport => {
+    :port      => '9300',
+  },
   :api  => node[:elasticsearch][:api_port].to_i,
   :jmx  => {
     :port      => node[:elasticsearch][:jmx_dash_port].to_s.split('-').first.to_i,
