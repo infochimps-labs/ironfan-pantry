@@ -44,22 +44,22 @@ $ gpg --gen-key # And follow the prompts
 
 You'll then want to export the public key to place somewhere available to the clients (/var/packages/ is where we put ours).
 
-$ gpg --armor --output whatever.gpg.key --export <key-id>
+$ gpg --armor --output whatever.gpg.key --export `<key-id>`
 
 In order to sign your packages, override the following attribute : 
 
-* `default[:repo][:apt][:signwith]` = <key-id>
+* `default[:repo][:apt][:signwith]` = `<key-id>`
 
 ### Security groups accross accounts
 If you are running more then one AWS account and dont want to run repositories in each account, you can open up the security groups as follows: 
 
-$ ec2-authorize <your-account-security-group-id> -P <protocal> -p <port> -u <other-aws-account-id> -o <other-account-security-group-id>
+$ ec2-authorize `<your-account-security-group-id>` -P `<protocal>` -p `<port>` -u `<other-aws-account-id>` -o `<other-account-security-group-id>`
 
 See http://docs.aws.amazon.com/AWSEC2/latest/CommandLineReference/ApiReference-cmd-AuthorizeSecurityGroupIngress.html for more information.
 
 ## License and Author
 
-Author::                Brandon Bell - Infochimps, Inc (<coders@infochimps.com>)
+Author::                Brandon Bell - Infochimps, Inc (`<coders@infochimps.com>`)
 Copyright::             2013, Brandon Bell - Infochimps, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
