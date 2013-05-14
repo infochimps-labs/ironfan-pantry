@@ -11,14 +11,14 @@ default[:repo][:keys][:webupd8team] = "C2518248EEA14886"
 #
 # Apt
 #
-default[:repo][:apt][:base   ] = "#{default[:repo][:root]}/apt"
-default[:repo][:apt][:repos  ] = {} # { :url => { :distribution => ['component1', 'component2'] } }
+default[:repo][:apt][:base    ] = "#{default[:repo][:root]}/apt"
+default[:repo][:apt][:signwith] = nil
 
-default[:repo][:apt][:minute ] = 0
-default[:repo][:apt][:hour   ] = 7
-default[:repo][:apt][:day    ] = '*' 
-default[:repo][:apt][:month  ] = '*'
-default[:repo][:apt][:weekday] = '*'
+default[:repo][:apt][:minute  ] = 0
+default[:repo][:apt][:hour    ] = 7
+default[:repo][:apt][:day     ] = '*' 
+default[:repo][:apt][:month   ] = '*'
+default[:repo][:apt][:weekday ] = '*'
 
 #
 # Yum

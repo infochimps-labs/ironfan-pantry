@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       repo
-# Description::         Imports public keys for upstream repos
-# Recipe::              keys
+# Description::         Sets up apt repository sources 
+# Recipe::              apt_repository 
 # Author::              Brandon Bell - Infochimps, Inc
 #
 # Copyright 2009, Opscode, Inc.
@@ -19,11 +19,25 @@
 # limitations under the License.
 #
 
-node[:repo][:keys].each do |k, v|
-  execute "import #{k}" do
-    command       "gpg --recv-keys #{v} >> /dev/null 2>&1"
-    action :run
-  end
+include_recipe 'apt'
+
+apt_repository "cloudera" do
+  uri "#{node[:repo][:uri]}/apt"
+  distribution 'maverick-cdh3u2'
+  components ["contrib"]
+  key "#{node[:repo][:key_uri]}"
 end
 
+apt_repository "#{node['lsb']['codename']}" do
+  uri "#{node[:repo][:uri]}/apt"
+  distribution "#{node['lsb']['codename']}"
+  components ["main"]
+  key "#{node[:repo][:key_uri]}"
+end
 
+apt_repository "webupd8-#{node['lsb']['codename']}" do
+  uri "#{node[:repo][:uri]}/apt"
+  distribution "webupd8-#{node['lsb']['codename']}"
+  components ["main"]
+  key "#{node[:repo][:key_uri]}"
+end

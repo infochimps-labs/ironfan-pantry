@@ -7,6 +7,9 @@ Architectures: i386 amd64
 Codename: precise
 Components: main
 Description: Local repository for Infochimps precise builds
+<% if !node[:repo][:apt][:signwith].nil? %>
+SignWith: <%= node[:repo][:apt][:signwith] %>
+<% end %>
 
 Origin: WebUpd8Team
 Label: WebUpd8
@@ -15,6 +18,9 @@ Architectures: i386 amd64
 Components: main
 Description: WebUpd8Team packages.
 Update: - webupd8-precise
+<% if !node[:repo][:apt][:signwith].nil? %>
+SignWith: <%= node[:repo][:apt][:signwith] %>
+<% end %>
 
 ###
 # Natty
@@ -25,6 +31,9 @@ Architectures: i386 amd64
 Codename: natty
 Components: main
 Description: Local repository for Infochimps natty builds
+<% if !node[:repo][:apt][:signwith].nil? %>
+SignWith: <%= node[:repo][:apt][:signwith] %>
+<% end %>
 
 Origin: WebUpd8Team
 Label: WebUpd8
@@ -33,6 +42,9 @@ Architectures: i386 amd64
 Components: main
 Description: WebUpd8Team packages.
 Update: - webupd8-natty
+<% if !node[:repo][:apt][:signwith].nil? %>
+SignWith: <%= node[:repo][:apt][:signwith] %>
+<% end %>
 
 ###
 # Cloudera 
@@ -47,4 +59,7 @@ Architectures: i386 amd64
 Components: contrib
 Update: - cloudera
 Description: Cloudera Maverick CDH3U2
+<% if !node[:repo][:apt][:signwith].nil? %>
+SignWith: <%= node[:repo][:apt][:signwith] %>
+<% end %>
 

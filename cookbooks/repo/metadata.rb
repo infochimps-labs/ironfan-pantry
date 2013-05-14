@@ -10,6 +10,7 @@ depends          "apache2"
 
 recipe           "repo::apache_config",                 "Installs and configures Apache"
 recipe           "repo::apt",                           "Sets reprepo for you Debian based packages."
+recipe           "repo::apt_repository",                "Adds sources for the configured 'local' apt repostory"
 recipe           "repo::default",                       "Default placeholder recipe"
 recipe           "repo::fpm",                           "Intalls fpm to make your package creations easy"
 recipe           "repo::keys",                          "Import public keys for upstream repos"
