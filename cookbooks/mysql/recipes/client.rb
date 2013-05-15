@@ -42,13 +42,6 @@ mysql_packages.each do |mysql_pack|
   end
 end
 
-case node[:platform_family]
-when 'rhel'
-  include_recipe 'yum::epel'
-  package 'ruby-mysql'
-when 'debian' then package 'libmysql-ruby'
-else
-  gem_package 'mysql' do
-    action :install
-  end
+gem_package 'mysql' do
+  action :install
 end
