@@ -24,7 +24,6 @@ end
 git node['iron_cuke']['home_dir'] do
   repository node['iron_cuke']['git_repo']
   reference "master"
-  action :checkout
 end
 
 file "#{node['iron_cuke']['conf_dir']}/announces.json" do
