@@ -77,20 +77,6 @@ module Ironfan
     # Aspects
     #
 
-    # Harvest all aspects findable in the given node metadata hash
-    #
-    # @example
-    #   component.harvest_all(run_context)
-    #   component.dashboard(:webui)      # #<DashboardAspect name='webui' url="http://10.x.x.x:4040/">
-    #   component.port(:webui_dash_port) # #<PortAspect port=4040 addr="10.x.x.x">
-    #
-    def harvest_all(run_context)
-      self.class.aspect_types.each do |aspect_name, aspect_klass|
-        res = aspect_klass.harvest(run_context, self)
-        self.send(aspect_name, res)
-      end
-    end
-
     # list of known aspects
     def self.aspect_types
       @aspect_types ||= Mash.new
