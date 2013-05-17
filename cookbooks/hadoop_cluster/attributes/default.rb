@@ -204,7 +204,8 @@ default[:hadoop][:hive][:conf_dir]                 = '/etc/hive/conf'
 
 # These need to be overridden with the location of a valid jar for
 # this to work.
-default[:hadoop][:hive][:mysql_connector_jar]      = nil
-default[:hadoop][:hive][:mysql_connector_location] = nil
+default[:hadoop][:hive][:mysql_connector_jar]      = 'mysql-connector-java-5.1.22-bin.jar'
+default[:hadoop][:hive][:mysql_connector_location] = 'https://s3.amazonaws.com/artifacts.chimpy.us/jars/mysql-connector-java-5.1.22-bin.jar'
+
 
 default[:hadoop][:hue][:use_https] = false
