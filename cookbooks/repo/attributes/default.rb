@@ -1,5 +1,4 @@
 default[:repo][:root]      = "/var/packages"
-default[:repo][:type]      = [ "apt" ]
 
 #
 # Keys
@@ -34,5 +33,14 @@ default[:repo][:yum][:weekday] = '*'
 #
 # Gem
 #
-default[:repo][:gem][:base] = "#{default[:repo][:root]}/gem"
+default[:repo][:gem][:base       ] = "#{default[:repo][:root]}/gem"
+default[:repo][:gem][:upstream   ] = "http://rubygems.org"
+default[:repo][:gem][:parallelism] = 10 
+
+default[:repo][:gem][:minute ] = 0
+default[:repo][:gem][:hour   ] = 7
+default[:repo][:gem][:day    ] = '*'
+default[:repo][:gem][:month  ] = '*'
+default[:repo][:gem][:weekday] = '*'
+
 
