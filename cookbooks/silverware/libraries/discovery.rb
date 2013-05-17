@@ -125,9 +125,9 @@ module Ironfan
       realm ||= node[:cluster_name]
     end
 
-    #
+    # 
     # FIXME: Deprecated realm declarations, remove in 4.0
-    #
+    # 
     def old_tagged_realm(tag, sys, subsys)
       case tag
         when :discover_in; old_discovery_realm(sys, subsys)
