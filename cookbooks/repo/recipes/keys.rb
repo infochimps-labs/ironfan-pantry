@@ -22,6 +22,7 @@
 node[:repo][:keys].each do |k, v|
   execute "import #{k}" do
     command       "gpg --recv-keys #{v} >> /dev/null 2>&1"
+    user 'root'
     action :run
   end
 end
