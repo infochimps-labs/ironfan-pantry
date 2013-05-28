@@ -42,7 +42,7 @@ jenkins_job "Ironfan Cookbooks - 2 - Test and stage" do
   pantries      cookbook_ci[:pantries]
   homebases     cookbook_ci[:homebases]
   templates     shared_templates
-  tasks         %w[ checkout.sh launch_instance.sh stage_all.sh ]
+  tasks         %w[ checkout.sh launch_instances.sh stage_all.sh ]
   if cookbook_ci[:broken]
     downstream  [ "Ironfan Cookbooks - 3 - Test known broken" ]
   end

@@ -45,12 +45,14 @@ root_connection = {
 include_recipe "mysql::client"
 retries = 0
 begin
+  require 'mysql'
+rescue Gem::LoadError, LoadError => e
   case node.platform
   when 'debian', 'ubuntu'
     package("libmysqlclient-dev") { action :nothing }.run_action(:install)
+  when 'centos', 'redhat'
+    package("mysql-devel") {action :nothing }.run_action(:install)
   end
-  require 'mysql'
-rescue Gem::LoadError, LoadError => e
   gem_package('mysql') { action :nothing }.run_action(:install)
   Gem.clear_paths
   require 'mysql'

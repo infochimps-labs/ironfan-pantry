@@ -1,4 +1,0 @@
-# -*- ruby -*-
-
-carbon:    chpst -u <%= @graphite[:carbon   ][:user] %> <%= @graphite[:home_dir] %>/bin/carbon-cache.py  --config="<%= @graphite[:conf_dir] %>/carbon.conf" --debug start
-dashboard: chpst -u <%= @graphite[:dashboard][:user] %> /usr/bin/django-admin runserver  --noreload --pythonpath "<%= @graphite[:home_dir] %>/webapp" --settings graphite.settings 0.0.0.0:$PORT

@@ -17,10 +17,20 @@
 # limitations under the License.
 #
 
-%w{ xfsprogs xfsdump }.each do |pkg|
-  package pkg
-end
+if platform?("redhat") and node[:platform_version] >= '6.0'
+  remote_file "/tmp/xfsprogs.x86_64.rpm" do
+    source node[:xfs][:rhel][:rpm_url]
+    action :create_if_missing
+  end
+  rpm_package "/tmp/xfsprogs.x86_64.rpm" do
+    action :install
+  end
+else
+  %w{ xfsprogs xfsdump }.each do |pkg|
+    package pkg
+  end
 
-package "xfslibs-dev" do
-  package_name "xfsprogs-devel" if platform?("redhat","centos","scientific","fedora")
+  package "xfslibs-dev" do
+    package_name "xfsprogs-devel" if platform?("redhat", "centos","scientific","fedora")
+  end
 end

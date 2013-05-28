@@ -4,15 +4,18 @@
 #
 source `dirname $0`/shared.inc
 
-h1 "Launching known broken instance, expecting failure"
+h1 "Launching known broken instances, expecting failure"
 switch_to $TEST_PATH
-$ROOT_DIR/launch.sh $BROKEN || return=$?  # Don't die, just record
+for instance in $BROKEN; do
+  $ROOT_DIR/launch.sh $instance || return=$?  # Don't die, just record
 
-if [ $return -eq 2 ]; then
-  success "Failed as expected (chef-client bombed)"
-elif [ $return -eq 0 ]; then
-  failure 2 "Unexpected success!"
-else
-  failure 1 "Unexpected failure type!"
-fi
+  if [ $return -eq 2 ]; then
+    continue
+  elif [ $return -eq 0 ]; then
+    failure 2 "Unexpected success!"
+  else
+    failure 1 "Unexpected failure type!"
+  fi
+done
 
+success "All broken instances failed as expected (chef-client bombed)"

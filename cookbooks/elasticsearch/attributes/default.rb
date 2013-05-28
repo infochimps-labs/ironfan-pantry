@@ -34,7 +34,7 @@ default[:elasticsearch][:git_repo]                = "https://github.com/elastics
 # The syntax for this has changed. Use a hash, as in the examples shown:
 default[:elasticsearch][:plugins]                 = [
   { name: 'bigdesk',                 org: 'lukas-vlcek',                     version: '2.0.0'  },
-  { name: 'elasticsearch-head',      org: 'Aconex',        dir: 'head',      },
+  { name: 'elasticsearch-head',      org: 'mobz',          dir: 'head',      },
   { name: 'elasticsearch-cloud-aws', org: 'elasticsearch', dir: 'cloud-aws', version: '1.8.0', },
 ]
 # Options are [none, local, fs, hadoop, s3]
@@ -67,7 +67,7 @@ default[:elasticsearch][:flush_threshold_size]    = "200mb"
 default[:elasticsearch][:flush_threshold_period]  = "60s"
 default[:elasticsearch][:cache_filter_size]       = "20%"  # can be a percent ("10%") or a number ("128m")
 default[:elasticsearch][:index_buffer_size]       = "10%"  # can be a percent ("10%") or a number ("128m") (changed 2012-10 to default 10%, same as es default)
-default[:elasticsearch][:index.cache.field.type]  = resident    # Another option is soft, which will increase cache performance but be weary because this will make it crash if the "wrong" query is issued. The field cache can OOM your machine in a moment when too large, but when you have the RAM field values are one of the most important things to cache. Consider setting this to a very high value to be safe; certainly, set it on indexes that are very large.
+default[:elasticsearch][:index_cache_field_type]  = 'resident'   # Another option is soft, which will increase cache performance but be wary because this will make it crash if the "wrong" query is issued. The field cache can OOM your machine in a moment when too large, but when you have the RAM field values are one of the most important things to cache. Consider setting this to a very high value to be safe; certainly, set it on indexes that are very large.
 default[:elasticsearch][:merge_factor]            = 10
 default[:elasticsearch][:floor_segment]           = "2.7mb"
 

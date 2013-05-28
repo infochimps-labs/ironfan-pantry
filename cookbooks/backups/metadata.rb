@@ -9,6 +9,7 @@ description      "Backups -- coordinates backups of your stuff"
 depends		 "hbase"
 depends		 "mongodb"
 depends		 "hadoop_cluster"
+depends		 "elasticsearch"
 
 recipe           "backups::default",       "Default Recipe"
 recipe           "backups::namenode",      "Namenode Backup Recipe"
@@ -17,6 +18,7 @@ recipe           "backups::hbase",         "HBase Backup Recipe"
 recipe           "backups::zookeeper",     "Zookeeper Backup Recipe"
 recipe           "backups::elasticsearch", "Elasticsearch Backup Recipe"
 recipe           "backups::mongodb",       "MongoDB backup Recipe"
+recipe           "backups::ebs",           "EBS Snapshots"
 
 %w[ debian ubuntu ].each do |os|
   supports os

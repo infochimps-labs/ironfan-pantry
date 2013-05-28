@@ -7,14 +7,14 @@ default[:jenkins_integration][:git][:email]     = 'jenkins@example.org'
 default[:jenkins_integration][:security]        = 'local_users'
 default[:jenkins_integration][:deploy_key]      = nil           # Set this in cluster
 
-node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ]
+node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor ]
 
 # 
 # Cookbook CI
 # 
 default[:jenkins_integration][:cookbook_ci][:test_homebase] = 'git@github.com:infochimps-labs/ironfan-homebase.git'
 default[:jenkins_integration][:cookbook_ci][:chef_user]  = 'test'
-default[:jenkins_integration][:cookbook_ci][:target]     = 'testharness-simple'
+default[:jenkins_integration][:cookbook_ci][:targets]    = [ 'testharness-simple' ]
 default[:jenkins_integration][:cookbook_ci][:broken]     = nil   # Set to launch a known-broken facet
 default[:jenkins_integration][:cookbook_ci][:branch]     = 'master'
 default[:jenkins_integration][:cookbook_ci][:schedule]   = '@midnight'

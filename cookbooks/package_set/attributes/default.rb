@@ -82,7 +82,7 @@ default[:package_set][:gems][:vagrant]   = %w[ vagrant veewee ironfan ]
 default[:package_set][:gems][:wukong]    = %w[ log4r RedCloth guard htmlentities log4r log_buddy redcarpet simplecov multi_json ]
 
 case node.platform
-when 'centos'
+when 'centos', 'redhat'
   default[:package_set][:pkgs][:base]     = %w[ tree git zip openssl wget curl runit libxslt-devel ]
   default[:package_set][:pkgs][:dev]      = %w[ elinks w3m ctags-etags emacs-nox  ]
   default[:package_set][:pkgs][:sysadmin] = %w[ tree chkconfig dstat sysstat nmap ]

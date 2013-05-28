@@ -26,7 +26,7 @@ when "redhat","centos","fedora"
     action :install
   end
   
-  unless node[:platform_version] == '6.2'
+  unless node[:platform_version] >= '6.2'
     execute "yum clean all" do
       action :nothing
     end

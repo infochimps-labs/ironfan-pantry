@@ -18,9 +18,7 @@
 # limitations under the License.
 #
 
-include_recipe 'yum::epel' if platform?('centos')
-
-package "nginx"
+include_recipe 'nginx::install_from_package'
 
 user node[:nginx][:user]
 group node[:nginx][:group]
@@ -68,7 +66,7 @@ end
 file "#{node[:nginx][:dir]}/conf.d/default.conf" do
   action :delete
   notifies :restart, 'service[nginx]', :immediately
-end if platform?('centos')
+end if platform?('centos', 'redhat')
 
 service "nginx" do
   supports :status => true, :restart => true, :reload => true

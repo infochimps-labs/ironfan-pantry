@@ -35,7 +35,6 @@ Cookbook dependencies:
 * minidash
 * hadoop_cluster
 * zookeeper
-* ganglia
 
 
 ## Attributes

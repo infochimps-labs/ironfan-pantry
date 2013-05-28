@@ -34,7 +34,7 @@ if node[:nfs] && node[:nfs][:mounts] && (not node[:nfs][:mounts].empty?)
       end
 
       nfs_server_ip = nfs_server.info[:addr] || nfs_server.private_ip
-      Chef::Log.debug("Processing mount of #{target} from #{nfs_server_ip} (#{nfs_server.info[:info]})")
+      Chef::Log.debug("Processing mount of #{target} from #{nfs_server_ip} (#{nfs_server.info})")
       r = mount(target) do
         fstype      "nfs"
         options     %w(rw,soft,intr,nfsvers=3)

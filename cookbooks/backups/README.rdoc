@@ -28,7 +28,7 @@ This recipe performs full, differential, and incrimental backups on the specifie
   default[:backups][:hbase][:full        ]     = ["Sunday"]
   default[:backups][:hbase][:differential]     = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
   default[:backups][:hbase][:incrimental ]     = []
-  default[:backups][:hbase][:tables      ]     = []
+  default[:backups][:hbase][:tables      ]     = '"*"' 
   default[:backups][:hbase][:versions    ]     = "2147483647"
   default[:backups][:hbase][:minute      ]     = "0"
   default[:backups][:hbase][:hour        ]     = "2"
@@ -37,7 +37,15 @@ This recipe performs full, differential, and incrimental backups on the specifie
   default[:backups][:hbase][:weekday     ]     = "*"
 
 
-Tables need to be specified.  The default settings run full backups every Sunday at 2:00 and differential backups the rest of the week. 
+All tables are backed up by default.  A list can also be supplied.  The default settings run full backups every Sunday at 2:00 and differential backups the rest of the week. 
+
+Restores can be done as follows: 
+
+1. Create a table with the same column families.  
+2. Run $ in/hbase org.apache.hadoop.hbase.mapreduce.Import <tablename> <inputdir>
+
+inputdir must be on HDFS.  Mind TTLs.  See http://hbase.apache.org/book/ops_mgt.html for more information. 
+
 === backups::namenode
 
   Backups up namenode fsimage and edit logs.  Defaults to 30 minutes and buckets to S3 by day.  
@@ -48,8 +56,6 @@ Tables need to be specified.  The default settings run full backups every Sunday
   default[:backups][:namenode][:day         ]     = "*"
   default[:backups][:namenode][:month       ]     = "*"
   default[:backups][:namenode][:weekday     ]     = "*"
-
-  TODO: Write up restoration process
 
 === backups::elasticsearch
 
@@ -64,7 +70,7 @@ Tables need to be specified.  The default settings run full backups every Sunday
   default[:backups][:elasticsearch][:month       ]     = "*"
   default[:backups][:elasticsearch][:weekday     ]     = "0"
 
-=== backups::zokeeper
+=== backups::zookeeper
 
   Backups up Zookeeper transaction logs and snapshots.  This needs to be located alongside at least one zookeeper node at this time. 
 
@@ -84,4 +90,20 @@ Tables need to be specified.  The default settings run full backups every Sunday
 
   TODO: Figure out how to do this backup remotely.  
  
+=== backups::ebs
+
+  Backs up EBS volumes.  Will not include '/'.  Default retention of 7 days.  
+
+  default[:backups][:ebs][:minute    ]     = "0"
+  default[:backups][:ebs][:hour      ]     = "2"
+  default[:backups][:ebs][:day       ]     = "*"
+  default[:backups][:ebs][:month     ]     = "*"
+  default[:backups][:ebs][:weekday   ]     = "*"
+  default[:backups][:ebs][:xfs_freeze]     = "/usr/sbin/xfs_freeze"  
+  #default[:backups][:ebs][:xfs_freeze]     = nil
+
+  Volume will be 'frozen' if the binary path is defined.  This was designed around XFS.  
+
+
+
 

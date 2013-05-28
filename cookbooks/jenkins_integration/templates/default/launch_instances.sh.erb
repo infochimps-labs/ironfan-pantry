@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+#
+# Launch a testing instance instance
+#
+source `dirname $0`/shared.inc
+
+h1 "Launching testing instances"
+switch_to $TEST_PATH
+for instance in $TARGETS; do
+  $ROOT_DIR/launch.sh $instance || failure $?
+done

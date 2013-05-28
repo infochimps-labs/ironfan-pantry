@@ -61,7 +61,7 @@ directory "#{node[:jenkins][:worker][:home_dir]}/.ssh" do
   group         node[:jenkins][:worker][:group]
 end
 
-public_key = ssher && (ssher.info[:public_key] || ssher.info[:info][:public_key])
+public_key = ssher && ssher.info[:public_key]
 if public_key
   file "#{node[:jenkins][:worker][:home_dir]}/.ssh/authorized_keys" do
     action      :create

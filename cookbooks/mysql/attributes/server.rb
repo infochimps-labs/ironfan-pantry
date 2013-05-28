@@ -17,6 +17,10 @@
 # limitations under the License.
 #
 
+default['mysql']['server_debian_password'] = nil
+default['mysql']['server_root_password']   = nil
+default['mysql']['server_repl_password']   = nil
+
 default['mysql']['bind_address']               = attribute?('cloud') ? cloud['local_ipv4'] : ipaddress
 
 case node[:platform_family]
@@ -57,6 +61,8 @@ else
   default['mysql']['mysqladmin_bin']          = "/usr/bin/mysqladmin"
   default['mysql']['mysql_bin']               = "/usr/bin/mysql"
 
+  default['mysql']['server_debian_password']  = ''
+
   set['mysql']['conf_dir']                    = '/etc'
   set['mysql']['socket']                      = "/var/run/mysqld/mysqld.sock"
   set['mysql']['pid_file']                    = "/var/run/mysqld/mysqld.pid"
@@ -71,6 +77,8 @@ if attribute?('ec2')
 end
 
 default['mysql']['allow_remote_root']               = false
+default['mysql']['server_root_password']            = ''
+
 default['mysql']['tunable']['back_log']             = "128"
 default['mysql']['tunable']['key_buffer']           = "256M"
 default['mysql']['tunable']['max_allowed_packet']   = "16M"
@@ -97,3 +105,4 @@ default['mysql']['tunable']['expire_logs_days']     = 10
 default['mysql']['tunable']['max_binlog_size']      = "100M"
 
 default['mysql']['tunable']['innodb_buffer_pool_size']  = "256M"
+

@@ -23,11 +23,21 @@ end
 
 service "apt-cacher-ng" do
   supports :restart => true, :status => false
-  action [ :enable, :start ]
+  action :enable
 end
 
-node[:apt_cacher] ||= Mash.new
-node[:apt_cacher][:addr] = node[:cloud] ? node[:cloud][:local_ipv4] : node[:ipaddress]
+template "/etc/apt-cacher-ng/acng.conf" do
+  source "acng.conf.erb"
+  owner "root"
+  group "root"
+  mode 00644
+  notifies :restart, "service[apt-cacher-ng]"
+end
+
+# Reopen resource w/ start in case config issue causes startup to fail
+service "apt-cacher-ng" do
+  action :start
+end
 
 #this will help seed the proxy
 include_recipe "apt::cacher-client"

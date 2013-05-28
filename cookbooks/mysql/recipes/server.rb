@@ -21,11 +21,6 @@
 
 include_recipe "mysql::client"
 
-# generate all passwords
-node.set_unless['mysql']['server_debian_password'] = secure_password
-node.set_unless['mysql']['server_root_password']   = secure_password
-node.set_unless['mysql']['server_repl_password']   = secure_password
-
 if node[:platform_family] == 'debian'
 
   directory "/var/cache/local/preseeding" do
@@ -117,7 +112,7 @@ end
 
 # set the root password on platforms 
 # that don't support pre-seeding
-unless node[:platform_family] == 'ubuntu'
+unless node[:platform_family] == 'debian'
 
   execute "assign-root-password" do
     command "#{node['mysql']['mysqladmin_bin']} -u root password \"#{node['mysql']['server_root_password']}\""

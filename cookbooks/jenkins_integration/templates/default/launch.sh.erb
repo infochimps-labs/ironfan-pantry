@@ -9,46 +9,60 @@ source `dirname $0`/shared.inc
 export FACET=$1
 export CHEF_LOG=/var/log/chef/client.log
 export CHEF_STACKTRACE=/var/chef/cache/chef-stacktrace.out
+export CHEF_FAILEDRUN=/var/chef/cache/failed-run-data.json
 export CLUSTER=${FACET%-*}
-export CREDENTIALS="-x ubuntu -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
-function kc {
-  knife cluster "$@"
-}
-function klean_up {
-  h2 "Killing $FACET"
-  kc kill $FACET --yes
-}
+# FIXME: This works around the difference in SSH_USER names by platform.
+#   It is officially ugly as hell, and deserves to be shot in the face
+#   as soon as a gun can be procured.
+[[ $FACET =~ 'gorra' ]] && SSH_USER='root' || SSH_USER='ubuntu'
+export SSH_USER
+export CREDENTIALS="-x $SSH_USER -i knife/credentials/ec2_keys/$CLUSTER.pem";
 
 h2 "Show $CLUSTER cluster"
-kc show $CLUSTER
+indent kc show $CLUSTER
 
 h2 "Launch $FACET"
-kc launch $FACET || ( klean_up; failure 1 "knife cluster launch failed" )
+indent kc launch $FACET || ( klean_up; failure 1 "knife cluster launch failed" )
 
 h2 "Wait while chef finishes running"
 WAIT=0
 while true; do
-  sleep 15; WAIT=$((WAIT+15))  # FIXME: inaccurate (only counts wait time)
-  item "Waited $WAIT seconds"
+  sleep 60; WAIT=$((WAIT+1))  # FIXME: inaccurate (only counts wait time)
+  item "Waited $WAIT minutes"
 
   kc ssh $FACET $CREDENTIALS cat $CHEF_LOG > tmp.client.log
+  # We'd prefer to just dump the stacktrace, which is short and to the point
   if grep -q "FATAL: Stacktrace dumped to $CHEF_STACKTRACE" tmp.client.log; then
     echo
     h2 "Dumping log of failed run"
-    cat tmp.client.log
-    info "Fetching stack trace"
-    kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE
+    indent cat tmp.client.log
+    item "Fetching stack trace"
+    indent kc ssh $FACET $CREDENTIALS sudo cat $CHEF_STACKTRACE
     klean_up
     failure 2 "$FACET initial chef-client failed"
+  # . . . but sometimes a run fails without one, and we have to dump the node log instead.
+  elif grep -q "FATAL: Saving node information to $CHEF_FAILEDRUN" tmp.client.log; then
+    echo
+    h2 "Dumping log of failed run"
+    indent cat tmp.client.log
+    item "Fetching stack trace"
+    indent kc ssh $FACET $CREDENTIALS sudo cat $CHEF_FAILEDRUN
+    klean_up
+    failure 2 "$FACET initial chef-client failed"
+  # We'd prefer to see that the latest run succeeded
   elif grep -q 'INFO: Chef Run complete in ' tmp.client.log; then
     echo
     h2 "Dumping log of successful run"
-    cat tmp.client.log
+    indent cat tmp.client.log
     klean_up
     success "$FACET initial chef-client run completed successfully"
+  # . . . but we're not going to wait forever.
   elif [ $WAIT -gt $MAX_WAIT ]; then
     klean_up
+    echo
+    h2 "Dumping log of unfinished run"
+    indent cat tmp.client.log
     failure 1 "Waited too long for results."
   fi
 done

@@ -25,8 +25,7 @@ github  = node[:hadoop][:lzo][:github]
 archive = node[:hadoop][:lzo][:archive]
 version = node[:hadoop][:lzo][:version]
 
-node[:hadoop][:codecs] += %w[com.hadoop.compression.lzo.LzoCodec
-                             com.hadoop.compression.lzo.LzopCodec]
+node.set[:hadoop][:codecs] = (node[:hadoop][:codecs] + %w[com.hadoop.compression.lzo.LzoCodec com.hadoop.compression.lzo.LzopCodec]).uniq
 
 remote_file "/usr/local/src/#{archive}.tar.gz" do
   source github

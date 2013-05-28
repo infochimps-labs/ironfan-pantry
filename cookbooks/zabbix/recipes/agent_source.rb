@@ -24,8 +24,8 @@ when "ubuntu","debian"
   %w{ fping libcurl3 libiksemel-dev libiksemel3 libsnmp-dev libiksemel-utils libcurl4-openssl-dev }.each do |pck|
     package "#{pck}"
   end
-when "centos"
-  # FIXME
+when "centos", "redhat"
+  # do nothing special?
 else
   warn "No #{node.platform} support yet for building Zabbix agent from source"
 end

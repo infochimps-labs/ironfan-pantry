@@ -58,18 +58,21 @@
 
 <property> <name>mapred.jobtracker.taskScheduler</name>           <value>org.apache.hadoop.mapred.FairScheduler</value></property>
 <property> <name>mapred.fairscheduler.allocation.file</name>      <value><%= @hadoop[:conf_dir] %>/fairscheduler.xml</value></property>
+<property> <name>mapred.fairscheduler.preemption</name>           <value><%= @hadoop[:fair_scheduler][:preemption] %></value></property>
 
 <property> <name>mapred.userlog.retain.hours</name>               <value><%= @hadoop[:log_retention_hours] %></value></property>
 <property> <name>mapred.jobtracker.retirejob.interval</name>      <value><%= (@hadoop[:log_retention_hours].to_f * 60 * 60 * 1000).to_i %></value></property>
 <property> <name>mapred.jobtracker.retirejob.check</name>         <value>300000</value></property>
-<property> <name>mapred.jobtracker.completeuserjobs.maximum</name><value>100</value></property>
+<property> <name>mapred.jobtracker.completeuserjobs.maximum</name><value><%= @hadoop[:max_job_histories_in_mem] %></value></property>
+
+<property> <name>mapreduce.jobtracker.split.metainfo.maxsize</name><value><%= @hadoop[:split_metainfo_max_size] %></value></property>
+
+<property> <name>mapred.job.tracker.retiredjobs.cache.size</name><value><%= @hadoop[:jobtracker][:retired_jobs_cache_size] %></value></property>
+<property> <name>mapred.jobtracker.restart.recover</name><value></value><%= @hadoop[:jobtracker][:recover_jobs_on_restart] %></property>
 
 <!-- for Hue -->
 
 <property> <name>jobtracker.thrift.address</name>                 <value>0.0.0.0:<%= @hadoop[:jobtracker][:thrift_port] %></value></property>
 <property> <name>mapred.jobtracker.plugins</name>                 <value><%= @hadoop[:jobtracker][:plugins].join(",") %></value></property>
-
-<!-- mapred.job.tracker.retiredjobs.cache.size -->
-<!-- mapred.jobtracker.restart.recover --><!-- "true" to enable (job) recovery upon restart, "false" to start afresh -->
 
 </configuration>

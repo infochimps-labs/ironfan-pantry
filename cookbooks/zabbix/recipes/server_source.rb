@@ -26,7 +26,7 @@ when "ubuntu","debian"
       action :install
     end
   end
-when "centos"
+when "centos", "redhat"
   %w{ libcurl-devel net-snmp-devel }.each do |pck|
     package "#{pck}" do
       action :install

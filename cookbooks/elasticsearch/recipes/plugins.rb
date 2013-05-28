@@ -29,7 +29,7 @@ node[:elasticsearch][:plugins].each do |plugin|
   if plugin.respond_to?(:to_hash)
     plugin_hsh = Mash.new(plugin.to_hash)
     plugin_hsh[:dir]  ||= plugin_hsh[:name]
-    plugin_hsh[:slug] ||= [plugin_hsh[:org], plugin_hsh[:name], plugin_hsh[:version]].compact.join('/')
+    plugin_hsh[:slug] ||= [plugin_hsh[:org], plugin_hsh[:name], plugin_hsh[:version], ""].compact.join('/')
   else
     plugin_hsh =
       case plugin

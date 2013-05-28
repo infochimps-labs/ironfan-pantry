@@ -51,11 +51,20 @@ http_500_debug_mode=0
 # Number of threads used by the CherryPy web server
 ## cherrypy_server_threads=10
 
+<% if @hue[:use_https] %>
+# These keys must be chef'd in. They are not provided.
+
+# Filename of SSL Certificate
+ssl_certificate=/etc/hue/hue_cert.pem
+# Filename of SSL RSA Private Key
+ssl_private_key=/etc/hue/hue_key.pem
+<% else %>
 # Filename of SSL Certificate
 ## ssl_certificate=
 
 # Filename of SSL RSA Private Key
 ## ssl_private_key=
+<% end %>
 
 # Default encoding for site data
 ## default_site_encoding=utf-8

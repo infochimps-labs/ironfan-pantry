@@ -13,7 +13,6 @@ depends          "silverware"
 depends          "minidash"
 depends          "hadoop_cluster"
 depends          "zookeeper"
-depends          "ganglia"
 
 recipe           "hbase::backup_tables",               "Cron job to backup tables to S3"
 recipe           "hbase::default",                     "Base configuration for hbase"

@@ -54,6 +54,18 @@ default[:zabbix][:agent][:prebuild_url]           = "http://www.zabbix.com/downl
 default[:zabbix][:agent][:prebuild_kernel]        = "linux2_6"
 
 # Web frontend
+case platform
+when "redhat", "centos"
+default[:zabbix][:web][:user]           = "nginx"
+default[:zabbix][:web][:group]          = "nginx"
+when "ubuntu", "debian"
+default[:zabbix][:web][:user]           = "www-data"
+default[:zabbix][:web][:group]          = "www-data"
+else
+default[:zabbix][:web][:user]           = "www-data"
+default[:zabbix][:web][:group]          = "www-data"
+end
+
 default[:zabbix][:web][:fqdn]           = ""
 default[:zabbix][:web][:bind_ip]        = nil
 default[:zabbix][:web][:port]           = 9101

@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-Chef::Log.info node[:package_set][:install]
+Chef::Log.debug node[:package_set][:install]
 # node[:package_set][:install].map!(&:to_s)
 
 packages = node[:package_set][:pkgs].map do |set_name, pkgs|
@@ -36,7 +36,7 @@ gem_packages = node[:package_set][:gems].map do |set_name, gems|
   end
 end.flatten.compact.uniq
 
-Chef::Log.info [packages, gem_packages, node[:package_set][:install] ].inspect
+Chef::Log.debug [packages, gem_packages, node[:package_set][:install] ].inspect
 
 
 packages.each do |pkg|

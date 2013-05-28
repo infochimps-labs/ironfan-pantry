@@ -53,7 +53,6 @@ file "/etc/profile.d/jdk.sh" do
   mode 0755
 end
 
-
 java_ark "jdk" do
   url tarball_url
   checksum tarball_checksum

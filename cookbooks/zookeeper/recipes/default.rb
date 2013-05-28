@@ -27,7 +27,7 @@ include_recipe 'java'       ; complain_if_not_sun_java(:zookeeper)
 # User
 #
 daemon_user(:zookeeper) do
-  home          node[:zookeeper][:data_dir]
+  home          node[:zookeeper][:home_dir]
   manage_home   false
 end
 

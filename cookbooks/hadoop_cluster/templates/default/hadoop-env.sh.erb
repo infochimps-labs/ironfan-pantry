@@ -28,7 +28,7 @@ export HADOOP_NODENAME="<%= node.name.gsub(/[^\w\-]+/, '') %>"
 #
 
 # The java implementation to use.  Required.
-# export JAVA_HOME=<%= node[:java][:java_home] %>
+export JAVA_HOME=<%= node[:java][:java_home] %>
 
 <%- unless @hadoop[:extra_classpaths].nil? %>
 # Extra classpaths for hadoop

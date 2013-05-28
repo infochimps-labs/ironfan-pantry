@@ -28,7 +28,7 @@ function switch_to {
 function ensure_bundle {
   if ! bundle check; then
     ${2:-echo} "Installing bundle"
-    PARAMS="--path $SHARED_DIR --no-color"
+    PARAMS="--path $SHARED_DIR"
     # Only install from source if cache fails
     bundle install $PARAMS --local || bundle install $PARAMS
   fi
@@ -52,19 +52,27 @@ function install_berkshelves {
     ensure_bundle > /dev/null
     bundle exec berks install --path $1 > /dev/null
   done
+  echo
 }
 
 # 
 # Launch
 # 
-export TARGET=<%= node[:jenkins_integration][:cookbook_ci][:target] %>
-export BROKEN=<%= node[:jenkins_integration][:cookbook_ci][:broken] %>
+export TARGETS="<%= Array(node[:jenkins_integration][:cookbook_ci][:targets]).join(' ') %>"
+export BROKEN="<%= Array(node[:jenkins_integration][:cookbook_ci][:broken]).join(' ') %>"
 
 export MAX_WAIT=<%= node[:jenkins_integration][:cookbook_ci][:max_wait] %>
 export CHEF_USER=<%= node[:jenkins_integration][:cookbook_ci][:chef_user] %>
 
 function knife {
   bundle exec knife "$@"
+}
+function kc {
+  knife cluster "$@"
+}
+function klean_up {
+  h2 "Killing $FACET"
+  kc kill $FACET --yes
 }
 
 #
@@ -89,13 +97,16 @@ function warning {
 function header {
   echo
   wrapper=`for i in $(seq $1); do echo -n '#'; done`
-  echo "$wrapper ${*:2} $wrapper"
+  echo -e "\x1b[30;1m$wrapper ${*:2} $wrapper\x1b[0m"
 }
 function h1 {
   header 1 $*
 }
 function h2 {
   header 2 $*
+}
+function indent {
+  "$@" |& sed "s/^/    /"; return ${PIPESTATUS[0]}
 }
 
 export TEST_KOAN="<%= node[:jenkins_integration][:cookbook_ci][:koan][:testing] %>"

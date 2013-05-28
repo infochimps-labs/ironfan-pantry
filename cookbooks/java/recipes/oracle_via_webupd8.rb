@@ -35,6 +35,7 @@ apt_repository "webupd8team-oracle-java" do
   notifies :run, "execute[apt-get update]", :immediately
   notifies :run, "execute[accept Oracle's license]", :immediately
 #   notifies :run, "execute[update java alternatives]", :immediately
+  not_if { File.exists? '/etc/apt/sources.list.d/webupd8team-oracle-java.list' }
 end
 
 execute "accept Oracle's license" do
@@ -43,10 +44,8 @@ execute "accept Oracle's license" do
   action :nothing
 end
 
-# sudo apt-get install oracle-java6-installer
 package pkg_name
 
-## Old ways
 ruby_block  "set-env-java-home" do
   block do
     ENV["JAVA_HOME"] = java_home
@@ -71,26 +70,4 @@ execute "update java alternatives" do
   command "update-alternatives --set java #{jvm}/jre/bin/java"
 #   action :nothing
 end
-
-## Older ways
-# case jdk_version
-# when "6"
-#   tarball_url = node['java']['jdk']['6'][arch]['url']
-#   tarball_checksum = node['java']['jdk']['6'][arch]['checksum']
-# when "7"
-#   tarball_url = node['java']['jdk']['7'][arch]['url']
-#   tarball_checksum = node['java']['jdk']['7'][arch]['checksum']
-# end
-# 
-# if tarball_url =~ /example.com/
-#   Chef::Application.fatal!("You must change the download link to your private repository. You can no longer download java directly from http://download.oracle.com without a web broswer")
-# end
-
-# java_ark "jdk" do
-#   url tarball_url
-#   checksum tarball_checksum
-#   app_home java_home
-#   bin_cmds ["java", "jar"]
-#   action :install
-# end
 

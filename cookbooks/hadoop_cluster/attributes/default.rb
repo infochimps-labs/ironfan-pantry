@@ -79,6 +79,12 @@ default[:hadoop][:tasktracker][:jmx_dash_port]     = 8009
 default[:hadoop][:balancer   ][:jmx_dash_port]     = 8007
 
 #
+# scheduling
+#
+
+default[:hadoop][:fair_scheduler][:preemption]     = "false"
+
+#
 # Users
 #
 
@@ -109,6 +115,11 @@ default[:hadoop][:deb_version]          = '0.20.2+923.142-1~maverick-cdh3'
 # note however that cloudera is very conservative to update its distro support
 default[:apt][:cloudera][:force_distro] = 'maverick'
 default[:apt][:cloudera][:release_name] = 'cdh3u2'
+
+default[:yum][:cloudera][:gpg_key]      = 'http://archive.cloudera.com/redhat/cdh/RPM-GPG-KEY-cloudera'
+default[:yum][:cloudera][:gpg_keyname]  = 'RPM-GPG-KEY-cloudera'
+default[:yum][:cloudera][:mirror_list]  = 'http://archive.cloudera.com/redhat/cdh/3u2/mirrors'
+default[:yum][:cloudera][:release_name] = 'cdh3u2'
 
 default[:hadoop][:lzo][:github]  = "https://github.com/twitter/hadoop-lzo/tarball/9ab0565"
 default[:hadoop][:lzo][:archive] = "twitter-hadoop-lzo-9ab0565"
@@ -154,6 +165,14 @@ default[:hadoop][:thrift][:port] = 10090
 default[:hadoop][:jobtracker][:plugins] = []
 default[:hadoop][:jobtracker][:thrift_port] = 9290
 
+# configures mapred.jobtracker.completeuserjobs.maximum in
+# mapred-site.xml. This controls the size of the metadata for each
+# job.
+default[:hadoop][:jobtracker][:split_metainfo_max_size] = 10_000_000
+
+default[:hadoop][:jobtracker][:retired_jobs_cache_size] = 1000
+default[:hadoop][:jobtracker][:recover_jobs_on_restart] = "false"
+
 # Other recipes can add to this under their own special key, for instance
 #  node[:hadoop][:extra_classpaths][:hbase] = '/usr/lib/hbase/hbase.jar:/usr/lib/hbase/lib/zookeeper.jar:/usr/lib/hbase/conf'
 default[:hadoop][:extra_classpaths]  = { }
@@ -172,13 +191,21 @@ default[:hadoop][:hive][:mysql_root_username]      = 'root'
 default[:hadoop][:hive][:mysql_database]           = 'metastore'
 default[:hadoop][:hive][:input_format]             = 'org.apache.hadoop.hive.ql.io.HiveInputFormat'
 
+default[:hadoop][:hive][:max_created_files]        = 100_000
+
 # located in :hive => :home_dir
 default[:hadoop][:hive][:mysql_upgrade_script]     = 'scripts/metastore/upgrade/mysql/hive-schema-0.7.0.mysql.sql'
+
+# hive.stats.autogather
+default[:hadoop][:hive][:stats_autogather]         = false
 
 default[:hadoop][:hive][:home_dir]                 = '/usr/lib/hive'
 default[:hadoop][:hive][:conf_dir]                 = '/etc/hive/conf'
 
 # These need to be overridden with the location of a valid jar for
 # this to work.
-default[:hadoop][:hive][:mysql_connector_jar]      = nil
-default[:hadoop][:hive][:mysql_connector_location] = nil
+default[:hadoop][:hive][:mysql_connector_jar]      = 'mysql-connector-java-5.1.22-bin.jar'
+default[:hadoop][:hive][:mysql_connector_location] = 'https://s3.amazonaws.com/artifacts.chimpy.us/jars/mysql-connector-java-5.1.22-bin.jar'
+
+
+default[:hadoop][:hue][:use_https] = false

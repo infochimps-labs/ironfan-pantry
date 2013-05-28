@@ -30,8 +30,8 @@ default[:users ]['flume'][:uid]       = 325
 default[:groups]['flume'][:gid]       = 325
 
 # these are set by the recipes
-node[:flume][:exported_jars ]         = []
-node[:flume][:exported_confs]         = []
+default[:flume][:exported_jars ]      = []
+default[:flume][:exported_confs]      = []
 
 # install_from_git
 default[:flume][:deploy_dir]          = '/usr/local/share/flume-git'

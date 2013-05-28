@@ -59,7 +59,7 @@ default[:backups][:zookeeper][:weekday     ]     = "*"
 
 default[:backups][:elasticsearch][:cluster_name]     = "elasticsearch"
 default[:backups][:elasticsearch][:scroll      ]     = "1000"
-default[:backups][:elasticsearch][:indexes     ]     = []
+default[:backups][:elasticsearch][:indexes     ]     = ["_all"]
 default[:backups][:elasticsearch][:minute      ]     = "0"
 default[:backups][:elasticsearch][:hour        ]     = "4"
 default[:backups][:elasticsearch][:day         ]     = "*"
@@ -70,21 +70,35 @@ default[:backups][:elasticsearch][:weekday     ]     = "0"
 # MongoDB
 #
 
-default[:backups][:mongodb][:minute      ]     = "*"
+default[:backups][:mongodb][:minute      ]     = "0"
 default[:backups][:mongodb][:hour        ]     = "4"
 default[:backups][:mongodb][:day         ]     = "*/3"
 default[:backups][:mongodb][:month       ]     = "*"
 default[:backups][:mongodb][:weekday     ]     = "*"
 
 #
+# EBS
+#
+
+default[:backups][:ebs][:minute    ]     = "0"
+default[:backups][:ebs][:hour      ]     = "2"
+default[:backups][:ebs][:day       ]     = "*"
+default[:backups][:ebs][:month     ]     = "*"
+default[:backups][:ebs][:weekday   ]     = "*"
+#default[:backups][:ebs][:xfs_freeze]     = nil
+default[:backups][:ebs][:xfs_freeze]     = "/usr/sbin/xfs_freeze"
+
+#
 # Retention
 # 
 
-default[:backups][:retention][:minute   ]     = "0"
-default[:backups][:retention][:hour     ]     = "4"
-default[:backups][:retention][:day      ]     = "*"
-default[:backups][:retention][:month    ]     = "*"
-default[:backups][:retention][:weekday  ]     = "*"
-default[:backups][:retention][:namenode ]     = "7" # Retention in days
-default[:backups][:retention][:zookeeper]     = "5" # Retention in days
-default[:backups][:retention][:mongodb  ]     = "14" # Retention in days
+default[:backups][:retention][:minute       ]     = "0"
+default[:backups][:retention][:hour         ]     = "4"
+default[:backups][:retention][:day          ]     = "*"
+default[:backups][:retention][:month        ]     = "*"
+default[:backups][:retention][:weekday      ]     = "*"
+default[:backups][:retention][:namenode     ]     = "7"  # Retention in days
+default[:backups][:retention][:zookeeper    ]     = "5"  # Retention in days
+default[:backups][:retention][:mongodb      ]     = "14" # Retention in days
+default[:backups][:retention][:elasticsearch]     = "7"  # Number of backups to keep
+default[:backups][:retention][:ebs]               = "7"  # Number of ebs backups to keep

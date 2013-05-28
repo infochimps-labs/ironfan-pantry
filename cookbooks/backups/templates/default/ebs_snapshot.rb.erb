@@ -1,0 +1,59 @@
+#!/usr/bin/env ruby
+
+require 'fog'
+
+credentials = { :provider => "AWS", 
+                :aws_access_key_id => "<%= @aws[:access_key]        || @aws[:aws_access_key] %>",
+                :aws_secret_access_key => "<%= @aws[:secret_access_key] || @aws[:aws_secret_access_key] %>",
+              }
+
+@fog = Fog::Compute.new(credentials)
+volumes = @fog.volumes.all({"tag:server" => "<%= @node[:node_name] %>"})
+to_snapshot = volumes.select {|v| v if v.tags["mount_point"] != '/'}
+
+tm = Time.now
+stamp = tm.strftime("%Y%m%d.%H%M")
+day = tm.strftime("%Y%m%d")
+
+to_snapshot.each do |vol|
+  next if vol.state == "available" # Volume not in use, should we snapshot it? 
+
+  puts "Initiating snapshot for <%= @node[:node_name] %>... #{vol.tags["name"]}"
+
+  begin
+    <% if node[:backups][:ebs][:xfs_freeze] -%>
+    system("<%= node[:backups][:ebs][:xfs_freeze] %> -f #{vol.tags["mount_point"]}")
+    <% end -%>
+    snapshot = @fog.snapshots.new
+    snapshot.description = "<%= @node[:node_name] %> : Automated EBS snapshot - #{stamp}"
+    snapshot.volume_id = vol.id
+    snapshot.save
+    snapshot.reload
+    @fog.tags.create(:resource_id => snapshot.id, :key => "date", :value => day)
+    @fog.tags.create(:resource_id => snapshot.id, :key => "name", :value => "#{vol.tags["name"]}-#{stamp}-snapshot")
+    @fog.tags.create(:resource_id => snapshot.id, :key => "Name", :value => "#{vol.tags["name"]}-#{stamp}-snapshot")
+    @fog.tags.create(:resource_id => snapshot.id, :key => "node-snapshot", :value => "<%= @node[:node_name] %>-snapshots")
+  ensure
+    <% if node[:backups][:ebs][:xfs_freeze] -%>
+    system("<%= node[:backups][:ebs][:xfs_freeze] %> -u #{vol.tags["mount_point"]}") 
+    <% end -%>
+  end
+end
+
+daily_backups = <%= node[:backups][:retention][:ebs] %>
+
+tags = @fog.tags.all(:key => "node-snapshot", :value => "<%= @node[:node_name] %>-snapshots")
+
+puts "Checking for old snapshots to remove"
+
+tags.each do |tag|
+  snapshot = @fog.snapshots.get(tag.resource_id)
+
+  age = tm.to_i - snapshot.created_at.to_i
+  days = age / 60 / 60 / 24
+
+  if days > daily_backups
+    puts "Removing snapshot #{snapshot.id}"
+    @fog.delete_snapshot(snapshot.id)
+  end
+end

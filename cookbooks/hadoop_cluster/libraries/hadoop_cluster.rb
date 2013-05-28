@@ -1,11 +1,11 @@
 module HadoopCluster
-  # installs given hadoop package using the configured deb version
+  # installs given hadoop package using the configured version
   def hadoop_package component
     package_name = (component ? "#{node[:hadoop][:handle]}-#{component}" : "#{node[:hadoop][:handle]}")
     package package_name do
       if node[:hadoop][:deb_version] != 'current'
-        version node[:hadoop][:deb_version]
-      end
+        version node[:hadoop][:deb_version] 
+      end if ['ubuntu', 'debian'].include?(node[:platform])
     end
   end
 

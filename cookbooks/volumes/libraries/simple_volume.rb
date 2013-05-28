@@ -130,6 +130,10 @@ module Silverware
     def fix_for_xen!
       return unless device && node[:virtualization] && (node[:virtualization][:system] == 'xen')
       new_device_name = device.gsub(%r{^/dev/sd}, '/dev/xvd')
+      if node[:platform] == 'redhat'
+        pre, dev, num = /(\/dev\/xvd)(\w)(\d*)/.match(new_device_name)[1..3]
+        new_device_name = pre + (dev.ord + 4).chr + num
+      end
       return unless (Dir[device].empty?) && (not Dir[new_device_name].empty?)
       self['device'] = new_device_name
     end

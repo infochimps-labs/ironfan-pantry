@@ -61,12 +61,19 @@
   <builders>
     <hudson.tasks.Shell>
       <command>#!/usr/bin/env bash -e
+      function section {
+        echo -e "\x1b[30;1m$*\x1b[0m"   # Bold text
+      }
       echo
       <%- @tasks.each do |t| %>
-        echo Running <%= t %>
+        section "---------------------------------------"
+        section "# Running <%= t %> #"
+        section "---------------------------------------"
         time <%= @path %>/<%= t %>
-        echo Finished <%= t %>
-        echo; echo; echo; echo
+        section "---------------------------------------"
+        section "# Finished <%= t %> #"
+        section "---------------------------------------"
+        echo; echo;
 
       <%- end %>
       </command>
@@ -139,5 +146,9 @@
     </hudson.plugins.git.GitPublisher>
     <%- end %>
   </publishers>
-  <buildWrappers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.3.1">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+  </buildWrappers>
 </project>

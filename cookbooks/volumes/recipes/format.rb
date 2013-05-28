@@ -29,10 +29,12 @@ volumes(node).each do |vol_name, vol|
 
   if not vol.ready_to_format? then Chef::Log.info("Skipping format of volume #{vol_name}: not formattable (#{vol.inspect})") ; next ; end
 
-  bash "Format #{vol_name} as #{vol.fstype}" do
+  f = bash "Format #{vol_name} as #{vol.fstype}" do
     code        "mkfs -t #{vol.fstype} #{vol.device}"
+    action      :nothing
   end
-
+  f.run_action(:run)
+  
   # don't resize again
   vol.formatted!
 

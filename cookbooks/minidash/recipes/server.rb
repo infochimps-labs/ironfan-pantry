@@ -27,7 +27,7 @@ include_recipe 'runit'
 #
 
 case node.platform
-when 'centos'
+when 'centos', 'redhat'
   package       'busybox'
 else
   package       'busybox-static'
