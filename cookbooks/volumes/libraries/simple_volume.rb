@@ -34,7 +34,7 @@ module Silverware
 
     # True if the volume is mounted
     def mounted?
-      return true if self[:mounted]
+      return true if self[:mounted] or node[:volumes][name][:mounted]
       !!( attached? && mount_point && File.exists?(mount_point) && current[:mount] == mount_point )
     end
 
@@ -106,6 +106,7 @@ module Silverware
 
     def mounted!
       self[:mounted] = true
+      node.set[:volumes][name][:mounted] = true
     end
 
     # volume was resized, so mark it as no longer needing resize
