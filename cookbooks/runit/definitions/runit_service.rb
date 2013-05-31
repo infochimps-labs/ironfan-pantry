@@ -157,22 +157,15 @@ define :runit_service, :directory => nil, :only_if => false, :finish_script => f
     # to get the desired exit code behavior
     #
     status_command "#{status_cmd} #{params[:name]} #{params[:status_command]}"
-    # status_command "#{control_cmd} #{params[:status_command]} #{service_dir_name}"
     if params[:run_restart] && (params[:run_state].to_s == 'start')
       subscribes :restart, resources(:template => "#{sv_dir_name}/run"), :delayed
     end
-    # FIXME: this will start a process immediately. instead do the thing in the following block.
-    action params[:run_state]
+    action :nothing
   end
 
-  # # FIXME: something like this is how we should start a service
-  # service params[:name] do
-  #   action :nothing
-  # end
-  # ruby_block "#{params[:run_state]} the #{params[:name]} service" do
-  #   notifies params[:run_state], "service[#{params[:name]}]", :delayed
-  #   action :create
-  #   block{}
-  # end
+  ruby_block "#{params[:run_state]} the #{params[:name]} service" do
+    notifies params[:run_state], "service[#{params[:name]}]", :delayed
+    block {}
+  end
 
 end
