@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+exec 2>&1
+exec chpst -u \
+    <%= node[:rundeck][:user] %>:<%= node[:rundeck][:group] %> \
+    <%= File.join(node[:rundeck][:chef_rundeck][:home_dir], 'bin/chef-rundeck') %> \
+    --config <%= node[:rundeck][:chef_rundeck][:conf_dir] %>/client.rb \
+    --web-ui-url <%= node[:chef_server] %> \
+    --username <%= node[:rundeck][:chef_rundeck][:username] %> \
+    --port <%= node[:rundeck][:chef_rundeck][:port] %>

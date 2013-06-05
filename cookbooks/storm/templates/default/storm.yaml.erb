@@ -1,0 +1,13 @@
+storm.zookeeper.servers:
+<% @zookeepers.each do |zk| %>
+    - "<%= zk.private_ip %>"
+<% end %>
+nimbus.host: "<%= @nimbus.private_ip %>"
+
+storm.local.dir: "<%= @data_dir %>"
+storm.local.hostname: "<%= node.name  %>"
+
+supervisor.slots.ports:
+<% @ports.each do |port| %>
+    - <%= port %>
+<% end %>

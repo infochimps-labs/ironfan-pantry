@@ -1,0 +1,5 @@
+#!/bin/bash
+exec 2>&1
+cd <%= @node[:cube][:home_dir] %>
+export PORT=<%= @options[:port] %>
+exec chpst -u <%= @node[:cube][:user] %>:<%= @node[:cube][:group] %> <%= @node[:nodejs][:bin_path] %> <%= @node[:cube][:home_dir] %>/bin/collector.js

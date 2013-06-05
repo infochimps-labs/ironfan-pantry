@@ -1,0 +1,21 @@
+include_recipe 'storm'
+include_recipe 'runit'
+
+daemon_user 'storm.ui'
+
+standard_dirs 'storm.ui' do
+  directories [:home_dir, :log_dir]
+end
+
+runit_service 'storm_ui' do
+  run_state     node[:storm][:ui][:run_state]
+  options       Mash.new(node[:storm].to_hash).merge(node[:storm][:ui].to_hash)
+end
+
+announce(:storm, :master, {
+  :logs => { :storm => node[:storm][:log_dir] },
+  :daemons => {
+    # FIXME: Zabbix can't tell Nimbus process from the UI process
+    :storm_ui => { :user => node[:storm][:user] }
+  }
+})

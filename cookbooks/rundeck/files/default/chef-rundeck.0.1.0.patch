@@ -1,0 +1,10 @@
+--- /usr/lib/ruby/gems/1.8/gems/chef-rundeck-0.1.0/lib/chef-rundeck.rb~ 2011-11-08 00:37:46.718762858 +0000
++++ /usr/lib/ruby/gems/1.8/gems/chef-rundeck-0.1.0/lib/chef-rundeck.rb  2011-11-08 00:37:56.050818287 +0000
+@@ -35,6 +35,7 @@
+   end
+ 
+   get '/' do
++    content_type 'text/xml'
+     response = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE project PUBLIC "-//DTO Labs Inc.//DTD Resources Document 1.0//EN" "project.dtd"><project>'
+     Chef::Node.list(true).each do |node_array|
+       node = node_array[1]
