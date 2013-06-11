@@ -37,4 +37,6 @@ template File.join(node[:storm][:home_dir], 'log4j/storm.log.properties') do
   source "storm.log.properties.erb"
   notifies  :restart, "service[storm_master]", :delayed if startable?(node[:storm][:master]) && node.facet_name == 'master'
   notifies  :restart, "service[storm_worker]", :delayed if startable?(node[:storm][:worker]) && node.facet_name == 'worker'
+  # for storm 0.9.0, which uses logbak rather than log4j.
+  only_if{ File.exists? File.join(node[:storm][:home_dir], 'log4j')}
 end
