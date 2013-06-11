@@ -13,6 +13,9 @@ depends 'zookeeper'
 depends 'install_from'
 
 recipe "kafka::default", "Base configuration for kafka"
+recipe "kafka::contrib", "Kafka Contrib runners"
+recipe "kafka::install_from_release", "installs Kafka"
+recipe "kafka::server", "installs Kafka, starts a broker, and announces itself"
 
 %w{ debian ubuntu centos redhat fedora scientific amazon }.each do |os|
   supports os
