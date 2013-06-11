@@ -39,7 +39,7 @@ deploy_revision node[:kafka][:contrib][:deploy][:root] do
 
     bash 'maven package kafka-contrib' do
       cwd               current_release
-      code              'mvn package'
+      code              'mvn package -DskipTests=true'
     end
   end
 end
