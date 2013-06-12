@@ -24,7 +24,7 @@ default[:yum][:installonlypkgs]
 
 default['yum']['epel_release'] = case node['platform_version'].to_i
                                   when 6
-                                    "6-7"
+                                    "6-8"
                                   when 5
                                     "5-4"
                                   when 4
