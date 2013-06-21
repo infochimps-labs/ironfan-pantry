@@ -1,0 +1,10 @@
+---
+
+:mongo:
+  :host: <%= @mongodb[:host] %>
+  :database: <%= @node[:vayacondios][:mongodb][:database] %>
+
+:vayacondios:
+  :host: <%= @vayacondios[:host] %>
+  :port: <%= @vayacondios[:port] %>
+  :legacy: <%= @vayacondios[:legacy_mode] %>

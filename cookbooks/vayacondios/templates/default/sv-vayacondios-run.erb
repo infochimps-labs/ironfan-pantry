@@ -1,0 +1,8 @@
+#!/bin/bash
+exec 2>&1
+cd <%= node[:vayacondios][:home_dir] %>
+export RACK_ENV=<%= node[:vayacondios][:environment] %>
+export RAILS_ENV=<%= node[:vayacondios][:environment] %>
+export LC_ALL="en_US.UTF-8"
+export LANG="en_US.UTF-8"
+exec chpst -u <%= node[:vayacondios][:user] %> bundle exec ./app/http_shim.rb -s -c $PWD/config/http_shim.rb --environment <%= node[:vayacondios][:environment] %> --port <%= node[:vayacondios][:goliath][:port] %>
