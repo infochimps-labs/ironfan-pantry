@@ -5,7 +5,7 @@ storm.zookeeper.servers:
 nimbus.host: "<%= @nimbus.private_ip %>"
 
 storm.local.dir: "<%= @data_dir %>"
-storm.local.hostname: "<%= node.name  %>"
+storm.local.hostname: "<%= node.name  %>.<%= node.route53.zone %>"
 
 supervisor.slots.ports:
 <% @ports.each do |port| %>
