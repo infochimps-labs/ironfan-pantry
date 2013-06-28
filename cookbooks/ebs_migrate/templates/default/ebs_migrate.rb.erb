@@ -1,0 +1,133 @@
+#!/usr/bin/env ruby
+
+#
+# One off script to grab latest EBS Volume snapshot and attach it here, replacing
+# the currently attached EBS volume.  
+####
+
+require 'fog'
+
+class EbsMigrate
+  def initialize(server, target, aws_access_key, aws_secret_key)
+    credentials = { :provider => "AWS",
+                    :aws_access_key_id => aws_access_key,
+                    :aws_secret_access_key => aws_secret_key,
+                  }
+    @fog = Fog::Compute.new(credentials)
+    @server_name = server
+    @target_name = target
+  end
+
+  def tag(tags, resource_id)
+    tags.each_pair do |k, v|
+      @fog.tags.create(:resource_id => resource_id, :key => k, :value => v)
+    end
+  end
+
+  def create_volume(availability_zone, size, snapshot_id)
+    puts "Creating volume from snapshot id #{snapshot_id}"
+    volume = @fog.volumes.new
+    volume.availability_zone = availability_zone
+    volume.size = size
+    volume.snapshot_id = snapshot_id
+    volume.save
+    volume.reload
+    volume
+  end
+
+  def wait_for(volume, state, poll = 5, max = 120)
+    # Better way to do this? 
+    cur = 0
+    while cur < max
+      volume.reload
+      if volume.state == state
+        return true
+      end
+      sleep poll
+      cur += poll
+    end
+    return false
+  end
+
+  def get_server()
+    # This assumes only one server will be returned. 
+    @fog.servers.all({"tag:Name" => @server_name}).select { |server| server.state == "running" }[0]
+  end
+
+  def get_snapshot()
+    snapshots = @fog.snapshots.all({"tag:node" => @target_name}).select { |snapshot| snapshot.state == "completed" }
+    snapshots.max_by(&:created_at)
+  end
+
+  def get_volumes(ebs_name)
+    filter = { "tag:name" => "#{@server_name}-#{ebs_name}" }
+    @fog.volumes.all(filter).select { |volume| volume.state == "in-use" }
+  end
+
+  def attach(server_id, volume_id, device)
+    puts "Attaching volume id #{volume_id} at #{device}"
+    @fog.attach_volume(server_id, volume_id, device)
+  end
+
+  def detach(volume)
+    puts "Dettaching volume id #{volume.id} from #{@server_name}"
+    @fog.detach_volume(volume.id) unless volume.state == 'available'
+    if not wait_for(volume, 'available')
+      puts "Forcing detach"
+      @fog.detach_volume(volume.id, 'Force' => true)
+      wait_for(volume, 'available')
+    end
+  end
+
+  def cleanup(keep=1)
+    filter = { "tag:remove-me" => @server_name }
+    volumes = @fog.volumes.all(filter).select { |volume| volume.state == "available"}
+    volumes.sort_by! { |obj| obj.created_at }
+    ids = volumes.map { |volume| volume.id }
+    if ids.length > keep
+      puts "Cleaning up old EBS volumes keeping #{keep}"
+      ids[0..(ids.length - keep -1)].each do |id|
+        @fog.delete_volume(id)
+      end
+    end
+  end
+end
+
+def main()
+  stamp = Time.now.strftime("%Y%m%d.%H%M")
+
+  node_name = "<%= node[:node_name] %>"
+  target = "<%= node[:ebs_migrate][:target] %>-#{node_name.split('-')[-1]}"
+
+  ebs = EbsMigrate.new(node_name, target,
+                       "<%= @aws[:access_key]        || @aws[:aws_access_key] %>", 
+                       "<%= @aws[:secret_access_key] || @aws[:aws_secret_access_key] %>",
+                      )
+
+  server = ebs.get_server()
+
+  vol = ebs.get_volumes("<%= node[:ebs_migrate][:ebs] %>")[0]
+  begin 
+    ebs.detach(vol)
+    old_tags = vol.tags
+    new_tags = old_tags.inject({}) { |h, (k, v)| h[k] = "#{v}-#{stamp}"; h }
+    ebs.tag(new_tags.merge({"remove-me" => node_name }), vol.id)
+  rescue NoMethodError 
+    old_tags = { "mount_point" => "<%= node[:ebs_migrate][:es][:mount_point] %>", 
+                 "device"      => "<%= node[:ebs_migrate][:es][:device] %>", 
+                 "name"        => "#{node_name}-<%= node[:ebs_migrate][:ebs] %>",
+                 "Name"        => "#{node_name}-<%= node[:ebs_migrate][:ebs] %>",
+               }
+  end
+  snapshot = ebs.get_snapshot()
+  new_vol = ebs.create_volume("<%= node[:ec2][:placement_availability_zone] %>", snapshot.volume_size, snapshot.id)
+  ebs.tag(old_tags, new_vol.id)
+  ebs.attach(server.id, new_vol.id, old_tags["device"])
+  ebs.wait_for(new_vol, 'in-use')
+  ebs.cleanup()
+  puts 'FINI!'
+end
+
+if __FILE__ == $0
+  main()
+end
