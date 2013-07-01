@@ -1,6 +1,0 @@
-= Cube Cookbook
-
-= Changelog
-0.0.1   Initial build
-0.1.0   Added DNS recipe, to allow setting of a custom hostname
-        Added dns_name announcement for evaluator, to allow cookie-based integrations
