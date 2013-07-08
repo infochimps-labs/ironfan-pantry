@@ -76,4 +76,6 @@ JAVA_OPTS="$JAVA_OPTS -XX:+UseCompressedOops"
 # Always run in server mode (usually the default anyway)
 JAVA_OPTS="-server $JAVA_OPTS"
 
+<%= @elasticsearch[:added_config]['elasticsearch.in.sh'] %>
+
 export JAVA_OPTS ES_JAVA_OPTS ES_MAX_MEM ES_MIN_MEM

@@ -22,6 +22,7 @@
 template "/etc/elasticsearch/logging.yml" do
   source        "logging.yml.erb"
   mode          0644
+  variables     :elasticsearch => node[:elasticsearch]
 end
 
 template "/etc/elasticsearch/elasticsearch.in.sh" do

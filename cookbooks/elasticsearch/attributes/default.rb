@@ -114,3 +114,7 @@ default[:elasticsearch][:log_level][:index_store]     = 'INFO'
 default[:elasticsearch][:log_level][:action_shard]    = 'INFO'
 default[:elasticsearch][:log_level][:cluster_service] = 'INFO'
 default[:elasticsearch][:log_level][:gateway]         = 'INFO' # spews information on every snapshot
+
+# use by setting node[:elasticsearch][:added_config][target_file_name] to a string,
+# which will be included at end of the config file, but before any final cleanup stanzas.
+default[:elasticsearch][:added_config]                = {}
