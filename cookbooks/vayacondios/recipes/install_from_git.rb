@@ -2,9 +2,9 @@ gem_package "bundler" do
   action :install
 end
 
-git_private_repo "vayacondios_github" do
-  action :ssh_wrapper
-end
+#git_private_repo "vayacondios_github" do
+#  action :ssh_wrapper
+#end
 
 shared_env = {
   "RAILS_ENV" => node[:vayacondios][:environment],
@@ -27,7 +27,7 @@ deploy_revision node[:vayacondios][:deploy_root] do
   action node[:vayacondios][:deploy_strategy].to_sym
 
   repo              node[:vayacondios][:git_url]
-  ssh_wrapper       '/etc/deploy/vayacondios_github/vayacondios_github.sh'
+#  ssh_wrapper       '/etc/deploy/vayacondios_github/vayacondios_github.sh'
   branch            node[:vayacondios][:deploy_version]
   enable_submodules false
   shallow_clone     true
