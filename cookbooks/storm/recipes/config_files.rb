@@ -19,7 +19,6 @@ template File.join(node[:storm][:home_dir], 'conf/storm.yaml') do
   group  node[:storm][:group]
   mode   "0644"
   source "storm.yaml.erb"
-  Chef::Log.warn("Storm was not provided a volume to store data to. Defaulting to /var/storm")
   variables({
     :ports => node[:storm][:worker][:processes].times.map{ |i| node[:storm][:worker][:start_port] + i },
     :zookeepers => discover_all(:zookeeper, :server).sort_by{|cp| cp.node[:facet_index] },
