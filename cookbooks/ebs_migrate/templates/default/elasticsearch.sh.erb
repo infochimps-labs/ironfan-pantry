@@ -11,5 +11,10 @@ sleep 5
 echo "Sleeping 30 seconds to allow Linux / AWS some time to figure itself out"
 sleep 30
 
-/usr/bin/chef-client # This will take care of mounting and restarting elasticsearch
+<% if node[:ebs_migrate][:es][:mount_cmd] -%>
+MOUNT_CMD='<%= node[:ebs_migrate][:es][:mount_cmd] %>'
+echo "Mounting device with "${MOUNT_CMD}""
+${MOUNT_CMD}
+<% end -%>
 
+/etc/init.d/elasticsearch start
