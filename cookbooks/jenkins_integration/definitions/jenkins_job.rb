@@ -16,6 +16,7 @@ define(:jenkins_job,
   :parameters   => {},          # If the job is parameterized, list those params
   :pantries     => [],          # Ironfan pantries to clone for testing
   :repositories => [],          # Source repositories
+  :retention    => {},          # How long to keep build logs
   :triggers     => {},          # Triggers to start this job
   :tasks        => [],          # Array of shell scripts templates to run
   :templates    => [],          # Array of templates to deploy

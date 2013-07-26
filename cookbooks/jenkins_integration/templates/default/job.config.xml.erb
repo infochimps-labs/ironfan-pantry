@@ -2,15 +2,39 @@
 <project>
   <actions/>
   <description></description>
+  <%- unless @retention.empty? %> 
+  <logRotator class="hudson.tasks.LogRotator">
+    <%- if @retention[:days] %>
+    <daysToKeep><%= @retention[:days] %></daysToKeep>
+    <%- else %>
+    <daysToKeep>-1</daysToKeep>
+    <%- end %>
+    <%- if @retention[:total] %>
+    <numToKeep><%= @retention[:total] %></numToKeep>
+    <%- else %>
+    <numToKeep>-1</numToKeep>
+    <%- end %>
+    <%- if @retention[:artifacts_days] %>
+    <artifactDaysToKeep><%= @retention[:artifacts_days] %></artifactDaysToKeep>
+    <%- else %>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <%- end %>
+    <%- if @retention[:artifacts_total] %>
+    <artifactNumToKeep><%= @retention[:artifacts_total] %></artifactNumToKeep>
+    <%- else %>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+    <%- end %>
+  </logRotator>
+  <%- end %>
   <keepDependencies>false</keepDependencies>
-  <%- unless @project %>
-  <properties/>
-  <%- else %>
+  <%- if @project and @parameters.empty? %>
   <properties>
     <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.5">
       <projectUrl><%= @project %></projectUrl>
     </com.coravy.hudson.plugins.github.GithubProjectProperty>
-    <%- unless @parameters.empty? %>
+  </properties>
+  <%- elsif @project.nil? and not @parameters.empty? %>
+  <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
         <%- @parameters.each_pair do |name,params| %>
@@ -24,7 +48,25 @@
         <%- end %>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
-    <%- end %>
+  </properties>
+  <%- elsif @project and @parameters %>
+  <properties>
+    <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.5">
+      <projectUrl><%= @project %></projectUrl>
+    </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <%- @parameters.each_pair do |name,params| %>
+        <%-   if params[:type] == 'string' %>
+        <hudson.model.StringParameterDefinition>
+          <name><%= name %></name>
+          <description></description>
+          <defaultValue><%= params[:default] %></defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <%-   end %>
+        <%- end %>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
   </properties>
   <%- end %>
   <scm class="hudson.scm.NullSCM"/>
@@ -32,6 +74,9 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>true</blockBuildWhenUpstreamBuilding>
+  <%- if @triggers[:token] %>
+  <authToken><%= @triggers[:token] %></authToken>
+  <%- end %>
   <%- if @triggers.empty? %>
   <triggers class="vector"/>
   <%- else %>
