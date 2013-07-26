@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+source `dirname $0`/shared.inc
+PANTRIES="<%= node[:jenkins_integration][:strainer][:pantry] %>"
+
+function clone_pantry {
+  if [ ! -d "ironfan-pantry" ]; then
+    h2 "Cloning pantries"
+    git clone $PANTRIES
+  else
+    pushd ironfan-pantry
+    git pull
+    popd
+  fi
+}
+
+function clone_homebase {
+  if [ -d "homebase" ]; then
+    pushd homebase
+    git pull
+    popd
+  else
+    git clone <%= node[:jenkins_integration][:strainer][:test_homebase] %> homebase
+  fi
+}
+
+function strain {
+   bundle exec strainer test ${cookbook}
+}
+
+function megahack { 
+  # FIXME: This is unfortunately necessary as these break Gorillib
+  set +o errexit
+  grep strainer Gemfile 2>&1
+  if [ $? -eq "1" ]; then 
+    sed -i '/group :test do/a \  gem "strainer", "~> 2.1.0"\n  gem "chefspec"' Gemfile
+  fi 
+  set -o errexit
+} 
+
+cd ${WORKSPACE}
+
+clone_pantry
+clone_homebase
+switch_to homebase
+megahack
+if [ ! -L cookbooks ]; then
+  ln -s ../ironfan-pantry/cookbooks cookbooks
+fi
+ensure_bundle
+strain

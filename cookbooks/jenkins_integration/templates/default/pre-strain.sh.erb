@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#
+# Kicks off independent jenkins builds for 
+# cookbooks that have changed. 
+
+source `dirname $0`/shared.inc
+PANTRIES="<%= node[:jenkins_integration][:strainer][:pantry] %>"
+COOKBOOKS=()
+
+function clone_pantry {
+  h2 "Cloning pantries"
+  git clone $PANTRIES
+}
+
+function changes {
+    DIFF=`git diff --name-only $1 HEAD`
+    for CHANGE in ${DIFF}; do COOKBOOKS+=`echo ${CHANGE} | grep cookbooks | awk -F'/' '{print $2" "}'`; done
+}
+
+cd ${WORKSPACE}
+
+if [ -d "ironfan-pantry" ]; then
+  cd ironfan-pantry
+  COMMIT=`git rev-parse HEAD`
+  git pull
+else
+  clone_pantry
+  exit
+fi
+
+changes ${COMMIT}
+jenkins_url="<%= node[:jenkins][:server][:host] %>:<%= node[:jenkins][:server][:port] %>"
+
+if [ ${#COOKBOOKS[@]} -gt "0" ]; then
+  for cookbook in ${COOKBOOKS}; do
+    curl -X POST "http://${jenkins_url}/buildByToken/buildWithParameters?job=Ironfan_Pantry_-_1_-_Strain&cookbook=${cookbook}&token=<%= node[:jenkins_integration][:strainer][:token] %>"
+  done
+fi
+
