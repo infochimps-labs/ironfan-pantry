@@ -35,7 +35,7 @@ default[:jenkins_integration][:cookbook_ci][:homebases]  = homebases
 #
 default[:jenkins_integration][:strainer][:pantry]        = 'git@github.com:infochimps-labs/ironfan-pantry.git'
 default[:jenkins_integration][:strainer][:notification]  = false
-default[:jenkins_integration][:strainer][:schedule]      = 'H/5 * * * *'
+default[:jenkins_integration][:strainer][:schedule]      = '*/5 * * * *'
 default[:jenkins_integration][:strainer][:test_homebase] = 'https://github.com/infochimps-labs/ironfan-homebase.git'
 default[:jenkins_integration][:strainer][:token]         = 'changeme'
 
