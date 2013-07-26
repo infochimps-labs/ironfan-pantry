@@ -1,0 +1,14 @@
+= s3cmd Cookbook
+
+== Overview
+
+  Installs s3cmd along with a global configuration
+
+== Usage
+
+=== s3cmd::default
+
+  default[:s3cmd][:config] = '/etc/s3cfg' # Location for s3cmd config file
+  default[:s3cmd][:config][:owner] = 'root' 
+  default[:s3cmd][:config][:group] = 'admin' 
+  default[:s3cmd][:config][:mode ] = '0640'
