@@ -3,7 +3,9 @@ volume_dirs('vsftpd.home') do
   mode          "0700"
 end
 
-daemon_user(:vsftpd)
+daemon_user(:vsftpd) do
+  home node[:vsftpd][:home_dir] # instead of pid_dir
+end
 
 standard_dirs('vsftpd', 'server') do
   directories :conf_dir, :home_dir, :log_dir
@@ -15,6 +17,8 @@ service "vsftpd" do
   supports :status => true, :stop => true, :start => true, :restart => true
   action :enable
 end
+
+include_recipe "vsftpd::ssl"
 
 template "/etc/vsftpd.conf" do
   mode '0644'

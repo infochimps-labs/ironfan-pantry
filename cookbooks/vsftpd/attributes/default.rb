@@ -5,7 +5,7 @@ default[:groups]['ftp'][:gid] = 61022
 
 vsftpd_conf_dir = '/etc/vsftpd'
 
-default[:vsftpd][:home_dir] = '/var/ftp'
+default[:vsftpd][:home_dir] = nil # set by volume_dirs
 default[:vsftpd][:conf_dir] = vsftpd_conf_dir
 default[:vsftpd][:log_dir]  = '/var/log/vsftpd'
 
@@ -71,7 +71,7 @@ default[:vsftpd][:local_enable] = true
 #
 # This option represents a directory which vsftpd will try to change into after
 # a local (i.e. non-anonymous) login. Failure is silently ignored.
-default[:vsftpd][:local_root] = "/home/$USER"
+default[:vsftpd][:local_root] = nil
 #
 # This controls whether any FTP commands which change the filesystem
 # are allowed or not. These commands are: STOR, DELE, RNFR, RNTO, MKD,
@@ -173,10 +173,37 @@ default[:vsftpd][:ssl_enable] = false
 # For a discussion of the consequences, see
 # http://scarybeastsecurity.blogspot.com/2009/02/vsftpd-210-released.html
 default[:vsftpd][:require_ssl_reuse] = false
-default[:vsftpd][:ssl_cert_path] = "/etc/ssl/certs"
-default[:vsftpd][:ssl_private_key_path] = "/etc/ssl/private"
-default[:vsftpd][:ssl_cert_name] = "vsftpd"
-default[:vsftpd][:ssl_cert_cookbook] = "vsftpd"
+
+# Set the value of the SSL certificate.  If present, will cause it to
+# be written to the `ssl_cert_path`.
+#
+# Use the following command to generate an SSL certificate:
+#
+# $  openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout vsftpd.pem -out vsftpd.pem
+#
+# and then answer the questions.  Pay particular attention to the
+# question that asks for your `Common Name (e.g. server FQDN or YOUR
+# name)`.  This is the public name the certificate advertises itself
+# as having.  It's important that it match the domain name the ftp
+# server will ultimately run behind.
+#
+# FIXME -- replace this with something more secure
+default[:vsftpd][:ssl_cert]      = nil
+
+# Path where SSL certificate will be written.  Override to set a
+# different (existing) path.
+default[:vsftpd][:ssl_cert_path] = nil
+
+# Set the value of the SSL private key.  If present, will cause it to
+# be written to the `ssl_private_key_path`.
+#
+# FIXME -- replace this with something more secure
+default[:vsftpd][:ssl_private_key]      = nil
+
+# Path where SSL private key will be written.  Override to set a
+# different (existing) path.
+default[:vsftpd][:ssl_private_key_path] = nil
+
 #
 # This option can be used to select which SSL ciphers vsftpd will allow for
 # encrypted SSL connections. See the ciphers man page for further details. Note
@@ -312,7 +339,3 @@ default[:vsftpd][:virtual_use_local_privs] = false
 # the directory /home/virtual/fred. This option also takes affect if local_root
 # contains user_sub_token.
 default[:vsftpd][:user_sub_token] = "$USER"
-#
-# This option represents a directory which vsftpd will try to change into after
-# a local (i.e. non-anonymous) login. Failure is silently ignored.
-default[:vsftpd][:local_root] = nil

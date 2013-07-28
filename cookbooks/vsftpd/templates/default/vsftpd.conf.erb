@@ -47,8 +47,9 @@ setproctitle_enable=<%= node[:vsftpd][:setproctitle_enable] ? 'YES' : 'NO' %>
 hide_ids=<%= node[:vsftpd][:hide_ids] ? 'YES' : 'NO' %>
 <% if node[:vsftpd][:ssl_enable] %>
 ssl_enable=YES
-rsa_cert_file=<%= node[:vsftpd][:ssl_cert_path] %>
-rsa_private_key_file=<%= node[:vsftpd][:ssl_private_key_path] %>
+allow_anon_ssl=NO
+<% if node[:vsftpd][:ssl_cert_path] %>rsa_cert_file=<%= node[:vsftpd][:ssl_cert_path] %><% end %>
+<% if node[:vsftpd][:ssl_private_key_path] %>rsa_private_key_file=<%= node[:vsftpd][:ssl_private_key_path] %><% end %>
 require_ssl_reuse=<%= node[:vsftpd][:require_ssl_reuse] ? 'YES' : 'NO' %>
 ssl_sslv2=<%= node[:vsftpd][:ssl_sslv2] ? 'YES' : 'NO' %>
 ssl_sslv3=<%= node[:vsftpd][:ssl_sslv3] ? 'YES' : 'NO' %>
