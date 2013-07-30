@@ -1,4 +1,4 @@
-define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_id: nil, topic: nil, run_state: nil, user: nil, kafka_home: nil, config_file_options: nil do
+define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_id: nil, topic: nil, run_state: nil, user: nil, kafka_home: nil, config_file_options: nil, num_threads: nil do
 
   app_type                   = params[:app_type]
   app_name                   = params[:name]
@@ -18,6 +18,7 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   vcd_tmp                    = discover(:vayacondios, :server)
   vayacondios_host           = (vcd_tmp && vcd_tmp.private_ip)
   vayacondios_port           = (vcd_tmp && vcd_tmp.ports[:goliath][:port])
+  num_threads                = params[:num_threads]
 
   Chef::Log.info "Creating config file for Kafka-contrib project #{app_name} (#{app_type})"
   template File.join(node[:kafka][:contrib][:deploy][:root], "current/config/#{app_name}.properties") do
@@ -34,6 +35,7 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
       group_id:               group_id,
       app_name:               app_name,
       topic:                  topic,
+      num_threads:            num_threads,                
       vayacondios_host:       vayacondios_host,
       vayacondios_port:       vayacondios_port,
     })

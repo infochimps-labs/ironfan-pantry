@@ -14,3 +14,6 @@ groupid=<%= @group_id %>
 # s3 access keys
 aws.accesskey=<%= node[:aws][:aws_access_key] %>
 aws.secretkey=<%= node[:aws][:aws_secret_access_key] %>
+
+# number of streams to consume on
+consumer.num_threads=<%= @num_threads %>
