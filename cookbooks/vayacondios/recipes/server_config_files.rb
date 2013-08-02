@@ -10,7 +10,7 @@ template File.join(node[:vayacondios][:conf_dir], "vayacondios.yaml") do
     :vayacondios  => {
        :host => "127.0.0.1",
        :port => node[:vayacondios][:goliath][:port],
-       :legacy_mode => node[:vayacondios][:legacy_mode],
+       :vayacondios_legacy_mode => node[:vayacondios][:legacy_mode],
     },
   })
 end
