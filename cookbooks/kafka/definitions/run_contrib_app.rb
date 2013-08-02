@@ -10,7 +10,7 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   kafka_port                 = node[:kafka][:port]
   kafka_home                 = params[:kafka_home] || node[:kafka][:home_dir]
   zookeeper_pairs            = discover_all(:zookeeper, :server).map{ |znode| "#{znode.private_ip}:#{znode.ports[:client_port][:port]}" }.join(',')
-  hashed_options             = (params[:config_file_options]  || node[:kafka][:contrib][:app][:config_file_options])
+  hashed_options             = (params[:config_file_options]  || node[:kafka][:contrib][:app][:config_file_options] || {})
   app_options                = (params[:options]  || node[:kafka][:contrib][:app][:options]).map{ |name, value| "--#{name}=#{value}" }.join(' ')
   app_run_state              = params[:run_state] || node[:kafka][:contrib][:app][:run_state]
   topic                      = params[:topic]     || node[:kafka][:contrib][:app][:topic]
