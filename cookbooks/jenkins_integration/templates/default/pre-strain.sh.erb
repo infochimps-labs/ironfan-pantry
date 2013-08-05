@@ -32,7 +32,7 @@ changes ${COMMIT}
 jenkins_url="<%= node[:jenkins][:server][:host] %>:<%= node[:jenkins][:server][:port] %>"
 
 if [ ${#COOKBOOKS[@]} -gt "0" ]; then
-  for cookbook in ${COOKBOOKS}; do
+  for cookbook in `echo ${COOKBOOKS[@]} | tr ' ' '\n' | sort -u | tr '\n' ' '`; do
     curl -X POST "http://${jenkins_url}/buildByToken/buildWithParameters?job=Ironfan_Pantry_-_1_-_Strain&cookbook=${cookbook}&token=<%= node[:jenkins_integration][:strainer][:token] %>"
   done
 fi
