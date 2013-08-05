@@ -33,11 +33,13 @@ default[:jenkins_integration][:cookbook_ci][:homebases]  = homebases
 #
 # Strainer CI
 #
-default[:jenkins_integration][:strainer][:pantry]        = 'git@github.com:infochimps-labs/ironfan-pantry.git'
-default[:jenkins_integration][:strainer][:notification]  = false
-default[:jenkins_integration][:strainer][:schedule]      = '*/5 * * * *'
-default[:jenkins_integration][:strainer][:test_homebase] = 'https://github.com/infochimps-labs/ironfan-homebase.git'
-default[:jenkins_integration][:strainer][:token]         = 'changeme'
+default[:jenkins_integration][:strainer][:pantry]         = 'git@github.com:infochimps-labs/ironfan-pantry.git'
+default[:jenkins_integration][:strainer][:notification]   = false
+default[:jenkins_integration][:strainer][:schedule]       = '*/5 * * * *'
+default[:jenkins_integration][:strainer][:test_homebase]  = 'https://github.com/infochimps-labs/ironfan-homebase.git'
+default[:jenkins_integration][:strainer][:token]          = 'changeme'
+default[:jenkins_integration][:strainer][:clusters]       = {} # Hash of lists.  Key being the facet, value being list of cookbooks
+                                                               # Example :  "el_ridiculoso-zk" => ['zookeeper'], 
 
 #
 # SMTP
