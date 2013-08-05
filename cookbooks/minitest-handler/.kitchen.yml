@@ -1,0 +1,23 @@
+---
+driver_plugin: lxc
+driver_config:
+  base_container: ubuntu_1204
+  username: ubuntu
+  password: ubuntu
+
+platforms:
+- name: ubuntu_1204
+
+suites:
+- name: default
+  run_list: ["recipe[minitest-handler]", "recipe[minitest-handler_test1]", "recipe[minitest-handler_test1::not_default]"]
+
+- name: legacy_paths
+  run_list: ["recipe[minitest-handler]", "recipe[minitest-handler_test2::legacy_paths]"]
+  attributes:
+    minitest: 
+      recipes: [ "minitest-handler_test2::legacy_paths" ] 
+
+- name: include_recipe
+  run_list: ["recipe[minitest-handler]", "recipe[minitest-handler_test2]"]
+
