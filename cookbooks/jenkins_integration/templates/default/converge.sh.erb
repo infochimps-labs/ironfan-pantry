@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+#
+# Launch a testing instance, yeah!
+#
+source `dirname $0`/shared.inc
+PANTRIES="<%= node[:jenkins_integration][:strainer][:pantry] %>"
+
+h1 "Getting test homebase up-to-date"
+
+repo="<%= node[:jenkins_integration][:strainer][:test_homebase] %>"
+name=${repo##*/}
+name=${name%.git}
+
+function clone_pantry {
+  #FIXME: I couldn't for the life of me to get berks to work... this is temporary fix
+  if [ ! -d "ironfan-pantry" ]; then
+    h2 "Cloning pantries"
+    git clone $PANTRIES
+  else
+    pushd ironfan-pantry
+    git pull
+    popd
+  fi
+}
+
+
+function target {
+  case $cookbook in
+    <% node[:jenkins_integration][:strainer][:facets].each_pair do |k, v| %>
+    <%= v.join("|") %>)
+      FACET="<%= node[:jenkins_integration][:strainer][:cluster] %>-<%= k %>"
+      ;;
+    <% end %>
+  esac
+}
+
+cd $WORKSPACE
+clone_pantry
+if [ ! -d $name ]; then
+  h2 "Checking out $name"
+  indent git clone $repo
+  switch_to $name
+else
+  h2 "Updating $name"
+  switch_to $name
+  indent git up
+fi
+
+#item "track all remote branches"
+#for remote in `git branch -r | grep -v origin/master`; do
+#  indent git checkout -f ${remote#*/}
+#done
+item "Get submodules"
+indent git checkout -f master
+indent git submodule update --init
+
+item "Ensure bundle is loaded"
+indent ensure_bundle
+
+if [ ! -L cookbooks ]; then
+  ln -s ../ironfan-pantry/cookbooks cookbooks
+fi
+item "Uploading $cookbook from master"
+#bundle exec berks install -p master_cookbooks
+bundle exec knife cookbook upload -o cookbooks $cookbook --force # force for now
+
+target
+if [ "$FACET" != "" ]; then 
+  h1 "Launching test instance for integration tests"
+  switch_to ${name}
+  $ROOT_DIR/launch.sh ${FACET} || failure $?
+else 
+  h1 "No instances to launch... this should possibly be a failure in the future" 
+fi
+
