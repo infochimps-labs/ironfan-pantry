@@ -25,7 +25,7 @@ if node[:jenkins_integration][:strainer][:notification] == true
   end
 end
 
-shared_templates = %w[ shared.inc sendmail.sh ]
+shared_templates = %w[ shared.inc sendmail.sh launch.sh ]
 # Kick off independent Strainer tests to progress independent cookbooks
 jenkins_job "Ironfan Pantry - 0 - Prestrain" do
   templates     shared_templates
@@ -40,4 +40,12 @@ jenkins_job "Ironfan Pantry - 1 - Strain" do
   triggers      :token => "#{node[:jenkins_integration][:strainer][:token]}"
   parameters    :cookbook => { :type => 'string' }
   tasks         %w[ strain.sh ]
+end
+
+jenkins_job "Ironfan Pantry - 2 - Converge and Test" do
+  templates     shared_templates
+  retention     :total => 30
+  triggers      :token => "#{node[:jenkins_integration][:strainer][:token]}"
+  parameters    :cookbook => { :type => 'string' }
+  tasks         %w[ converge.sh ]
 end

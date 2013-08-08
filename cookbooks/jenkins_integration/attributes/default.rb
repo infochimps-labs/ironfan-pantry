@@ -38,8 +38,12 @@ default[:jenkins_integration][:strainer][:notification]   = false
 default[:jenkins_integration][:strainer][:schedule]       = '*/5 * * * *'
 default[:jenkins_integration][:strainer][:test_homebase]  = 'https://github.com/infochimps-labs/ironfan-homebase.git'
 default[:jenkins_integration][:strainer][:token]          = 'changeme'
-default[:jenkins_integration][:strainer][:clusters]       = {} # Hash of lists.  Key being the facet, value being list of cookbooks
-                                                               # Example :  "el_ridiculoso-zk" => ['zookeeper'], 
+default[:jenkins_integration][:strainer][:cluster]        = nil
+default[:jenkins_integration][:strainer][:facets]         = { # This is broken because gorillib wont let this be overridden
+                                                              :zk => [ 'zookeeper' ],
+                                                              :es => [ 'elasticsearch' ] 
+                                                            } # Define cluster and make your testing facets
+                                                              
 
 #
 # SMTP

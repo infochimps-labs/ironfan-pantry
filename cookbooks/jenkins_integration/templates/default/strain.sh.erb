@@ -49,3 +49,7 @@ if [ ! -L cookbooks ]; then
 fi
 ensure_bundle
 strain
+
+job="Ironfan_Pantry_-_2_-_Converge_and_Test"
+jenkins_url="<%= node[:jenkins][:server][:host] %>:<%= node[:jenkins][:server][:port] %>"
+curl -X POST "http://${jenkins_url}/buildByToken/buildWithParameters?job=${job}&cookbook=${cookbook}&token=<%= node[:jenkins_integration][:strainer][:token] %>"
