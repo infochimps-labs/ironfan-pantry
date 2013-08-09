@@ -28,7 +28,7 @@ function target {
   case $cookbook in
     <% node[:jenkins_integration][:strainer][:facets].each_pair do |k, v| %>
     <%= v.join("|") %>)
-      FACET="<%= node[:jenkins_integration][:strainer][:cluster] %>-<%= k %>"
+      FACET="<%= k %>"
       ;;
     <% end %>
   esac
