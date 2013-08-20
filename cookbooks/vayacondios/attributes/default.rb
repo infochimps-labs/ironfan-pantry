@@ -1,5 +1,5 @@
-#default[:vayacondios][:user]  = 'www-data'
-#default[:vayacondios][:group] = 'webservers'
+default[:vayacondios][:user]  = 'www-data'
+default[:vayacondios][:group] = 'webservers'
 default[:vayacondios][:auth_port] = 9001
 
 default[:vayacondios][:group] = 'webservers'
