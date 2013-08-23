@@ -159,6 +159,9 @@ default[:hadoop][:hue][:share_dir]                = '/usr/share/hue'
 default[:hadoop][:hue][:time_zone]                = 'UTC'
 default[:hadoop][:hue][:user]                     = 'hue'
 
+default[:hue][:version]           = "2.5.0"
+default[:hue][:release_url]       = "https://dl.dropboxusercontent.com/u/730827/hue/releases/:version:/hue-:version:.tgz"
+
 default[:hadoop][:namenode][:plugins] = []
 default[:hadoop][:datanode][:plugins] = []
 default[:hadoop][:thrift][:port] = 10090
