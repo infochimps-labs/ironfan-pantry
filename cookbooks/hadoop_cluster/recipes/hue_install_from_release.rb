@@ -9,6 +9,11 @@ include_recipe 'install_from'
 #   and links that to /usr/local/share/pig
 #
 
+%w[ libxml2-dev libxslt-dev libsasl2-dev libsasl2-modules-gssapi-mit libmysqlclient-dev
+    python-dev python-setuptools python-simplejson libsqlite3-dev ant ].each do |name|
+  package name
+end
+
 install_from_release('hue') do
   release_url   node[:hue][:release_url]
   version       node[:hue][:version]
