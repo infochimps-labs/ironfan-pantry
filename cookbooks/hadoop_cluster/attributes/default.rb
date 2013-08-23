@@ -181,7 +181,8 @@ default[:hadoop][:codecs] = %w[org.apache.hadoop.io.compress.GzipCodec
                                org.apache.hadoop.io.compress.BZip2Codec]
 
 # for hive
-
+default[:hive][:version]           = "0.10.0"
+default[:hive][:release_url]       = ":apache_mirror:/hive/hive-:version:/hive-:version:.tar.gz"
 # (mysql setup)
 
 # set in credentials and pull in using the hadoop_hive role
@@ -201,6 +202,7 @@ default[:hadoop][:hive][:stats_autogather]         = false
 
 default[:hadoop][:hive][:home_dir]                 = '/usr/lib/hive'
 default[:hadoop][:hive][:conf_dir]                 = '/etc/hive/conf'
+default[:hadoop][:hive][:conf_base_dir]            = '/etc/hive'
 
 # These need to be overridden with the location of a valid jar for
 # this to work.

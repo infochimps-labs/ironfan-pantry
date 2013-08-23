@@ -1,0 +1,5 @@
+#!/bin/sh
+
+export HADOOP_HOME=${HADOOP_HOME:-/usr/lib/hadoop}
+export HIVE_HOME=/usr/lib/hive
+exec /usr/lib/hive/bin/hive "$@"
