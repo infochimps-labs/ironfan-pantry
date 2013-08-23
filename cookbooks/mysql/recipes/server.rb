@@ -142,3 +142,12 @@ execute "mysql-install-privileges" do
   action :nothing
   subscribes :run, resources("template[#{grants_path}]"), :immediately
 end
+
+# NOTE: added by Josh 23 Aug 2013. This ensures that the data
+# directory is accessible by mysql.
+directory node['mysql']['data_dir'] do
+  owner "mysql"
+  group "mysql"
+  mode 0700
+  action :create
+end
