@@ -14,12 +14,19 @@ include_recipe 'install_from'
   package name
 end
 
-install_from_release('hue') do
-  release_url   node[:hue][:release_url]
-  version       node[:hue][:version]
-  home_dir      node[:hadoop][:hue][:home_dir]
-  action        [:install]
-  environment('JAVA_HOME' => node[:java][:java_home]) if node[:java][:java_home]
+remote_file "/usr/local/src/hue-#{node[:hue][:version]}.tar.gz" do
+  source node[:hue][:release_url].gsub(':version:', node[:hue][:version])
+  mode "0644"
+end
+
+execute "tar zxvf hue-#{node[:hue][:version]}.tar.gz" do
+  cwd "/usr/local/src"
+  creates "/usr/local/src/hue"
+end
+
+execute "PREFIX=#{File.basedir(node[:hadoop][:hue][:home_dir])}" do
+  cwd '/usr/local/src/hue'
+  creates node[:hadoop][:hue][:home_dir]
 end
 
 directory node[:hadoop][:hue][:conf_dir] do

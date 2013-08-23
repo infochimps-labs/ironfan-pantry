@@ -155,6 +155,8 @@ default[:hadoop][:hue][:mysql_root_username]      = 'root'
 default[:hadoop][:hue][:mysql_database]           = 'hue'
 default[:hadoop][:hue][:mysql_host]               = 'localhost'
 
+default[:hadoop][:hue][:home_dir]                 = '/usr/local/share/hue'
+
 default[:hadoop][:hue][:share_dir]                = '/usr/share/hue'
 default[:hadoop][:hue][:time_zone]                = 'UTC'
 default[:hadoop][:hue][:user]                     = 'hue'
