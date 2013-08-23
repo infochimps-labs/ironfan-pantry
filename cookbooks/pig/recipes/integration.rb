@@ -49,11 +49,8 @@ Chef::Log.warn "FIXME: not overwriting pig files, just putting a .new file next 
 #
 # Pig configuration, by default HBASE_CONF_DIR is set to garbage
 #
-template "#{node[:pig][:home_dir]}/bin/pig.new" do
-  owner       "root"
-  mode        "0644"
-  source      "pig.erb"
-end
+
+
 
 #
 # Pig configuration, by default HBASE_CONF_DIR is set to garbage

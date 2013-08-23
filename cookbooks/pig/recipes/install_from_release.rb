@@ -39,9 +39,16 @@ install_from_release('pig') do
   home_dir      node[:pig][:home_dir]
   version       node[:pig][:version]
   action        [:build_with_ant, :install]
-  has_binaries  [ 'bin/pig' ]
-  environment('JAVA_HOME' => node[:java][:java_home]) if node[:java][:java_home]
+  environment('JAVA_HOME' => node[:java][:java_home]) if node[:java][:java_home]	
 
   not_if{ ::File.exists?("#{node[:pig][:home_dir]}/pig.jar") }
   # not_if_exists './pig.jar'
+end
+
+
+# Add launch script similar to cloudera
+template "/usr/bin/pig" do
+  owner       "root"
+  mode        "0755"
+  source      "pig.erb"
 end
