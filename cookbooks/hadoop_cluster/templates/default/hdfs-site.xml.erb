@@ -32,6 +32,8 @@
 <property> <name>dfs.datanode.plugins</name> <value><%= @hadoop[:datanode][:plugins].join(",") %></value> <description>Comma-separated list of datanode plugins to be activated. </description> </property>
 <property> <name>dfs.thrift.address</name> <value>0.0.0.0:<%= @hadoop[:thrift][:port] %></value> </property>
 
+<property> <name>dfs.webhdfs.enabled</name> <value><%= @hadoop[:namenode][:webhdfs] %></value> </property>
+
 <!-- <property><name>dfs.hosts</name>                    <value><%= @hadoop[:conf_dir] %>/dfs.hosts</value><final>true</final></property> -->
 
 </configuration>

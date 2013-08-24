@@ -14,6 +14,8 @@ depends          "volumes"
 depends          "tuning"
 depends          "silverware"
 depends          "minidash"
+depends          "install_from"
+depends          "database"
 
 recipe           "hadoop_cluster::default",            "Base configuration for hadoop_cluster"
 recipe           "hadoop_cluster::add_cloudera_repo",  "Add Cloudera repo to package manager"

@@ -19,9 +19,30 @@
 # limitations under the License.
 #
 
+if node[:hadoop][:hue][:ssl][:key]
+  file File.join(node[:hadoop][:hue][:conf_dir], 'hue.key') do
+    owner    node[:hadoop][:hue][:user]
+    mode     '0600'
+    contents node[:hadoop][:hue][:ssl][:key]
+  end
+end
+
+if node[:hadoop][:hue][:ssl][:certificate]
+  file File.join(node[:hadoop][:hue][:conf_dir], 'hue.crt') do
+    owner    node[:hadoop][:hue][:user]
+    mode     '0600'
+    contents node[:hadoop][:hue][:ssl][:certificate]
+  end
+end
+
+require 'securerandom'
+secret_key = SecureRandom.hex
+
+namenode   = discover(:hadoop, :namenode)
+jobtracker = discover(:hadoop, :jobtracker)
+
 template File.join(node[:hadoop][:hue][:conf_dir], 'hue.ini') do
-  owner "root"
-  mode "0644"
-  variables(:hue => node[:hadoop][:hue], :hadoop => node[:hadoop])
-  source "hue.ini.erb"
+  mode     "0644"
+  variables(:hue => node[:hadoop][:hue], :hadoop => node[:hadoop], secret_key: secret_key, namenode: namenode, jobtracker: jobtracker)
+  source   "hue.ini.erb"
 end

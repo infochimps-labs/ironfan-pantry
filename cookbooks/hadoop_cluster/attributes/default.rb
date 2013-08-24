@@ -139,36 +139,13 @@ default[:hadoop][:elephant_bird][:protobuf_ver] = "2.3.0"
 default[:tuning][:ulimit]['hdfs']   = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
 default[:tuning][:ulimit]['mapred'] = { :nofile => { :both => 32768 }, :nproc => { :both => 50000 } }
 
-#
-# Integration
-#
-
-# for hue
-
-default[:hadoop][:hue][:conf_dir]                 = '/etc/hue'
-
-# (mysql setup)
-# set in credentials and pull in using the hadoop_hive role
-# default[:hadoop][:hive][:mysql_password]
-default[:hadoop][:hue][:mysql_hue_username]       = 'hue'
-default[:hadoop][:hue][:mysql_root_username]      = 'root'
-default[:hadoop][:hue][:mysql_database]           = 'hue'
-default[:hadoop][:hue][:mysql_host]               = 'localhost'
-
-default[:hadoop][:hue][:home_dir]                 = '/usr/local/share/hue'
-
-default[:hadoop][:hue][:share_dir]                = '/usr/share/hue'
-default[:hadoop][:hue][:time_zone]                = 'UTC'
-default[:hadoop][:hue][:user]                     = 'hue'
-
-default[:hue][:version]           = "2.5.0"
-default[:hue][:release_url]       = "https://dl.dropboxusercontent.com/u/730827/hue/releases/:version:/hue-:version:.tgz"
-
 default[:hadoop][:namenode][:plugins] = []
 default[:hadoop][:datanode][:plugins] = []
 default[:hadoop][:thrift][:port] = 10090
 default[:hadoop][:jobtracker][:plugins] = []
 default[:hadoop][:jobtracker][:thrift_port] = 9290
+
+default[:hadoop][:namenode][:webhdfs] = 'false'
 
 # configures mapred.jobtracker.completeuserjobs.maximum in
 # mapred-site.xml. This controls the size of the metadata for each
@@ -185,34 +162,72 @@ default[:hadoop][:codecs] = %w[org.apache.hadoop.io.compress.GzipCodec
                                org.apache.hadoop.io.compress.DefaultCodec
                                org.apache.hadoop.io.compress.BZip2Codec]
 
-# for hive
-default[:hive][:version]           = "0.10.0"
-default[:hive][:release_url]       = ":apache_mirror:/hive/hive-:version:/hive-:version:.tar.gz"
-# (mysql setup)
+#
+# == Hive ==
+#
 
-# set in credentials and pull in using the hadoop_hive role
-# default[:hadoop][:hive][:mysql_password]
-default[:hadoop][:hive][:mysql_hive_username]      = 'hiveuser'
-default[:hadoop][:hive][:mysql_root_username]      = 'root'
-default[:hadoop][:hive][:mysql_database]           = 'metastore'
-default[:hadoop][:hive][:input_format]             = 'org.apache.hadoop.hive.ql.io.HiveInputFormat'
+default[:hadoop][:hive][:install_method]             = 'package' # or 'release'
 
-default[:hadoop][:hive][:max_created_files]        = 100_000
+default[:hadoop][:hive][:version]                    = "0.10.0"
+default[:hadoop][:hive][:release_url]                = ":apache_mirror:/hive/hive-:version:/hive-:version:.tar.gz"
 
-# located in :hive => :home_dir
-default[:hadoop][:hive][:mysql_upgrade_script]     = 'scripts/metastore/upgrade/mysql/hive-schema-0.7.0.mysql.sql'
+default[:hadoop][:hive][:home_dir]                   = '/usr/lib/hive'
+default[:hadoop][:hive][:conf_dir]                   = '/etc/hive/conf'
+default[:hadoop][:hive][:conf_base_dir]              = '/etc/hive'
 
-# hive.stats.autogather
-default[:hadoop][:hive][:stats_autogather]         = false
+default[:hadoop][:hive][:mysql][:host]               = 'localhost'
+default[:hadoop][:hive][:mysql][:port]               = 3306
+default[:hadoop][:hive][:mysql][:root_username]      = 'root'
+default[:hadoop][:hive][:mysql][:root_password]      = nil
+default[:hadoop][:hive][:mysql][:username]           = 'hiveuser'
+default[:hadoop][:hive][:mysql][:password]           = nil
+default[:hadoop][:hive][:mysql][:database]           = 'metastore'
 
-default[:hadoop][:hive][:home_dir]                 = '/usr/lib/hive'
-default[:hadoop][:hive][:conf_dir]                 = '/etc/hive/conf'
-default[:hadoop][:hive][:conf_base_dir]            = '/etc/hive'
+default[:hadoop][:hive][:mysql][:upgrade_script]     = 'scripts/metastore/upgrade/mysql/hive-schema-:version:.mysql.sql'
+default[:hadoop][:hive][:mysql][:connector_jar]      = 'mysql-connector-java-5.1.22-bin.jar'
+default[:hadoop][:hive][:mysql][:connector_location] = 'https://s3.amazonaws.com/artifacts.chimpy.us/jars/mysql-connector-java-5.1.22-bin.jar'
 
-# These need to be overridden with the location of a valid jar for
-# this to work.
-default[:hadoop][:hive][:mysql_connector_jar]      = 'mysql-connector-java-5.1.22-bin.jar'
-default[:hadoop][:hive][:mysql_connector_location] = 'https://s3.amazonaws.com/artifacts.chimpy.us/jars/mysql-connector-java-5.1.22-bin.jar'
+default[:hadoop][:hive][:input_format]               = 'org.apache.hadoop.hive.ql.io.HiveInputFormat'
 
+default[:hadoop][:hive][:max_created_files]          = 100_000
 
-default[:hadoop][:hue][:use_https] = false
+default[:hadoop][:hive][:stats_autogather]           = false
+
+#
+# == Hue == 
+#
+
+default[:hadoop][:hue][:install_method]        = 'package'
+
+default[:hadoop][:hue][:version]               = "2.5.0"
+default[:hadoop][:hue][:release_url]           = "https://dl.dropboxusercontent.com/u/730827/hue/releases/:version:/hue-:version:.tgz"
+
+default[:hadoop][:hue][:user]                  = 'hue'
+default[:hadoop][:hue][:group]                 = 'hue'
+default[:users ]['hue'][:uid]                  = 309
+default[:groups]['hue'][:gid]                  = 309
+
+default[:hadoop][:hue][:home_dir]              = '/usr/lib/hue'
+default[:hadoop][:hue][:conf_dir]              = '/etc/hue/conf'
+default[:hadoop][:hue][:conf_base_dir]         = '/etc/hue'
+
+default[:hadoop][:hue][:port]                  = 8888
+default[:hadoop][:hue][:time_zone]             = 'UTC'
+
+default[:hadoop][:hue][:ssl][:key]             = nil
+default[:hadoop][:hue][:ssl][:certificate]     = nil
+
+default[:hadoop][:hue][:mysql][:host]          = 'localhost'
+default[:hadoop][:hue][:mysql][:port]          = 3306
+default[:hadoop][:hue][:mysql][:username]      = 'hue'
+default[:hadoop][:hue][:mysql][:password]      = nil
+default[:hadoop][:hue][:mysql][:root_username] = 'root'
+default[:hadoop][:hue][:mysql][:root_password] = nil
+default[:hadoop][:hue][:mysql][:database]      = 'hue'
+
+default[:hadoop][:hue][:beeswax][:fqdn]        = nil
+default[:hadoop][:hue][:beeswax][:port]        = 8002
+default[:hadoop][:hue][:beeswax][:meta_port]   = 8003
+default[:hadoop][:hue][:beeswax][:heap_size]   = 2048
+
+default[:hadoop][:hue][:use_https]             = false
