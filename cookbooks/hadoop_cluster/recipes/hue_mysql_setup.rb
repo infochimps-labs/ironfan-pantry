@@ -35,13 +35,14 @@ hue_database = node[:hadoop][:hue][:mysql][:database]
 # 
 # http://mysql-python.sourceforge.net/FAQ.html#importerror
 pip = File.join(node[:hadoop][:hue][:home_dir], "build/env/bin/pip")
+hue_cmd = File.join(node[:hadoop][:hue][:home_dir], "/build/env/bin/hue")
 bash "Initialize Hue MySQL database" do
   cwd   node[:hadoop][:hue][:home_dir]
   user  node[:hadoop][:hue][:user]
   code  <<-EOF
-#{pip} uninstall -y MySQL-python
-#{pip} install MySQL-python
-./build/env/bin/hue syncdb --noinput
+sudo #{pip} uninstall -y MySQL-python
+sudo #{pip} install MySQL-python
+sudo #{hue_cmd} syncdb --noinput
 EOF
   action :nothing
 end
