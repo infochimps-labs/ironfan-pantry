@@ -7,12 +7,18 @@ daemon_user 'hue'
   package name
 end
 
+directory node[:hadoop][:hue][:home_dir] do
+  action :delete
+  recursive true
+  only_if do File.exists?(node[:hadoop][:hue][:home_dir]) end
+end
+
 install_from_release('hue') do
   release_url node[:hadoop][:hue][:release_url]
   version     node[:hadoop][:hue][:version]
-  home_dir    node[:hadoop][:hue][:home_dir]
+  # home_dir    node[:hadoop][:hue][:home_dir]
   action      :install_with_make
-  environment({"PREFIX" => node[:hadoop][:hue][:home_dir]})
+  environment({"PREFIX" => node[:hadoop][:hue][:install_dir]})
 end
 
 # When you install Hue via Cloudera's PPA the conf directory is

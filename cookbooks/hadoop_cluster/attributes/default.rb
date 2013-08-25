@@ -207,6 +207,7 @@ default[:hadoop][:hue][:group]                 = 'hue'
 default[:users ]['hue'][:uid]                  = 309
 default[:groups]['hue'][:gid]                  = 309
 
+default[:hadoop][:hue][:install_dir]           = '/usr/lib'
 default[:hadoop][:hue][:home_dir]              = '/usr/lib/hue'
 default[:hadoop][:hue][:conf_dir]              = '/etc/hue/conf'
 default[:hadoop][:hue][:conf_base_dir]         = '/etc/hue'
