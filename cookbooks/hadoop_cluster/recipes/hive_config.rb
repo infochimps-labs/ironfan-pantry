@@ -26,7 +26,7 @@ directory File.join(node[:hadoop][:log_dir], 'hive') do
   mode   "0775"
 end
 
-template File.join(node[:hadoop][:hive][:conf_dir], 'log4j.properties') do
+template File.join(node[:hadoop][:hive][:conf_dir], 'hive-log4j.properties') do
   mode   "0644"
   source "hive.log4j.properties.erb"
 end

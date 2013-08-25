@@ -23,9 +23,9 @@ if node[:hadoop][:hue][:ssl][:key]
   file File.join(node[:hadoop][:hue][:conf_dir], 'hue.key') do
     owner    node[:hadoop][:hue][:user]
     mode     '0600'
-    contents node[:hadoop][:hue][:ssl][:key]
+    content  node[:hadoop][:hue][:ssl][:key]
     action   :create
-    notifies :restart, resources(service: 'hue'), :delayed
+    notifies :restart, 'service[hue]', :delayed
   end
 end
 
@@ -33,9 +33,9 @@ if node[:hadoop][:hue][:ssl][:certificate]
   file File.join(node[:hadoop][:hue][:conf_dir], 'hue.crt') do
     owner    node[:hadoop][:hue][:user]
     mode     '0600'
-    contents node[:hadoop][:hue][:ssl][:certificate]
+    content  node[:hadoop][:hue][:ssl][:certificate]
     action   :create
-    notifies :restart, resources(service: 'hue'), :delayed
+    notifies :restart, 'service[hue]', :delayed
   end
 end
 
@@ -50,14 +50,14 @@ template File.join(node[:hadoop][:hue][:conf_dir], 'log.conf') do
   source 'hue.log.conf.erb'
   mode   '0644'
   action :create
-  notifies :restart, resources(service: 'hue'), :delayed
+  notifies :restart, 'service[hue]', :delayed
 end
 
 template File.join(node[:hadoop][:hue][:conf_dir], 'log4j.properties') do
   source 'hue.log4j.properties.erb'
   mode   '0644'
   action :create
-  notifies :restart, resources(service: 'hue'), :delayed
+  notifies :restart, 'service[hue]', :delayed
 end
 
 require 'securerandom'
@@ -70,5 +70,5 @@ template File.join(node[:hadoop][:hue][:conf_dir], 'hue.ini') do
   mode     "0644"
   variables(:hue => node[:hadoop][:hue], :hadoop => node[:hadoop], secret_key: secret_key, namenode: namenode, jobtracker: jobtracker)
   source   "hue.ini.erb"
-  notifies :restart, resources(service: 'hue'), :delayed
+  notifies :restart, 'service[hue]', :delayed
 end

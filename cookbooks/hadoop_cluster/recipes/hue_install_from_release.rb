@@ -12,7 +12,7 @@ install_from_release('hue') do
   version     node[:hadoop][:hue][:version]
   action      :install_with_make
   environment({"PREFIX" => node[:hadoop][:hue][:prefix_dir]})
-  creates     node[:hadoop][:hue][:home_dir]
+  not_if      { File.directory?(node[:hadoop][:hue][:home_dir]) }
 end
 
 # When you install Hue via Cloudera's PPA the conf directory is
