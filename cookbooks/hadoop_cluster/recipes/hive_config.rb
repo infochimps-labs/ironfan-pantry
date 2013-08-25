@@ -1,4 +1,4 @@
-#
+ #
 # Cookbook Name::       hadoop_cluster
 # Description::         Configures Hadoop Hive (SQL with HDFS backend)
 # Recipe::              hive_config
@@ -22,7 +22,7 @@
 if node[:hadoop][:hive][:install_method] == 'release'
   war_version = node[:hadoop][:hive][:version]
 else
-  war_version = [node[:hadoop][:hive][:version], node[:apt][:cloudera][:release_name]].map(&:to_s).join('-'))
+  war_version = [node[:hadoop][:hive][:version], node[:apt][:cloudera][:release_name]].map(&:to_s).join('-')
 end
 
 template File.join(node[:hadoop][:hive][:conf_dir], 'hive-site.xml') do

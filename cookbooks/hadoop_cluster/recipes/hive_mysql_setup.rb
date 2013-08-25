@@ -37,7 +37,7 @@ mysql_database hive_database  do
   action     :create
 end
 
-script_relative_path = node[:hadoop][:hive][:mysql_upgrade_script].replace(':version:', node[:hadoop][:hive][:version])
+script_relative_path = node[:hadoop][:hive][:mysql][:upgrade_script].sub(':version:', node[:hadoop][:hive][:version])
 script_absolute_path = File.join(node[:hadoop][:hive][:home_dir], script_relative_path)
 mysql_database hive_database do
   connection    mysql_connection_info
@@ -56,7 +56,7 @@ mysql_database_user hive_user do
   action        [:create, :grant]
 end
 
-remote_file File.join(node[:hadoop][:hive][:home_dir], 'lib', node[:hadoop][:hive][:mysql_connector_jar]) do
+remote_file File.join(node[:hadoop][:hive][:home_dir], 'lib', node[:hadoop][:hive][:mysql][:connector_jar] ) do
   source node[:hadoop][:hive][:mysql_connector_location]
   mode 0644
 end
