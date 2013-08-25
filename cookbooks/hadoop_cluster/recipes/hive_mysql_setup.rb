@@ -45,6 +45,7 @@ script_absolute_path = File.join(node[:hadoop][:hive][:home_dir], script_relativ
 #   sql           "SOURCE #{script_absolute_path}"
 # end
 
+# This works but the above method doesn't. I suspect the above method blows up because expects the script on the server.
 mysql_statements = [
                     "USE #{hive_database}",
                     "SOURCE #{script_absolute_path}",
@@ -73,6 +74,6 @@ mysql_database_user hive_user do
 end
 
 remote_file File.join(node[:hadoop][:hive][:home_dir], 'lib', node[:hadoop][:hive][:mysql][:connector_jar] ) do
-  source node[:hadoop][:hive][:mysql_connector_location]
+  source node[:hadoop][:hive][:mysql][:connector_location]
   mode 0644
 end
