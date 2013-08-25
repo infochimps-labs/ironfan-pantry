@@ -39,10 +39,26 @@ end
 
 script_relative_path = node[:hadoop][:hive][:mysql][:upgrade_script].sub(':version:', node[:hadoop][:hive][:version])
 script_absolute_path = File.join(node[:hadoop][:hive][:home_dir], script_relative_path)
-mysql_database hive_database do
-  connection    mysql_connection_info
-  action        :query
-  sql           "SOURCE #{script_absolute_path}"
+# mysql_database hive_database do
+#   connection    mysql_connection_info
+#   action        :query
+#   sql           "SOURCE #{script_absolute_path}"
+# end
+
+mysql_statements = [
+                    "USE #{hive_database}",
+                    "SOURCE #{script_absolute_path}",
+].join(";")
+execute "Run metastore update script" do
+  command [
+           "/usr/bin/mysql",
+           "-h", mysql_connection_info[:host],
+           "-P", mysql_connection_info[:port],
+           "-u", mysql_connection_info[:username],
+           ["-p", mysql_connection_info[:password]].join,
+           "-e", "\"SOURCE #{script_absolute_path}\"",
+           "-D", hive_database  
+          ].join(" ")
 end
 
 hive_user = node[:hadoop][:hive][:mysql][:username]
