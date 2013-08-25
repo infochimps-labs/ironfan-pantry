@@ -207,12 +207,12 @@ default[:hadoop][:hue][:group]                 = 'hue'
 default[:users ]['hue'][:uid]                  = 309
 default[:groups]['hue'][:gid]                  = 309
 
-default[:hadoop][:hue][:install_dir]           = '/usr/lib'
+default[:hadoop][:hue][:prefix_dir]            = '/usr/lib'
 default[:hadoop][:hue][:home_dir]              = '/usr/lib/hue'
 default[:hadoop][:hue][:conf_dir]              = '/etc/hue/conf'
 default[:hadoop][:hue][:conf_base_dir]         = '/etc/hue'
 
-default[:hadoop][:hue][:port]                  = 8888
+default[:hadoop][:hue][:port]                  = 80
 default[:hadoop][:hue][:time_zone]             = 'UTC'
 
 default[:hadoop][:hue][:ssl][:key]             = nil
@@ -231,4 +231,4 @@ default[:hadoop][:hue][:beeswax][:port]        = 8002
 default[:hadoop][:hue][:beeswax][:meta_port]   = 8003
 default[:hadoop][:hue][:beeswax][:heap_size]   = 2048
 
-default[:hadoop][:hue][:use_https]             = false
+default[:hadoop][:hue][:jobtracker_plugin_location] = 'https://s3.amazonaws.com/artifacts.chimpy.us/jars/hue-plugins-2.5.0-SNAPSHOT.jar'

@@ -22,6 +22,8 @@
 # dependencies and compile-time tools
 #--------------------------------------------------------------------------------
 
+include_recipe "mysql::client"
+
 # We *connect* as the root user but will create the hive user later.
 mysql_connection_info = {
   host:     node[:hadoop][:hive][:mysql][:host],
@@ -39,13 +41,6 @@ end
 
 script_relative_path = node[:hadoop][:hive][:mysql][:upgrade_script].sub(':version:', node[:hadoop][:hive][:version])
 script_absolute_path = File.join(node[:hadoop][:hive][:home_dir], script_relative_path)
-# mysql_database hive_database do
-#   connection    mysql_connection_info
-#   action        :query
-#   sql           "SOURCE #{script_absolute_path}"
-# end
-
-# This works but the above method doesn't. I suspect the above method blows up because expects the script on the server.
 mysql_statements = [
                     "USE #{hive_database}",
                     "SOURCE #{script_absolute_path}",
@@ -58,7 +53,7 @@ execute "Run metastore update script" do
            "-u", mysql_connection_info[:username],
            ["-p", mysql_connection_info[:password]].join,
            "-e", "\"SOURCE #{script_absolute_path}\"",
-           "-D", hive_database  
+           "-D", hive_database
           ].join(" ")
 end
 

@@ -1,24 +1,18 @@
 include_recipe 'install_from'
 
-daemon_user 'hue'
+daemon_user 'hadoop.hue'
 
 %w[ libxml2-dev libxslt-dev libsasl2-dev libsasl2-modules-gssapi-mit libmysqlclient-dev
     python-dev python-setuptools python-simplejson libsqlite3-dev ant ].each do |name|
   package name
 end
 
-directory node[:hadoop][:hue][:home_dir] do
-  action :delete
-  recursive true
-  only_if do File.exists?(node[:hadoop][:hue][:home_dir]) end
-end
-
 install_from_release('hue') do
   release_url node[:hadoop][:hue][:release_url]
   version     node[:hadoop][:hue][:version]
-  # home_dir    node[:hadoop][:hue][:home_dir]
   action      :install_with_make
-  environment({"PREFIX" => node[:hadoop][:hue][:install_dir]})
+  environment({"PREFIX" => node[:hadoop][:hue][:prefix_dir]})
+  creates     node[:hadoop][:hue][:home_dir]
 end
 
 # When you install Hue via Cloudera's PPA the conf directory is
@@ -26,8 +20,6 @@ end
 # we will now symlink /etc/hue/conf to.
 
 # Delete /etc/hue/conf if it already exists and is *not* a symlink.
-
-# Delete /etc/hive/conf if it already exists and is *not* a symlink.
 directory node[:hadoop][:hue][:conf_dir] do
   action :delete
   only_if do !File.symlink?(node[:hadoop][:hue][:conf_dir]) end

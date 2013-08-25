@@ -19,6 +19,18 @@
 # limitations under the License.
 #
 
+directory File.join(node[:hadoop][:log_dir], 'hive') do
+  action :create
+  owner  'mapred'
+  group  "hadoop"
+  mode   "0775"
+end
+
+template File.join(node[:hadoop][:hive][:conf_dir], 'log4j.properties') do
+  mode   "0644"
+  source "hive.log4j.properties.erb"
+end
+
 if node[:hadoop][:hive][:install_method] == 'release'
   war_version = node[:hadoop][:hive][:version]
 else
@@ -26,7 +38,6 @@ else
 end
 
 template File.join(node[:hadoop][:hive][:conf_dir], 'hive-site.xml') do
-  owner "root"
   mode "0644"
   variables(:hive => node[:hadoop][:hive], war_version: war_version)
   source "hive-site.xml.erb"

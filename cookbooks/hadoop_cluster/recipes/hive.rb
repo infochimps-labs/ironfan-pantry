@@ -19,6 +19,8 @@
 # limitations under the License.
 #
 
+include_recipe "hadoop_cluster"
+
 if node[:hadoop][:hive][:install_method] == 'release'
   include_recipe "hadoop_cluster::hive_install_from_release"
 else
