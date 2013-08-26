@@ -23,7 +23,7 @@ directory File.join(node[:hadoop][:log_dir], 'hive') do
   action :create
   owner  'mapred'
   group  "hadoop"
-  mode   "0775"
+  mode   "0777"
 end
 
 template File.join(node[:hadoop][:hive][:conf_dir], 'hive-log4j.properties') do
