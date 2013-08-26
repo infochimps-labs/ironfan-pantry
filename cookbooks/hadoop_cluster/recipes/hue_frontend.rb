@@ -10,8 +10,8 @@ announce(:hadoop, :hue, {
   daemons: {
     ui: {
       user: 'root',
-      name: 'python',
-      cmd:  'hue'
+      name: 'python2.7',
+      cmd:  'hue.*supervisor'
     },
   },
   logs: {
