@@ -212,7 +212,7 @@ default[:hadoop][:hue][:home_dir]              = '/usr/lib/hue'
 default[:hadoop][:hue][:conf_dir]              = '/etc/hue/conf'
 default[:hadoop][:hue][:conf_base_dir]         = '/etc/hue'
 
-default[:hadoop][:hue][:port]                  = 80
+default[:hadoop][:hue][:port]                  = 443
 default[:hadoop][:hue][:time_zone]             = 'UTC'
 
 default[:hadoop][:hue][:ssl][:key]             = nil
