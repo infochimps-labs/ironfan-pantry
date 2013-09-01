@@ -82,7 +82,7 @@ announce(:zabbix, :agent,
          :realm => discovery_realm(:zabbix, :server), 
          :logs  => { :agent => node.zabbix.agent.log_dir },
          :ports => { :agent => {
-             :port    => 10051,
+             :port    => 10050,
              :monitor => false
            }
          },
