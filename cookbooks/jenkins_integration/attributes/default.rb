@@ -7,7 +7,36 @@ default[:jenkins_integration][:git][:email]     = 'jenkins@example.org'
 default[:jenkins_integration][:security]        = 'local_users'
 default[:jenkins_integration][:deploy_key]      = nil           # Set this in cluster
 
-node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor build-token-root ]
+# FIXME: Adding a plugin here seems to only work on a first-converge (new node), not subsequent converges
+node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor build-token-root radiatorviewplugin ]
+
+# Allow dashboard to be visibile (read-only) to non-authenticated users
+default[:jenkins_integration][:addl_permissions] = %w[hudson.model.Hudson.Read:anonymous hudson.model.Item.Read:anonymous hudson.model.View.Read:anonymous]
+
+radiator = <<eos
+    <hudson.model.RadiatorView plugin="radiatorviewplugin@1.13">
+      <owner class="hudson" reference="../../.."/>
+      <name>Converge</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+        <string>Ironfan_Cookbooks_-_1_-_Prepare_testing</string>
+        <string>Ironfan_Cookbooks_-_2_-_Test_and_stage</string>
+        <string>Ironfan_Cookbooks_-_3_-_Test_known_broken</string>
+      </jobNames>
+      <jobFilters/>
+      <columns/>
+      <recurse>true</recurse>
+      <showStable>false</showStable>
+      <showStableDetail>false</showStableDetail>
+      <highVis>true</highVis>
+      <groupByPrefix>false</groupByPrefix>
+    </hudson.model.RadiatorView>
+eos
+
+default[:jenkins_integration][:addl_views] = [ radiator ]
 
 # 
 # Cookbook CI
@@ -17,7 +46,7 @@ default[:jenkins_integration][:cookbook_ci][:chef_user]  = 'test'
 default[:jenkins_integration][:cookbook_ci][:targets]    = [ 'testharness-simple' ]
 default[:jenkins_integration][:cookbook_ci][:broken]     = nil   # Set to launch a known-broken facet
 default[:jenkins_integration][:cookbook_ci][:branch]     = 'master'
-default[:jenkins_integration][:cookbook_ci][:schedule]   = '@midnight'
+default[:jenkins_integration][:cookbook_ci][:schedule]   = '0 */2 * * *'
 default[:jenkins_integration][:cookbook_ci][:max_wait]   = 60*20 # 20 minutes
 
 koans = Mash.new()

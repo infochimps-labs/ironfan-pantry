@@ -33,7 +33,7 @@ jenkins_job "Ironfan Cookbooks - 1 - Prepare testing" do
   templates     shared_templates
   tasks         %w[ checkout.sh enqueue_tests.sh ]
   triggers      :schedule => cookbook_ci[:schedule]
-  conditional   :regexp => "SUCCESS: #{cookbook_ci[:koan][:testing]}",
+  conditional   :regexp => "SUCCESS:",
                 :target => "Ironfan Cookbooks - 2 - Test and stage"
 end
 
