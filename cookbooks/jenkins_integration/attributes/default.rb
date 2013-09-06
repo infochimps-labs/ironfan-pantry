@@ -8,7 +8,7 @@ default[:jenkins_integration][:security]        = 'local_users'
 default[:jenkins_integration][:deploy_key]      = nil           # Set this in cluster
 
 # FIXME: Adding a plugin here seems to only work on a first-converge (new node), not subsequent converges
-node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor build-token-root radiatorviewplugin conditional-buildstep ]
+node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor build-token-root radiatorviewplugin textfinder-run-condition parameterized-trigger run-condition conditional-buildstep ]
 
 # Allow dashboard to be visibile (read-only) to non-authenticated users
 default[:jenkins_integration][:addl_permissions] = %w[hudson.model.Hudson.Read:anonymous hudson.model.Item.Read:anonymous hudson.model.View.Read:anonymous]
