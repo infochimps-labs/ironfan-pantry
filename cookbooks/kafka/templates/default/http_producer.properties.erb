@@ -6,7 +6,3 @@ zk.connect=localhost:2181
 <% else %>
 zk.connect=<%= @zookeeper %>
 <% end %>
-kafka.producer.http.cookie.key=<%=        @hashed_options[:cookie_key]    %>
-kafka.producer.http.cookie.domain=<%=     @hashed_options[:cookie_domain] %>
-kafka.producer.http.cookie.path=<%=       @hashed_options[:cookie_path]   %>
-kafka.producer.http.cookie.expiration=<%= @hashed_options[:cookie_exp]    %>

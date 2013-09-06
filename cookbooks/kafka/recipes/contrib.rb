@@ -39,7 +39,7 @@ deploy_revision node[:kafka][:contrib][:deploy][:root] do
 
     bash 'maven package kafka-contrib' do
       cwd               current_release
-      code              'mvn package -DskipTests'
+      code              'mvn package -DskipTests=true'
     end
   end
 end
@@ -62,7 +62,6 @@ contrib_apps.each do |app_name|
     topic                 node[:kafka][:contrib][:app][app_name][:topic]
     run_state             node[:kafka][:contrib][:app][app_name][:run_state]
     kafka_home            node[:kafka][:contrib][:app][app_name][:kafka_home]
-    num_threads           node[:kafka][:contrib][:app][app_name][:num_threads]
   end
 end
 
