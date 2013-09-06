@@ -124,12 +124,12 @@
       </command>
     </hudson.tasks.Shell>
     <%- unless @conditional.empty? %>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.2.1">
-      <condition class="org.jenkins_ci.plugins.text_finder_run_condition.TextFinderCondition" plugin="text-finder-run-condition@0.1">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep">
+      <condition class="org.jenkins_ci.plugins.text_finder_run_condition.TextFinderCondition" plugin="text-finder-run-condition">
         <regexp><%= @conditional[:regexp] %></regexp>
         <checkConsoleOutput>true</checkConsoleOutput>
       </condition>
-      <buildStep class="hudson.plugins.parameterizedtrigger.TriggerBuilder" plugin="parameterized-trigger@2.16">
+      <buildStep class="hudson.plugins.parameterizedtrigger.TriggerBuilder" plugin="parameterized-trigger">
         <configs>
           <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
             <configs class="java.util.Collections$EmptyList"/>
@@ -140,7 +140,7 @@
           </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
         </configs>
       </buildStep>
-      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$DontRun" plugin="run-condition@0.10"/>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$DontRun" plugin="run-condition"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
     <%- end %>
   </builders>
