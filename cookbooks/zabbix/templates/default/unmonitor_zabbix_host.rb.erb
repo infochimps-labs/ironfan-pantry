@@ -1,0 +1,23 @@
+#!/usr/bin/env ruby
+
+def bail error
+  $stderr.puts("#{e.class} -- #{error.message}")
+  exit(1)
+end
+
+begin
+  require 'rubygems'
+  require 'rubix'
+
+  url = File.join('http://<%= @ip %>', '<%= node.zabbix.api.path %>')
+
+  Rubix.connect(url, '<%= node[:zabbix][:api][:username] %>', '<%= node[:zabbix][:api][:password] %>')
+  host = Rubix::Host.find(:name => '<%= node.name %>')
+  if host
+    host.monitored = false
+    host.save
+  end
+  exit(0)
+rescue => e
+  bail(e)
+end
