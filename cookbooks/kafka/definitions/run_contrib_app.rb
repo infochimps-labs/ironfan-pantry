@@ -17,7 +17,7 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   run_as_user                = (params[:user]     || node[:kafka][:contrib][:default_app_user])
   vcd_tmp                    = discover(:vayacondios, :server)
   vayacondios_host           = (vcd_tmp && vcd_tmp.private_ip)
-  vayacondios_port           = (vcd_tmp && vcd_tmp.ports[:goliath][:port])
+  vayacondios_port           = (vcd_tmp && vcd_tmp.ports[:nginx][:port])
 
   Chef::Log.info "Creating config file for Kafka-contrib project #{app_name} (#{app_type})"
   template File.join(node[:kafka][:contrib][:deploy][:root], "current/config/#{app_name}.properties") do
@@ -45,13 +45,15 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   end
 
   log_monitor_info           = {}
+  daemon_monitor_info        = {}
   daemons                    = params[:daemon_count] || node[:kafka][:contrib][:app][:daemon_count]
+  
   daemons.times do |index|
-
     app_name_with_index      = "#{app_name}-#{index}"
     indexed_log_dir          = File.join(node[:kafka][:contrib][:log_dir], app_name_with_index)
     log_monitor_info.merge!(app_name_with_index.to_sym => indexed_log_dir)
-
+    daemon_monitor_info.merge!(app_name_with_index.to_sym => { service: "kafka_#{app_name_with_index}" })
+    
     # Create the app-specific log directory
     directory indexed_log_dir do
       action                 :create
@@ -76,16 +78,9 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
       })
     end
   end
-
+  
   announce(:kafka_contrib, app_name.to_s.to_sym, {
-    logs:                    log_monitor_info,
-    daemons: {
-      kafka_contrib: {
-        name:                'java',
-        user:                'root',
-        cmd:                 app_type,
-        number:              params[:daemon_count].to_i
-      }
-    }
+    logs:    log_monitor_info,
+    daemons: daemon_monitor_info,
   })
 end
