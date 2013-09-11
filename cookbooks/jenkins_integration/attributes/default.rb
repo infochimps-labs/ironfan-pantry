@@ -43,7 +43,8 @@ default[:jenkins_integration][:addl_views] = [ radiator ]
 # 
 default[:jenkins_integration][:cookbook_ci][:test_homebase] = 'git@github.com:infochimps-labs/ironfan-homebase.git'
 default[:jenkins_integration][:cookbook_ci][:chef_user]  = 'test'
-default[:jenkins_integration][:cookbook_ci][:targets]    = [ 'testharness-simple' ]
+default[:jenkins_integration][:cookbook_ci][:targets][:primary]    = [ 'testharness-simple' ]
+default[:jenkins_integration][:cookbook_ci][:targets][:secondary]    = [ 'testharness-simple' ]
 default[:jenkins_integration][:cookbook_ci][:broken]     = nil   # Set to launch a known-broken facet
 default[:jenkins_integration][:cookbook_ci][:branch]     = 'master'
 default[:jenkins_integration][:cookbook_ci][:schedule]   = '0 */2 * * *'
