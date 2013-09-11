@@ -2,11 +2,26 @@ class Chef
   
   module RubixConnection
 
+    class LogProxy
+      attr_accessor :context
+      def initialize context
+        self.context = context
+      end
+      def log log_level_code, log_message
+        log_level_name = ([:debug, :info, :warn, :error, :fatal][log_level_code] || :info)
+        context.log(log_message) do
+          level   log_level_name
+          message log_message
+          action  :nothing
+        end.run_action(:write)
+      end
+    end
+
     # The version of Rubix we expect to use.
-    RUBIX_VERSION = '0.5.14'
+    RUBIX_VERSION = '0.9.0' unless defined?(RUBIX_VERSION)
 
     # For a pool of shared connections to Zabbix API servers.
-    CONNECTIONS = {  }
+    CONNECTIONS = {  } unless defined?(CONNECTIONS)
     
     def connect_to_zabbix_server ip
       # Use an already existing connection if we have one.
@@ -21,6 +36,8 @@ class Chef
       begin
         gem     'rubix', ">= #{::Chef::RubixConnection::RUBIX_VERSION}"
         require 'rubix'
+        # Hook up Rubix's logger to Chef's logger.
+        ::Rubix.logger = LogProxy.new(self)
       rescue Gem::LoadError, LoadError => e
         gem_package('configliere') { action :nothing }.run_action(:install)
         gem_package('rubix') { action :nothing ; version ::Chef::RubixConnection::RUBIX_VERSION }.run_action(:install)
@@ -31,9 +48,6 @@ class Chef
         retry unless retries > 1
       end
 
-      # Hook up Rubix's logger to Chef's logger.
-      ::Rubix.logger = Chef::Log.logger
-      
       url = File.join(ip, node.zabbix.api.path)
       begin
         timeout(5) do
@@ -68,6 +82,6 @@ class Chef
     def default_zabbix_server_ip
       all_zabbix_server_ips.first
     end
+
   end
-  
 end

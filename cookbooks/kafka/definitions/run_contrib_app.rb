@@ -1,4 +1,4 @@
-define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_id: nil, topic: nil, run_state: nil, user: nil, kafka_home: nil, config_file_options: nil, num_threads: nil do
+define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_id: nil, topic: nil, run_state: nil, user: nil, kafka_home: nil, config_file_options: nil do
 
   app_type                   = params[:app_type]
   app_name                   = params[:name]
@@ -10,15 +10,14 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   kafka_port                 = node[:kafka][:port]
   kafka_home                 = params[:kafka_home] || node[:kafka][:home_dir]
   zookeeper_pairs            = discover_all(:zookeeper, :server).map{ |znode| "#{znode.private_ip}:#{znode.ports[:client_port][:port]}" }.join(',')
-  hashed_options             = (params[:config_file_options]  || node[:kafka][:contrib][:app][:config_file_options] || {})
+  hashed_options             = (params[:config_file_options]  || node[:kafka][:contrib][:app][:config_file_options])
   app_options                = (params[:options]  || node[:kafka][:contrib][:app][:options]).map{ |name, value| "--#{name}=#{value}" }.join(' ')
   app_run_state              = params[:run_state] || node[:kafka][:contrib][:app][:run_state]
   topic                      = params[:topic]     || node[:kafka][:contrib][:app][:topic]
   run_as_user                = (params[:user]     || node[:kafka][:contrib][:default_app_user])
   vcd_tmp                    = discover(:vayacondios, :server)
   vayacondios_host           = (vcd_tmp && vcd_tmp.private_ip)
-  vayacondios_port           = (vcd_tmp && vcd_tmp.ports[:goliath][:port])
-  num_threads                = params[:num_threads]
+  vayacondios_port           = (vcd_tmp && vcd_tmp.ports[:nginx][:port])
 
   Chef::Log.info "Creating config file for Kafka-contrib project #{app_name} (#{app_type})"
   template File.join(node[:kafka][:contrib][:deploy][:root], "current/config/#{app_name}.properties") do
@@ -35,7 +34,6 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
       group_id:               group_id,
       app_name:               app_name,
       topic:                  topic,
-      num_threads:            num_threads,                
       vayacondios_host:       vayacondios_host,
       vayacondios_port:       vayacondios_port,
     })
@@ -47,13 +45,15 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   end
 
   log_monitor_info           = {}
+  daemon_monitor_info        = {}
   daemons                    = params[:daemon_count] || node[:kafka][:contrib][:app][:daemon_count]
+  
   daemons.times do |index|
-
     app_name_with_index      = "#{app_name}-#{index}"
     indexed_log_dir          = File.join(node[:kafka][:contrib][:log_dir], app_name_with_index)
     log_monitor_info.merge!(app_name_with_index.to_sym => indexed_log_dir)
-
+    daemon_monitor_info.merge!(app_name_with_index.to_sym => { service: "kafka_#{app_name_with_index}" })
+    
     # Create the app-specific log directory
     directory indexed_log_dir do
       action                 :create
@@ -78,16 +78,9 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
       })
     end
   end
-
+  
   announce(:kafka_contrib, app_name.to_s.to_sym, {
-    logs:                    log_monitor_info,
-    daemons: {
-      kafka_contrib: {
-        name:                'java',
-        user:                'root',
-        cmd:                 app_type,
-        number:              params[:daemon_count].to_i
-      }
-    }
+    logs:    log_monitor_info,
+    daemons: daemon_monitor_info,
   })
 end

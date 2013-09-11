@@ -2,9 +2,9 @@
 # Cookbook Name::       zabbix
 # Description::         Downloads, configures, & launches pre-built Zabbix agent
 # Recipe::              agent_prebuild
-# Author::              Nacer Laradji (<nacer.laradji@gmail.com>)
+# Author::              Dhruv Bansal (<dhruv@infochimps.com>), Nacer Laradji (<nacer.laradji@gmail.com>)
 #
-# Copyright 2011, Efactures
+# Copyright 2012-2013, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,45 +19,21 @@
 # limitations under the License.
 #
 
-# Define arch for binaries
 case node.kernel.machine
 when "x86_64"
   zabbix_arch = "amd64"
 when "i686"
   zabbix_arch = "i386"
 else
-  Chef::Log.warn("Possibly unsupported architecture (#{node.kernel..machine}) for Zabbix agent v. #{node.zabbix.agent.version}.")
+  warn("Possibly unsupported architecture '#{node.kernel.machine}' for Zabbix agent.")
   zabbix_arch = node.kernel.machine
 end
 
-# installation of zabbix bin
-script "install_zabbix_agent" do
-  interpreter "bash"
-  user "root"
-  cwd "/opt/zabbix"
-  action :nothing
-  notifies :restart, "service[zabbix_agentd]"
-  code <<-EOH
-tar xvfz /opt/zabbix_agents_#{node.zabbix.agent.version}.linux2_6.#{zabbix_arch}.tar.gz
-EOH
+install_from_release('zabbix_agent') do
+  action           :install
+  release_url      node.zabbix.agent.prebuild_url.gsub(/:kernel:/,node.zabbix.agent.prebuild_kernel).gsub(/:arch:/,zabbix_arch)
+  version          node.zabbix.agent.version
+  has_binaries     %w[bin/zabbix_sender bin/zabbix_get sbin/zabbix_agent sbin/zabbix_agentd]
+  strip_components 0            # the tarball is flat!
+  not_if           { File.exist?('/usr/local/bin/zabbix_agentd') }
 end
-
-# Download and intall zabbix agent bins.
-remote_file "/opt/zabbix_agents_#{node.zabbix.agent.version}.linux2_6.#{zabbix_arch}.tar.gz" do
-  source "http://www.zabbix.com/downloads/#{node.zabbix.agent.version}/zabbix_agents_#{node.zabbix.agent.version}.linux2_6.#{zabbix_arch}.tar.gz"
-  mode "0644"
-  action :create_if_missing
-  notifies :run, "script[install_zabbix_agent]", :immediately
-end
-
-# Define zabbix_agentd service
-service "zabbix_agentd" do
-  supports :status => true, :start => true, :stop => true
-  case node.platform
-  when 'centos', 'redhat'
-    action [ :start ]
-  else
-    action [ :start, :enable ]
-  end
-end
-

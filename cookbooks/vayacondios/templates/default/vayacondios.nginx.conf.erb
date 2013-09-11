@@ -1,0 +1,38 @@
+upstream vayacondios {
+<%- @sockets.each do |socket| -%>
+  server unix:<%= socket %> max_fails=3 fail_timeout=10s;
+<%- end -%>
+}
+
+server {
+  listen                <%= node[:vayacondios][:server][:port] %> default deferred;                 # for Linux
+  # listen              <%= node[:vayacondios][:server][:port] %> default accept_filter=httpready;  # for FreeBSD
+  # listen              <%= node[:vayacondios][:server][:port] %> default;
+  client_max_body_size  200M;
+  keepalive_timeout     5;
+  server_name           _ ;
+
+  # access/error logs which we leave on disk
+  access_log            <%= node[:vayacondios][:log_dir] %>/nginx.access.log;
+  error_log             <%= node[:vayacondios][:log_dir] %>/nginx.error.log;
+
+  root                  <%= @node[:vayacondios][:home_dir] %>;
+  
+  location / {
+    # deny 99.99.99.99 # blacklist addresses
+    allow  all;
+    
+    #
+    # Proxy settings http://wiki.nginx.org/NginxHttpProxyModule
+    # 
+    proxy_set_header    X-Real-IP  $remote_addr;                # needed to forward user's IP address to rails
+    proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+    # proxy_set_header  X-Forwarded-Proto https;                # enable this if and only if you use HTTPS, helps Rack
+    proxy_set_header    Host $http_host;
+    proxy_redirect      off;
+    proxy_buffering     on;                                     # turn off *only* if doing comet stuff or if serving fast clients only
+    # http_proxy_temp_path       "/tmp/nginx-proxy_temp" 
+
+    proxy_pass http://vayacondios;
+  }
+}

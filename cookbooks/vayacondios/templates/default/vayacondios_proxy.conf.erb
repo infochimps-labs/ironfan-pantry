@@ -2,7 +2,7 @@ server {
   listen        <%= @vayacondios[:auth_port] %>;
 
   location /  {
-    proxy_pass http://<%= node[:ipaddress] %>:<%= @vayacondios[:goliath][:port] %>;
+    proxy_pass http://<%= node[:ipaddress] %>:<%= @vayacondios[:server][:port] %>;
     proxy_redirect off;
 
     proxy_set_header X-Real-IP $remote_addr;

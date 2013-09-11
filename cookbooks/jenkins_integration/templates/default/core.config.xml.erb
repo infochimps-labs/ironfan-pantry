@@ -31,6 +31,9 @@
     <permission>hudson.model.View.Delete:authenticated</permission>
     <permission>hudson.model.View.Read:authenticated</permission>
     <permission>hudson.scm.SCM.Tag:authenticated</permission>
+    <%- @addl_permissions.each do |val| %>
+    <permission><%= val %></permission>
+    <%- end %>
   </authorizationStrategy>
   <securityRealm class="hudson.security.PAMSecurityRealm" plugin="pam-auth@1.0">
     <serviceName>sshd</serviceName>
@@ -55,6 +58,9 @@
       <filterQueue>false</filterQueue>
       <properties class="hudson.model.View$PropertyList"/>
     </hudson.model.AllView>
+    <%- @addl_views.each do |view| %>
+    <%= view %>
+    <%- end %>
   </views>
   <primaryView>All</primaryView>
   <slaveAgentPort>0</slaveAgentPort>

@@ -72,8 +72,13 @@ if node[:jenkins_integration][:security] == "local_users"
     members node[:jenkins][:server][:user]
     append true
   end
+
   template "#{node[:jenkins][:server][:home_dir]}/config.xml" do
     source        "core.config.xml.erb"
+    
+    variables({ :addl_permissions => node[:jenkins_integration][:addl_permissions],
+                :addl_views => node[:jenkins_integration][:addl_views] })
+
     owner         node[:jenkins][:server][:user]
     group         node[:jenkins][:server][:group]
   end

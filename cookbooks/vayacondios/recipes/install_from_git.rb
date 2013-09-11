@@ -2,13 +2,13 @@ gem_package "bundler" do
   action :install
 end
 
-#git_private_repo "vayacondios_github" do
-#  action :ssh_wrapper
-#end
+git_private_repo "vayacondios_github" do
+  action :ssh_wrapper
+end
 
 shared_env = {
-  "RAILS_ENV" => node[:vayacondios][:environment],
-  "RACK_ENV"  => node[:vayacondios][:environment],
+  "RAILS_ENV" => node[:vayacondios][:server][:environment],
+  "RACK_ENV"  => node[:vayacondios][:server][:environment],
 
   # We have to set the LANG environment variable here b/c some
   # gemspecs (lookin' at you devise) have UTF chars in them
@@ -27,14 +27,12 @@ deploy_revision node[:vayacondios][:deploy_root] do
   action node[:vayacondios][:deploy_strategy].to_sym
 
   repo              node[:vayacondios][:git_url]
-#  ssh_wrapper       '/etc/deploy/vayacondios_github/vayacondios_github.sh'
-  branch            node[:vayacondios][:deploy_version]
+  ssh_wrapper       '/etc/deploy/vayacondios_github/vayacondios_github.sh'
+  branch            node[:vayacondios][:git_version]
   enable_submodules false
   shallow_clone     true
 
   environment shared_env
-
-  symlink_before_migrate "config/vayacondios.yaml" => "config/vayacondios.yaml"
 
   before_migrate do
     current_release = release_path
@@ -52,6 +50,7 @@ deploy_revision node[:vayacondios][:deploy_root] do
   after_restart do
   end
 
-  restart_command "sv restart vayacondios"
+  the_restart_command = Dir["/etc/sv/vayacondios_*"].map { |sv_dir| "sv restart #{File.basename(sv_dir)}" }.join(" && ")
+  restart_command the_restart_command unless the_restart_command.empty?
 end
 

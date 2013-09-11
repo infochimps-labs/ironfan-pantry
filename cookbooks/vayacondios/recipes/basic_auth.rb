@@ -42,8 +42,8 @@ end
 
 template File.join(node[:nginx][:dir], 'conf.d', 'vayacondios_proxy.conf') do
   source        "vayacondios_proxy.conf.erb"
-  owner         'root'
-  group         node[:users]['root'][:primary_group]
+  owner         node[:vayacondios][:user]
+  group         node[:vayacondios][:group]
   mode          0644
   variables     ({
     :vayacondios      => node[:vayacondios],

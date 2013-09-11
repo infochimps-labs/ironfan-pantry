@@ -64,6 +64,10 @@ attribute :checksum,      :kind_of => String, :default => nil
 # Command to expand project
 attribute :expand_cmd,    :kind_of => String
 
+# Number of path components to strip (for more control use
+# 'expand_cmd')
+attribute :strip_components, :kind_of => Integer, :default => 1
+
 # Release file name, eg /usr/local/src/pig-0.8.0.tar.gz
 attribute :release_file,  :kind_of => String
 
@@ -117,7 +121,7 @@ def assume_defaults!
 end
 
 def untar_cmd(sub_cmd, release_file, install_dir)
-  %Q{mkdir -p '#{install_dir}' ; tar #{sub_cmd} '#{release_file}' --strip-components=1 -C '#{install_dir}'}
+  %Q{mkdir -p '#{install_dir}' ; tar #{sub_cmd} '#{release_file}' --strip-components=#{strip_components} -C '#{install_dir}'}
 end
 
 def unzip_cmd(release_file, install_dir)

@@ -24,6 +24,6 @@ announce(:kafka, :server, {
   :logs => { :kafka => { :path => "#{node[:kafka][:log_dir]}/kafka.log" } },
   :ports => { :server => node[:kafka][:port] },
   :daemons => {
-    :kafka => { :user => node[:kafka][:user] },
+    :kafka => { :user => node[:kafka][:user], :name => 'java'},
   },
 })

@@ -33,7 +33,7 @@ jenkins_job "Ironfan Cookbooks - 1 - Prepare testing" do
   templates     shared_templates
   tasks         %w[ checkout.sh enqueue_tests.sh ]
   triggers      :schedule => cookbook_ci[:schedule]
-  conditional   :regexp => "SUCCESS: #{cookbook_ci[:koan][:testing]}",
+  conditional   :regexp => "SUCCESS:",
                 :target => "Ironfan Cookbooks - 2 - Test and stage"
 end
 
@@ -56,3 +56,12 @@ if cookbook_ci[:broken]
     tasks               %w[ checkout.sh launch_broken.sh ]
   end
 end
+
+# On an existing host, converge and run ironcuke
+jenkins_job "Ironfan Cookbooks - 4 - Converge and ironcuke existing host" do
+  pantries      cookbook_ci[:pantries]
+  homebases     cookbook_ci[:homebases]
+  templates     shared_templates
+  tasks         %w[ checkout.sh run_ironcuke.sh ]
+end
+
