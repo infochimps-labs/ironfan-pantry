@@ -8,7 +8,7 @@ default[:jenkins_integration][:security]        = 'local_users'
 default[:jenkins_integration][:deploy_key]      = nil           # Set this in cluster
 
 # FIXME: Adding a plugin here seems to only work on a first-converge (new node), not subsequent converges
-node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor build-token-root radiatorviewplugin textfinder-run-condition parameterized-trigger run-condition conditional-buildstep ]
+node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor build-token-root radiatorviewplugin text-finder-run-condition parameterized-trigger run-condition conditional-buildstep ]
 
 # Allow dashboard to be visibile (read-only) to non-authenticated users
 default[:jenkins_integration][:addl_permissions] = %w[hudson.model.Hudson.Read:anonymous hudson.model.Item.Read:anonymous hudson.model.View.Read:anonymous]
@@ -43,10 +43,11 @@ default[:jenkins_integration][:addl_views] = [ radiator ]
 # 
 default[:jenkins_integration][:cookbook_ci][:test_homebase] = 'git@github.com:infochimps-labs/ironfan-homebase.git'
 default[:jenkins_integration][:cookbook_ci][:chef_user]  = 'test'
-default[:jenkins_integration][:cookbook_ci][:targets]    = [ 'testharness-simple' ]
+default[:jenkins_integration][:cookbook_ci][:targets][:primary]    = [ 'testharness-simple' ]
+default[:jenkins_integration][:cookbook_ci][:targets][:secondary]    = [ 'testharness-simple' ]
 default[:jenkins_integration][:cookbook_ci][:broken]     = nil   # Set to launch a known-broken facet
 default[:jenkins_integration][:cookbook_ci][:branch]     = 'master'
-default[:jenkins_integration][:cookbook_ci][:schedule]   = '0 */2 * * *'
+default[:jenkins_integration][:cookbook_ci][:schedule]   = '0 */4 * * *'
 default[:jenkins_integration][:cookbook_ci][:max_wait]   = 60*20 # 20 minutes
 
 koans = Mash.new()

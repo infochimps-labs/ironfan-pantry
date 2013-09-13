@@ -56,3 +56,12 @@ if cookbook_ci[:broken]
     tasks               %w[ checkout.sh launch_broken.sh ]
   end
 end
+
+# On an existing host, converge and run ironcuke
+jenkins_job "Ironfan Cookbooks - 4 - Converge and ironcuke existing host" do
+  pantries      cookbook_ci[:pantries]
+  homebases     cookbook_ci[:homebases]
+  templates     shared_templates
+  tasks         %w[ checkout.sh run_ironcuke.sh ]
+end
+

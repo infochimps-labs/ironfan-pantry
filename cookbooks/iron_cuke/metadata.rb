@@ -9,6 +9,7 @@ depends "silverware"
 
 recipe           "iron_cuke::default",                  "Base configuration for iron_cuke"
 recipe           "iron_cuke::judge",                  "Base configuration for iron_cuke"
+recipe           "iron_cuke::learn",                  "Fetches announces for iron_cuke"
 
 attribute "iron_cuke/home_dir",
   :display_name          => "",

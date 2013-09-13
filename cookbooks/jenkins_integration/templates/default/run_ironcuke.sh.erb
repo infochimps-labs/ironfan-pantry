@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+source `dirname $0`/shared.inc
+
+switch_to $TEST_PATH
+export FACET=$TARGETS_SECONDARY # FIXME: only allows one
+export CLUSTER=${FACET%-*}
+
+# FIXME: This works around the difference in SSH_USER names by platform.
+#   It is officially ugly as hell, and deserves to be shot in the face
+#   as soon as a gun can be procured.
+[[ $FACET =~ 'gorra' ]] && SSH_USER='root' || SSH_USER='ubuntu'
+export SSH_USER
+export CREDENTIALS="-x $SSH_USER -i knife/credentials/ec2_keys/$CLUSTER.pem";
+
+h2 "Show $CLUSTER cluster"
+indent kc show $CLUSTER
+
+h2 "Run ironcuke"
+CUKEOUT=$(mktemp)
+echo writing to $CUKEOUT
+if `indent kc ssh $FACET $CREDENTIALS sudo /usr/local/share/iron_cuke/bin/iron_cuke judge >$CUKEOUT`; then
+    echo "All ironcuke tests passed"
+elif grep -q "Error running tests..." $CUKEOUT; then
+    echo "Some iron_cuke tests failed:"
+    cat $CUKEOUT
+else
+    echo "An error was encountered running iron_cuke"
+fi
+
+#rm $CUKEOUT
