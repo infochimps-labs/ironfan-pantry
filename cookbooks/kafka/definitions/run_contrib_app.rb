@@ -17,7 +17,8 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   run_as_user                = (params[:user]     || node[:kafka][:contrib][:default_app_user])
   vcd_tmp                    = discover(:vayacondios, :server)
   vayacondios_host           = (vcd_tmp && vcd_tmp.private_ip)
-  vayacondios_port           = (vcd_tmp && vcd_tmp.ports[:nginx][:port])
+  vayacondios_port           = (vcd_tmp && ((vcd_tmp.ports[:nginx] && vcd_tmp.ports[:nginx][:port]) ||
+                                            (vcd_tmp.ports[:goliath] && vcd_tmp.ports[:goliath][:port])))
 
   Chef::Log.info "Creating config file for Kafka-contrib project #{app_name} (#{app_type})"
   template File.join(node[:kafka][:contrib][:deploy][:root], "current/config/#{app_name}.properties") do
