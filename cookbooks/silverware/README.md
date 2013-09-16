@@ -32,6 +32,7 @@ Allow nodes to discover the location for a given service at runtime, adapting wh
 * discover the most recent chef node for that service.
 * get the 'public_ip' for a service -- the address that nodes in the larger world should use
 * get the 'private_ip' for a service -- the address that nodes on the local subnet / private cloud should use
+* get the 'private_hostname' for a service -- the hostname that nodes on the local subnet / private cloud should use
 
 #### Implementation
 
