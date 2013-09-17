@@ -19,8 +19,10 @@
 # limitations under the License.
 #
 
-package("hadoop-hive")
+include_recipe "hadoop_cluster"
 
-remote_file(File.join(node[:hadoop][:hive][:home_dir], node[:hadoop][:hive][:mysql_connector_jar])) do
-  source node[:hadoop][:hive][:mysql_connector_location]
+if node[:hadoop][:hive][:install_method] == 'release'
+  include_recipe "hadoop_cluster::hive_install_from_release"
+else
+  package("hadoop-hive")
 end

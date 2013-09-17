@@ -1,35 +1,43 @@
 include_recipe 'install_from'
 
-
-#
-# Install Hive from latest release
-#
-#   puts Hive tarball into /usr/local/src/pig-xxx
-#   expands it into /usr/local/share/pig-xxx
-#   and links that to /usr/local/share/pig
-#
+daemon_user 'hadoop.hue'
 
 %w[ libxml2-dev libxslt-dev libsasl2-dev libsasl2-modules-gssapi-mit libmysqlclient-dev
     python-dev python-setuptools python-simplejson libsqlite3-dev ant ].each do |name|
   package name
 end
 
-remote_file "/usr/local/src/hue-#{node[:hue][:version]}.tar.gz" do
-  source node[:hue][:release_url].gsub(':version:', node[:hue][:version])
-  mode "0644"
+install_from_release('hue') do
+  release_url node[:hadoop][:hue][:release_url]
+  version     node[:hadoop][:hue][:version]
+  action      :install_with_make
+  environment({"PREFIX" => node[:hadoop][:hue][:prefix_dir]})
+  not_if      { File.directory?(node[:hadoop][:hue][:home_dir]) }
 end
 
-execute "tar zxvf hue-#{node[:hue][:version]}.tar.gz" do
-  cwd "/usr/local/src"
-  creates "/usr/local/src/hue"
-end
+# When you install Hue via Cloudera's PPA the conf directory is
+# /etc/hue/conf.  A release contains its *own* conf directory, which
+# we will now symlink /etc/hue/conf to.
 
-execute "PREFIX=#{File.basedir(node[:hadoop][:hue][:home_dir])}" do
-  cwd '/usr/local/src/hue'
-  creates node[:hadoop][:hue][:home_dir]
-end
-
+# Delete /etc/hue/conf if it already exists and is *not* a symlink.
 directory node[:hadoop][:hue][:conf_dir] do
+  action :delete
+  only_if do !File.symlink?(node[:hadoop][:hue][:conf_dir]) end
+end
+
+directory node[:hadoop][:hue][:conf_base_dir] do
   recursive true
   action :create
+  only_if do !File.exists?(node[:hadoop][:hue][:conf_base_dir]) end
+end
+
+link node[:hadoop][:hue][:conf_dir] do
+  to          File.join(node[:hadoop][:hue][:home_dir],'desktop/conf')
+  action      :create
+end
+
+file File.join(node[:hadoop][:hue][:home_dir], 'apps/shell/src/shell/build/setuid') do
+  mode  '4750'
+  owner 'root'
+  group node[:hadoop][:hue][:group]
 end

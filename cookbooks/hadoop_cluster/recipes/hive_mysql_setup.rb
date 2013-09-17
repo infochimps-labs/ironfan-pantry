@@ -22,48 +22,53 @@
 # dependencies and compile-time tools
 #--------------------------------------------------------------------------------
 
-# Assume mysql is running on the local machine.
-mysql_hive_username = node[:hadoop][:hive][:mysql_hive_username]
-mysql_user_password = node[:hadoop][:hive][:mysql_user_password]
-mysql_root_password = node['mysql']['server_root_password']
-mysql_schema_script = File.join(node[:hadoop][:hive][:home_dir], node[:hadoop][:hive][:mysql_upgrade_script])
-mysql_database_name = node[:hadoop][:hive][:mysql_database]
+include_recipe "mysql::client"
 
-# This should probably be replaced with calls to the mysql_database
-# and mysql_database_user resources.
+# We *connect* as the root user but will create the hive user later.
+mysql_connection_info = {
+  host:     node[:hadoop][:hive][:mysql][:host],
+  port:     node[:hadoop][:hive][:mysql][:port],
+  username: node[:hadoop][:hive][:mysql][:root_username],
+  password: node[:hadoop][:hive][:mysql][:root_password],
+}
 
-mysql_statements = [
-                    "CREATE DATABASE IF NOT EXISTS #{mysql_database_name}",
-                    "USE #{mysql_database_name}",
+hive_database = node[:hadoop][:hive][:mysql][:database]
 
-                    # This script looks like it's designed to be idempotent.
-                    "SOURCE #{mysql_schema_script}",
-
-                    # This will create the user if it does not already exist.
-                    [
-                     "GRANT SELECT,INSERT,UPDATE,DELETE",
-                     "ON #{mysql_database_name}.*",
-                     "TO '#{mysql_hive_username}'@'%'",
-                     "IDENTIFIED BY '#{mysql_user_password}'",
-                    ].join(" "),
-
-                    "REVOKE ALTER,CREATE ON #{mysql_database_name}.* FROM '#{mysql_hive_username}'@'%'",
-                    ""].join(";")
-
-#--------------------------------------------------------------------------------
-# execution
-#--------------------------------------------------------------------------------
-
-remote_file File.join(node[:hadoop][:hive][:home_dir], 'lib', node[:hadoop][:hive][:mysql_connector_jar]) do
-  source node[:hadoop][:hive][:mysql_connector_location]
-  mode 0644
+mysql_database hive_database  do
+  connection mysql_connection_info
+  action     :create
 end
 
-execute "create and configure mysql database and hive user" do
+script_relative_path = node[:hadoop][:hive][:mysql][:upgrade_script].sub(':version:', node[:hadoop][:hive][:version])
+script_absolute_path = File.join(node[:hadoop][:hive][:home_dir], script_relative_path)
+mysql_statements = [
+                    "USE #{hive_database}",
+                    "SOURCE #{script_absolute_path}",
+].join(";")
+execute "Run metastore update script" do
   command [
            "/usr/bin/mysql",
-           "-u root",
-           ["-p", mysql_root_password].join,
-           "-e \"#{mysql_statements}\"",  
+           "-h", mysql_connection_info[:host],
+           "-P", mysql_connection_info[:port],
+           "-u", mysql_connection_info[:username],
+           ["-p", mysql_connection_info[:password]].join,
+           "-e", "\"SOURCE #{script_absolute_path}\"",
+           "-D", hive_database
           ].join(" ")
+end
+
+hive_user = node[:hadoop][:hive][:mysql][:username]
+hive_pass = node[:hadoop][:hive][:mysql][:password]
+mysql_database_user hive_user do
+  connection    mysql_connection_info
+  database_name hive_database
+  host          '%'
+  password      hive_pass
+  privileges    [:select,:insert,:update,:delete]
+  action        [:create, :grant]
+end
+
+remote_file File.join(node[:hadoop][:hive][:home_dir], 'lib', node[:hadoop][:hive][:mysql][:connector_jar] ) do
+  source node[:hadoop][:hive][:mysql][:connector_location]
+  mode 0644
 end

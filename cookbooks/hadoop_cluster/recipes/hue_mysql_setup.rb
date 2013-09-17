@@ -19,81 +19,46 @@
 # limitations under the License.
 #
 
-# Assume mysql is running on the local machine.
-share_dir           = node[:hadoop][:hue][:share_dir]
-pip                 = File.join(node[:hadoop][:hue][:share_dir],
-                                "build/env/bin/pip")
-hue_exec            = File.join(share_dir, "build/env/bin/hue")
-config_dump_file    = '/tmp/hue_config_dump.json'
-mysql_hue_username  = node[:hadoop][:hue][:mysql_hue_username]
-mysql_user_password = node[:hadoop][:hue][:mysql_user_password]
-mysql_root_password = node['mysql']['server_root_password']
-mysql_database_name = node[:hadoop][:hue][:mysql_database]
+# We *connect* as the root user but will create the hue user later.
+mysql_connection_info = {
+  host:     node[:hadoop][:hue][:mysql][:host],
+  port:     node[:hadoop][:hue][:mysql][:port],
+  username: node[:hadoop][:hue][:mysql][:root_username],
+  password: node[:hadoop][:hue][:mysql][:root_password],
+}
 
-# This should probably be replaced with calls to the mysql_database
-# and mysql_database_user resources.
+hue_database = node[:hadoop][:hue][:mysql][:database]
 
-check_database_exists = "SHOW DATABASES;"
-
-create_user_and_database_sql = [
-                                "CREATE DATABASE IF NOT EXISTS #{mysql_database_name}",
-                                "USE #{mysql_database_name}",
-
-                                # Remove the anonymous user so we can
-                                # log in. For the sake of idempotency,
-                                # first we'll have to create the user
-                                # with a harmless permission.
-                                "GRANT USAGE ON *.* TO ''@'localhost'",
-                                "DROP USER ''@'localhost'",
-                                
-                                # This will create the user if it does not already exist.
-                                [
-                                 "GRANT all ON #{mysql_database_name}.*",
-                                 "TO '#{mysql_hue_username}'@'%'",
-                                 "IDENTIFIED BY '#{mysql_user_password}'",
-                                ].join(" "),
-                                
-                                ""].join(";")
-
-create_user_and_database = [
-                            "/usr/bin/mysql",
-                             "-u root",
-                            ["-p", mysql_root_password].join,
-                            "-e \"#{create_user_and_database_sql}\"",  
-                           ].join(" "),
-
-hue_sync                = "#{hue_exec} syncdb --noinput"
-
-configure_bash_commands = [create_user_and_database, hue_sync].join(" && ")
-
-#--------------------------------------------------------------------------------
-# execution
-#--------------------------------------------------------------------------------
 
 # Reinstall to ensure that MySQLdb is compiled against the correct
 # version. See
 # 
 # http://mysql-python.sourceforge.net/FAQ.html#importerror
-script "reinstall mysql-python" do
-  interpreter "bash"
-  user "root"
-  code <<-EOF
-    #{pip} uninstall -y MySQL-python
-    #{pip} install MySQL-python
-  EOF
+pip     = File.join(node[:hadoop][:hue][:home_dir], "build/env/bin/pip")
+hue_cmd = File.join(node[:hadoop][:hue][:home_dir], "/build/env/bin/hue")
+bash "Initialize Hue MySQL database" do
+  cwd   node[:hadoop][:hue][:home_dir]
+  code  <<-EOF
+#{pip} uninstall -y MySQL-python
+#{pip} install MySQL-python
+#{hue_cmd} syncdb --noinput
+EOF
+  action :nothing
 end
 
-execute "create and configure mysql database and hue user" do
-  user node[:hadoop][:hue][:user]
-  cwd share_dir
-  command configure_bash_commands
-  not_if [
-          [
-           "/usr/bin/mysql",
-           "-u root",
-           ["-p", mysql_root_password].join,
-           "-e \"#{check_database_exists}\"",  
-          ].join(" "),
-          "grep #{mysql_database_name}",
-         ].join(" | ")
+mysql_database hue_database  do
+  connection mysql_connection_info
+  action     :create
+  notifies   :run, resources(bash: "Initialize Hue MySQL database")
+end
+
+hue_user = node[:hadoop][:hue][:mysql][:username]
+hue_pass = node[:hadoop][:hue][:mysql][:password]
+mysql_database_user hue_user do
+  connection    mysql_connection_info
+  database_name hue_database
+  host          '%'
+  password      hue_pass
+  privileges    [:all]
+  action        [:create, :grant]
 end

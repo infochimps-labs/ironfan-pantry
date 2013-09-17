@@ -20,7 +20,7 @@
 
 <property>
   <name>javax.jdo.option.ConnectionURL</name>
-  <value>jdbc:mysql://<%= @private_ip %>:3306/metastore</value>
+  <value>jdbc:mysql://<%= @hive[:mysql][:host] %>:<%= @hive[:mysql][:port] %>/<%= @hive[:mysql][:database] %></value>
   <description>JDBC connect string for a JbDBC metastore</description>
 </property>
 
@@ -32,12 +32,12 @@
 
 <property>
   <name>javax.jdo.option.ConnectionUserName</name>
-  <value><%= @hive[:mysql_hive_username] %></value>
+  <value><%= @hive[:mysql][:username] %></value>
 </property>
  
 <property>
   <name>javax.jdo.option.ConnectionPassword</name>
-  <value><%= @hive[:mysql_user_password] %></value>
+  <value><%= @hive[:mysql][:password] %></value>
 </property>
 
 <property>
@@ -48,7 +48,7 @@
 
 <property>
   <name>hive.hwi.war.file</name>
-  <value>/usr/lib/hive/lib/hive-hwi-0.7.1-<%= node[:apt][:cloudera][:release_name] %>.war</value>
+  <value><%= @hive[:home_dir] %>/lib/hive-hwi-<%= @war_version %>.war</value>
   <description>This is the WAR file with the jsp content for Hive Web Interface</description>
 </property>
 

@@ -19,19 +19,25 @@
 # limitations under the License.
 #
 
-# Add the dead snakes repo for python2.6. necessary for ubuntu 12.04
-# and later with older versions of Hue.
-if node[:platform_family] == 'debian'
-  apt_repository 'deadsnakes' do
-    uri             'http://ppa.launchpad.net/fkrull/deadsnakes/ubuntu'
-    distribution    node[:lsb][:codename]
-    components      ['main']
-    key             "DB82666C"
-    keyserver       "keyserver.ubuntu.com"
-    action          :add
-  end
-  package ("python2.6-dev")
-end
+include_recipe "hadoop_cluster"
 
-package("hue-common")
-package("hue-plugins")
+if node[:hadoop][:hue][:install_method] == 'release'
+  include_recipe "hadoop_cluster::hue_install_from_release"
+else
+  # Add the dead snakes repo for python2.6. necessary for ubuntu 12.04
+  # and later with older versions of Hue.
+  if node[:platform_family] == 'debian'
+    apt_repository 'deadsnakes' do
+      uri             'http://ppa.launchpad.net/fkrull/deadsnakes/ubuntu'
+      distribution    node[:lsb][:codename]
+      components      ['main']
+      key             "DB82666C"
+      keyserver       "keyserver.ubuntu.com"
+      action          :add
+    end
+    package ("python2.6-dev")
+  end
+
+  package("hue-common")
+  package("hue-plugins")
+end
