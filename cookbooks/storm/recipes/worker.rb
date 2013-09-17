@@ -17,6 +17,10 @@ announce(:storm, :worker, {
   } },
   :daemons => {
     # FIXME: Zabbix can't tell Nimbus process from the UI process
-    :storm_worker => { :user => node[:storm][:user] }
+    :storm_worker => { 
+      :name => 'java',
+      :user => node[:storm][:user],
+      :cmd  => 'supervisor.childopts'
+    }
   }
 })
