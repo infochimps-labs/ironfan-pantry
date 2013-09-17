@@ -20,7 +20,7 @@ announce(:storm, :worker, {
     :storm_worker => { 
       :name => 'java',
       :user => node[:storm][:user],
-      :cmd  => 'supervisor.childopts'
+      :cmd  => 'backtype.storm.daemon.supervisor'
     }
   }
 })

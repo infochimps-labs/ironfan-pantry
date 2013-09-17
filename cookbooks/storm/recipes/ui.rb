@@ -12,7 +12,7 @@ runit_service 'storm_ui' do
   options       Mash.new(node[:storm].to_hash).merge(node[:storm][:ui].to_hash)
 end
 
-announce(:storm, :master, {
+announce(:storm, :ui, {
   :logs => { :storm => node[:storm][:log_dir] },
   :daemons => {
     # FIXME: Zabbix can't tell Nimbus process from the UI process
