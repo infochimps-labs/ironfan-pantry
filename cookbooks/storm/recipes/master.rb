@@ -20,7 +20,7 @@ announce(:storm, :master, {
     :storm_master => { 
       :name => 'java',
       :user => node[:storm][:user],
-      :cmd  => 'backtype.storm.damon.nimbus'
+      :cmd  => 'backtype.storm.daemon.nimbus'
     }
   }
 })
