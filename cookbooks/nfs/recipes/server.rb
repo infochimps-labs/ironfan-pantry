@@ -33,6 +33,17 @@ if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
     announce(:nfs, nfs_info[:name], nfs_info)
   end
 
+  announce(:nfs, :server, {
+           :daemons => {
+             :nfs => {
+               # nfsd is a kernel thread not a process, ps will display as [nfsd],
+               # this is okay for our purposes
+               :name => '[nfsd]',
+               :user => 'root'
+             }
+           }
+         })
+
   if service_name
     service service_name do
       action [ :enable, :start ]
