@@ -151,3 +151,22 @@ directory node['mysql']['data_dir'] do
   mode 0700
   action :create
 end
+
+announce(:mysql, :server, {
+           :logs => { 
+             :mysql => {
+               :glob => '/var/log/mysql/*.log'
+             } 
+           },
+           :ports => {
+             :mysql => {
+               :port => 3306
+             } 
+           },
+           :daemons => {
+             :mysql => {
+               :name => 'mysqld',
+               :user => 'mysql'
+             }
+           }
+         })
