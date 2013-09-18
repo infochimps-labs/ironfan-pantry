@@ -42,7 +42,12 @@ node[:vayacondios][:server][:num_daemons].times do |i|
     })
   end
 
-  daemons[aspect] = {service: service,}
+  daemons[aspect] = {
+    :service => service,
+    :name => 'ruby',
+    :user => node[:vayacondios][:user],
+    :cmd  => "goliath-#{i}.sock"
+  }
   logs[aspect]    = log_dir
 end
 
