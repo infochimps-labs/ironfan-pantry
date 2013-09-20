@@ -16,10 +16,25 @@ export CREDENTIALS="-x $SSH_USER -i knife/credentials/ec2_keys/$CLUSTER.pem";
 h2 "Show $CLUSTER cluster"
 indent kc show $CLUSTER
 
+h2 "Run converge"
+CONVERGEOUT=$(mktemp)
+indent kc ssh $FACET $CREDENTIALS sudo chef-client >$CONVERGEOUT
+CONVERGEEXIT=$?
+if [ $CONVERGEEXIT -eq 0 ]; then
+    echo "chef-client run succeeded"
+else
+    echo "Exiting following converge failure"
+    cat $CONVERGEOUT
+    rm $CONVERGEOUT
+    exit $CONVERGEEXIT
+fi
+
 h2 "Run ironcuke"
 CUKEOUT=$(mktemp)
-echo writing to $CUKEOUT
-if `indent kc ssh $FACET $CREDENTIALS sudo /usr/local/share/iron_cuke/bin/iron_cuke judge >$CUKEOUT`; then
+#echo writing to $CUKEOUT
+indent kc ssh $FACET $CREDENTIALS sudo /usr/local/share/iron_cuke/bin/iron_cuke judge >$CUKEOUT
+CUKEEXIT=$?
+if [ $CUKEEXIT -eq 0 ]; then
     echo "All ironcuke tests passed"
 elif grep -q "Error running tests..." $CUKEOUT; then
     echo "Some iron_cuke tests failed:"
@@ -28,4 +43,5 @@ else
     echo "An error was encountered running iron_cuke"
 fi
 
-#rm $CUKEOUT
+rm $CONVERGEOUT $CUKEOUT
+exit $CUKEEXIT
