@@ -1,8 +1,9 @@
 default[:storm][:version]             = "0.8.1"
 default[:storm][:release_url]         = "https://dl.dropbox.com/u/133901206/storm-:version:.zip"
 
-# The number of worker JVMs to spin up per supervisor node
+# The number of worker worker_jvms to spin up per supervisor node
 # The number of cores on a machine is a good place to start
+# Best practice (by Flip) : One worker per node
 default[:storm][:worker][:processes ] = node[:cpu][:total]
 default[:storm][:worker][:start_port] = 6700
 
@@ -23,3 +24,12 @@ default[:storm][:pid_dir]             = '/var/run/storm'.freeze # No PID for jav
 default[:storm][:master][:run_state]  = :start
 default[:storm][:worker][:run_state]  = :start
 default[:storm][:ui    ][:run_state]  = :start
+
+#worker_jvm options - for c1.xlarge
+default[:storm][:worker_jvm][:Xmx]   =  "768m"
+default[:storm][:worker_jvm][:Xms]   =  "768m"
+default[:storm][:worker_jvm][:Xss]   =  "256k"
+default[:storm][:worker_jvm][:MaxPermSize]   =  "128m"
+default[:storm][:worker_jvm][:PermSize]   =     "96m"
+default[:storm][:worker_jvm][:NewSize]   =      "350m"
+default[:storm][:worker_jvm][:MaxNewSize]   =   "350m"

@@ -5,9 +5,30 @@ storm.zookeeper.servers:
 nimbus.host: "<%= @nimbus.private_ip %>"
 
 storm.local.dir: "<%= @data_dir %>"
-storm.local.hostname: "<%= node.name  %>.<%= node.route53.zone %>"
+storm.local.hostname: "<%= node.name.gsub(/[^a-zA-Z0-9\-]/, '-')  %>.<%= node.route53.zone %>"
 
 supervisor.slots.ports:
 <% @ports.each do |port| %>
     - <%= port %>
 <% end %>
+
+# Production worker_jvm options: verbose GC logging with rotation, expands heap size
+# to <%=@node[:storm][:worker_jvm][:Xmx]%> and new-gen to <%=@node[:storm][:worker_jvm][:NewSize]%>, uses concurrent-mark-and-sweep for old-gen
+# See : https://github.com/nathanmarz/storm/pull/632
+
+worker.childopts: >-
+     -server -Djava.net.preferIPv4Stack=true
+     -Xmx<%=@node[:storm][:worker_jvm][:Xmx]%>
+     -Xms<%=@node[:storm][:worker_jvm][:Xms]%>
+     -Xss<%=@node[:storm][:worker_jvm][:Xss]%>
+     -XX:MaxPermSize=<%=@node[:storm][:worker_jvm][:MaxPermSize]%>
+     -XX:PermSize=<%=@node[:storm][:worker_jvm][:PermSize]%>
+     -XX:NewSize=<%=@node[:storm][:worker_jvm][:NewSize]%>
+     -XX:MaxNewSize=<%=@node[:storm][:worker_jvm][:MaxNewSize]%>
+     -XX:MaxTenuringThreshold=1 -XX:SurvivorRatio=6 -XX:+AggressiveOpts -XX:+UseCompressedOops
+     -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled
+     -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly
+     -Xloggc:%STORMHOME%/logs/gc-worker-%ID%.log -verbose:gc
+     -XX:GCLogFileSize=1m -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10
+     -XX:+PrintGCDetails -XX:+PrintHeapAtGC -XX:+PrintGCTimeStamps -XX:+PrintClassHistogram
+     -XX:+PrintTenuringDistribution -XX:-PrintGCApplicationStoppedTime
