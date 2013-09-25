@@ -18,7 +18,7 @@ class Chef
     end
 
     # The version of Rubix we expect to use.
-    RUBIX_VERSION = '0.9.0' unless defined?(RUBIX_VERSION)
+    RUBIX_VERSION = '0.5.14'
 
     # For a pool of shared connections to Zabbix API servers.
     CONNECTIONS = {  } unless defined?(CONNECTIONS)
