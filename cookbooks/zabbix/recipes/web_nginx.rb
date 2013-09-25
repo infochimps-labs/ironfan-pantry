@@ -52,6 +52,7 @@ announce(:zabbix, :web, {
   daemons: {
     php_cgi:  {
       name:  'php-cgi',
+      user:  node.zabbix.web.user,
       cmd:   'zabbix'
     }
   }
