@@ -89,6 +89,7 @@ default[:elasticsearch][:fd_ping_interval]        = "2s"
 default[:elasticsearch][:fd_ping_timeout]         = "60s"
 default[:elasticsearch][:fd_ping_retries]         = 3
 
+default[:elasticsearch][:use_default_http_ports]  = false
 default[:elasticsearch][:http_ports]              = "9200-9300"
 default[:elasticsearch][:api_port]                = "9300"
 default[:elasticsearch][:jmx_dash_port]           = '9400-9500'

@@ -33,7 +33,9 @@ node:
 http:
   # # http.enabled: is this a query esnode (has http interface, dispatches/gathers queries)? Default true
   enabled:                      <%= @elasticsearch[:is_httpnode] %>
+<% unless @elasticsearch[:use_default_http_ports] %>
   port:                         <%= @elasticsearch[:http_ports] %>
+<% end %>
   max_content_length:           100mb
 
 gateway:
