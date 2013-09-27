@@ -63,5 +63,6 @@ jenkins_job "Ironfan Cookbooks - 4 - Converge and ironcuke existing host" do
   homebases     cookbook_ci[:homebases]
   templates     shared_templates
   tasks         %w[ checkout.sh run_ironcuke.sh ]
+  triggers      :schedule => cookbook_ci[:cuke_schedule]
 end
 

@@ -25,6 +25,7 @@ radiator = <<eos
         <string>Ironfan_Cookbooks_-_1_-_Prepare_testing</string>
         <string>Ironfan_Cookbooks_-_2_-_Test_and_stage</string>
         <string>Ironfan_Cookbooks_-_3_-_Test_known_broken</string>
+        <string>Ironfan_Cookbooks_-_4_-_Converge_and_ironcuke_existing_host</string>
       </jobNames>
       <jobFilters/>
       <columns/>
@@ -48,6 +49,7 @@ default[:jenkins_integration][:cookbook_ci][:targets][:secondary]    = [ 'testha
 default[:jenkins_integration][:cookbook_ci][:broken]     = nil   # Set to launch a known-broken facet
 default[:jenkins_integration][:cookbook_ci][:branch]     = 'master'
 default[:jenkins_integration][:cookbook_ci][:schedule]   = '0 */4 * * *'
+default[:jenkins_integration][:cookbook_ci][:cuke_schedule]   = '*/20 * * * *'
 default[:jenkins_integration][:cookbook_ci][:max_wait]   = 60*20 # 20 minutes
 
 koans = Mash.new()

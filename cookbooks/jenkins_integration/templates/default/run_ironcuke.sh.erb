@@ -32,13 +32,13 @@ fi
 h2 "Run ironcuke"
 CUKEOUT=$(mktemp)
 #echo writing to $CUKEOUT
-indent kc ssh $FACET $CREDENTIALS sudo /usr/local/share/iron_cuke/bin/iron_cuke judge >$CUKEOUT
+indent kc ssh $FACET $CREDENTIALS sudo /usr/local/share/iron_cuke/bin/iron_cuke judge | tee $CUKEOUT
 CUKEEXIT=$?
+
 if [ $CUKEEXIT -eq 0 ]; then
     echo "All ironcuke tests passed"
 elif grep -q "Error running tests..." $CUKEOUT; then
     echo "Some iron_cuke tests failed:"
-    cat $CUKEOUT
 else
     echo "An error was encountered running iron_cuke"
 fi
