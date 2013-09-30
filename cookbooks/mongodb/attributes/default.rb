@@ -6,6 +6,7 @@ default[:mongodb][:data_dir]                        = nil       # set by volume_
 default[:mongodb][:home_dir]                        = "/usr/lib/mongodb"
 default[:mongodb][:conf_dir]                        = "/etc/mongodb"
 default[:mongodb][:log_dir]                         = "/var/log/mongodb"
+default[:mongodb][:log_path]                        = ::File.join(default[:mongodb][:log_dir],"mongodb.log")
 default[:mongodb][:pid_dir]                         = "/var/run/mongodb"
 default[:mongodb][:journal_dir]                     = "/var/lib/mongodb/journal"
 

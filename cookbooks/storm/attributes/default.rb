@@ -17,6 +17,9 @@ default[:storm][:worker][:file_limit] = 0xffff
 default[:storm][:home_dir]            = "/usr/local/share/storm"
 default[:storm][:data_dir]            = nil # This will be set by volume_dirs
 default[:storm][:log_dir]             = "/var/log/storm"
+default[:storm][:log_path_master]     = ::File.join(default[:storm][:log_dir],"nimbus.log")
+default[:storm][:log_path_worker]     = ::File.join(default[:storm][:log_dir],"supervisor.log")
+default[:storm][:log_path_ui]         = ::File.join(default[:storm][:log_dir],"ui.log")
 # These values are read-only!
 default[:storm][:conf_dir]            = "#{node[:storm][:home_dir]}/conf"
 default[:storm][:pid_dir]             = '/var/run/storm'.freeze # No PID for java stuff I guess...

@@ -62,7 +62,7 @@ announced_ports = {
   }
 }
 announced_daemons = { server: 'zabbix_server' }
-announced_logs    = { server: node.zabbix.server.log_dir }
+announced_logs    = { server: ::File.join(node.zabbix.server.log_dir,"current") }
 
 if node[:zabbix][:java_gateway][:install]
   announced_ports[:java_gateway]   = node.zabbix.java_gateway.port
@@ -71,7 +71,7 @@ if node[:zabbix][:java_gateway][:install]
     user: 'zabbix',
     cmd:  'zabbix-java-gateway'
   }
-  announced_logs[:java_gateway] = node[:zabbix][:java_gateway][:log_dir]
+  announced_logs[:java_gateway] = ::File.join(node[:zabbix][:java_gateway][:log_dir],"zabbix_server.log")
 end
 
 announce(:zabbix, :server, {

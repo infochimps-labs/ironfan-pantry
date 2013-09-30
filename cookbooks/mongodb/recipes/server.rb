@@ -49,7 +49,7 @@ end
 # 
 
 announce(:mongodb, :server, {
-           :logs  => { :server => node[:mongodb][:log_dir] },
+           :logs  => { :server => node[:mongodb][:log_path] },
            :ports => {
              :http => { :port => node[:mongodb][:server][:mongod_port], :protocol => 'http' },
            },

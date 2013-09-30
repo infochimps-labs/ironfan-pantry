@@ -87,7 +87,7 @@ if node[:elasticsearch][:is_httpnode]
 end
 
 announce(:elasticsearch, :server, {
-           :logs  => { :elasticsearch => node[:elasticsearch][:log_dir] },
+           :logs  => { :elasticsearch => node[:elasticsearch][:log_path] },
            :ports => ports,
            :daemons => {
              :java => {

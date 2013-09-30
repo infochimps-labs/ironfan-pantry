@@ -13,7 +13,7 @@ runit_service 'storm_ui' do
 end
 
 announce(:storm, :ui, {
-  :logs => { :storm => node[:storm][:log_dir] },
+  :logs => { :storm => node[:storm][:log_path_ui] },
   :daemons => {
     # FIXME: Zabbix can't tell Nimbus process from the UI process
     :storm_ui => {

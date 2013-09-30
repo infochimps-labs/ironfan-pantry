@@ -12,7 +12,7 @@ end
 
 announce(:storm, :worker, {
   :logs => { :storm => {
-    :path => node[:storm][:log_dir],
+    :path => node[:storm][:log_path_worker],
     :size => '100M'
   } },
   :daemons => {

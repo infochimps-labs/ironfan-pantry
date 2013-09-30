@@ -48,7 +48,7 @@ node[:vayacondios][:server][:num_daemons].times do |i|
     :user => node[:vayacondios][:user],
     :cmd  => "goliath-#{i}.sock"
   }
-  logs[aspect]    = log_dir
+  logs[aspect]    = ::File.join(log_dir,"current")
 end
 
 include_recipe "nginx"
@@ -65,7 +65,8 @@ nginx_site "vayacondios.conf" do
   action :enable
 end
 
-logs[:nginx] = { path: File.join(node[:vayacondios][:log_dir], "nginx.*.log") }
+logs[:nginx_access] = { path: File.join(node[:vayacondios][:log_dir], "nginx.access.log") }
+logs[:nginx_error] = { path: File.join(node[:vayacondios][:log_dir], "nginx.error.log") }
 
 announce(:vayacondios, :server,
   :ports => {
