@@ -1,5 +1,5 @@
 standard_dirs('rundeck.chef_rundeck') do
-  directories :log_dir
+  directories :log_dir, :home_dir
 end
 
 file "/etc/chef/client.pem" do
