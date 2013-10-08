@@ -39,8 +39,18 @@ define(:jenkins_job,
   # The tasks each dump a script, and they are executed in order,
   #   the overall job failing if any of them return non-zero status.
   (params[:tasks] + params[:templates]).each do |file|
+
+    # Find the template in the current cookbook or "jenkins_integration"
+    cb = nil
+    begin
+      resources("template[#{file}.erb]")
+    rescue
+      cb = 'jenkins_integration'
+    end
+
     template "#{params[:path]}/#{file}" do
       source    "#{file}.erb"
+      cookbook  cb
       variables params
       mode      '0700'
       owner     node[:jenkins][:server][:user]
@@ -48,8 +58,17 @@ define(:jenkins_job,
     end
   end
 
+  # Find the template in the current cookbook or "jenkins_integration"
+  cb = nil
+  begin
+    resources("template[job.config.xml.erb]")
+  rescue
+    cb = 'jenkins_integration'
+  end
+
   template params[:path] + '/config.xml' do
     source      'job.config.xml.erb'
+    cookbook    cb
     variables   params
     owner       node[:jenkins][:server][:user]
     group       node[:jenkins][:server][:group]
