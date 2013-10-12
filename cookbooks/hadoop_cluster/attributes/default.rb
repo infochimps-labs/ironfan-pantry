@@ -26,6 +26,9 @@ default[:hadoop][:tasktracker ][:run_state]  = :start
 default[:hadoop][:hdfs_fuse   ][:run_state]  = :stop
 default[:hadoop][:balancer    ][:run_state]  = :stop
 
+# Enable permission checking for HDFS
+default[:hadoop][:dfs_permissions] = true
+
 #
 # Locations
 #
