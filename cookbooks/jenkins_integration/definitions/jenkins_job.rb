@@ -38,9 +38,19 @@ define(:jenkins_job,
 
   # The tasks each dump a script, and they are executed in order,
   #   the overall job failing if any of them return non-zero status.
-  (params[:tasks] + params[:templates]).each do |file|
-    template "#{params[:path]}/#{file}" do
-      source    "#{file}.erb"
+  (params[:tasks] + params[:templates]).each do |file_or_hash|
+
+    if file_or_hash.is_a?(Hash)
+      tname = file_or_hash[:name]
+      tcookbook = file_or_hash[:cookbook]
+    else
+      tname = file_or_hash
+      tcookbook = 'jenkins_integration'
+    end
+
+    template "#{params[:path]}/#{tname}" do
+      source    "#{tname}.erb"
+      cookbook  tcookbook
       variables params
       mode      '0700'
       owner     node[:jenkins][:server][:user]
@@ -50,6 +60,7 @@ define(:jenkins_job,
 
   template params[:path] + '/config.xml' do
     source      'job.config.xml.erb'
+    cookbook    'jenkins_integration'
     variables   params
     owner       node[:jenkins][:server][:user]
     group       node[:jenkins][:server][:group]

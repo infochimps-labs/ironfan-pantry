@@ -14,6 +14,7 @@ class Chef
         File.read(rundeck_ssh_public_key_path)
       else
         Chef::Log.warn("Cannot read SSH public key for Rundeck yet, not created")
+        nil
       end
     end
     

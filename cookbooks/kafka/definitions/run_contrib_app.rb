@@ -52,7 +52,7 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   daemons.times do |index|
     app_name_with_index      = "#{app_name}-#{index}"
     indexed_log_dir          = File.join(node[:kafka][:contrib][:log_dir], app_name_with_index)
-    log_monitor_info.merge!(app_name_with_index.to_sym => indexed_log_dir)
+    log_monitor_info.merge!(app_name_with_index.to_sym => File.join(indexed_log_dir,'current'))
     daemon_monitor_info.merge!(app_name_with_index.to_sym => { service: "kafka_#{app_name_with_index}" })
     
     # Create the app-specific log directory

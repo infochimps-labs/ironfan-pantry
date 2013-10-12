@@ -17,7 +17,7 @@ supervisor.slots.ports:
 # See : https://github.com/nathanmarz/storm/pull/632
 
 worker.childopts: >-
-     -server -Djava.net.preferIPv4Stack=true
+     -Djava.net.preferIPv4Stack=true
      -Xmx<%=@node[:storm][:worker_jvm][:Xmx]%>
      -Xms<%=@node[:storm][:worker_jvm][:Xms]%>
      -Xss<%=@node[:storm][:worker_jvm][:Xss]%>

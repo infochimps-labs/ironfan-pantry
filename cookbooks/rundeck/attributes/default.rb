@@ -29,7 +29,7 @@ default[:rundeck][:server][:port] = 4440
 # Chef Rundeck
 #
 
-default[:rundeck][:chef_rundeck][:git_url]  = 'http://github.com/infochimps-labs/chef-rundeck'
+default[:rundeck][:chef_rundeck][:git_url]  = 'https://github.com/infochimps-labs/chef-rundeck.git'
 default[:rundeck][:chef_rundeck][:home_dir] = '/usr/local/share/chef-rundeck'
 default[:rundeck][:chef_rundeck][:log_dir]  = '/var/log/chef-rundeck'
 default[:rundeck][:chef_rundeck][:conf_dir] = '/etc/chef'
@@ -67,5 +67,7 @@ default[:rundeck][:email][:fail_on_error] = true
 #
 # Install
 #
-default[:rundeck][:version]     = '1.4.4-1'
-default[:rundeck][:release_url] = 'http://build.rundeck.org/job/rundeck-master/lastStableBuild/artifact/packaging/rundeck-:version:.deb'
+# default[:rundeck][:version]     = '1.4.4-1'
+# default[:rundeck][:release_url] = 'http://build.rundeck.org/job/rundeck-master/lasxtStableBuild/artifact/packaging/rundeck-:version:.deb'
+default[:rundeck][:version] = '1.6.2-1-GA'
+default[:rundeck][:release_url] = 'http://download.rundeck.org/deb/rundeck-:version:.deb'
