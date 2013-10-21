@@ -43,9 +43,10 @@ default[:apt][:cloudera][:force_distro] = nil # 'maverick'
 # default[:hadoop][:datanode   ][:data_dirs]       = []
 # default[:hadoop][:tasktracker][:scratch_dirs]    = []
 
-# default[:hadoop][:home_dir] = "/usr/lib/hadoop"
+default[:hadoop][:home_dir] = "/usr/lib/hadoop"
+default[:hadoop][:libexec_dir] = "/usr/lib/hadoop/libexec"
 default[:hadoop][:conf_dir] = "/etc/hadoop/conf"
-# default[:hadoop][:pid_dir]  = "/var/run/hadoop"
+default[:hadoop][:pid_dir]  = "/var/run/hadoop"
 default[:hadoop][:log_dir]  = nil          # set in recipe using volume_dirs
 # default[:hadoop][:tmp_dir]  = nil          # set in recipe using volume_dirs
 

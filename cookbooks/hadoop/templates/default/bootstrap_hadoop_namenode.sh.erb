@@ -50,7 +50,12 @@ hadoop_log_dir="<%=    @hadoop[:log_dir] %>"
 sentinel="$hadoop_tmp_dir/made_initial_dirs.log"
 
 <% if ["ubuntu", "debian"].include?(node[:platform]) -%>
-for foo in hadoop-0.20-{tasktracker,datanode,namenode,secondarynamenode,jobtracker} ; do echo $foo ; sudo update-rc.d -f $foo remove ; done ; true
+# TODO: finish replicating
+for foo in hadoop-{hdfs-{datanode,namenode}} ; do 
+# for foo in hadoop-0.20-{tasktracker,datanode,namenode,secondarynamenode,jobtracker} ; do 
+    echo $foo 
+    sudo update-rc.d -f $foo remove 
+done
 <% end -%>
 
 make_hadoop_dir_if_not_exists() {
@@ -92,7 +97,7 @@ if [ -f "$dfs_name_dir_root/current/VERSION" ] && [ -f "$dfs_name_dir_root/curre
   echo "Hadoop namenode appears to be formatted: skipping"
 else
   echo "Executing namenode format!"
-  sudo -u "$hdfs_user" hadoop namenode -format
+  sudo -u "$hdfs_user" hdfs namenode -format
 fi
 echo
 
@@ -104,29 +109,32 @@ sudo service hadoop_namenode start
 #
 echo "4/6: Waiting for the namenode to come out of safemode" ; echo -n "  "
 #
-hadoop dfsadmin -safemode wait
+# Can receive connection error the first time
+while ! (hdfs dfsadmin -safemode wait); do
+    sleep 3
+done
 
 #
 echo "5/6: Preparing filesystem"
 #
 if [ -f "$sentinel" ] ; then
-  echo "Looks like we already made the hdfs dirs -- try 'hadoop fs -lsr /' to see. if not, remove '$sentinel' and re-run."
+  echo "Looks like we already made the hdfs dirs -- try 'hdfs dfs -lsr /' to see. if not, remove '$sentinel' and re-run."
 else
   set +e
   hadoop_users=/user/"`grep supergroup /etc/group | cut -d: -f4 | sed -e 's|,| /user/|g'`"
   hadoop_users="/user/ubuntu $hadoop_users"
   echo "   /tmp /user /user/hive/warehouse $hadoop_users"
-  sudo -u "$hdfs_user" hadoop fs -mkdir           /tmp /user /user/hive/warehouse $hadoop_users
-  sudo -u "$hdfs_user" hadoop fs -chmod a+w       /tmp /user /user/hive/warehouse
+  sudo -u "$hdfs_user" hdfs dfs -mkdir           /tmp /user /user/hive/warehouse $hadoop_users
+  sudo -u "$hdfs_user" hdfs dfs -chmod a+w       /tmp /user /user/hive/warehouse
   echo "   /hadoop/mapred/system /hadoop/mapred/staging"
-  sudo -u "$hdfs_user" hadoop fs -mkdir           <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %>
-  sudo -u "$hdfs_user" hadoop fs -chmod 700       <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %>
-  sudo -u "$hdfs_user" hadoop fs -chown -R mapred <%= ::File.dirname(@hadoop[:jobtracker][:system_hdfsdir]) %>
+  sudo -u "$hdfs_user" hdfs dfs -mkdir           <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %>
+  sudo -u "$hdfs_user" hdfs dfs -chmod 700       <%= @hadoop[:jobtracker][:system_hdfsdir] %> <%= @hadoop[:jobtracker][:staging_hdfsdir] %>
+  sudo -u "$hdfs_user" hdfs dfs -chown -R mapred <%= ::File.dirname(@hadoop[:jobtracker][:system_hdfsdir]) %>
   echo "   /hadoop/hbase"
-  sudo -u "$hdfs_user" hadoop fs -mkdir           /hadoop/hbase
-  sudo -u "$hdfs_user" hadoop fs -chown -R hbase  /hadoop/hbase
+  sudo -u "$hdfs_user" hdfs dfs -mkdir           /hadoop/hbase
+  sudo -u "$hdfs_user" hdfs dfs -chown -R hbase  /hadoop/hbase
   for user in $hadoop_users ; do
-    sudo -u "$hdfs_user" hadoop fs -chown ${user#/user/} $user
+    sudo -u "$hdfs_user" hdfs dfs -chown ${user#/user/} $user
   done 
   touch "$sentinel"
   set -e

@@ -37,19 +37,14 @@ sentinel="$hadoop_tmp_dir/made_initial_dirs.log"
 #
 echo "Stopping hadoop daemons"
 #
-echo -n "  old namenode: "    ; sudo service hadoop-0.20-namenode          stop ; true
-echo -n "  old secondarynn: " ; sudo service hadoop-0.20-secondarynamenode stop ; true
-echo -n "  old jobtracker: "  ; sudo service hadoop-0.20-jobtracker        stop ; true
-echo -n "  old datanode: "    ; sudo service hadoop-0.20-datanode          stop ; true
-echo -n "  old tasktracker: " ; sudo service hadoop-0.20-tasktracker       stop ; true
-echo -n "  namenode"          ; sudo service hadoop_namenode               stop ; true
-echo -n "  secondarynn:"      ; sudo service hadoop_secondarynn            stop ; true
-echo -n "  jobtracker:"       ; sudo service hadoop_secondarynn            stop ; true
-echo -n "  datanode:"         ; sudo service hadoop_datanode               stop ; true
-echo -n "  tasktracker:"      ; sudo service hadoop_secondarynn            stop ; true
+echo -n "  namenode"          ; sudo service hadoop_namenode               stop 
+echo -n "  secondarynn:"      ; sudo service hadoop_secondarynn            stop 
+echo -n "  jobtracker:"       ; sudo service hadoop_secondarynn            stop 
+echo -n "  datanode:"         ; sudo service hadoop_datanode               stop 
+echo -n "  tasktracker:"      ; sudo service hadoop_secondarynn            stop 
 sleep 3 # let the services be truly stopped
 
-ps aux | egrep '^(hadoop|hdfs|mapred)' ; true
+ps aux | egrep '^(hadoop|hdfs|mapred)'
 
 echo "WARNING:"
 echo ""

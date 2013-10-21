@@ -24,14 +24,14 @@ module HadoopCluster
   #     }).merge(node[:hadoop])
   # end
 
-  # # Create a symlink to a directory, wiping away any existing dir that's in the way
-  # def force_link dest, src
-  #   directory(dest) do
-  #     action :delete ; recursive true
-  #     not_if{ File.symlink?(dest) }
-  #   end
-  #   link(dest){ to src }
-  # end
+  # Create a symlink to a directory, wiping away any existing dir that's in the way
+  def force_link dest, src
+    directory(dest) do
+      action :delete ; recursive true
+      not_if{ File.symlink?(dest) }
+    end
+    link(dest){ to src }
+  end
 
 end
 

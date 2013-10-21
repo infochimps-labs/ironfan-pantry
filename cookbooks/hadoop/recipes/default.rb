@@ -138,7 +138,9 @@ end
 # and /var/run/hadoop point to the actual pid dir
 force_link("/var/log/hadoop",                    node[:hadoop][:log_dir] )
 force_link("/var/log/#{node[:hadoop][:handle]}", node[:hadoop][:log_dir] )
-force_link("/var/run/#{node[:hadoop][:handle]}", node[:hadoop][:pid_dir] )
+
+# EM: don't do this, it was relevant when pid_dir has -0.20 suffix
+# force_link("/var/run/#{node[:hadoop][:handle]}", node[:hadoop][:pid_dir] )
 
 # node.set[:hadoop][:exported_jars] = [
 #   "#{node[:hadoop][:home_dir]}/hadoop-core.jar",
