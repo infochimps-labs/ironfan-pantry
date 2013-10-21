@@ -3,13 +3,13 @@
 # You want to bring the big daemons up deliberately on initial start.
 #   Override in your cluster definition when things are stable.
 default[:hadoop][:namenode    ][:run_state]  = :stop
-# default[:hadoop][:secondarynn ][:run_state]  = :stop
+default[:hadoop][:secondarynn ][:run_state]  = :stop
 # default[:hadoop][:jobtracker  ][:run_state]  = :stop
 #
 # You can just kick off the worker daemons, they'll retry. On a full-cluster
 #   stop/start (or any other time the main daemons' ip address changes) however
 #   you will need to converge chef and then restart them all.
-# default[:hadoop][:datanode    ][:run_state]  = :start
+default[:hadoop][:datanode    ][:run_state]  = :start
 # default[:hadoop][:tasktracker ][:run_state]  = :start
 
 # default[:hadoop][:hdfs_fuse   ][:run_state]  = :stop
@@ -53,21 +53,21 @@ default[:hadoop][:log_dir]  = nil          # set in recipe using volume_dirs
 # default[:hadoop][:exported_confs] ||= nil  # set in recipe
 # default[:hadoop][:exported_jars]  ||= nil  # set in recipe
 
-# default[:hadoop][:namenode   ][:ipc_port]          =  8020
+default[:hadoop][:namenode   ][:ipc_port]          =  8020
 # default[:hadoop][:jobtracker ][:port]              =  8021
-# default[:hadoop][:datanode   ][:xcvr_port]         = 50010
-# default[:hadoop][:datanode   ][:ipc_port]          = 50020
+default[:hadoop][:datanode   ][:xcvr_port]         = 50010
+default[:hadoop][:datanode   ][:ipc_port]          = 50020
 
 default[:hadoop][:namenode   ][:dash_port]         = 50070
-# default[:hadoop][:secondarynn][:dash_port]         = 50090
+default[:hadoop][:secondarynn][:dash_port]         = 50090
 # default[:hadoop][:jobtracker ][:dash_port]         = 50030
-# default[:hadoop][:datanode   ][:dash_port]         = 50075
+default[:hadoop][:datanode   ][:dash_port]         = 50075
 # default[:hadoop][:tasktracker][:dash_port]         = 50060
 
 default[:hadoop][:namenode   ][:jmx_dash_port]     = 8004
-# default[:hadoop][:secondarynn][:jmx_dash_port]     = 8005
+default[:hadoop][:secondarynn][:jmx_dash_port]     = 8005
 # default[:hadoop][:jobtracker ][:jmx_dash_port]     = 8008
-# default[:hadoop][:datanode   ][:jmx_dash_port]     = 8006
+default[:hadoop][:datanode   ][:jmx_dash_port]     = 8006
 # default[:hadoop][:tasktracker][:jmx_dash_port]     = 8009
 # default[:hadoop][:balancer   ][:jmx_dash_port]     = 8007
 
@@ -105,7 +105,6 @@ default[:hadoop][:namenode   ][:jmx_dash_port]     = 8004
 
 default[:hadoop][:handle]               = 'hadoop'
 default[:hadoop][:deb_version]          = '2.0.0+1475-1.cdh4.4.0.p0.23~precise-cdh4.4.0'
-#default[:hadoop][:deb_version]          = '0.20.2+923.142-1~maverick-cdh3'
 
 # # set to nil to pull name from actual machine's distro --
 # # note however that cloudera is very conservative to update its distro support
