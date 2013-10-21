@@ -60,6 +60,10 @@ default[:hadoop][:pid_dir]  = "/var/run/hadoop"
 default[:hadoop][:log_dir]  = nil          # set in recipe using volume_dirs
 default[:hadoop][:tmp_dir]  = nil          # set in recipe using volume_dirs
 
+default[:hadoop][:s3][:aws_access_key]  = nil
+default[:hadoop][:s3][:aws_access_key_id]  = nil
+default[:hadoop][:s3][:aws_secret_access_key]  = nil
+
 default[:hadoop][:exported_confs] ||= nil  # set in recipe
 default[:hadoop][:exported_jars]  ||= nil  # set in recipe
 
