@@ -4,13 +4,13 @@
 #   Override in your cluster definition when things are stable.
 default[:hadoop][:namenode    ][:run_state]  = :stop
 default[:hadoop][:secondarynn ][:run_state]  = :stop
-# default[:hadoop][:jobtracker  ][:run_state]  = :stop
+default[:hadoop][:jobtracker  ][:run_state]  = :stop
 #
 # You can just kick off the worker daemons, they'll retry. On a full-cluster
 #   stop/start (or any other time the main daemons' ip address changes) however
 #   you will need to converge chef and then restart them all.
 default[:hadoop][:datanode    ][:run_state]  = :start
-# default[:hadoop][:tasktracker ][:run_state]  = :start
+default[:hadoop][:tasktracker ][:run_state]  = :start
 
 # default[:hadoop][:hdfs_fuse   ][:run_state]  = :stop
 # default[:hadoop][:balancer    ][:run_state]  = :stop
@@ -38,10 +38,10 @@ default[:apt][:cloudera][:force_distro] = nil # 'maverick'
 #
 # default[:hadoop][:namenode   ][:data_dirs]       = []
 # default[:hadoop][:secondarynn][:data_dirs]       = []
-# default[:hadoop][:jobtracker ][:system_hdfsdir]  = '/hadoop/mapred/system'  # note: on the HDFS
-# default[:hadoop][:jobtracker ][:staging_hdfsdir] = '/hadoop/mapred/staging' # note: on the HDFS
+default[:hadoop][:jobtracker ][:system_hdfsdir]  = '/hadoop/mapred/system'  # note: on the HDFS
+default[:hadoop][:jobtracker ][:staging_hdfsdir] = '/hadoop/mapred/staging' # note: on the HDFS
 # default[:hadoop][:datanode   ][:data_dirs]       = []
-# default[:hadoop][:tasktracker][:scratch_dirs]    = []
+default[:hadoop][:tasktracker][:scratch_dirs]    = []
 
 default[:hadoop][:home_dir] = "/usr/lib/hadoop"
 default[:hadoop][:libexec_dir] = "/usr/lib/hadoop/libexec"
@@ -58,21 +58,21 @@ default[:hadoop][:s3][:aws_secret_access_key]  = nil
 # default[:hadoop][:exported_jars]  ||= nil  # set in recipe
 
 default[:hadoop][:namenode   ][:ipc_port]          =  8020
-# default[:hadoop][:jobtracker ][:port]              =  8021
+default[:hadoop][:jobtracker ][:port]              =  8021
 default[:hadoop][:datanode   ][:xcvr_port]         = 50010
 default[:hadoop][:datanode   ][:ipc_port]          = 50020
 
 default[:hadoop][:namenode   ][:dash_port]         = 50070
 default[:hadoop][:secondarynn][:dash_port]         = 50090
-# default[:hadoop][:jobtracker ][:dash_port]         = 50030
+default[:hadoop][:jobtracker ][:dash_port]         = 50030
 default[:hadoop][:datanode   ][:dash_port]         = 50075
-# default[:hadoop][:tasktracker][:dash_port]         = 50060
+default[:hadoop][:tasktracker][:dash_port]         = 50060
 
 default[:hadoop][:namenode   ][:jmx_dash_port]     = 8004
 default[:hadoop][:secondarynn][:jmx_dash_port]     = 8005
-# default[:hadoop][:jobtracker ][:jmx_dash_port]     = 8008
+default[:hadoop][:jobtracker ][:jmx_dash_port]     = 8008
 default[:hadoop][:datanode   ][:jmx_dash_port]     = 8006
-# default[:hadoop][:tasktracker][:jmx_dash_port]     = 8009
+default[:hadoop][:tasktracker][:jmx_dash_port]     = 8009
 # default[:hadoop][:balancer   ][:jmx_dash_port]     = 8007
 
 
