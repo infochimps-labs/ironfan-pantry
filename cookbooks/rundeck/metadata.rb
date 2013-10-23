@@ -7,6 +7,7 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 depends "runit"
 depends "silverware"
+depends "nginx"
 
 recipe "rundeck::default", "Sets up the Rundeck user and basic installation directories"
 
@@ -15,7 +16,7 @@ recipe "rundeck::install_server_from_deb",       "Installs a Rundeck server from
 recipe "rundeck::install_chef-rundeck",          "Installs the Chef-Rundeck gem which provides a small web-server tool to relay data from a Chef server to Rundeck"
 recipe "rundeck::integration_with_chef-rundeck", "Create a default project pointing at a resource URL provided by Chef Rundeck"
 recipe "rundeck::ssl",                           "Configure the Rundeck server's SSL behavior"
-recipe "rundeck::sshky",                         "Create an SSH key for the Rundeck server"
+recipe "rundeck::sshkey",                        "Create an SSH key for the Rundeck server"
 
 recipe "rundeck::client", "Allows a Rundeck server to SSH into this node"
 
