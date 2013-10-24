@@ -69,5 +69,5 @@ default[:rundeck][:email][:fail_on_error] = true
 #
 # default[:rundeck][:version]     = '1.4.4-1'
 # default[:rundeck][:release_url] = 'http://build.rundeck.org/job/rundeck-master/lasxtStableBuild/artifact/packaging/rundeck-:version:.deb'
-default[:rundeck][:version] = '1.6.2-1-GA'
+default[:rundeck][:version]     = '1.5.3-1-GA'
 default[:rundeck][:release_url] = 'http://download.rundeck.org/deb/rundeck-:version:.deb'

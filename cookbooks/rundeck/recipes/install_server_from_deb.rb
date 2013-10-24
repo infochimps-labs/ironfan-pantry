@@ -13,7 +13,7 @@ end
 
 remote_file downloaded_deb do
   source   deb_src
-  notifies :run, resources(:bash => 'Install Rundeck'), :immediately
+  notifies :run, resources(:bash => 'Install Rundeck'), :immediately  
 end
 
 service "rundeckd" do
