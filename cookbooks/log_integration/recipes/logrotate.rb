@@ -69,3 +69,9 @@ components_with(:logs).each do |component|
     end
   end
 end
+
+template File.join(node.log_integration.logrotate.conf_dir, 'chef') do
+  source 'chef.erb'
+  mode   '0644'
+  variables :maxage => node.log_integration.logrotate.chef_maxage
+end

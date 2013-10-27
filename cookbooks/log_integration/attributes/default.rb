@@ -73,3 +73,4 @@ default[:log_integration][:logrotate][:rotate]                 = 14
 # default[:log_integration][:logrotate][:tabooext]               = nil
 # default[:log_integration][:logrotate][:weekly]                 = nil
 # default[:log_integration][:logrotate][:yearly]                 = nil
+default[:log_integration][:logrotate][:chef_maxage]              = 7
