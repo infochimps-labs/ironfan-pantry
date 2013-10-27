@@ -208,6 +208,8 @@ default[:hadoop][:hue][:install_method]        = 'package'
 
 default[:hadoop][:hue][:version]               = "2.5.0"
 default[:hadoop][:hue][:release_url]           = "https://dl.dropboxusercontent.com/u/730827/hue/releases/:version:/hue-:version:.tgz"
+default[:hadoop][:hue][:jobtracker_plugin_location] = "https://s3.amazonaws.com/artifacts.chimpy.us/jars/hue-plugins-2.5.0-SNAPSHOT.jar"
+
 
 default[:hadoop][:hue][:user]                  = 'hue'
 default[:hadoop][:hue][:group]                 = 'hue'
@@ -238,4 +240,10 @@ default[:hadoop][:hue][:beeswax][:port]        = 8002
 default[:hadoop][:hue][:beeswax][:meta_port]   = 8003
 default[:hadoop][:hue][:beeswax][:heap_size]   = 2048
 
-default[:hadoop][:hue][:jobtracker_plugin_location] = 'https://s3.amazonaws.com/artifacts.chimpy.us/jars/hue-plugins-2.5.0-SNAPSHOT.jar'
+default[:hadoop][:hue][:smtp][:host]           = nil
+default[:hadoop][:hue][:smtp][:port]           = nil
+default[:hadoop][:hue][:smtp][:tls]            = nil
+default[:hadoop][:hue][:smtp][:user]           = nil
+default[:hadoop][:hue][:smtp][:password]       = nil
+default[:hadoop][:hue][:smtp][:from]           = nil
+

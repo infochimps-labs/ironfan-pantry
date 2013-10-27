@@ -21,7 +21,7 @@
   secret_key=<%= @secret_key %>
 
   # Webserver listens on this address and port
-  http_host=0.0.0.0
+  http_host=<%= @fqdn %>
   http_port=<%= @hue[:port] %>
 
   # Time zone name
@@ -189,16 +189,16 @@
   [[smtp]]
 
     # The SMTP server information for email notification delivery
-    host=localhost
-    port=25
-    user=
-    password=
+    host=<%= @hue[:smtp][:host] %>
+    port=<%= @hue[:smtp][:port] %>
+    user=<%= @hue[:smtp][:user] %>
+    password=<%= @hue[:smtp][:password] %>
 
     # Whether to use a TLS (secure) connection when talking to the SMTP server
-    tls=no
+    tls=<%= @hue[:smtp][:tls] %>
 
     # Default email address to use for various automated notification from Hue
-    ## default_from_email=hue@localhost
+    default_from_email=<%= @hue[:smtp][:from] %>
 
 
   # Configuration options for Kerberos integration for secured Hadoop clusters
