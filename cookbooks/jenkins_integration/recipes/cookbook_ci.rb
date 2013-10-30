@@ -35,6 +35,7 @@ jenkins_job "Ironfan Cookbooks - 1 - Prepare testing" do
   triggers      :schedule => cookbook_ci[:schedule]
   conditional   :regexp => "SUCCESS:",
                 :target => "Ironfan Cookbooks - 2 - Test and stage"
+  retention     :days => 14
 end
 
 # Launch a testing server and push testing into staging if successful
@@ -43,6 +44,7 @@ jenkins_job "Ironfan Cookbooks - 2 - Test and stage" do
   homebases     cookbook_ci[:homebases]
   templates     shared_templates
   tasks         %w[ checkout.sh launch_instances.sh stage_all.sh ]
+  retention     :days => 14
   if cookbook_ci[:broken]
     downstream  [ "Ironfan Cookbooks - 3 - Test known broken" ]
   end
@@ -54,6 +56,7 @@ if cookbook_ci[:broken]
     homebases           [ cookbook_ci[:test_homebase] ]
     templates           shared_templates
     tasks               %w[ checkout.sh launch_broken.sh ]
+    retention           :days => 14
   end
 end
 
@@ -63,6 +66,7 @@ jenkins_job "Ironfan Cookbooks - 4 - Converge and ironcuke existing host" do
   homebases     cookbook_ci[:homebases]
   templates     shared_templates
   tasks         %w[ checkout.sh run_ironcuke.sh ]
+  retention     :days => 3
   triggers      :schedule => cookbook_ci[:cuke_schedule]
 end
 
