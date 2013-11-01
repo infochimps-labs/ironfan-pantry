@@ -68,7 +68,8 @@ jobtracker = discover(:hadoop, :jobtracker)
 
 template File.join(node[:hadoop][:hue][:conf_dir], 'hue.ini') do
   mode     "0644"
-  variables(:hue => node[:hadoop][:hue], :hadoop => node[:hadoop], secret_key: secret_key, namenode: namenode, jobtracker: jobtracker, :fqdn => node[:route53][:fqdn])
+  variables(:hue => node[:hadoop][:hue], :hadoop => node[:hadoop], secret_key: secret_key, namenode: namenode, jobtracker: jobtracker,
+            :fqdn => (node[:hadoop][:hue][:sso][:fqdn] || node[:route53][:fqdn]) )
   source   "hue.ini.erb"
   notifies :restart, 'service[hue]', :delayed
 end

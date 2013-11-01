@@ -42,7 +42,7 @@
   # Set to true to use CherryPy as the webserver, set to false
   # to use Spawning as the webserver. Defaults to Spawning if
   # key is not specified.
-  ## use_cherrypy_server = false
+  use_cherrypy_server = true
 
   # Webserver runs as this user
   server_user=<%= @hue[:user] %>
@@ -50,10 +50,10 @@
 
   # If set to false, runcpserver will not actually start the web server.
   # Used if Apache is being used as a WSGI container.
-  ## enable_server=yes
+  enable_server=yes
 
   # Number of threads used by the CherryPy web server
-  ## cherrypy_server_threads=10
+  cherrypy_server_threads=20
 
 <% if @hue[:ssl][:certificate] %>
   # Filename of SSL Certificate
