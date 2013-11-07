@@ -16,7 +16,6 @@ export JVMFLAGS=-Dzookeeper.log.threshold=INFO
 # By default we allow local JMX connections
 export ZOO_JMX_OPTS="-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.local.only=false \
   -Djava.rmi.server.hostname=<%= @options[:jmx_dash_addr] %> \
-  -DXmx<%= @options[:java_heap_size_max]m %> \
   -Dcom.sun.management.jmxremote.port=<%= @options[:jmx_dash_port] %> \
   -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false"
 
@@ -38,6 +37,7 @@ echo $JAVA
 exec chpst -u <%= @options[:user] %> "$JAVA"  \
   "-Dzookeeper.log.dir=${ZOO_LOG_DIR}"        \
   "-Dzookeeper.root.logger=${ZOO_LOG4J_PROP}" \
+  "-DXmx<%= @options[:java_heap_size_max]m %>" \
   -cp "$CLASSPATH"                            \
   $JVMFLAGS                                   \
   $ZOOMAIN                                    \
