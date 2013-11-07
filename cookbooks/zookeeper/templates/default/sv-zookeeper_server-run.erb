@@ -37,7 +37,7 @@ echo $JAVA
 exec chpst -u <%= @options[:user] %> "$JAVA"  \
   "-Dzookeeper.log.dir=${ZOO_LOG_DIR}"        \
   "-Dzookeeper.root.logger=${ZOO_LOG4J_PROP}" \
-  "-DXmx<%= @options[:java_heap_size_max]m %>" \
+  "-DXmx<%= @options[:java_heap_size_max] %>m" \
   -cp "$CLASSPATH"                            \
   $JVMFLAGS                                   \
   $ZOOMAIN                                    \
