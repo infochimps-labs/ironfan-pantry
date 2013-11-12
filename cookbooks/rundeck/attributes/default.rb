@@ -31,7 +31,7 @@ default[:rundeck][:server][:port] = 4440
 
 default[:rundeck][:chef_rundeck][:git_url]  = 'https://github.com/infochimps-labs/chef-rundeck.git'
 default[:rundeck][:chef_rundeck][:home_dir] = '/usr/local/share/chef-rundeck'
-default[:rundeck][:chef_rundeck][:log_dir]  = '/var/log/chef-rundeck'
+default[:rundeck][:chef_rundeck][:log_dir]  = '/var/log/rundeck/chef-rundeck'
 default[:rundeck][:chef_rundeck][:conf_dir] = '/etc/chef'
 
 default[:rundeck][:chef_rundeck][:port] = 9980
@@ -40,7 +40,7 @@ default[:rundeck][:chef_rundeck][:port] = 9980
 # Web frontend
 # 
 
-default[:rundeck][:web][:log_dir] = '/var/log/rundeck_web'
+default[:rundeck][:web][:log_dir] = '/var/log/rundeck/rundeck_web'
 
 #
 # SSL

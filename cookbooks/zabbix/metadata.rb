@@ -78,7 +78,7 @@ attribute "zabbix/agent/install_method",
 attribute "zabbix/agent/log_dir",
   :display_name          => "",
   :description           => "The log directory for the Zabbix agent.",
-  :default               => "/var/log/zabbix_agent"
+  :default               => "/var/log/zabbix/zabbix_agent"
 
 attribute "zabbix/agent/create_host",
   :display_name          => "",
@@ -124,7 +124,7 @@ attribute "zabbix/server/configure_options",
 attribute "zabbix/server/log_dir",
   :display_name          => "",
   :description           => "The log directory for the Zabbix server.",
-  :default               => "/var/log/zabbix_server"
+  :default               => "/var/log/zabbix/zabbix_server"
 
 attribute "zabbix/database/install_method",
   :display_name          => "",
@@ -184,7 +184,7 @@ attribute "zabbix/web/port",
 attribute "zabbix/web/log_dir",
   :display_name          => "",
   :description           => "The directory for the Zabbix web frontend's logs.",
-  :default               => "/var/log/zabbix_web"
+  :default               => "/var/log/zabbix/zabbix_web"
 
 attribute "zabbix/web/install_method",
   :display_name          => "",
