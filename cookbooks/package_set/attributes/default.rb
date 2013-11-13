@@ -69,17 +69,18 @@ default[:package_set][:pkgs][:datatools] = %w[
     ghostscript latex libfreetype6 python-gtk2 python-gtk2-dev python-wxgtk2.8
   ]
 
-default[:package_set][:gems][:base]      = [ { name: "bundler", version: "1.1" } ]
-default[:package_set][:gems][:dev]       = %w[
-  extlib json yajl-ruby awesome_print addressable cheat rest-client
-  yard jeweler rspec watchr pry wirble hirb highline formatador
-  configliere gorillib wukong swineherd hackboxen activesupport activemodel
-  ]
-default[:package_set][:gems][:sysadmin]  = %w[]
-default[:package_set][:gems][:text]      = %w[ nokogiri erubis i18n ]
-default[:package_set][:gems][:ec2]       = %w[ fog right_aws ironfan ]
-default[:package_set][:gems][:vagrant]   = %w[ vagrant veewee ironfan ]
-default[:package_set][:gems][:wukong]    = %w[ log4r RedCloth guard htmlentities log4r log_buddy redcarpet simplecov multi_json ]
+default[:package_set][:gems] = { }
+# default[:package_set][:gems][:base]      = [ { name: "bundler", version: "1.1" } ]
+# default[:package_set][:gems][:dev]       = %w[
+#   extlib json yajl-ruby awesome_print addressable cheat rest-client
+#   yard jeweler rspec watchr pry wirble hirb highline formatador
+#   configliere gorillib wukong swineherd hackboxen activesupport activemodel
+#   ]
+# default[:package_set][:gems][:sysadmin]  = %w[]
+# default[:package_set][:gems][:text]      = %w[ nokogiri erubis i18n ]
+# default[:package_set][:gems][:ec2]       = %w[ fog right_aws ironfan ]
+# default[:package_set][:gems][:vagrant]   = %w[ vagrant veewee ironfan ]
+# default[:package_set][:gems][:wukong]    = %w[ log4r RedCloth guard htmlentities log4r log_buddy redcarpet simplecov multi_json ]
 
 case node.platform
 when 'centos', 'redhat'
