@@ -24,3 +24,15 @@ template "/tmp/burn_ami_prep.sh" do
   mode      "0700"
   source  "burn_ami_prep.sh.erb"
 end
+
+
+# I think Omnibus used to symlink /usr/local/sbin, we'll do it ourselves
+directory "/usr/local/sbin" do
+  action :delete
+  only_if do Dir.glob('/usr/local/sbin/*').empty? end
+end
+
+link "/usr/local/sbin" do
+  to '/opt/chef/embedded/bin'
+  action :create
+end
