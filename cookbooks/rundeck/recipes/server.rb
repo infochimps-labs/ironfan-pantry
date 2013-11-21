@@ -1,5 +1,6 @@
 include_recipe 'rundeck::default'
 include_recipe 'rundeck::install_server_from_deb'
+include_recipe 'rundeck::sshdir' # after deb install
 include_recipe 'rundeck::install_chef-rundeck'
 include_recipe 'rundeck::integration_with_chef-rundeck'
 include_recipe 'rundeck::ssl'
@@ -13,7 +14,7 @@ template File.join(node[:rundeck][:conf_dir], 'profile') do
   mode     '0664'
   owner    node[:rundeck][:user]
   group    node[:rundeck][:group]
-  notifies :restart, :service => 'rundeckd'
+  notifies :restart, 'service[rundeckd]', :immediately
 end
 
 announce(:rundeck, :server, {

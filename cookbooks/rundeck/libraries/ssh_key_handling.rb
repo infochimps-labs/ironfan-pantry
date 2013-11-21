@@ -2,7 +2,7 @@ class Chef
   class Recipe
 
     def rundeck_ssh_private_key_path
-      File.join(node[:rundeck][:pid_dir], '.ssh/id_rsa')
+      File.join(node[:rundeck][:home_dir], '.ssh/id_rsa')
     end
     
     def rundeck_ssh_public_key_path
