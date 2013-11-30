@@ -1,0 +1,6 @@
+require 'rubygems/command_manager'
+require 'geminabox'
+
+Geminabox.data           = '<%= node[:package_server][:gem][:data_dir] %>'
+Geminabox.rubygems_proxy = true
+run Geminabox::Server
