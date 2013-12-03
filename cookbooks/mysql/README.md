@@ -1,79 +1,174 @@
-Description
-===========
+mysql Cookbook
+==============
+[![Build Status](https://secure.travis-ci.org/opscode-cookbooks/mysql.png?branch=master)](http://travis-ci.org/opscode-cookbooks/mysql)
 
 Installs and configures MySQL client or server.
 
 Requirements
-============
+------------
+Chef 0.10.10+.
 
 Platform
 --------
-
-* Debian, Ubuntu
-* CentOS, Red Hat, Fedora
+- Debian, Ubuntu
+- CentOS, Red Hat, Fedora
+- Mac OS X (Using homebrew)
 
 Tested on:
 
-* Debian 5.0
-* Ubuntu 10.04
-* CentOS 5.5
+- Ubuntu 10.04, 12.04
+- CentOS 5.9, 6.5
+
+See TESTING.md for information about running tests in Opscode's Test Kitchen.
+
 
 Cookbooks
 ---------
+Requires Opscode's openssl cookbook for secure password generation. See _Attributes_ and _Usage_ for more information.
 
-Requires Opscode's openssl cookbook for secure password generation.
+The RubyGem installation in the `mysql::ruby` recipe requires a C compiler and Ruby development headers to be installed in order to build the mysql gem.
 
-Requires a C compiler and Ruby development package in order to build mysql gem with native extensions. On Debian and Ubuntu systems this is satisfied by installing the "build-essential" and "ruby-dev" packages before running Chef. See USAGE below for information on how to handle this during a Chef run.
+Requires `homebrew` [cookbook](http://community.opscode.com/cookbooks/homebrew) on Mac OS X.
+
 
 Resources and Providers
-=======================
+-----------------------
+The LWRP that used to ship as part of this cookbook has been refactored into the
+[database](http://community.opscode.com/cookbooks/database) cookbook. Please see the README for details on updated usage.
 
-The LWRP that used to ship as part of this cookbook has been refactored into the [database](https://github.com/opscode/cookbooks/tree/master/database) cookbook.  Please see the README for details on updated usage.
 
 Attributes
-==========
+----------
+See the `attributes/server.rb` or `attributes/client.rb` for default values. Several attributes have values that vary based on the node's platform and version.
 
-* `mysql['server_root_password']` - Set the server's root password with this, default is a randomly generated password with `OpenSSL::Random.random_bytes`.
-* `mysql['server_repl_password']` - Set the replication user 'repl' password with this, default is a randomly generated password with `OpenSSL::Random.random_bytes`.
-* `mysql['server_debian_password']` - Set the debian-sys-maint user password with this, default is a randomly generated password with `OpenSSL::Random.random_bytes`.
-* `mysql['bind_address']` - Listen address for MySQLd, default is node's ipaddress.
-* `mysql['data_dir']` - Location for mysql data directory, default is "/var/lib/mysql"
-* `mysql['conf_dir']` - Location for mysql conf directory, default is "/etc/mysql"
-* `mysql['ec2_path']` - location of mysql data_dir on EC2 nodes, default "/mnt/mysql"
+* `node['mysql']['port']` - Listen port for MySQLd
+* `node['mysql']['data_dir']` - Location for mysql data directory. `WARNING` This will only on initial converge. It will not move data around if you change it.
 
-Performance tuning attributes, each corresponds to the same-named parameter in my.cnf; default values listed
+* `node['mysql']['client']['packages']` - An array of package names
+  that should be installed on "client" systems. This can be modified,
+  e.g., to specify packages for Percona.
+* `node['mysql']['server']['packages']` - An array of package names
+  that should be installed on "server" systems. This can be modified,
+  e.g., to specify packages for Percona.
+* `node['mysql']['auto-increment-increment']` -
+  auto-increment-increment value in my.cnf
+* `node['mysql']['auto-increment-offset]` - auto-increment-offset value in my.cnf
+* `node['mysql']['server']['basedir']` - Base directory where MySQL is installed
+* `node['mysql']['bind_address']` - Listen address for MySQLd
+* `node['mysql']['ec2_path']` - location of mysql data_dir on EC2 nodes
+* `node['mysql']['grants_path']` - Path where the grants.sql should be written
+* `node['mysql']['mysqladmin_bin']` - Path to the mysqladmin binary
+* `node['mysql']['server']['old_passwords']` - Sets the `old_passwords` value in my.cnf.
+* `node['mysql']['server']['pid_file']` - Path to the mysqld.pid file
 
-* `mysql['tunable']['key_buffer']`          = "250M"
-* `mysql['tunable']['max_connections']`     = "800"
-* `mysql['tunable']['wait_timeout']`        = "180"
-* `mysql['tunable']['net_write_timeout']`   = "30"
-* `mysql['tunable']['net_write_timeout']`   = "30"
-* `mysql['tunable']['back_log']`            = "128"
-* `mysql['tunable']['table_cache']`         = "128"
-* `mysql['tunable']['max_heap_table_size']` = "32M"
-* `mysql['tunable']['expire_logs_days']`    = "10"
-* `mysql['tunable']['max_binlog_size']`     = "100M"
+* `node['mysql']['server']['reload_action']` - Action to take when mysql conf
+  files are modified. Also allows "reload" and "none".
+* `node['mysql']['server']['root_group']` - The default group of the "root" user
+* `node['mysql']['server']['service_name']` - The name of the mysqld service
+* `node['mysql']['server']['socket']` - Path to the mysqld.sock file
+* `mysql['root_network_acl']` - Set define the network the root user will be able to login from, default is nil
+
+Performance and other "tunable" attributes are under the `node['mysql']['tunable']` attribute, corresponding to the same-named parameter in my.cnf, and the default values are used. See `attributes/server.rb`.
+
+By default, a MySQL installation has an anonymous user, allowing anyone to log into MySQL without having to have a user account created for them.  This is intended only for testing, and to make the installation go a bit smoother.  You should remove them before moving into a production environment.
+
+* `node['mysql']['remove_anonymous_users']` - Remove anonymous users
+
+Normally, root should only be allowed to connect from 'localhost'.  This ensures that someone cannot guess at the root password from the network.
+
+* `node['mysql']['allow_remote_root']` - If true Sets root access from '%'. If false deletes any non-localhost root users.
+
+By default, MySQL comes with a database named 'test' that anyone can access.  This is also intended only for testing, and should be removed before moving into a production environment. This will also drop any user privileges to the test database and any DB named test_% .
+
+* `node['mysql']['remove_test_database']` - Delete the test database and access to it.
+
+The following attributes are randomly generated passwords handled in the `mysql::server` recipe, using the OpenSSL cookbook's `secure_password` helper method. These are set using the `set_unless` node attribute method, which allows them to be easily overridden e.g.
+in a role.
+
+* `node['mysql']['server_root_password']` - Set the server's root
+  password
+* `node['mysql']['server_repl_password']` - Set the replication user
+  'repl' password
+* `node['mysql']['server_debian_password']` - Set the debian-sys-maint
+  user password
+
+### Windows Specific
+
+The following attributes are specific to Windows platforms.
+
+* `node['mysql']['client']['version']` - The version of MySQL
+  connector to install.
+* `node['mysql']['client']['arch']` - Force 32 bit to work with the
+  mysql gem
+* `node['mysql']['client']['package_file']` - The MSI file for the
+  mysql connector.
+* `node['mysql']['client']['url']` - URL to download the mysql
+  connector.
+* `node['mysql']['client']['packages']` - Similar to other platforms,
+  this is the name of the client package.
+* `node['mysql']['client']['basedir']` - Base installation location
+* `node['mysql']['client']['lib_dir']` - Libraries under the base location
+* `node['mysql']['client']['bin_dir']` - binary directory under base location
+* `node['mysql']['client']['ruby_dir']` - location where the Ruby
+  binaries will be
+
+## Security Options
+
+Further information is already available at [Symantec](http://www.symantec.com/connect/articles/securing-mysql-step-step) and [Deutsche Telekom (German)](http://www.telekom.com/static/-/155996/7/technische-sicherheitsanforderungen-si)
+
+* default['mysql']['security']['chroot'] - [chroot](http://dev.mysql.com/doc/refman/5.7/en/server-options.html#option_mysqld_chroot)
+* default['mysql']['security']['safe_user_create'] - [safe-user-create](http://dev.mysql.com/doc/refman/5.7/en/server-options.html#option_mysqld_safe-user-create)
+* default['mysql']['security']['secure_auth'] - [secure-auth](http://dev.mysql.com/doc/refman/5.7/en/server-options.html#option_mysqld_secure-auth)
+* default['mysql']['security']['skip_symbolic_links'] - [skip-symbolic-links](http://dev.mysql.com/doc/refman/5.7/en/server-
+options.html#option_mysqld_symbolic-links)
+* default['mysql']['security']['skip_show_database'] - [skip-show-database](http://dev.mysql.com/doc/refman/5.7/en/server-options.html#option_mysqld_skip-show-database)
+* default['mysql']['security']['local_infile'] - [local-infile](http://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_local_infile)
 
 Usage
-=====
+-----
+On client nodes, use the client (or default) recipe:
 
-On client nodes,
+```javascript
+{ "run_list": ["recipe[mysql::client]"] }
+```
 
-    include_recipe "mysql::client"
+This will install the MySQL client libraries and development headers on the system.
 
-This will install the MySQL client libraries and development headers on the system. It will also install the Ruby Gem `mysql`, so that the cookbook's LWRP (above) can be used. This is done during the compile-phase of the Chef run. On platforms that are known to have a native package (currently Debian, Ubuntu, Red hat, Centos, Fedora and SUSE), the package will be installed. Other platforms will use the RubyGem.
+On nodes which may use the `database` cookbook's mysql resources, also use the ruby recipe. This installs the mysql RubyGem in the Ruby environment Chef is using via `chef_gem`.
 
-This creates a resource object for the package and does the installation before other recipes are parsed. You'll need to have the C compiler and such (ie, build-essential on Ubuntu) before running the recipes, but we already do that when installing Chef :-). 
+```javascript
+{ "run_list": ["recipe[mysql::client]", "recipe[mysql::ruby]"] }
+```
 
-On server nodes,
+If you need to install the mysql Ruby library as a package for your system, override the client packages attribute in your node or role. For example, on an Ubuntu system:
 
-    include_recipe "mysql::server"
+```javascript
+{
+  "mysql": {
+    "client": {
+      "packages": ["mysql-client", "libmysqlclient-dev","ruby-mysql"]
+    }
+  }
+}
+```
 
-On Debian and Ubuntu, this will preseed the mysql-server package with the randomly generated root password from the attributes file. On other platforms, it simply installs the required packages. It will also create an SQL file, /etc/mysql/grants.sql, that will be used to set up grants for the root, repl and debian-sys-maint users.
+This creates a resource object for the package and does the installation before other recipes are parsed. You'll need to have the C compiler and such (ie, build-essential on Ubuntu) before running the recipes, but we already do that when installing Chef :-).
 
-On EC2 nodes,
+On server nodes, use the server recipe:
 
-    include_recipe "mysql::server_ec2"
+```javascript
+{ "run_list": ["recipe[mysql::server]"] }
+```
+
+On Debian and Ubuntu, this will preseed the mysql-server package with the randomly generated root password in the recipe file. On other platforms, it simply installs the required packages. It will also create an SQL file, `/etc/mysql/grants.sql`, that will be used to set up grants for the root, repl and debian-sys-maint users.
+
+The recipe will perform a `node.save` unless it is run under `chef-solo` after the password attributes are used to ensure that in the event of a failed run, the saved attributes would be used.
+
+On EC2 nodes, use the `server_ec2` recipe and the mysql data dir will be set up in the ephmeral storage.
+
+```javascript
+{ "run_list": ["recipe[mysql::server_ec2]"] }
+```
 
 When the `ec2_path` doesn't exist we look for a mounted filesystem (eg, EBS) and move the data_dir there.
 
@@ -81,59 +176,38 @@ The client recipe is already included by server and 'default' recipes.
 
 For more infromation on the compile vs execution phase of a Chef run:
 
-* http://wiki.opscode.com/display/chef/Anatomy+of+a+Chef+Run
+- http://wiki.opscode.com/display/chef/Anatomy+of+a+Chef+Run
 
-Changes/Roadmap
-===============
 
-### v1.2.2
+Chef Solo Note
+--------------
+These node attributes are stored on the Chef server when using `chef-client`. Because `chef-solo` does not connect to a server or save the node object at all, to have the same passwords persist across `chef-solo` runs, you must specify them in the `json_attribs` file used. For example:
 
-* [COOK-826] mysql::server recipe doesn't quote password string
-* [COOK-834] Add 'scientific' and 'amazon' platforms to mysql cookbook
+```javascript
+{
+  "mysql": {
+    "server_root_password": "iloverandompasswordsbutthiswilldo",
+    "server_repl_password": "iloverandompasswordsbutthiswilldo",
+    "server_debian_password": "iloverandompasswordsbutthiswilldo"
+  },
+  "run_list":["recipe[mysql::server]"]
+}
+```
 
-### v1.2.1
 
-* [COOK-644] Mysql client cookbook 'package missing' error message is confusing
-* [COOK-645] RHEL6/CentOS6 - mysql cookbook contains 'skip-federated' directive which is unsupported on MySQL 5.1
+License & Authors
+-----------------
+- Author:: Joshua Timberman (<joshua@opscode.com>)
+- Author:: AJ Christensen (<aj@opscode.com>)
+- Author:: Seth Chisamore (<schisamo@opscode.com>)
+- Author:: Brian Bianco (<brian.bianco@gmail.com>)
+- Author:: Jesse Howarth (<him@jessehowarth.com>)
+- Author:: Andrew Crump (<andrew@kotirisoftware.com>)
+- Author:: Christoph Hartmann (<chris@lollyrock.com>)
+- Author:: Sean OMeara (<someara@opscode.com>)
 
-### v1.2.0
-
-* [COOK-684] remove mysql_database LWRP
-
-### v1.0.8:
-
-* [COOK-633] ensure "cloud" attribute is available
-
-### v1.0.7:
-
-* [COOK-614] expose all mysql tunable settings in config
-* [COOK-617] bind to private IP if available
-
-### v1.0.6:
-
-* [COOK-605] install mysql-client package on ubuntu/debian
-
-### v1.0.5:
-
-* [COOK-465] allow optional remote root connections to mysql
-* [COOK-455] improve platform version handling
-* externalize conf_dir attribute for easier cross platform support
-* change datadir attribute to data_dir for consistency
-
-### v1.0.4:
-
-* fix regressions on debian platform
-* [COOK-578] wrap root password in quotes
-* [COOK-562] expose all tunables in my.cnf
-
-License and Author
-==================
-
-Author:: Joshua Timberman (<joshua@opscode.com>)
-Author:: AJ Christensen (<aj@opscode.com>)
-Author:: Seth Chisamore (<schisamo@opscode.com>)
-
-Copyright:: 2009-2011 Opscode, Inc
+```text
+Copyright:: 2009-2013 Opscode, Inc
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -146,3 +220,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```
