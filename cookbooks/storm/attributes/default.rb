@@ -1,5 +1,5 @@
-default[:storm][:version]             = "0.8.1"
-default[:storm][:release_url]         = "https://dl.dropbox.com/u/133901206/storm-:version:.zip"
+default[:storm][:version]             = "0.9.0-wip21-ics"
+default[:storm][:release_url]         = "https://s3.amazonaws.com/artifacts.chimpy.us/zips/storm-:version:.zip"
 
 # The number of worker worker_jvms to spin up per supervisor node
 # The number of cores on a machine is a good place to start
