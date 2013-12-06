@@ -22,7 +22,7 @@
 
   # Webserver listens on this address and port
   http_host=127.0.0.1 #<%= @fqdn %>
-  http_port=9000 #<%= @hue[:port] %>
+  http_port=<%= @hue[:port] %>
 
   # Time zone name
   time_zone=<%= @hue[:time_zone] %>

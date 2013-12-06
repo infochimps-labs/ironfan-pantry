@@ -16,7 +16,7 @@ default[:hue][:conf_dir]              = '/etc/hue/conf'
 default[:hue][:conf_base_dir]         = '/etc/hue'
 default[:hue][:pid_dir]               = '/var/run/hue'
 
-default[:hue][:port]                  = 443
+default[:hue][:port]                  = 9000
 default[:hue][:time_zone]             = 'UTC'
 
 default[:hue][:ssl][:key]             = nil
