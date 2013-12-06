@@ -43,12 +43,12 @@ group 'hadoop' do
 end
 
 # # Create the group hadoop uses to mean 'can act as filesystem root'
-# group 'supergroup' do
-#   group_name 'supergroup'
-#   gid        node[:groups]['supergroup'][:gid]
-#   action     [:create, :manage]
-#   append     true
-# end
+group 'supergroup' do
+  group_name 'supergroup'
+  gid        node[:groups]['supergroup'][:gid]
+  action     [:create, :manage]
+  append     true
+end
 
 # # FIXME
 # if node[:platform_version] == '12.04'

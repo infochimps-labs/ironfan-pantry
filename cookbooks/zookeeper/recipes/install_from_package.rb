@@ -20,6 +20,5 @@
 #
 
 include_recipe 'zookeeper'
-include_recipe 'hadoop_cluster::add_cloudera_repo'
 
 package 'hadoop-zookeeper'

@@ -1,5 +1,5 @@
 #
-# Cookbook Name::       hadoop
+# Cookbook Name::       impala
 # Description::         Add Cloudera repo to package manager
 # Recipe::              add_cloudera_repo
 # Author::              Erik Mackdanz - Infochimps, Inc
@@ -28,20 +28,16 @@ when 'ubuntu'
   end
 
   # Add cloudera package repo, deleting an existing one first
-  apt_repository 'cloudera' do
+  apt_repository 'cloudera-impala' do
     action          :remove
   end
 
-  apt_repository 'cloudera-source' do
-    action          :remove
-  end
-
-  apt_repository 'cloudera' do
+  apt_repository 'cloudera-impala' do
     distro          = node[:apt][:cloudera][:force_distro] || node[:lsb][:codename] # only lucid or precise
-    uri             "http://archive.cloudera.com/cdh4/ubuntu/#{distro}/amd64/cdh"
-    distribution    "#{distro}-cdh4.4.0"
+    uri             "http://archive.cloudera.com/impala/ubuntu/#{distro}/amd64/impala"
+    distribution    "#{distro}-impala1.1.1"
     components      ['contrib']
-    key             "http://archive.cloudera.com/cdh4/ubuntu/#{distro}/amd64/cdh/archive.key"
+    key             "http://archive.cloudera.com/impala/ubuntu/precise/amd64/impala/archive.key"
     arch            'amd64'
     action          :add
   end

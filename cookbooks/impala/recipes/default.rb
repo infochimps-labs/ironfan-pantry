@@ -1,6 +1,6 @@
 #
-# Cookbook Name::       hive
-# Description::         Base configuration for hive
+# Cookbook Name::       impala
+# Description::         Base configuration for impala
 # Recipe::              default
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
@@ -21,26 +21,9 @@
 
 include_recipe 'volumes'
 
-daemon_user :hive
+daemon_user 'impala'
 
-group 'hadoop' do
-  gid         node[:groups]['hadoop'][:gid]
-  action      [:create, :manage]
-  append      true
-  members     ['hive']
-end
-
-standard_dirs('hive') do
+standard_dirs('impala') do
   directories   :conf_dir
-end
-
-
-# Hive log storage on a single scratch dir
-volume_dirs('hive.log') do
-  type          :local
-  selects       :single
-  path          'hadoop/log/hive'
-  group         'hadoop'
-  mode          "0777"
 end
 

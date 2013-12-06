@@ -1,6 +1,6 @@
 #
-# Cookbook Name::       hive
-# Description::         Base configuration for hive
+# Cookbook Name::       hue
+# Description::         Base configuration for hue
 # Recipe::              default
 # Author::              Philip (flip) Kromer - Infochimps, Inc
 #
@@ -19,18 +19,26 @@
 # limitations under the License.
 #
 
+
 include_recipe 'volumes'
 
-daemon_user :hive
+daemon_user :hue
 
 group 'hadoop' do
   gid         node[:groups]['hadoop'][:gid]
   action      [:create, :manage]
   append      true
-  members     ['hive']
+  members     ['hue']
 end
 
-standard_dirs('hive') do
+group 'supergroup' do
+  gid         node[:groups]['supergroup'][:gid]
+  action      [:create, :manage]
+  append      true
+  members     ['hue']
+end
+
+standard_dirs('hue') do
   directories   :conf_dir
 end
 
@@ -43,4 +51,3 @@ volume_dirs('hive.log') do
   group         'hadoop'
   mode          "0777"
 end
-

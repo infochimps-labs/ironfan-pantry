@@ -73,6 +73,6 @@
 <!-- for Hue -->
 
 <!-- <property> <name>jobtracker.thrift.address</name>                 <value>0.0.0.0:<%= @hadoop[:jobtracker][:thrift_port] %></value></property> -->
-<!-- <property> <name>mapred.jobtracker.plugins</name>                 <value><%= @hadoop[:jobtracker][:plugins].join(",") %></value></property> -->
+<property> <name>mapred.jobtracker.plugins</name>                 <value><%= @hadoop[:jobtracker][:plugins].join(",") %></value></property>
 
 </configuration>

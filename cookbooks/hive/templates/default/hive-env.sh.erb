@@ -1,0 +1,20 @@
+#!/bin/sh
+
+#
+# Set Hive-specific environment variables here.
+#
+# Created by Chef -- changes will be overwritten
+#
+
+
+. /lib/lsb/init-functions
+. /etc/default/hadoop
+
+# Autodetect JAVA_HOME if not defined
+if [ -e /usr/libexec/bigtop-detect-javahome ]; then
+  . /usr/libexec/bigtop-detect-javahome
+elif [ -e /usr/lib/bigtop-utils/bigtop-detect-javahome ]; then
+  . /usr/lib/bigtop-utils/bigtop-detect-javahome
+fi
+
+SLEEP_TIME=5

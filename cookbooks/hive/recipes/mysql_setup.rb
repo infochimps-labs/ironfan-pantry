@@ -26,39 +26,39 @@ include_recipe "mysql::client"
 
 # We *connect* as the root user but will create the hive user later.
 mysql_connection_info = {
-  host:     node[:hadoop][:hive][:mysql][:host] || node.ipaddress,
-  port:     node[:hadoop][:hive][:mysql][:port],
-  username: node[:hadoop][:hive][:mysql][:root_username],
-  password: node[:hadoop][:hive][:mysql][:root_password],
+  host:     node[:hive][:mysql][:host],
+  port:     node[:hive][:mysql][:port],
+  username: node[:hive][:mysql][:root_username],
+  password: node[:hive][:mysql][:root_password],
 }
 
-hive_database = node[:hadoop][:hive][:mysql][:database]
+hive_database = node[:hive][:mysql][:database]
 
 mysql_database hive_database  do
   connection mysql_connection_info
   action     :create
 end
 
-script_relative_path = node[:hadoop][:hive][:mysql][:upgrade_script].sub(':version:', node[:hadoop][:hive][:version])
-script_absolute_path = File.join(node[:hadoop][:hive][:home_dir], script_relative_path)
+script_relative_path = node[:hive][:mysql][:upgrade_script].sub(':version:', node[:hive][:version])
+script_absolute_path = File.join(node[:hive][:home_dir], script_relative_path)
 mysql_statements = [
                     "USE #{hive_database}",
                     "SOURCE #{script_absolute_path}",
 ].join(";")
 execute "Run metastore update script" do
-  command [
-           "/usr/bin/mysql",
-           "-h", mysql_connection_info[:host],
-           "-P", mysql_connection_info[:port],
-           "-u", mysql_connection_info[:username],
-           ["-p", mysql_connection_info[:password]].join,
-           "-e", "\"SOURCE #{script_absolute_path}\"",
-           "-D", hive_database
-          ].join(" ")
+  params = {}
+  params['-h'] = mysql_connection_info[:host]
+  params['-P'] = mysql_connection_info[:port]
+  params['-u'] = mysql_connection_info[:username]
+  params['-p'] = mysql_connection_info[:password] unless mysql_connection_info[:password].nil?
+  params['-e'] = "\"SOURCE #{script_absolute_path}\""
+  params['-D'] = hive_database
+
+  command "/usr/bin/mysql " + params.flatten.join(" ")
 end
 
-hive_user = node[:hadoop][:hive][:mysql][:username]
-hive_pass = node[:hadoop][:hive][:mysql][:password]
+hive_user = node[:hive][:mysql][:username]
+hive_pass = node[:hive][:mysql][:password]
 mysql_database_user hive_user do
   connection    mysql_connection_info
   database_name hive_database
@@ -68,7 +68,7 @@ mysql_database_user hive_user do
   action        [:create, :grant]
 end
 
-remote_file File.join(node[:hadoop][:hive][:home_dir], 'lib', node[:hadoop][:hive][:mysql][:connector_jar] ) do
-  source node[:hadoop][:hive][:mysql][:connector_location]
+remote_file File.join(node[:hive][:home_dir], 'lib', node[:hive][:mysql][:connector_jar] ) do
+  source node[:hive][:mysql][:connector_location]
   mode 0644
 end

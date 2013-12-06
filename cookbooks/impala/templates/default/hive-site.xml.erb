@@ -14,41 +14,30 @@
 <!-- Hive Execution Parameters -->
 
 <property>
+  <name>hive.metastore.uris</name>
+  <value>thrift://<%= @metastore[:host] %>:9083</value>
+</property>
+<property>
+  <name>hive.metastore.client.socket.timeout</name>
+  <value>3600</value>
+  <description>MetaStore Client socket timeout in seconds</description>
+</property>
+
+
+<property>
   <name>hive.exec.max.created.files</name>
-  <value><%= @hive[:max_created_files] %></value>
-</property>
-
-<property>
-  <name>javax.jdo.option.ConnectionURL</name>
-  <value>jdbc:mysql://<%= @hive[:mysql][:host] || node.ipaddress %>:<%= @hive[:mysql][:port] %>/<%= @hive[:mysql][:database] %></value>
-  <description>JDBC connect string for a JbDBC metastore</description>
-</property>
-
-<property>
-  <name>javax.jdo.option.ConnectionDriverName</name>
-  <value>com.mysql.jdbc.Driver</value>
-  <description>Driver class name for a JDBC metastore</description>
-</property>
-
-<property>
-  <name>javax.jdo.option.ConnectionUserName</name>
-  <value><%= @hive[:mysql][:username] %></value>
-</property>
-
-<property>
-  <name>javax.jdo.option.ConnectionPassword</name>
-  <value><%= @hive[:mysql][:password] %></value>
+  <value><%= node[:hive][:max_created_files] %></value>
 </property>
 
 <property>
   <name>hive.stats.autogather</name>
-  <value><%= @hive[:stats_autogather]%></value>
+  <value><%= node[:hive][:stats_autogather]%></value>
   <description>collect statistics upon table creation</description>
 </property>
 
 <property>
   <name>hive.hwi.war.file</name>
-  <value><%= @hive[:home_dir] %>/lib/hive-hwi-<%= @war_version %>.war</value>
+  <value><%= node[:hive][:home_dir] %>/lib/hive-hwi-<%= @war_version %>.war</value>
   <description>This is the WAR file with the jsp content for Hive Web Interface</description>
 </property>
 
@@ -64,7 +53,7 @@
 
 <property>
   <name>hive.input.format</name>
-  <value><%= @hive[:input_format] %></value>
+  <value><%= node[:hive][:input_format] %></value>
   <description>Hive uses a wrapping input format so each partition can be handled differently.
     The default CombineHiveInputFormat does not actually ask input formats for their splits,
     instead looks at the files themselves and attempts to optimize based on file size and

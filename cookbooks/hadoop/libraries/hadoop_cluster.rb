@@ -4,7 +4,7 @@ module HadoopCluster
     package_name = (component ? "#{node[:hadoop][:handle]}-#{component}" : "#{node[:hadoop][:handle]}")
     package package_name do
       if node[:hadoop][:deb_version] != 'current'
-        version node[:hadoop][:deb_version] 
+        version node[:hadoop][:deb_version]
       end if ['ubuntu', 'debian'].include?(node[:platform])
     end
   end
@@ -17,12 +17,12 @@ module HadoopCluster
   # end
 
   # # hash of hadoop options suitable for passing to template files
-  # def hadoop_config_hash
-  #   Mash.new({
-  #       :aws              => (node[:aws] && node[:aws].to_hash),
-  #       :extra_classpaths => node[:hadoop][:extra_classpaths].map{|nm, classpath| classpath }.flatten,
-  #     }).merge(node[:hadoop])
-  # end
+  def hadoop_config_hash
+    Mash.new({
+        :aws              => (node[:aws] && node[:aws].to_hash),
+        :extra_classpaths => node[:hadoop][:extra_classpaths].map{|nm, classpath| classpath }.flatten,
+      }).merge(node[:hadoop])
+  end
 
   # Create a symlink to a directory, wiping away any existing dir that's in the way
   def force_link dest, src
