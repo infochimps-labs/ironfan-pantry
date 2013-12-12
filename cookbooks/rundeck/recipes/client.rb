@@ -26,4 +26,10 @@ if rundeck_server
   end
 end
 
+template '/etc/sudoers.d/rundeck' do
+  source 'etc-sudoers.d-rundeck.erb'
+  mode   '0440'
+  owner  'root'
+  group  'root'
+end
 
