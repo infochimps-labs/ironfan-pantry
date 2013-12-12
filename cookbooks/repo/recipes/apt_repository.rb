@@ -1,7 +1,7 @@
 #
 # Cookbook Name::       repo
-# Description::         Sets up apt repository sources 
-# Recipe::              apt_repository 
+# Description::         Sets up apt repository sources
+# Recipe::              apt_repository
 # Author::              Brandon Bell - Infochimps, Inc
 #
 # Copyright 2009, Opscode, Inc.
@@ -21,12 +21,12 @@
 
 include_recipe 'apt'
 
-apt_repository "cloudera" do
-  uri "#{node[:repo][:uri]}/apt"
-  distribution 'maverick-cdh3u2'
-  components ["contrib"]
-  key "#{node[:repo][:key_uri]}"
-end
+# apt_repository "cloudera" do
+#   uri "#{node[:repo][:uri]}/apt"
+#   distribution 'maverick-cdh3u2'
+#   components ["contrib"]
+#   key "#{node[:repo][:key_uri]}"
+# end
 
 apt_repository "#{node['lsb']['codename']}" do
   uri "#{node[:repo][:uri]}/apt"

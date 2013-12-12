@@ -1,0 +1,29 @@
+#!/bin/sh
+
+# Force all stderr to stdout
+exec 2>&1
+
+if [ -f "<%= node[:impala][:conf_dir] %>/impala-env.sh" ] ; then
+  . "<%= node[:impala][:conf_dir] %>/impala-env.sh"
+fi
+
+PROC_NAME="impalad"
+
+DAEMON="impalad"
+DESC="Impala Server"
+EXEC_PATH="/usr/bin/impalad"
+SVC_USER="<%= node[:impala][:user] %>"
+DAEMON_FLAGS="${IMPALA_SERVER_ARGS}"
+CONF_DIR="/etc/impala/conf"
+PIDFILE="/var/run/impala/impalad-impala.pid"
+LOCKDIR="/var/lock/subsys"
+LOCKFILE="$LOCKDIR/impalad"
+
+
+ulimit -H -n 65535
+ulimit -S -n 65535
+chpst -u <%= node[:impala][:user] %> bash -c 'ulimit -S -a'
+
+cd "$RUNDIR"
+
+exec chpst -u <%= node[:impala][:user] %> $EXEC_PATH $DAEMON_FLAGS

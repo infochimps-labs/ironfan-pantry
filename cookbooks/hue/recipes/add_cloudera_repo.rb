@@ -1,10 +1,10 @@
 #
-# Cookbook Name::       pig
-# Description::         Installs pig from the cloudera package -- verified compatible, but on a slow update schedule.
-# Recipe::              install_from_package
-# Author::              Philip (flip) Kromer - Infochimps, Inc
+# Cookbook Name::       hue
+# Description::         Add Cloudera repo to package manager
+# Recipe::              add_cloudera_repo
+# Author::              Chris Howe - Infochimps, Inc
 #
-# Copyright 2009, Opscode, Inc.
+# Copyright 2011, Chris Howe - Infochimps, Inc
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,15 +19,4 @@
 # limitations under the License.
 #
 
-
-#
-# Install package
-#
-
-package "pig"
-
-# why does this need to be here?
-link "/usr/local/bin/pig" do
-  to          File.join(node[:pig][:home_dir], 'bin', 'pig')
-  action      :create
-end
+include_recipe "hadoop::add_cloudera_repo"

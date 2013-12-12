@@ -22,7 +22,7 @@
 #
 # Configuration files
 #
-# Find these variables in ../hadoop_cluster/libraries/hadoop_cluster.rb
+# Find these variables in ../hadoop/libraries/hadoop_cluster.rb
 #
 
 node.set[:hadoop][:namenode   ][:addr] = discover(:hadoop, :namenode   ).private_hostname rescue nil
