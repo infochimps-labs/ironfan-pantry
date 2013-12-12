@@ -28,7 +28,7 @@ mv /home/ubuntu/.ssh/authorized_keys "$away_dir/ubuntu-authorized_keys"
 mv /root/.ssh/authorized_keys "$away_dir/root-authorized_keys"
 
 mkdir $away_dir/sshd_keys
-mv /etc/ssh/ssh_{host_dsa,host_rsa,host}_{key,key.pub} "$away_dir/sshd_keys"
+mv /etc/ssh/ssh_{host_dsa,host_rsa,host_ecdsa,host}_{key,key.pub} "$away_dir/sshd_keys"
 
 
 # See
@@ -48,9 +48,9 @@ cat /etc/passwd /etc/shadow | grep -E '^[^:]*:[^:]{3,}' | cut -d: -f1
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nImportant sshd configs. PermitRootLogin *should* be 'without-password [TODO: automate this]'"
 egrep 'PasswordAuthentication|PubkeyAuthentication|PermitRootLogin' /etc/ssh/sshd_config
 
-echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nremove org-specific info from top of /etc/chef/client.rb\n"
-cp /etc/chef/client.rb  "$away_dir"
-perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nremove /etc/chef/client.rb\n"
+mv /etc/chef/client.rb  "$away_dir"
+# perl -pi -e 's!^(node_name|chef_server_url|validation_client_name)\s+"[^"]+"\n!!' /etc/chef/client.rb
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nmake a nice bland motd\n"
 DISTRIB_CODENAME=`sed -r 's/(\w+) release ([^ ]+) .+/\1-\2/' /etc/system-release`
