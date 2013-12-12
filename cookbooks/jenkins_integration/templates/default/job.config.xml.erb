@@ -111,6 +111,7 @@
       }
       echo
       <%- @tasks.each do |t| %>
+      <%-   t = t[:name] if t.is_a?(Hash) %>
         section "---------------------------------------"
         section "# Running <%= t %> #"
         section "---------------------------------------"
