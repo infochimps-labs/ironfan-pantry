@@ -5,17 +5,8 @@ command="<%=  @options[:service_name] %>"
 jar_name="<%= @options[:jar_name] %>"
 
 # Include hadoop defaults if available
-if [ -f "/etc/default/hadoop-0.20" ] ; then
-  . "/etc/default/hadoop-0.20"
-fi
-
-if [ -f "<%= @options[:home_dir] %>/bin/hadoop-config.sh" ] ; then
-  . "<%= @options[:home_dir] %>/bin/hadoop-config.sh"
-fi
-
-if [ -f "<%= @options[:conf_dir] %>/hadoop-env.sh" ] ; then
-  . "<%= @options[:conf_dir] %>/hadoop-env.sh"
-fi
+source "/etc/default/hadoop-0.20"
+source "<%= @options[:conf_dir] %>/hadoop-env.sh"
 
 <%- if @options[:java_gc_log] %>
 export HADOOP_OPTS="$HADOOP_OPTS -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -Xloggc:$HADOOP_LOG_DIR/hadoop-$HADOOP_IDENT_STRING-$command-$HADOOP_NODENAME.gc.log"
