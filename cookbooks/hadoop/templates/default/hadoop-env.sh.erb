@@ -43,11 +43,11 @@ export HADOOP_OPTS="$HADOOP_OPTS -Djava.net.preferIPv4Stack=true"
 # JVM options
 # -XX: The maximum amount of heap to use, in MB. Default is 1000.
 export               HADOOP_HEAPSIZE="<%= @hadoop[:java_heap_size_max] %>" # no 'm'
-export          HADOOP_NAMENODE_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:namenode   ][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>m $HADOOP_NAMENODE_OPTS"
-export HADOOP_SECONDARYNAMENODE_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:secondarynn][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>m $HADOOP_SECONDARYNAMENODE_OPTS"
-export        HADOOP_JOBTRACKER_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:jobtracker ][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>m $HADOOP_JOBTRACKER_OPTS"
-export          HADOOP_DATANODE_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:datanode   ][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>m $HADOOP_DATANODE_OPTS"
-export       HADOOP_TASKTRACKER_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:tasktracker][:java_heap_size_max] || @hadoop[:java_heap_size_max] %>m $HADOOP_TASKTRACKER_OPTS"
+export          HADOOP_NAMENODE_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:namenode   ][:java_heap_size_max] %>m $HADOOP_NAMENODE_OPTS"
+export HADOOP_SECONDARYNAMENODE_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:secondarynn][:java_heap_size_max] %>m $HADOOP_SECONDARYNAMENODE_OPTS"
+export        HADOOP_JOBTRACKER_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:jobtracker ][:java_heap_size_max] %>m $HADOOP_JOBTRACKER_OPTS"
+export          HADOOP_DATANODE_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:datanode   ][:java_heap_size_max] %>m $HADOOP_DATANODE_OPTS"
+export       HADOOP_TASKTRACKER_OPTS="-XX:+UseParallelGC -Xmx<%= @hadoop[:tasktracker][:java_heap_size_max] %>m $HADOOP_TASKTRACKER_OPTS"
 
 # JMX monitoring -- see http://www.cloudera.com/blog/2009/03/hadoop-metrics/
 export                   HADOOP_OPTS="-Djava.rmi.server.hostname=<%= @hadoop[:jmx_dash_addr] %> -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false $HADOOP_OPTS"
