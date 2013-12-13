@@ -142,20 +142,20 @@ force_link("/var/log/#{node[:hadoop][:handle]}", node[:hadoop][:log_dir] )
 # EM: don't do this, it was relevant when pid_dir has -0.20 suffix
 # force_link("/var/run/#{node[:hadoop][:handle]}", node[:hadoop][:pid_dir] )
 
-# node.set[:hadoop][:exported_jars] = [
-#   "#{node[:hadoop][:home_dir]}/hadoop-core.jar",
-#   "#{node[:hadoop][:home_dir]}/hadoop-examples.jar",
-#   "#{node[:hadoop][:home_dir]}/hadoop-test.jar",
-#   "#{node[:hadoop][:home_dir]}/hadoop-tools.jar",
-# ]
+node.set[:hadoop][:exported_jars] = [
+  "#{node[:hadoop][:home_dir]}/hadoop-core.jar",
+  "#{node[:hadoop][:home_dir]}/hadoop-examples.jar",
+  "#{node[:hadoop][:home_dir]}/hadoop-test.jar",
+  "#{node[:hadoop][:home_dir]}/hadoop-tools.jar",
+]
 
 # node.set[:hadoop][:exported_libs] = Dir["#{node[:hadoop][:home_dir]}/lib/native/**/*.*"].sort.reject{|ff| File.directory?(ff) }
 
 # Chef::Log.debug( [ 'hadoop native libs', node[:hadoop][:exported_libs] ].inspect )
 
-# node.set[:hadoop][:exported_confs]  = [
-#   "#{node[:hadoop][:conf_dir]}/core-site.xml",
-#   "#{node[:hadoop][:conf_dir]}/hdfs-site.xml",
-#   "#{node[:hadoop][:conf_dir]}/mapred-site.xml",
-# ]
+node.set[:hadoop][:exported_confs]  = [
+  "#{node[:hadoop][:conf_dir]}/core-site.xml",
+  "#{node[:hadoop][:conf_dir]}/hdfs-site.xml",
+  "#{node[:hadoop][:conf_dir]}/mapred-site.xml",
+]
 
