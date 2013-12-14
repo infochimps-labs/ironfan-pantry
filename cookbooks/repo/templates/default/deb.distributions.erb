@@ -45,21 +45,3 @@ Update: - webupd8-natty
 <% if !node[:repo][:apt][:signwith].nil? %>
 SignWith: <%= node[:repo][:apt][:signwith] %>
 <% end %>
-
-###
-# Cloudera 
-###
-
-Origin: Cloudera
-Label: Cloudera
-Suite: stable
-Codename: maverick-cdh3u2
-Version: 0.1
-Architectures: i386 amd64
-Components: contrib
-Update: - cloudera
-Description: Cloudera Maverick CDH3U2
-<% if !node[:repo][:apt][:signwith].nil? %>
-SignWith: <%= node[:repo][:apt][:signwith] %>
-<% end %>
-
