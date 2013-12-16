@@ -27,41 +27,41 @@ cookbook_ci = node[:jenkins_integration][:cookbook_ci]
 
 shared_templates = %w[ shared.inc launch.sh cookbook_versions.rb.h ]
 # Advance changes into testing positions, or bomb if no changes
-jenkins_job "Ironfan Cookbooks - 1 - Prepare testing" do
-  pantries      cookbook_ci[:pantries]
-  homebases     cookbook_ci[:homebases]
-  templates     shared_templates
-  tasks         %w[ checkout.sh enqueue_tests.sh ]
-  triggers      :schedule => cookbook_ci[:schedule]
-  conditional   :regexp => "SUCCESS:",
-                :target => "Ironfan Cookbooks - 2 - Test and stage"
-  retention     :days => 14
-end
+# jenkins_job "Ironfan Cookbooks - 1 - Prepare testing" do
+#   pantries      cookbook_ci[:pantries]
+#   homebases     cookbook_ci[:homebases]
+#   templates     shared_templates
+#   tasks         %w[ checkout.sh enqueue_tests.sh ]
+#   triggers      :schedule => cookbook_ci[:schedule]
+#   conditional   :regexp => "SUCCESS:",
+#                 :target => "Ironfan Cookbooks - 2 - Test and stage"
+#   retention     :days => 14
+# end
 
 # Launch a testing server and push testing into staging if successful
-jenkins_job "Ironfan Cookbooks - 2 - Test and stage" do
-  pantries      cookbook_ci[:pantries]
-  homebases     cookbook_ci[:homebases]
-  templates     shared_templates
-  tasks         %w[ checkout.sh launch_instances.sh stage_all.sh ]
-  retention     :days => 14
-  if cookbook_ci[:broken]
-    downstream  [ "Ironfan Cookbooks - 3 - Test known broken" ]
-  end
-end
+# jenkins_job "Ironfan Cookbooks - 2 - Test and stage" do
+#   pantries      cookbook_ci[:pantries]
+#   homebases     cookbook_ci[:homebases]
+#   templates     shared_templates
+#   tasks         %w[ checkout.sh launch_instances.sh stage_all.sh ]
+#   retention     :days => 14
+#   if cookbook_ci[:broken]
+#     downstream  [ "Ironfan Cookbooks - 3 - Test known broken" ]
+#   end
+# end
 
 # Launch a known broken instance
-if cookbook_ci[:broken]
-  jenkins_job "Ironfan Cookbooks - 3 - Test known broken" do
-    homebases           [ cookbook_ci[:test_homebase] ]
-    templates           shared_templates
-    tasks               %w[ checkout.sh launch_broken.sh ]
-    retention           :days => 14
-  end
-end
+# if cookbook_ci[:broken]
+#   jenkins_job "Ironfan Cookbooks - 3 - Test known broken" do
+#     homebases           [ cookbook_ci[:test_homebase] ]
+#     templates           shared_templates
+#     tasks               %w[ checkout.sh launch_broken.sh ]
+#     retention           :days => 14
+#   end
+# end
 
 # On an existing host, converge and run ironcuke
-jenkins_job "Ironfan Cookbooks - 4 - Converge and ironcuke existing host" do
+jenkins_job "Converge and ironcuke existing host" do
   pantries      cookbook_ci[:pantries]
   homebases     cookbook_ci[:homebases]
   templates     shared_templates

@@ -13,6 +13,7 @@ node.default[:jenkins][:server][:plugins] += %w[ parameterized-trigger ansicolor
 # Allow dashboard to be visibile (read-only) to non-authenticated users
 default[:jenkins_integration][:addl_permissions] = %w[hudson.model.Hudson.Read:anonymous hudson.model.Item.Read:anonymous hudson.model.View.Read:anonymous]
 
+# FIXME: some tests are in enterprise cookbook
 radiator = <<eos
     <hudson.model.RadiatorView plugin="radiatorviewplugin@1.13">
       <owner class="hudson" reference="../../.."/>
@@ -22,10 +23,8 @@ radiator = <<eos
       <properties class="hudson.model.View$PropertyList"/>
       <jobNames>
         <comparator class="hudson.util.CaseInsensitiveComparator"/>
-        <string>Ironfan_Cookbooks_-_1_-_Prepare_testing</string>
-        <string>Ironfan_Cookbooks_-_2_-_Test_and_stage</string>
-        <string>Ironfan_Cookbooks_-_3_-_Test_known_broken</string>
-        <string>Ironfan_Cookbooks_-_4_-_Converge_and_ironcuke_existing_host</string>
+        <string>Converge_and_ironcuke_existing_host</string>
+        <string>Test_that_the_SRP_converges_from_the_RC_branch</string>
       </jobNames>
       <jobFilters/>
       <columns/>
