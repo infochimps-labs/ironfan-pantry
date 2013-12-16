@@ -18,5 +18,5 @@ Chef::Log.warn("No MongoDB database is available to clean (didn't set and couldn
 cron "Clean old Vayacondios events" do
   minute  "*/10"
   path    "/bin:/usr/bin:/usr/local/bin:/usr/sbin:/usr/local/sbin"
-  command "cd #{node[:vayacondios][:home_dir]} && bundle exec vcd-clean --host=#{mongo.private_ip} --port=#{mongo.ports[:http][:port]} --database=#{node[:vayacondios][:mongodb][:database]} --upto=#{node[:vayacondios][:cleaner][:max_age]} --matching='^infochimps\..*\.events$' >> #{node[:vayacondios][:log_dir]}/cleaner.log 2>&1"
+  command "cd #{node[:vayacondios][:home_dir]} && bundle exec vcd-clean --host=#{mongo && mongo.private_ip} --port=#{mongo && mongo.ports[:http][:port]} --database=#{node[:vayacondios][:mongodb][:database]} --upto=#{node[:vayacondios][:cleaner][:max_age]} --matching='^infochimps\..*\.events$' >> #{node[:vayacondios][:log_dir]}/cleaner.log 2>&1"
 end
