@@ -3,7 +3,7 @@
 # Recipe::              backup_tables
 # Author::              Brandon Bell - Infochimps, Inc
 
-include_recipe 'hadoop_cluster::config_files'
+include_recipe 'hadoop::config_files'
 include_recipe 'hbase::default'
 include_recipe 'hbase::config_files'
 include_recipe 'backups::s3cfg'
