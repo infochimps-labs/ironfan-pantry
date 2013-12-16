@@ -9,12 +9,12 @@ module HadoopCluster
     end
   end
 
-  # # the hadoop services this machine provides
-  # def hadoop_services
-  #   %w[namenode secondarynn jobtracker datanode tasktracker].select do |svc|
-  #     node[:announces]["#{node[:cluster_name]}-hadoop-#{svc}"]
-  #   end
-  # end
+  # the hadoop services this machine provides
+  def hadoop_services
+    %w[namenode secondarynn jobtracker datanode tasktracker].select do |svc|
+      node[:announces]["#{node[:cluster_name]}-hadoop-#{svc}"]
+    end
+  end
 
   # # hash of hadoop options suitable for passing to template files
   def hadoop_config_hash
