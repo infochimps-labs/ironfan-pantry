@@ -25,7 +25,7 @@ class Chef::Recipe; include HadoopCluster ; end
 
 include_recipe 'silverware'
 include_recipe 'tuning'
-include_recipe 'hadoop_cluster::add_cloudera_repo'
+include_recipe 'hadoop::add_cloudera_repo'
 
 #
 # Hadoop users and group

@@ -8,7 +8,7 @@ description      "Backups -- coordinates backups of your stuff"
 
 depends		 "hbase"
 depends		 "mongodb"
-depends		 "hadoop_cluster"
+depends		 "hadoop"
 depends		 "elasticsearch"
 
 recipe           "backups::default",       "Default Recipe"
