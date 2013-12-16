@@ -11,7 +11,7 @@ depends          "java"
 depends          "runit"
 depends          "volumes"
 depends          "silverware"
-depends          "hadoop_cluster"
+depends          "hadoop"
 depends          "install_from"
 
 recipe           "zookeeper::client",                  "Installs Zookeeper client libraries"

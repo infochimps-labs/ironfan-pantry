@@ -11,7 +11,7 @@ depends          "runit"
 depends          "volumes"
 depends          "silverware"
 depends          "minidash"
-depends          "hadoop_cluster"
+depends          "hadoop"
 depends          "zookeeper"
 
 recipe           "hbase::backup_tables",               "Cron job to backup tables to S3"

@@ -20,7 +20,7 @@
 #
 
 include_recipe 'flume::default'
-include_recipe 'hadoop_cluster::add_cloudera_repo'
+include_recipe 'hadoop::add_cloudera_repo'
 
 #
 # Install from package

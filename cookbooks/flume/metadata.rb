@@ -13,7 +13,6 @@ depends          "apt"
 depends          "runit"
 depends          "volumes"
 depends          "silverware"
-depends          "hadoop_cluster"
 
 recipe           "flume::default",                     "Base configuration for flume"
 recipe           "flume::master",                      "Configures Flume Master, installs and starts service"

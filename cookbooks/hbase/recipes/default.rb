@@ -23,8 +23,8 @@ include_recipe 'java' ; complain_if_not_sun_java(:hbase)
 include_recipe 'silverware'
 include_recipe 'volumes'
 
-include_recipe 'hadoop_cluster'
-include_recipe 'hadoop_cluster::add_cloudera_repo'
+include_recipe 'hadoop'
+include_recipe 'hadoop::add_cloudera_repo'
 include_recipe 'zookeeper::client'
 
 #
