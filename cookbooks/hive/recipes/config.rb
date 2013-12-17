@@ -31,14 +31,14 @@ metastore   = discover(:hive, :metastore)
 
 template File.join(node[:hive][:conf_dir], 'hive-env.sh') do
   mode "0644"
-  variables(:hive => node[:hive], war_version: war_version, :metastore => { :host => metastore.private_ip })
+  variables(:hive => node[:hive], war_version: war_version, :metastore => { :host => (metastore && metastore.private_ip) })
   source "hive-env.sh.erb"
   notify_startable_services(:hive, [:server, :metastore])
 end
 
 template File.join(node[:hive][:conf_dir], 'hive-site.xml') do
   mode "0644"
-  variables(:hive => node[:hive], war_version: war_version, :metastore => { :host => metastore.private_ip })
+  variables(:hive => node[:hive], war_version: war_version, :metastore => { :host => (metastore && metastore.private_ip) })
   source "hive-site.xml.erb"
   notify_startable_services(:hive, [:server, :metastore])
 end
