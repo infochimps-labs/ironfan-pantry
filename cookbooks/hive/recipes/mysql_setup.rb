@@ -54,7 +54,7 @@ execute "Run metastore update script" do
   params['-e'] = "\"SOURCE #{script_absolute_path}\""
   params['-D'] = hive_database
 
-  command "/usr/bin/mysql " + params.flatten.join(" ")
+  command "/usr/bin/mysql " + params.map{|*entry| entry.join}
 end
 
 hive_user = node[:hive][:mysql][:username]
