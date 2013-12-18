@@ -54,10 +54,23 @@ end
 
 hue_user = node[:hue][:mysql][:username]
 hue_pass = node[:hue][:mysql][:password]
+# Creates 'hue'@'%'
 mysql_database_user hue_user do
   connection    mysql_connection_info
   database_name hue_database
   host          '%'
+  password      hue_pass
+  privileges    [:all]
+  action        [:create, :grant]
+end
+
+# Creates 'hue'@'localhost', 
+# since % version doesn't match localhost (mysql claims localhost = unix domain socket)
+mysql_database_user 'at_localhost' do
+  username      hue_user
+  connection    mysql_connection_info
+  database_name hue_database
+  host          'localhost'
   password      hue_pass
   privileges    [:all]
   action        [:create, :grant]
