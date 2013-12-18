@@ -16,7 +16,7 @@ default[:hive][:user]                       = 'hive'
 default[:users ]['hive'][:uid]              = 310
 default[:groups]['hive'][:gid]              = 310
 
-default[:hive][:mysql][:host]               = ipaddress
+default[:hive][:mysql][:host]               = 'localhost'
 default[:hive][:mysql][:port]               = 3306
 default[:hive][:mysql][:root_username]      = 'root'
 default[:hive][:mysql][:root_password]      = nil
