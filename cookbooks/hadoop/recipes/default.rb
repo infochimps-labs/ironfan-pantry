@@ -87,29 +87,29 @@ volume_dirs('hadoop.namenode.data') do
   mode          "0700"
 end
 
-# # Secondary Namenode metadata striped across all persistent dirs
-# volume_dirs('hadoop.secondarynn.data') do
-#   type          :persistent
-#   selects       :all
-#   path          'hadoop/hdfs/secondary'
-#   mode          "0700"
-# end
+# Secondary Namenode metadata striped across all persistent dirs
+volume_dirs('hadoop.secondarynn.data') do
+  type          :persistent
+  selects       :all
+  path          'hadoop/hdfs/secondary'
+  mode          "0700"
+end
 
-# # Datanode data striped across all persistent dirs
-# volume_dirs('hadoop.datanode.data') do
-#   type          :persistent
-#   selects       :all
-#   path          'hadoop/hdfs/data'
-#   mode          "0700"
-# end
+# Datanode data striped across all persistent dirs
+volume_dirs('hadoop.datanode.data') do
+  type          :persistent
+  selects       :all
+  path          'hadoop/hdfs/data'
+  mode          "0700"
+end
 
-# # Mapred job scratch space striped across all scratch dirs
-# volume_dirs('hadoop.tasktracker.scratch') do
-#   type          :local
-#   selects       :all
-#   path          'hadoop/mapred/local'
-#   mode          "0755"
-# end
+# Mapred job scratch space striped across all scratch dirs
+volume_dirs('hadoop.tasktracker.scratch') do
+  type          :local
+  selects       :all
+  path          'hadoop/mapred/local'
+  mode          "0755"
+end
 
 # Hadoop tmp storage on a single scratch dir
 volume_dirs('hadoop.tmp') do
