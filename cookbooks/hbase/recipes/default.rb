@@ -34,7 +34,7 @@ include_recipe 'zookeeper::client'
 daemon_user(:hbase)
 
 # Install
-package "hadoop-hbase"
+package "hbase"
 
 standard_dirs('hbase') do
   directories   :conf_dir, :pid_dir, :tmp_dir, :log_dir

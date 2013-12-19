@@ -28,7 +28,7 @@ runit_service 'hbase_stargate' do
   options           Mash.new(service_name: 'stargate', command_name: 'rest').merge(node[:hbase]).merge(node[:hbase][:stargate])
 end
 
-kill_old_service('hadoop-hbase-stargate'){ hard(:real_hard) ; only_if{ File.exists? '/etc/init.d/hadoop-hbase-stargate' } }
+kill_old_service('hbase-rest'){ hard(:real_hard) ; only_if{ File.exists? '/etc/init.d/hbase-rest' } }
 
 announce(:hbase, :stargate, {
            logs:    { 

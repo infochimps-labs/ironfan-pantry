@@ -23,7 +23,7 @@ include_recipe 'hbase'
 include_recipe 'runit'
 
 # Install
-package "hadoop-hbase-thrift"
+package "hbase-thrift"
 
 # Set up service
 runit_service "hbase_thrift" do
@@ -31,7 +31,7 @@ runit_service "hbase_thrift" do
   options       Mash.new(:service_name => 'thrift').merge(node[:hbase]).merge(node[:hbase][:thrift])
 end
 
-kill_old_service("hadoop-hbase-thrift"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-thrift") } }
+kill_old_service("hbase-thrift"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hbase-thrift") } }
 
 announce(:hbase, :thrift, {
            :logs => { :thrift => {
