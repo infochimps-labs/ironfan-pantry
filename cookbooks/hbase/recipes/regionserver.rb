@@ -23,7 +23,7 @@ include_recipe 'hbase'
 include_recipe 'runit'
 
 # Install
-package "hadoop-hbase-regionserver"
+package "hbase-regionserver"
 
 # Set up service
 runit_service "hbase_regionserver" do
@@ -31,7 +31,7 @@ runit_service "hbase_regionserver" do
   options       Mash.new(:service_name => 'regionserver').merge(node[:hbase]).merge(node[:hbase][:regionserver])
 end
 
-kill_old_service("hadoop-hbase-regionserver"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hadoop-hbase-regionserver") } }
+kill_old_service("hbase-regionserver"){ hard(:real_hard) ; only_if{ File.exists?("/etc/init.d/hbase-regionserver") } }
 
 announce(:hbase, :regionserver, {
            :logs => { :regionserver => {
