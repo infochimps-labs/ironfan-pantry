@@ -53,7 +53,7 @@ template "/etc/default/#{node[:hadoop][:handle]}" do
   source "etc_default_hadoop.erb"
 end
 
-file "#{node[:hadoop][:conf_dir]}/#{conf_file}/dfs.hosts.exclude" do
+file "#{node[:hadoop][:conf_dir]}/dfs.hosts.exclude" do
   action :touch
 end
 
