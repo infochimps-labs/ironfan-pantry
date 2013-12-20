@@ -45,6 +45,18 @@ mysql_statements = [
                     "USE #{hive_database}",
                     "SOURCE #{script_absolute_path}",
 ].join(";")
+
+execute "ensure anonymous mysql user removed" do
+  params = {}
+  params['-h'] = mysql_connection_info[:host]
+  params['-P'] = mysql_connection_info[:port]
+  params['-u'] = mysql_connection_info[:username]
+  params['-p'] = mysql_connection_info[:password] unless mysql_connection_info[:password].nil?
+  params['-e'] = "\"GRANT USAGE ON *.* TO ''@'localhost'; DROP USER ''@'localhost';\""
+  
+  command "/usr/bin/mysql " + params.map{|*entry| entry.join}.join(" ")
+end
+
 execute "Run metastore update script" do
   params = {}
   params['-h'] = mysql_connection_info[:host]
