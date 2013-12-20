@@ -53,6 +53,10 @@ template "/etc/default/#{node[:hadoop][:handle]}" do
   source "etc_default_hadoop.erb"
 end
 
+file "#{node[:hadoop][:conf_dir]}/#{conf_file}/dfs.hosts.exclude" do
+  action :touch
+end
+
 # $HADOOP_NODENAME is set in /etc/default/hadoop
 munge_one_line('use node name in hadoop .log logs', "#{node[:hadoop][:home_dir]}/bin/hadoop-daemon.sh",
   %q{export HADOOP_LOGFILE=hadoop-.HADOOP_IDENT_STRING-.command-.HOSTNAME.log},
