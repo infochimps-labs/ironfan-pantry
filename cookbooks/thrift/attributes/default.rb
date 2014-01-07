@@ -21,7 +21,8 @@ default[:thrift][:home_dir]          = "/usr/local/share/thrift"
 default[:thrift][:prefix_root]       = '/usr/local'
 
 default[:thrift][:version]           = '0.8.0'
-default[:thrift][:release_url]       = ':apache_mirror:/:name:/:version:/:name:-:version:.tar.gz'
-default[:thrift][:checksum]          = '1bed1ea17bf31c861fa8dd6e0182360eb8234383f32d0e4a36b70047b2e6b313'
+# default[:thrift][:release_url]       = ':apache_mirror:/:name:/:version:/:name:-:version:.tar.gz'
+default[:thrift][:release_url]       = 'http://archive.apache.org/dist/:name:/:version:/:name:-:version:.tar.gz'
+default[:thrift][:checksum]          = '5e280097d88400f5e2db75595a04e1981538e48869cd6915bb9c4831605f0793'
 
 default[:thrift][:configure_options] = []
