@@ -81,7 +81,7 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   end
   
   announce(:kafka_contrib, app_name.to_s.to_sym, {
-    logs:    log_monitor_info,
-    daemons: daemon_monitor_info,
+    # logs:    log_monitor_info,
+    # daemons: daemon_monitor_info,
   })
 end
