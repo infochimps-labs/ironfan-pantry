@@ -53,6 +53,9 @@ default[:kafka][:contrib][:deploy][:root]           = '/usr/local/share/kafka-co
 default[:kafka][:contrib][:deploy][:repo]           = 'git@github.com:infochimps/kafka-contrib.git'
 default[:kafka][:contrib][:deploy][:branch]         = 'master'
 default[:kafka][:contrib][:log_dir]                 = '/var/log/kafka-contrib'
+default[:kafka][:contrib][:auth_port]               = 80
+default[:kafka][:contrib][:app_port]                = 8080
+
 #
 # Kafka Contrib default attributes
 #
