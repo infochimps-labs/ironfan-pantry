@@ -1,0 +1,11 @@
+zone som.marshall.edu in {
+    type slave;
+    file "slaves/db.som.marshall.edu";
+    masters { default; };
+};
+
+zone 0.103.10.in-addr.arpa in {
+        type slave;
+        file "slaves/db.0.103.10.in-addr.arpa";
+        masters { default; };
+};

@@ -1,0 +1,6 @@
+zone "rcbi.org" in {
+        type slave;
+        file "slaves/db.rcbi.org";
+        masters { 199.217.7.3; 199.216.7.4; };
+};
+
