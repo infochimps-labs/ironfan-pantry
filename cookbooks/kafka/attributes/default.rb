@@ -55,6 +55,7 @@ default[:kafka][:contrib][:deploy][:branch]         = 'master'
 default[:kafka][:contrib][:log_dir]                 = '/var/log/kafka-contrib'
 default[:kafka][:contrib][:auth_port]               = 80
 default[:kafka][:contrib][:app_port]                = 8080
+default[:kafka][:contrib][:http_basic_auth]         = false
 
 #
 # Kafka Contrib default attributes
