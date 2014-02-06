@@ -1,0 +1,23 @@
+# configure nginx to act as a reverse proxy for the kafka contrib app
+upstream kafka_http_listener  {
+      # TODO: allow multiple kafka_http_listeners on various ports?
+      server localhost:<%= @kafka_contrib[:app_port] %>;
+}
+
+server {
+  listen <%= @kafka_contrib[:auth_port] %>;
+
+  location /  {
+    proxy_pass http://kafka_http_listener;
+    proxy_redirect off;
+
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+
+    <% if not @kafka_contrib[:password_file].nil? and @kafka_contrib[:http_basic_auth] %>
+    auth_basic "kafka_contrib";
+    auth_basic_user_file <%= @kafka_contrib[:password_file] %>;
+    <% end %>
+  }
+}
