@@ -31,6 +31,6 @@ daemon_user(:elasticsearch) do
 end
 
 standard_dirs('elasticsearch') do
-  directories   [:conf_dir, :lib_dir, :pid_dir]
+  directories   [:conf_dir, :log_dir, :lib_dir, :pid_dir]
   group         'root'
 end
