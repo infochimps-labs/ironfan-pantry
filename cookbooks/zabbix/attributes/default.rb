@@ -21,7 +21,7 @@ default[:groups]['zabbix'][:gid]    = 447
 default[:zabbix][:server][:version]           = "2.0.4"
 default[:zabbix][:server][:install_method]    = "source"
 default[:zabbix][:server][:configure_options] = [ "--with-libcurl","--with-net-snmp","--with-mysql", "--enable-java"]
-default[:zabbix][:server][:log_dir]           = nil # set by volume_dirs previously: '/var/log/zabbix_server'
+default[:zabbix][:server][:log_dir]           = nil  # set by volume_dirs previously: '/var/log/zabbix_server'
 default[:zabbix][:server][:port]              = 10051
 
 default[:zabbix][:server][:pollers]             = 5

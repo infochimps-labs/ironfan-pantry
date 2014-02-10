@@ -34,3 +34,12 @@ end
     mode   '0755'
   end
 end
+
+# Zabbix log storage on a single scratch dir
+volume_dirs('zabbix.log') do
+  type          :local
+  selects       :single
+  path          'zabbix/log'
+  group         'zabbix'
+  mode          "0777"
+end

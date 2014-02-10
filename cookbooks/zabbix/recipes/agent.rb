@@ -21,15 +21,6 @@
 
 include_recipe("zabbix::default")
 
-# Zabbix Agent log storage on a single scratch dir
-volume_dirs('zabbix.agent.log') do
-  type          :local
-  selects       :single
-  path          'zabbix/log/zabbix/agent'
-  group         'zabbix'
-  mode          "0777"
-end
-
 case node.zabbix.agent.install_method
 when 'source', 'prebuild'
   include_recipe "zabbix::agent_#{node.zabbix.agent.install_method}"
