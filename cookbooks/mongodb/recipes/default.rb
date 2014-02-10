@@ -33,7 +33,7 @@ end
 volume_dirs('mongodb.log') do
   type          :local
   selects       :single
-  path          'mongodb'
+  path          'mongodb/log'
   group         'mongodb'
   mode          "0777"
 end
