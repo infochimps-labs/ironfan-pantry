@@ -40,6 +40,15 @@ standard_dirs('hbase') do
   directories   :conf_dir, :pid_dir, :tmp_dir, :log_dir
 end
 
+# HBase log storage on a single scratch dir
+volume_dirs('hbase.log') do
+  type          :local
+  selects       :single
+  path          'hbase/log'
+  group         'hbase'
+  mode          "0777"
+end
+
 node[:hbase][:services].each do |svc|
   directory("#{node[:hbase][:log_dir]}/#{svc}"){ action(:create) ; owner 'hbase' ; group 'hbase'; mode "0755" }
 end

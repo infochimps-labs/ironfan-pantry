@@ -9,7 +9,7 @@ default[:hbase][:home_dir]                     = '/usr/lib/hbase'
 default[:hbase][:conf_dir]                     = '/etc/hbase/conf'
 default[:hbase][:pid_dir]                      = '/var/run/hbase'
 
-default[:hbase][:log_dir]                      = '/var/log/hbase'
+default[:hbase][:log_dir]                      = nil   # set by volume dirs; previously: '/var/log/hbase'
 default[:hbase][:tmp_dir]                      = '/mnt/hbase/tmp'
 
 default[:hbase][:master      ][:bind_port]     = 60000
