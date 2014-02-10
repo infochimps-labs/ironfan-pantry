@@ -28,3 +28,12 @@ daemon_user('mongodb')
 standard_dirs('mongodb') do
   directories [ :log_dir, :conf_dir, :pid_dir, :journal_dir ]
 end
+
+# MongoDB log storage on a single scratch dir
+volume_dirs('mongodb.log') do
+  type          :local
+  selects       :single
+  path          'mongodb'
+  group         'mongodb'
+  mode          "0777"
+end
