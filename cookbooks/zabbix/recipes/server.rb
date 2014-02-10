@@ -21,8 +21,13 @@
 
 include_recipe("zabbix::default")
 
-standard_dirs('zabbix.server') do
-  directories :log_dir
+# Zabbix Server log storage on a single scratch dir
+volume_dirs('zabbix.server.log') do
+  type          :local
+  selects       :single
+  path          'zabbix/log/zabbix/server'
+  group         'zabbix'
+  mode          "0777"
 end
 
 case node.zabbix.server.install_method

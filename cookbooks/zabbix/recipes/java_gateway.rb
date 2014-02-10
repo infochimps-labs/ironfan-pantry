@@ -21,8 +21,13 @@
 
 include_recipe("zabbix::default")
 
-standard_dirs('zabbix.java_gateway') do
-  directories :log_dir
+# Zabbix Java Gateway log storage on a single scratch dir
+volume_dirs('zabbix.java_gateway.log') do
+  type          :local
+  selects       :single
+  path          'zabbix/log/zabbix/java_gateway'
+  group         'zabbix'
+  mode          "0777"
 end
 
 template "/usr/local/sbin/zabbix_java/settings.sh" do

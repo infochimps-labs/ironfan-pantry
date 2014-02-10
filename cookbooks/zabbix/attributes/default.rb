@@ -21,7 +21,7 @@ default[:groups]['zabbix'][:gid]    = 447
 default[:zabbix][:server][:version]           = "2.0.4"
 default[:zabbix][:server][:install_method]    = "source"
 default[:zabbix][:server][:configure_options] = [ "--with-libcurl","--with-net-snmp","--with-mysql", "--enable-java"]
-default[:zabbix][:server][:log_dir]           = '/var/log/zabbix_server'
+default[:zabbix][:server][:log_dir]           = nil # set by volume_dirs previously: '/var/log/zabbix_server'
 default[:zabbix][:server][:port]              = 10051
 
 default[:zabbix][:server][:pollers]             = 5
@@ -40,7 +40,7 @@ default[:zabbix][:server][:snmp][:trapper]  = false
 # Java Gateway
 default[:zabbix][:java_gateway][:install] = true
 default[:zabbix][:java_gateway][:port]    = 10052
-default[:zabbix][:java_gateway][:log_dir] = '/var/log/zabbix_java'
+default[:zabbix][:java_gateway][:log_dir] = nil # set by volume_dirs previously:  '/var/log/zabbix_java'
 
 # Database
 default[:zabbix][:database][:host]            = "localhost"
@@ -58,7 +58,7 @@ default[:zabbix][:agent][:servers]                = []
 default[:zabbix][:agent][:configure_options]      = ["--with-libcurl"]
 default[:zabbix][:agent][:version]                = "2.0.4"
 default[:zabbix][:agent][:install_method]         = "prebuild"
-default[:zabbix][:agent][:log_dir]                = '/var/log/zabbix_agent'
+default[:zabbix][:agent][:log_dir]                = nil # set by volume_dirs previously: '/var/log/zabbix_agent'
 default[:zabbix][:agent][:create_host]            = true
 default[:zabbix][:agent][:unmonitor_on_shutdown]  = false
 default[:zabbix][:agent][:unsafe_user_parameters] = true
@@ -82,7 +82,7 @@ end
 default[:zabbix][:web][:fqdn]           = ""
 default[:zabbix][:web][:bind_ip]        = nil
 default[:zabbix][:web][:port]           = 9101
-default[:zabbix][:web][:log_dir]        = '/var/log/zabbix_web'
+default[:zabbix][:web][:log_dir]        = nil # set by volume_dirs previously: '/var/log/zabbix_web'
 default[:zabbix][:web][:home_dir]       = File.join(zabbix_home_dir, 'frontends', 'php')
 default[:zabbix][:web][:install_method] = 'nginx'
 default[:zabbix][:web][:timezone]       = 'Europe/London' # UTC

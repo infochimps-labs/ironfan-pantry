@@ -30,8 +30,13 @@ else
   log "No #{node.platform} support yet for Zabbix web"
 end
 
-standard_dirs('zabbix.web') do
-  directories :log_dir
+# Zabbix Web log storage on a single scratch dir
+volume_dirs('zabbix.web.log') do
+  type          :local
+  selects       :single
+  path          'zabbix/log/zabbix/web'
+  group         'zabbix'
+  mode          "0777"
 end
 
 install_from_release('zabbix') do
