@@ -30,6 +30,15 @@ directory node[:nginx][:log_dir] do
   action :create
 end
 
+# nginx log storage on a single scratch dir
+volume_dirs('nginx.log') do
+  type          :local
+  selects       :single
+  path          'nginx/log'
+  group         'www-data'
+  mode          "0777"
+end
+
 %w{nxensite nxdissite}.each do |nxscript|
   template "/usr/sbin/#{nxscript}" do
     source "#{nxscript}.erb"
