@@ -6,6 +6,19 @@ bash "run logrotate every hour" do
   creates "/etc/cron.hourly/logrotate"
 end
 
+
+# find all logs under /var/log/#{component}
+# and all those under /var/log/#{component}/#{subcomponent}
+# which can also be symlinks
+
+# check disk space 
+    # if space is less than 25% 
+      # rotate logs 
+    # else 
+      # rotate logs once they reach 300mb 
+      # compressed 10 
+      # keep one weeks worth
+
 # Iterate over ever component with a log aspect...
 components_with(:logs).each do |component|
   
