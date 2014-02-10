@@ -26,7 +26,7 @@ end
 volume_dirs('kafka.log') do
   type          :local
   selects       :single
-  path          'kafka/log/kafka'
+  path          'kafka/log'
   group         'kafka'
   mode          "0777"
 end
