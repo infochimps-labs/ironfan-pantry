@@ -25,11 +25,3 @@ include_recipe 'zookeeper'
 node.set[:hadoop][:extra_classpaths][:zookeeper] = "#{node[:zookeeper][:home_dir]}/zookeeper.jar" if node[:hadoop] and node[:hadoop][:extra_classpaths]
 
 
-# Zookeeper Client log storage on a single scratch dir
-volume_dirs('zookeeper.client.log') do
-  type          :local
-  selects       :single
-  path          'zookeeper/log/zookeeper/client'
-  group         'zookeeper'
-  mode          "0777"
-end

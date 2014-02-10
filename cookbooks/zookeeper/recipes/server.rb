@@ -43,14 +43,6 @@ standard_dirs('zookeeper.server') do
   directories   :data_dir, :journal_dir, :pid_dir
 end
 
-# Zookeeper Server log storage on a single scratch dir
-volume_dirs('zookeeper.server.log') do
-  type          :local
-  selects       :single
-  path          'zookeeper/log/zookeeper/server'
-  group         'zookeeper'
-  mode          "0777"
-end
 
 # === Install
 

@@ -37,3 +37,12 @@ end
 standard_dirs('zookeeper.server') do
   directories   :conf_dir, :log_dir
 end
+
+# Zookeeper log storage on a single scratch dir
+volume_dirs('zookeeper.log') do
+  type          :local
+  selects       :single
+  path          'zookeeper/log'
+  group         'hive'
+  mode          "0777"
+end
