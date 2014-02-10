@@ -13,7 +13,7 @@ default[:kafka][:home_dir]                          = '/usr/local/share/kafka'
 default[:kafka][:conf_dir]                          = File.join(default[:kafka][:home_dir], 'config')
 # Set via volume_dirs
 default[:kafka][:journal_dir]                       = nil
-default[:kafka][:log_dir]                           = '/var/log/kafka'
+default[:kafka][:log_dir]                           = nil   # set by volume_dirs; previously: '/var/log/kafka'
 default[:kafka][:pid_dir]                           = '/var/run/kafka'
 
 default[:kafka][:broker_id]                         = nil

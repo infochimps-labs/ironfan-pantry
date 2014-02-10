@@ -22,6 +22,15 @@ standard_dirs 'kafka' do
   directories [:home_dir, :log_dir, :conf_dir, :pid_dir]
 end
 
+# Hive log storage on a single scratch dir
+volume_dirs('kafka.log') do
+  type          :local
+  selects       :single
+  path          'kafka/log/kafka'
+  group         'kafka'
+  mode          "0777"
+end
+
 # Hadoop is quite picky about versions when communicating with the job
 # tracker. We must use cdh3u2. So, first remove the old hadoop-core
 # jar...
