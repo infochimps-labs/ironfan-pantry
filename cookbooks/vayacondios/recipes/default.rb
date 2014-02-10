@@ -2,7 +2,7 @@
 volume_dirs('vayacondios.log') do
   type          :local
   selects       :single
-  path          'vayacondios'
+  path          'vayacondios/log'
   group         'www-data'
   mode          "0777"
 end
