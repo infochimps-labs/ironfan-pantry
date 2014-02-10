@@ -6,7 +6,7 @@ default[:elasticsearch][:realm]            = node[:cluster_name]
 
 default[:elasticsearch][:home_dir]                = "/usr/local/share/elasticsearch"
 default[:elasticsearch][:conf_dir]                = "/etc/elasticsearch"
-default[:elasticsearch][:log_dir]                 = "/var/log/elasticsearch"
+default[:elasticsearch][:log_dir]                 = nil   #set by volume_dirs; previously: "/var/log/elasticsearch"
 default[:elasticsearch][:log_path]                = ::File.join(default[:elasticsearch][:log_dir],
                                                                 "#{node[:cluster_name]}.log")
 default[:elasticsearch][:lib_dir]                 = "/var/lib/elasticsearch"

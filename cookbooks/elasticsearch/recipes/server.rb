@@ -38,6 +38,16 @@ volume_dirs('elasticsearch.scratch') do
   mode          "0700"
 end
 
+# Elasticsearch log storage on a single scratch dir
+volume_dirs('elasticsearch.log') do
+  type          :local
+  selects       :single
+  path          'elasticsearch/log/elasticsearch'
+  group         'elasticsearch'
+  mode          "0777"
+end
+
+
 if ((node[:elasticsearch][:data_root]) ||
     (File.exist?('/mnt/elasticsearch/data') && (not node[:elasticsearch][:data_dir])))
   raise %Q{In order to make the world safe for local (non-s3) gateway recovery, the attribute node[:elasticsearch][:data_root] (#{node[:elasticsearch][:data_root]}) is now invalid.
