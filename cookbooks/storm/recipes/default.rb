@@ -14,3 +14,6 @@ volume_dirs('storm.log') do
   group         'storm'
   mode          "0777"
 end
+link "/var/log/storm" do
+  to node[:storm][:log_dir]
+end
