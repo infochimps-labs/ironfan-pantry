@@ -48,6 +48,9 @@ volume_dirs('hbase.log') do
   group         'hbase'
   mode          "0777"
 end
+link "/var/log/hbase" do
+  to node[:hbase][:log_dir]
+end
 
 node[:hbase][:services].each do |svc|
   directory("#{node[:hbase][:log_dir]}/#{svc}"){ action(:create) ; owner 'hbase' ; group 'hbase'; mode "0755" }
