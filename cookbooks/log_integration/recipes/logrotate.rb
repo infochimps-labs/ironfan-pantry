@@ -20,7 +20,8 @@ end
       # keep one weeks worth
 
 # Iterate over ever component with a log aspect...
-components_with(:logs).each do |component|
+components_with(:logs).each do |component|                            #is this the correct call with new volume_dirs in place? should this do everything under /var/log?
+  
   
   # ... and over each log aspect for the component...
   component.logs.each_pair do |aspect_name, aspect_props|
