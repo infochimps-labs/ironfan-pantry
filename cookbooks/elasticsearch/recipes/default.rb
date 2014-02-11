@@ -34,3 +34,15 @@ standard_dirs('elasticsearch') do
   directories   [:conf_dir, :log_dir, :lib_dir, :pid_dir]
   group         'root'
 end
+
+# Elasticsearch log storage on a single scratch dir
+volume_dirs('elasticsearch.log') do
+  type          :local
+  selects       :single
+  path          'elasticsearch/log'
+  group         'elasticsearch'
+  mode          "0777"
+end
+link "/var/log/elasticsearch" do
+  to node[:elasticsearch][:log_dir]
+end
