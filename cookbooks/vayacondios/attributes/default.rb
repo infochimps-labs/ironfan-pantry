@@ -10,7 +10,7 @@ default[:vayacondios][:group]      = 'webservers'
 default[:vayacondios][:deploy_root]  = '/var/www/vayacondios'
 default[:vayacondios][:home_dir]     = '/var/www/vayacondios/current'
 default[:vayacondios][:conf_dir]     = '/var/www/vayacondios/shared/config'
-default[:vayacondios][:log_dir]      = nil 	#set by volumes; /var/www/vayacondios/current/log/0/current
+default[:vayacondios][:log_dir]      = nil 	#set by volumes
 default[:vayacondios][:tmp_dir]      = '/var/www/vayacondios/shared/tmp'
 default[:vayacondios][:pid_dir]      = '/var/www' # it's www-data
 

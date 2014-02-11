@@ -5,7 +5,7 @@ daemon_user "vayacondios.server"
 standard_dirs "vayacondios.server" do
   # do *not* include home_dir as it is actually a symlink that will
   # be created by the install_from_git recipe below
-  directories :deploy_root, :log_dir, :conf_dir, :tmp_dir
+  directories :deploy_root, :conf_dir, :log_dir, :tmp_dir 
 end
 include_recipe("vayacondios::install_from_git")
 
@@ -35,7 +35,7 @@ node[:vayacondios][:server][:num_daemons].times do |i|
   runit_service "vayacondios_#{i}" do
     template_name "vayacondios"
     options({
-      log_dir:    log_dir,
+      # log_dir:    log_dir,
       socket:     socket,
       host:       mongo && mongo.private_ip,
       mongo_port: mongo && mongo.ports[:http][:port],

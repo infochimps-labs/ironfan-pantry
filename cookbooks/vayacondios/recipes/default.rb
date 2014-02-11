@@ -6,3 +6,6 @@ volume_dirs('vayacondios.log') do
   group         'www-data'
   mode          "0777"
 end
+link "/var/log/vayacondios" do
+  to node[:vayacondios][:log_dir]
+end
