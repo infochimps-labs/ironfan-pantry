@@ -43,3 +43,22 @@ volume_dirs('zabbix.log') do
   group         'zabbix'
   mode          "0777"
 end
+link "/var/log/zabbix" do
+  to node[:zabbix][:log_dir]
+end
+
+link "/var/log/zabbix/java_gateway" do
+  to node[:zabbix][:java_gateway][:log_dir]
+end
+
+link "/var/log/zabbix/agent" do
+  to node[:zabbix][:agent][:log_dir]
+end
+
+link "/var/log/zabbix/server" do
+  to node[:zabbix][:server][:log_dir]
+end
+
+link "/var/log/zabbix/web" do
+  to node[:zabbix][:web][:log_dir]
+end
