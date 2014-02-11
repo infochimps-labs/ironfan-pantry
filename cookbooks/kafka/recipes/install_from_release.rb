@@ -22,13 +22,19 @@ standard_dirs 'kafka' do
   directories [:home_dir, :log_dir, :conf_dir, :pid_dir]
 end
 
-# Hive log storage on a single scratch dir
+# Kafka log storage on a single scratch dir
 volume_dirs('kafka.log') do
   type          :local
   selects       :single
   path          'kafka/log'
   group         'kafka'
   mode          "0777"
+end
+link "/var/log/kafka" do
+  to node[:kafka][:log_dir]
+end
+link "/var/log/kafka/contrib" do
+  to node[:kafka][:contrib][:log_dir]
 end
 
 # Hadoop is quite picky about versions when communicating with the job
