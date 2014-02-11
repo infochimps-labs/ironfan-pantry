@@ -43,4 +43,9 @@ volume_dirs('hive.log') do
   group         'hadoop'
   mode          "0777"
 end
-
+link "/var/log/hive/server" do
+  to node[:hive][:server][:log_dir]
+end
+link "/var/log/hive/metastore" do
+  to node[:hive][:metastore][:log_dir]
+end
