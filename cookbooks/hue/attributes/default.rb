@@ -15,6 +15,7 @@ default[:hue][:home_dir]              = '/usr/share/hue'
 default[:hue][:conf_dir]              = '/etc/hue/conf'
 default[:hue][:conf_base_dir]         = '/etc/hue'
 default[:hue][:pid_dir]               = '/var/run/hue'
+default[:hue][:log_dir]				  = nil    # set by volume_dirs 
 
 default[:hue][:port]                  = 9000
 default[:hue][:time_zone]             = 'UTC'

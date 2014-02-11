@@ -47,7 +47,11 @@ end
 volume_dirs('hive.log') do
   type          :local
   selects       :single
-  path          'hadoop/log/hive'
+  path          'hue/log'
   group         'hadoop'
   mode          "0777"
 end
+link "/var/log/hue" do
+  to node[:hue][:log_dir]
+end
+
