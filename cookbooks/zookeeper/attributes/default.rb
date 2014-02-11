@@ -7,7 +7,7 @@ default[:zookeeper][:cluster_name]           = node[:cluster_name]
 default[:zookeeper][:home_dir]               = '/usr/lib/zookeeper'
 default[:zookeeper][:conf_dir]               = '/etc/zookeeper'
 default[:zookeeper][:log_dir]                = nil   # set by volume dirs; previously: '/var/log/zookeeper'
-default[:zookeeper][:log_path]               = ::File.join(default[:zookeeper][:log_dir], '/zookeeper.log')
+# default[:zookeeper][:log_path]               = ::File.join(default[:zookeeper][:log_dir], '/zookeeper.log')
 default[:zookeeper][:pid_dir]                = '/var/run/zookeeper'
 
 #

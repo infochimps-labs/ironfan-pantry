@@ -42,7 +42,12 @@ end
 volume_dirs('zookeeper.log') do
   type          :local
   selects       :single
-  path          'zookeeper/log'
-  group         'hive'
+  path          '/var/log/zookeeper'
+  group         'zookeeper'
   mode          "0777"
 end
+
+link "/var/log/zookeeper" do
+  to node[:zookeeper][:log_dir]
+end
+
