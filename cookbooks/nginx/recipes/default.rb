@@ -38,6 +38,9 @@ volume_dirs('nginx.log') do
   group         'www-data'
   mode          "0777"
 end
+link "/var/log/nginx" do
+  to node[:nginx][:log_dir]
+end
 
 %w{nxensite nxdissite}.each do |nxscript|
   template "/usr/sbin/#{nxscript}" do

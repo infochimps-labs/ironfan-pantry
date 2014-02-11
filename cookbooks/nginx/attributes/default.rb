@@ -25,21 +25,21 @@ default[:nginx][:version]      = "0.8.54"
 case platform
 when "debian","ubuntu"
   default[:nginx][:dir]        = "/etc/nginx"
-  default[:nginx][:log_dir]    = "/var/log/nginx"
+  default[:nginx][:log_dir]    = nil   #set by volume_dirs
   default[:nginx][:user]       = "www-data"
   default[:nginx][:group]      = "www-data"
   default[:nginx][:binary]     = "/usr/sbin/nginx"
   default[:nginx][:init_style] = "runit"
 when "redhat", "centos"
   default[:nginx][:dir]        = "/etc/nginx"
-  default[:nginx][:log_dir]    = nil   #set by volume_dirs; previously: "/var/log/nginx"
+  default[:nginx][:log_dir]    = nil   #set by volume_dirs
   default[:nginx][:user]       = "nginx"
   default[:nginx][:group]      = "nginx"
   default[:nginx][:binary]     = "/usr/sbin/nginx"
   default[:nginx][:init_style] = "init"
 else
   default[:nginx][:dir]        = "/etc/nginx"
-  default[:nginx][:log_dir]    = "/var/log/nginx"
+  default[:nginx][:log_dir]    = nil   #set by volume_dirs
   default[:nginx][:user]       = "www-data"
   default[:nginx][:group]      = "www-data"
   default[:nginx][:binary]     = "/usr/sbin/nginx"
