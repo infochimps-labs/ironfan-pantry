@@ -43,22 +43,34 @@ volume_dirs('zabbix.log') do
   group         'zabbix'
   mode          "0777"
 end
-link "/var/log/zabbix" do
-  to node[:zabbix][:log_dir]
+volume_dirs('zabbix.java_gateway.log') do
+  type          :local
+  selects       :single
+  path          'zabbix/log/java_gateway'
+  group         'zabbix'
+  mode          "0777"
 end
 
-link "/var/log/zabbix/java_gateway" do
-  to node[:zabbix][:java_gateway][:log_dir]
+volume_dirs('zabbix.agent.log') do
+  type          :local
+  selects       :single
+  path          'zabbix/log/agent'
+  group         'zabbix'
+  mode          "0777"
 end
 
-link "/var/log/zabbix/agent" do
-  to node[:zabbix][:agent][:log_dir]
+volume_dirs('zabbix.server.log') do
+  type          :local
+  selects       :single
+  path          'zabbix/log/server'
+  group         'zabbix'
+  mode          "0777"
 end
 
-link "/var/log/zabbix/server" do
-  to node[:zabbix][:server][:log_dir]
-end
-
-link "/var/log/zabbix/web" do
-  to node[:zabbix][:web][:log_dir]
+volume_dirs('zabbix.web.log') do
+  type          :local
+  selects       :single
+  path          'zabbix/log/web'
+  group         'zabbix'
+  mode          "0777"
 end

@@ -46,7 +46,6 @@ volume_dirs('zookeeper.log') do
   group         'zookeeper'
   mode          "0777"
 end
-
 link "/var/log/zookeeper" do
   to node[:zookeeper][:log_dir]
 end

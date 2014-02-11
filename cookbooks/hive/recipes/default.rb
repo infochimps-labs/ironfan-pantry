@@ -39,13 +39,25 @@ end
 volume_dirs('hive.log') do
   type          :local
   selects       :single
-  path          'hadoop/log/hive'
+  path          'hive/log'
   group         'hadoop'
   mode          "0777"
 end
-link "/var/log/hive/server" do
+link "/var/log/hive" do
   to node[:hive][:server][:log_dir]
 end
-link "/var/log/hive/metastore" do
-  to node[:hive][:metastore][:log_dir]
+
+volume_dirs('hive.server.log') do
+  type          :local
+  selects       :single
+  path          'hive/log/server'
+  group         'hadoop'
+  mode          "0777"
+end
+volume_dirs('hive.metastore.log') do
+  type          :local
+  selects       :single
+  path          'hive/log/metastore'
+  group         'hadoop'
+  mode          "0777"
 end
