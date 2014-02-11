@@ -33,6 +33,19 @@ volume_dirs('mongodb.data') do
   mode          "0700"
 end
 
+# MongoDB log storage on a single scratch dir
+volume_dirs('mongodb.log') do
+  type          :local
+  selects       :single
+  path          'mongodb/log'
+  group         'mongodb'
+  mode          "0777"
+end
+link "/var/log/mongodb" do
+  to node[:monogodb][:log_dir]
+end
+
+
 #
 # Create service
 #
