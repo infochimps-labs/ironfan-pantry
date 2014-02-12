@@ -32,3 +32,15 @@ template "#{node[:redis][:conf_dir]}/redis.conf" do
   mode          "0644"
   variables     :redis => node[:redis], :redis_server => node[:redis][:server]
 end
+
+# Elasticsearch log storage on a single scratch dir
+volume_dirs('redis.log') do
+  type          :local
+  selects       :single
+  path          'redis/log'
+  group         'redis'
+  mode          "0777"
+end
+link "/var/log/redis" do
+  to node[:redis][:log_dir]
+end

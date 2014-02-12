@@ -3,7 +3,7 @@
 #
 
 default[:redis][:conf_dir]          = "/etc/redis"
-default[:redis][:log_dir]           = "/var/log/redis"
+default[:redis][:log_dir]           = nil   # set by volume_dir
 default[:redis][:data_dir]          = "/var/lib/redis"
 
 default[:redis][:home_dir]          = "/var/lib/redis"
