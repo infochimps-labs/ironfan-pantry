@@ -20,7 +20,7 @@ default[:rundeck][:chef_rundeck][:username] = 'rundeck'
 default[:rundeck][:pid_dir]  = '/var/run/rundeck'
 default[:rundeck][:home_dir] = '/var/lib/rundeck'
 default[:rundeck][:conf_dir] = '/etc/rundeck'
-default[:rundeck][:log_dir]  = '/var/log/rundeck'
+default[:rundeck][:log_dir]  = nil   # set by volume_dirs
 default[:rundeck][:data_dir] = '/usr/local/share/rundeck' # rundeck's "projects" go in here
 
 default[:rundeck][:server][:port] = 4440
@@ -31,7 +31,7 @@ default[:rundeck][:server][:port] = 4440
 
 default[:rundeck][:chef_rundeck][:git_url]  = 'https://github.com/infochimps-labs/chef-rundeck.git'
 default[:rundeck][:chef_rundeck][:home_dir] = '/usr/local/share/chef-rundeck'
-default[:rundeck][:chef_rundeck][:log_dir]  = '/var/log/chef-rundeck'
+default[:rundeck][:chef_rundeck][:log_dir]  = nil   # set by volume_dirs
 default[:rundeck][:chef_rundeck][:conf_dir] = '/etc/chef'
 
 default[:rundeck][:chef_rundeck][:port] = 9980
@@ -40,7 +40,7 @@ default[:rundeck][:chef_rundeck][:port] = 9980
 # Web frontend
 # 
 
-default[:rundeck][:web][:log_dir] = '/var/log/rundeck_web'
+default[:rundeck][:web][:log_dir] = nil   # set by volume_dirs
 
 #
 # SSL
