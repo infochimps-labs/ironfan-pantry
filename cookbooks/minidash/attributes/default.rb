@@ -8,7 +8,7 @@ default[:minidash][:links]     ||= Mash.new
 #
 
 default[:minidash][:conf_dir] = '/etc/minidash'
-default[:minidash][:log_dir]  = '/var/log/minidash'
+default[:minidash][:log_dir]  = nil   # set by volume_dirs
 default[:minidash][:home_dir] = '/var/lib/minidash'
 
 #

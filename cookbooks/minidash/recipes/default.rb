@@ -35,3 +35,15 @@ minidash_dashboard(:minidash) do
   summary_keys = %w[]
   variables     :summary_keys => summary_keys, :minidash => node[:minidash]
 end
+
+# Elasticsearch log storage on a single scratch dir
+volume_dirs('minidash.log') do
+  type          :local
+  selects       :single
+  path          'minidash/log'
+  group         'minidash'
+  mode          "0777"
+end
+link "/var/log/minidash" do
+  to node[:minidash][:log_dir]
+end
