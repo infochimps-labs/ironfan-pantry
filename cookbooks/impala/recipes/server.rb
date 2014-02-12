@@ -16,7 +16,7 @@ template_variables = {
 volume_dirs('impala.server.log') do
   type          :local
   selects       :single
-  path          'hadoop/log/impala/server'
+  path          'impala/log/server'
   group         'impala'
   mode          "0777"
 end
