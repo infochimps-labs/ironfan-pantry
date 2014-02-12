@@ -25,7 +25,7 @@ when "arch"
   default["chef_server"]["cache_path"]  = "/var/cache/chef"
   default["chef_server"]["backup_path"] = "/var/lib/chef/backup"
   default["chef_server"]["conf_dir"]    = "/etc/chef"
-  default['chef_server']['log_dir']     = "/var/log/chef"
+  default['chef_server']['log_dir']     = nil   # set by volume_dirs 
   default['chef_server']['group']       = 'wheel'
 when "debian","ubuntu","redhat","centos","fedora"
   default["chef_server"]["init_style"]  = "init"
@@ -34,7 +34,7 @@ when "debian","ubuntu","redhat","centos","fedora"
   default["chef_server"]["cache_path"]  = "/var/cache/chef"
   default["chef_server"]["backup_path"] = "/var/lib/chef/backup"
   default["chef_server"]["conf_dir"]    = "/etc/chef"
-  default['chef_server']['log_dir']     = "/var/log/chef"
+  default['chef_server']['log_dir']     = nil   # set by volume_dirs
   default['chef_server']['group']       = 'wheel'
 when "openbsd","freebsd"
   default["chef_server"]["init_style"]  = "bsd"
@@ -43,7 +43,7 @@ when "openbsd","freebsd"
   default["chef_server"]["cache_path"]  = "/var/chef/cache"
   default["chef_server"]["backup_path"] = "/var/chef/backup"
   default["chef_server"]["conf_dir"]    = "/etc/chef"
-  default['chef_server']['log_dir']     = "/var/log/chef"
+  default['chef_server']['log_dir']     = nil   # set by volume_dirs
   default['chef_server']['group']       = 'wheel'
 when "mac_os_x"
   #NOTE: these defaults assume that if you are deploying chef-server on OS X
@@ -65,7 +65,7 @@ else
   default["chef_server"]["cache_path"]  = "/var/chef/cache"
   default["chef_server"]["backup_path"] = "/var/chef/backup"
   default["chef_server"]["conf_dir"]    = "/etc/chef"
-  default['chef_server']['log_dir']     = "/var/log/chef"
+  default['chef_server']['log_dir']     = nil   # set by volume_dirs
   default['chef_server']['group']       = 'root'
 end
 

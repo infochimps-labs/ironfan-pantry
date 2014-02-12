@@ -50,3 +50,15 @@ end
   end
 
 end
+
+# Chef log storage on a single scratch dir
+volume_dirs('chef.log') do
+  type          :local
+  selects       :single
+  path          'chef/log'
+  group         'chef'
+  mode          "0777"
+end
+link "/var/log/chef" do
+  to node['chef_server']['log_dir']
+end
