@@ -34,7 +34,7 @@ default[:jenkins][:worker ][:run_state] = :start
 #
 
 default[:jenkins][:conf_dir]            = "/etc/jenkins"
-default[:jenkins][:log_dir]             = "/var/log/jenkins"
+default[:jenkins][:log_dir]             = nil   # set by volume_dirs
 default[:jenkins][:lib_dir]             = "/var/lib/jenkins"
 default[:jenkins][:pid_dir]             = "/var/run/jenkins"
 

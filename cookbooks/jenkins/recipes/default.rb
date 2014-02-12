@@ -39,4 +39,16 @@ if platform?('ubuntu')
   include_recipe 'jenkins::add_apt_repo'
 end
 
+# Jenkins log storage on a single scratch dir
+volume_dirs('jenkins.log') do
+  type          :local
+  selects       :single
+  path          'jenkins/log'
+  group         'jenkins'
+  mode          "0777"
+end
+link "/var/log/jenkins" do
+  to node[:jenkins][:log_dir]
+end
+
 
