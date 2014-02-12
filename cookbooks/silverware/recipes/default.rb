@@ -32,3 +32,15 @@ end
 node.normal_attrs.delete(:announces)
 
 announce(:silverware, :default)
+
+# Silverware log storage on a single scratch dir
+volume_dirs('silverware.log') do
+  type          :local
+  selects       :single
+  path          'silverware/log'
+  group         'root'
+  mode          "0777"
+end
+link "/var/log/silverware" do
+  to node[:silverware][:log_dir]
+end

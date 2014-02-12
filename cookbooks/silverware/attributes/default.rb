@@ -1,6 +1,6 @@
 
 default[:silverware][:conf_dir] = '/etc/silverware'
-default[:silverware][:log_dir]  = '/var/log/silverware'
+default[:silverware][:log_dir]  = nil   # set by volume_dirs 
 default[:silverware][:home_dir] = '/etc/silverware'
 
 default[:silverware][:user]     = 'root'
