@@ -2,9 +2,9 @@
 # Cookbook Name::       zabbix
 # Description::         Installs and launches Zabbix server.
 # Recipe::              server
-# Author::              Dhruv Bansal (<dhruv.bansal@infochimps.com>), Nacer Laradji (<nacer.laradji@gmail.com>)
+# Author::              Dhruv Bansal (<dhruv.bansal@infochimps.com>)
 #
-# Copyright 2012-2013, Infochimps
+# Copyright 2012, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,63 +19,21 @@
 # limitations under the License.
 #
 
-include_recipe("zabbix::default")
-
-standard_dirs('zabbix.server') do
-  directories :log_dir
+directory node.zabbix.server.log_dir do
+  owner 'zabbix'
+  group 'zabbix'
+  mode '0755'
 end
 
-case node.zabbix.server.install_method
-when 'source'
-  include_recipe "zabbix::server_#{node.zabbix.server.install_method}"
-else
-  warn "Invalid method '#{node.zabbix.server.install_method}'.  Only the 'source' install method is supported for Zabbix server."
-end
+include_recipe "zabbix::server_#{node.zabbix.server.install_method}"
 
-include_recipe "zabbix::java_gateway" if node[:zabbix][:java_gateway][:install]
-
-template File.join(node[:zabbix][:conf_dir], 'zabbix_server.conf') do
-  source   "zabbix_server.conf.erb"
-  group    node[:zabbix][:group]
-  mode     "640"
-  notifies :restart, "service[zabbix_server]", :delayed
-end
-
-# We'd like to use runit to manage the zabbix_server but it
-# unfortunately cannot launch without daemonizing itself.
-template "/etc/init.d/zabbix_server" do
-  source    'zabbix_server.init.erb'
-  group     node[:zabbix][:group]
-  mode      '755'
-  notifies  :restart, "service[zabbix_server]", :delayed
-end
-
-service "zabbix_server" do
-  supports :start => true, :stop => true, :restart => true
-  action [ :start, :enable ]
-end
-
-announced_ports = {
-  server: {
-    port:    node.zabbix.server.port,
-    monitor: false
-  }
-}
-announced_daemons = { server: 'zabbix_server' }
-announced_logs    = { server: ::File.join(node.zabbix.server.log_dir,"current") }
-
-if node[:zabbix][:java_gateway][:install]
-  announced_ports[:java_gateway]   = node.zabbix.java_gateway.port
-  announced_daemons[:java_gateway] = {
-    name: 'java',
-    user: 'zabbix',
-    cmd:  'zabbix-java-gateway'
-  }
-  announced_logs[:java_gateway] = ::File.join(node[:zabbix][:java_gateway][:log_dir],"zabbix_server.log")
-end
-
-announce(:zabbix, :server, {
-  logs:    announced_logs,
-  ports:   announced_ports,
-  daemons: announced_daemons,
-})
+announce(:zabbix, :server,
+         :logs =>  { :server => node.zabbix.server.log_dir },
+         :ports => {
+           :server => {
+             :port    => 10050,
+             :monitor => false
+           }
+         },
+         :daemons => { :server => 'zabbix_server' }
+         )

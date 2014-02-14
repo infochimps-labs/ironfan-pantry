@@ -3,7 +3,7 @@ actions :create, :destroy
 attribute :server,             :kind_of  => String, :default => 'localhost'
 
 attribute :event_source,             :equal_to => [:triggers, :discovery, :auto_registration]
-attribute :escalation_time,          :kind_of  => Integer, default: 60
+attribute :escalation_time,          :kind_of  => Integer
 attribute :enabled,                  :equal_to => [true, false], :default => true
 attribute :message_subject,          :kind_of  => String
 attribute :message_body,             :kind_of  => String

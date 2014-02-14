@@ -19,7 +19,7 @@ def load_current_resource
   begin
     self.zabbix_host           = (Rubix::Host.find(:name => new_resource.name) || Rubix::Host.new(:name => new_resource.name))
     self.zabbix_host.monitored = new_resource.monitored
-
+    
     load_host_groups
     load_templates
     load_user_macros
