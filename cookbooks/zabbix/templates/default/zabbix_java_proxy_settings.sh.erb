@@ -16,7 +16,7 @@
 # Mandatory: no
 # Range: 1024-32767
 # Default:
-LISTEN_PORT=<%= node.zabbix.java_gateway.port %>
+LISTEN_PORT=10052
 
 ### Option: zabbix.pidFile
 #       Name of PID file.
@@ -25,6 +25,8 @@ LISTEN_PORT=<%= node.zabbix.java_gateway.port %>
 # Mandatory: no
 # Default:
 # PID_FILE=
+
+PID_FILE="/var/run/zabbix/zabbix_java_proxy.pid"
 
 ### Option: zabbix.startPollers
 #       Number of worker threads to start.

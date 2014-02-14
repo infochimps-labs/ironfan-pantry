@@ -4,7 +4,7 @@
 # Recipe::              web_nginx
 # Author::              Dhruv Bansal (<dhruv@infochimps.com>)
 #
-# Copyright 2012-2013, Infochimps
+# Copyright 2012, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,15 +21,21 @@
 
 include_recipe 'nginx'
 
-template File.join(node[:nginx][:dir], "sites-available", "zabbix.conf") do
+template "/etc/zabbix/php.ini" do
+  source 'php.ini.erb'
+  owner 'www-data'
+  action :create
+  notifies :restart, 'service[zabbix_web]', :delayed
+end
+
+template "/etc/nginx/sites-available/zabbix.conf" do
   source 'zabbix_web.nginx.conf.erb'
   action :create
-  notifies  :restart, "service[nginx]", :delayed
 end
 
 nginx_site 'zabbix.conf' do
-  action   :enable
-  notifies :restart, 'service[nginx]', :delayed
+  action :enable
+  notifies :restart, 'service[nginx]', :immediate
 end
 
 nginx_site 'default' do
@@ -38,22 +44,23 @@ end
 
 runit_service "zabbix_web"
 
-announce(:zabbix, :web, {
-  logs:  { 
-    php_cgi: { path: File.join(node.zabbix.web.log_dir, 'php.*')   },
-    nginx:   { path: File.join(node.zabbix.web.log_dir, 'nginx.*') }
-  },
-  ports: {
-    php_cgi: {
-      port:      node.zabbix.web.port,
-      protocol:  'http'
-    }
-  },
-  daemons: {
-    php_cgi:  {
-      name:  'php-cgi',
-      user:  node.zabbix.web.user,
-      cmd:   'zabbix'
-    }
-  }
-})
+announce(:zabbix, :web,
+         :logs    => {
+           :php_cgi => node.zabbix.web.log_dir,
+           :runit => {
+             :path      => '/etc/sv/zabbix_web/log/main/current',
+             :logrotate => false
+           }
+         },
+         :ports   => {
+           :php_cgi => {
+             :port     => node.zabbix.web.port,
+             :protocol => 'http'
+           }
+         },
+         :daemons => {
+           :php_cgi => {
+             :name => 'php-cgi',
+             :cmd  => 'zabbix'
+           }
+         })

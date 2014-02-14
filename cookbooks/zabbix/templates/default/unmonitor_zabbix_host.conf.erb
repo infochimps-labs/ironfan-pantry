@@ -10,6 +10,6 @@ start on starting rc RUNLEVEL=[06]
 task
 
 script
-  <%= node.zabbix.conf_dir %>/externalscripts/unmonitor_zabbix_host.rb
+  /etc/zabbix/externalscripts/unmonitor_zabbix_host.rb
   true
 end script
