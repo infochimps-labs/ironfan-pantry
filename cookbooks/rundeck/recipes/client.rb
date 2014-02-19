@@ -1,10 +1,13 @@
 # FIXME: home should be /var/lib/rundeck not :home_dir
 # FIXME: perms must be set right on /var/lib/rundeck and .ssh
-daemon_user :rundeck do
-  home         node[:rundeck][:home_dir]
-  manage_home  true             # rundeck owns this so it can manage its own SSH credentials
-  shell        '/bin/bash'
-  comment      'Rundeck user'
+
+unless `id -u rundeck` #if the rundeck user has running processes, daemon_user will fail
+  daemon_user :rundeck do
+    home         node[:rundeck][:home_dir]
+    manage_home  true             # rundeck owns this so it can manage its own SSH credentials
+    shell        '/bin/bash'
+    comment      'Rundeck user'
+  end
 end
 
 include_recipe 'rundeck::default'

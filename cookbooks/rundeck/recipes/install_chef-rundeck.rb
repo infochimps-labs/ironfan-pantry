@@ -17,7 +17,7 @@ file "/etc/chef/client.pem" do
 end
 
 bash 'Bundle install chef-rundeck' do
-  code   "cd #{node[:rundeck][:chef_rundeck][:home_dir]} && bundle install --standalone"
+  code   "cd #{node[:rundeck][:chef_rundeck][:home_dir]} && bundle install --standalone --without development"
   action :nothing
 end
 

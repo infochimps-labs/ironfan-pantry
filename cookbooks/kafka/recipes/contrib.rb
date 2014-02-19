@@ -34,7 +34,7 @@ deploy_revision node[:kafka][:contrib][:deploy][:root] do
     bash 'bundle install kafka-contrib' do
       cwd               current_release
       environment       shared_env
-      code              'bundle install --path vendor/bundle'
+      code              'bundle install --path vendor/bundle --without development'
     end
 
     bash 'maven package kafka-contrib' do
