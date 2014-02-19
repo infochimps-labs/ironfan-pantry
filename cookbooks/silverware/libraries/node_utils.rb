@@ -35,7 +35,7 @@ module Ironfan
 
     # The local-only ip address for the given server
     def private_ip_of(server)
-      server[:cloud][:private_ips].first rescue server[:ipaddress]
+      server[:cloud][:private_ips].first || server[:ipaddress] rescue server[:ipaddress]
     end
 
     # The local-only ip address for the given server
@@ -45,7 +45,7 @@ module Ironfan
 
     # The globally-accessable ip address for the given server
     def public_ip_of(server)
-      server[:cloud][:public_ips].first  rescue server[:ipaddress]
+      server[:cloud][:public_ips].first || server[:ipaddress]  rescue server[:ipaddress]
     end
 
     # The globally-accessable DNS name for the given server
