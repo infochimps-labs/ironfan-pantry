@@ -21,4 +21,6 @@
 
 include_recipe 'zookeeper'
 
-package 'hadoop-zookeeper'
+package 'hadoop-zookeeper' do
+  version            node[:zookeeper][:version]
+end
