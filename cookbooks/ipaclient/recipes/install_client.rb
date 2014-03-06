@@ -218,7 +218,7 @@ template "/etc/ldap/ldap.conf" do
   variables ({
      :ldapbase => "dc=#{node['ipaclient']['domain'].split('.').join(",dc=")}",
      :bindpw => node['ipaclient']['nss_password'],
-     :ldap_url=> "ldap://#{node['ipaclient']['masterhostname']} %>.<%= #{node['ipaclient']['domain']}"
+     :ldap_url=> "ldap://#{node['ipaclient']['masterhostname']}.#{node['ipaclient']['domain']}"
   })
 end
 
