@@ -29,7 +29,7 @@ JAVA_OPTS="$JAVA_OPTS -Djline.enabled=true"
 
 # Dump heap on OOM
 JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
-JAVA_OPTS="$JAVA_OPTS -XX:HeapDumpPath=<%= @elasticsearch[:log_dir] %>/heap"
+JAVA_OPTS="$JAVA_OPTS -XX:HeapDumpPath=<%= @elasticsearch[:data_dir] %>/heap"
 
 # GC strategy
 JAVA_OPTS="$JAVA_OPTS -XX:+UseParNewGC"
