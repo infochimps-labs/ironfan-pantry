@@ -13,6 +13,7 @@ depends          "volumes"
 depends          "tuning"
 depends          "silverware"
 depends          "install_from"
+depends          "cloud_utils"
 
 recipe           "elasticsearch::client",              "Client"
 recipe           "elasticsearch::default",             "Base configuration for elasticsearch"

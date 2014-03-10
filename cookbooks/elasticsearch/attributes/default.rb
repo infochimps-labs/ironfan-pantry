@@ -4,7 +4,7 @@ default[:elasticsearch][:realm]            = node[:cluster_name]
 # Locations
 #
 
-default[:elasticsearch][:home_dir]                = "/usr/local/share/elasticsearch"
+default[:elasticsearch][:home_dir]                = "/usr/share/elasticsearch"
 default[:elasticsearch][:conf_dir]                = "/etc/elasticsearch"
 default[:elasticsearch][:log_dir]                 = "/var/log/elasticsearch"
 default[:elasticsearch][:log_path]                = ::File.join(default[:elasticsearch][:log_dir],
@@ -27,7 +27,7 @@ default[:groups]['elasticsearch'][:gid]           = 61021
 # Install
 #
 
-default[:elasticsearch][:version]                 = "0.19.8"
+default[:elasticsearch][:version]                 = "0.90.0"
 default[:elasticsearch][:checksum]                = nil
 default[:elasticsearch][:release_url]             = "http://download.elasticsearch.org/elasticsearch/elasticsearch/elasticsearch-:version:.tar.gz"
 default[:elasticsearch][:snapshot]                = false
