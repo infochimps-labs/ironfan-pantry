@@ -29,6 +29,8 @@ default[:hadoop][:balancer    ][:run_state]  = :stop
 # Enable permission checking for HDFS
 default[:hadoop][:dfs_permissions] = true
 
+default[:hadoop][:emit_final_parameters] = true
+
 #
 # Locations
 #

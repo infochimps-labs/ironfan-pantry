@@ -23,6 +23,8 @@ components_with(:logs).each do |component|
     when aspect_props[:glob]
       rel_path = given_path || File.dirname(aspect_props[:glob])
       log_path = aspect_props[:glob]
+    when given_path.nil?
+      Chef::Log.warn("no given path for #{aspect_name} log: #{aspect_props}")
     when !File.exist?(given_path)
       Chef::Log.warn("Could not find a log file/directory at #{given_path} to logrotate, skipping...")
       next

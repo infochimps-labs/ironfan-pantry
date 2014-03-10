@@ -1,10 +1,8 @@
 #
-# Cookbook Name::       zookeeper
-# Description::         Installs Zookeeper from the cloudera package -- verified compatible, but on a slow update schedule.
-# Recipe::              install_from_package
-# Author::              Travis Dempsey - Infochimps, Inc
+# Cookbook Name:: ipaclient
+# Recipe:: configure_ldap
 #
-# Copyright 2009, Opscode, Inc.
+# Copyright 2014, Infochimps, a CSC Big Data Business
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +17,3 @@
 # limitations under the License.
 #
 
-include_recipe 'zookeeper'
-
-package 'hadoop-zookeeper' do
-  version            node[:zookeeper][:version]
-end

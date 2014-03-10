@@ -23,12 +23,4 @@ standard_dirs('silverware') do
   directories   :conf_dir, :log_dir, :home_dir
 end
 
-# FIXME: Announce once used node.set instead of node.default, resulting
-#  in announcements that persisted even after the announcing cookbook
-#  was removed from the run-list. This removes those stale values; once
-#  it has been run everywhere in the organization, it is safe to remove.
-# Since it is not inherently dangerous, I recommend leaving it in place
-#  until silverware v4.
-node.normal_attrs.delete(:announces)
-
 announce(:silverware, :default)
