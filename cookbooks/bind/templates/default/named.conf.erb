@@ -8,7 +8,7 @@ include "<%= "#{node['bind']['sysconfdir']}/#{file}" %>";
 zone "<%= zone %>" in {
   type <%= node['bind']['zonetype'] %>;
   <% if node['bind']['zonetype'] == "master" %> 
-  file "<%= node['bind']['zonetype'] %>/db.<%= zone %>";
+  file "/var/lib/bind/db.<%= zone %>";
   <% else %>
   file "slaves/db.<%= zone %>";
   masters { default; };  

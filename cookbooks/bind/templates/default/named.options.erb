@@ -17,6 +17,8 @@ options {
   dump-file "data/cache_dump.db";
   statistics-file "data/named_stats.txt";
   memstatistics-file "data/named_mem_stats.txt";
+  allow-query { any; };
+  allow-update { localnets; };
   <% if node['bind']['ipv6_listen'] -%>listen-on-v6 { any; };<% end -%>
   <% node['bind']['options'].each do |option_line| -%>
   <%= option_line %>
