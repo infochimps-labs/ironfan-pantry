@@ -47,4 +47,4 @@ else
 fi
 
 exec 2>&1 
-exec chpst -u <%= @options[:user] %> -L <%= File.join(node[:kafka][:pid_dir], 'kafka.pid') %> $JAVA $KAFKA_OPTS $KAFKA_JMX_OPTS -cp $CLASSPATH kafka.Kafka <%=@options[:install_dir]%>/config/server.properties
+exec chpst -u <%= @options[:user] %> -L <%= File.join(node[:kafka][:pid_dir], 'kafka.pid') %> $JAVA $KAFKA_OPTS $KAFKA_JMX_OPTS -cp $CLASSPATH kafka.Kafka <%=@options[:home_dir]%>/config/server.properties

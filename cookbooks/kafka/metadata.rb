@@ -11,6 +11,7 @@ depends 'java'
 depends 'runit'
 depends 'zookeeper'
 depends 'install_from'
+depends 'cloud_utils'
 
 recipe "kafka::default", "Base configuration for kafka"
 recipe "kafka::contrib", "Kafka Contrib runners"

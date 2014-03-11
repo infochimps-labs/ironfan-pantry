@@ -11,6 +11,7 @@ runit_service "kafka" do
   options({
     # TODO symlink /var/log/kafka/kafka.log or whatever (CLEANUP)
     :log_dir => node[:kafka][:log_dir],
+    :home_dir => node[:kafka][:home_dir],
     :journal_dir => node[:kafka][:journal_dir],
     :install_dir => node[:kafka][:install_dir],
     :java_home => node[:java][:java_home],
