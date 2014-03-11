@@ -17,6 +17,7 @@ install_from_release(:jzmq) do
   version       "2.1.0"
   autoconf_opts [ "&& sed -i 's/classdist_noinst.stamp/classnoinst.stamp/g' src/Makefile" ]
   action        [ :configure_with_autogen, :install_with_make ]
+  environment('JAVA_HOME' => node[:java][:java_home]) if node[:java][:java_home]
 end
 
 # STORM
