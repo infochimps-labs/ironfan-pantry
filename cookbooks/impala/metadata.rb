@@ -7,6 +7,7 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 description      "Installs/Configures impala"
 
 depends          "java"
+depends          "hadoop"
 depends          "hive"
 
 recipe           "impala::default",                      "Base user/directory configuration for impala"
