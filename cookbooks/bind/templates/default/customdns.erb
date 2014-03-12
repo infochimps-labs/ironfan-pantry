@@ -1,0 +1,59 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          customdns
+# Required-Start:    
+# Required-Stop:     
+# Should-Start:      $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      
+# Short-Description: configures an existing in-cluster DNS server
+# Description:       We'd like to use a custom DNS server, and
+#                    override the one configured by DHCP.
+### END INIT INFO
+
+set -e
+
+. /lib/lsb/init-functions
+
+. /etc/default/customdns
+
+IFACE_PROG=eth0.customdns
+OLD_IFACE_PROG=eth0.dhclient
+
+case "$1" in
+  start)
+        (echo "nameserver $DNS_SERVER";
+            echo "search $SEARCH_DOMAIN") | resolvconf -a $IFACE_PROG
+        status=$?
+        resolvconf -d $OLD_IFACE_PROG
+
+        # Keep dhclient from appending its config
+        resolvconf --disable-updates
+
+        exit $status
+        ;;
+  stop)
+        resolvconf -d $IFACE_PROG
+
+        # Allow dhclient to write its config
+        resolvconf --enable-updates
+        resolvconf -u
+        exit $?
+        ;;
+
+  status)
+        if grep $DNS_SERVER /etc/resolv.conf >/dev/null; then
+            echo "Custom DNS resolution is in place"
+	    exit 0
+        else
+            echo "no custom DNS resolution configured"
+	    exit 3
+        fi
+        ;;
+  *)
+        echo "Usage: /etc/init.d/customdns {start|stop|status}"
+        exit 1
+esac
+
+exit 0

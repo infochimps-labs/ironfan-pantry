@@ -47,7 +47,7 @@ end
 default['bind']['etc_cookbook_files'] = %w{ named.rfc1912.zones }
 
 # These are template files.  No looping through them, but they need included in named.conf
-default['bind']['etc_template_files'] = %w{ named.options }
+default['bind']['etc_template_files'] = %w{ named.options rndc.key }
 
 # These are var files referenced by our rfc1912 zone and root hints (named.ca) zone
 default['bind']['var_cookbook_files'] = %w{ named.empty named.ca named.loopback named.localhost }
@@ -80,5 +80,12 @@ default['bind']['options'] = Array.new
 default['bind']['zones']['attribute'] = Array.new
 default['bind']['zones']['ldap'] = Array.new
 default['bind']['zones']['databag'] = Array.new
-default['bind']['zonetype'] = "slave"
+default['bind']['zonetype'] = "master"
 default['bind']['zonesource'] = nil
+
+## Used by the customdns/nsupdate recipes
+default['bind']['discover_dns_server'] = true
+# If discover_dns_server is false, configure static values here
+default['bind']['dns_server'] = nil
+default['bind']['search_domain'] = nil
+default['bind']['ttl'] = 300

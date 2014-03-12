@@ -11,6 +11,75 @@ such as `chef_gem`.
 
 The net-ldap v0.2.2 Ruby gem is required for the ldap2zone recipe.
 
+## Ironfan Quick Start
+
+This is an ironfan-optimized fork of the original bind cookbook (linked above).
+The goal is to provide an alternative to Route53 for the *.chimpy.us names.
+
+The idea is that instances in a cluster may like to use a custom DNS server,
+and may also like to update their DNS server with a publicly-resolvable
+hostname.  Optionally, the server recipe allows running a dedicated DNS server
+in a control cluster.  Those three things are represented in three recipes,
+which are independent from each other (use any combination of them).
+
+The server recipe has been enhanced to scrape together a basic zone file,
+using Chef search to find public IPv4 addresses.  The zone file is dynamically
+updatable.  The server announces itself.
+
+knife-org.rb (value required for server and nsupdate recipes):
+
+    # 
+    # BIND/nsupdate
+    # Used by the bind::server and bind::nsupdate recipes for making dynamic DNS updates
+    # New keys can be generated with 'rndc-confgen -a -r /dev/urandom' or ddns-confgen utilities in bind-utils
+    #
+    Chef::Config[:nsupdate_tsig_key] = "mtej3j/kg+YQ4wJrDoQvAA=="
+
+
+Server example:
+
+    facet :bind do
+      recipe 'bind::server'
+      facet_role.override_attributes({
+        :bind => {
+          "zones" => { "attribute" =>["site-chimpstack.chimpy.us"]},
+          "tsigkey" => Chef::Config[:nsupdate_tsig_key]
+        }
+      })
+    end
+
+The customdns client recipe adds a script /etc/init.d/customdns which,
+when started, overrides values in /etc/resolv.conf so that the DNS 
+server of your choice is used instead of the system's DHCP-provided values.
+The values to use can be discovered from the bind server's announcement,
+or otherwise hard-coded if you're not using the BIND recipe.  Note:
+Don't configure the customdns recipe on the bind server host, or 
+the bind server will forward DNS requests to itself.
+
+The nsupdate recipe will cause a client to update its DNS server with
+an A record for this host and public IPv4 address.  This happens during
+the chef run.  Like with the customdns recipe, the values can be 
+discovered or hard-coded.  Note that this recipe is allowed to silently
+fail, to accomodate a case where a client machine is brought up before
+its DNS server is available.
+
+Client example:
+
+    facet :mongo do
+      recipe 'bind::customdns'
+      recipe 'bind::nsupdate'
+      facet_role.override_attributes({
+        :bind => {
+          "discover_dns_server" => true,
+          "tsigkey" => Chef::Config[:nsupdate_tsig_key]
+          # "dns_server" => "10.0.7.5",
+          # "search_domain" => "site-chimpstack.chimpy.us"
+        }
+      })
+    end
+
+
+
 ## Attributes
 
 ### Attributes which probably require tuning
