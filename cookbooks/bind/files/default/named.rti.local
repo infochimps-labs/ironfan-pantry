@@ -1,0 +1,17 @@
+zone rti.local in {
+        type slave;
+        file "slaves/db.rti.local";
+        masters { 10.101.6.230; };
+};
+
+zone "3.5.10.in-addr.arpa" in {
+        type slave;
+        file "slaves/db.10.5.3";
+        masters { 10.101.6.230; };
+};
+
+zone "4.5.10.in-addr.arpa" in {
+        type slave;
+        file "slaves/db.10.5.4";
+        masters { 10.101.6.230; };
+};
