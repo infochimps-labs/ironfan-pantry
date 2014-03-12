@@ -10,6 +10,7 @@ depends          "java"
 depends          "install_from"
 depends          "hadoop"
 depends          "ant"
+depends          'cloud_utils'
 
 recipe           "pig::default",                       "Base configuration for pig"
 recipe           "pig::install_from_package",          "Installs pig from the cloudera package -- verified compatible, but on a slow update schedule."

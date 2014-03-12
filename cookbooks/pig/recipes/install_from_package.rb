@@ -24,7 +24,12 @@
 # Install package
 #
 
-package "pig"
+include_recipe 'cloud_utils::srp_apt_repo'
+
+package "pig" do
+  version node[:pig][:version]
+  options '--force-yes' # Needed for non-GPG chimps repository
+end
 
 # why does this need to be here?
 link "/usr/local/bin/pig" do
