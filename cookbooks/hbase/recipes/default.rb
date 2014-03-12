@@ -24,7 +24,7 @@ include_recipe 'silverware'
 include_recipe 'volumes'
 
 include_recipe 'hadoop'
-include_recipe 'hadoop::add_cloudera_repo'
+include_recipe 'cloud_utils::srp_apt_repo'
 include_recipe 'zookeeper::client'
 
 #

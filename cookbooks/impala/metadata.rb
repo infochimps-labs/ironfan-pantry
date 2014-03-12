@@ -8,9 +8,9 @@ description      "Installs/Configures impala"
 
 depends          "java"
 depends          "hive"
+depends          "cloud_utils"
 
 recipe           "impala::default",                      "Base user/directory configuration for impala"
-recipe           "impala::add_cloudera_repo",            "Add package repository for impala"
 recipe           "impala::config",                       "Add configuration files for impala"
 recipe           "impala::server",                       "Install impala server"
 recipe           "impala::shell",                        "Install impala shell"

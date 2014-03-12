@@ -13,6 +13,7 @@ depends          "silverware"
 depends          "minidash"
 depends          "hadoop"
 depends          "zookeeper"
+depends          'cloud_utils'
 
 recipe           "hbase::backup_tables",               "Cron job to backup tables to S3"
 recipe           "hbase::default",                     "Base configuration for hbase"

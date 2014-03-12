@@ -16,9 +16,9 @@ depends          "silverware"
 depends          "minidash"
 depends          "install_from"
 depends          "database"
+depends          'cloud_utils'
 
 recipe           "hadoop_cluster::default",            "Base configuration for hadoop_cluster"
-recipe           "hadoop_cluster::add_cloudera_repo",  "Add Cloudera repo to package manager"
 recipe           "hadoop_cluster::config_files",       "Configure cluster"
 recipe           "hadoop_cluster::datanode",           "Installs Hadoop Datanode service"
 recipe           "hadoop_cluster::secondarynn",        "Installs Hadoop Secondary Namenode service"

@@ -9,6 +9,7 @@ description      "Install and configure Hue"
 depends "hive"
 depends "impala"
 depends "hadoop"
+depends 'cloud_utils'
 
 %w[ debian ubuntu ].each do |os|
   supports os

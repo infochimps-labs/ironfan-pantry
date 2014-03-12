@@ -20,6 +20,7 @@
 #
 
 include_recipe 'volumes'
+include_recipe 'cloud_utils::srp_apt_repo'
 
 daemon_user 'impala'
 

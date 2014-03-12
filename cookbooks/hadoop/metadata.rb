@@ -8,3 +8,4 @@ version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
 
 conflicts        'hadoop_cluster'
 depends          'runit'
+depends          'cloud_utils'
