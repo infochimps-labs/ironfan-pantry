@@ -8,7 +8,8 @@ description      "MongoDB is a scalable, high-performance, open source NoSQL dat
 
 depends          "runit"
 depends          "volumes"
-depends		 "install_from"
+depends          "install_from"
+depends          'cloud_utils'
 
 recipe           "mongodb::default",                   "Base configuration for mongodb"
 recipe           "mongodb::server",                    "MongoDB server"
