@@ -3,4 +3,6 @@
 ---
 host:         <%= @host %>
 port:         <%= @port %>
+<%- if node[:vayacondios][:organization] %>
 organization: <%= node[:vayacondios][:organization] %>
+<% end %>
