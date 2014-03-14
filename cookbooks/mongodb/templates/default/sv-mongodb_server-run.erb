@@ -1,7 +1,0 @@
-#!/bin/bash
-
-export MONGODB_HOME=<%= @options[:home_dir] %>
-
-exec 2>&1
-cd   <%= @options[:pid_dir] %>
-exec chpst -u mongodb $MONGODB_HOME/bin/mongod --config=<%= @options[:conf_dir] %>/mongodb.conf

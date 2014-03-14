@@ -10,9 +10,8 @@ depends          "runit"
 depends          "volumes"
 depends		 "install_from"
 
-recipe           "mongodb::default",                   "Base configuration for mongodb"
 recipe           "mongodb::server",                    "MongoDB server"
-recipe           "mongodb::config_files",              "Final configuration"
+recipe           "mongodb::install_from_package",      "Install MongoDB from package"
 
 %w[ debian ubuntu ].each do |os|
   supports os
