@@ -32,7 +32,7 @@
 <property> <name>mapred.child.java.opts</name>                    <value><%= @hadoop[:java_child_opts] %></value></property>
 <property> <name>mapred.reduce.child.java.opts</name>             <value><%= @hadoop[:java_reduce_opts] %></value></property>
 <property> <name>mapred.child.ulimit</name>                       <value><%= @hadoop[:java_child_ulimit] %></value>        <final>true</final></property>
-<property> <name>mapred.job.reuse.jvm.num.tasks</name>            <value>-1</value></property>
+<property> <name>mapred.job.reuse.jvm.num.tasks</name>            <value><%= @hadoop[:reuse_jvm_times] %></value></property>
 
 <!-- communication -->
 
