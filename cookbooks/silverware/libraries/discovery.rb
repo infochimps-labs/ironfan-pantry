@@ -122,6 +122,7 @@ module Ironfan
       realm ||= node[sys][tag]          if has_sys
       realm ||= node[tag]
       realm ||= old_tagged_realm(tag, sys, subsys)      # FIXME: deprecated, remove in 4.0
+      realm ||= node[:realm_name]
       realm ||= node[:cluster_name]
     end
 
