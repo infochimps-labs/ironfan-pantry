@@ -85,7 +85,7 @@ end
 # NOTE: iron_cuke will not pick up the daemon as running due to username length > 8, len(zookeeper) = 9 
 
 announce(:zookeeper, :server, {
-           :logs  => { :server => node[:zookeeper][:log_path] },
+           :logs  => { :server => node[:zookeeper][:log_dir] + 'zookeeper.log' },
            :ports => {
              :client_port => {
                :port      => node[:zookeeper][:client_port]
