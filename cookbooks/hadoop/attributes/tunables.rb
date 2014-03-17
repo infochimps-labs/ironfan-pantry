@@ -95,6 +95,9 @@ default[:hadoop][:log_retention_hours ]              = 240
 # how many jobs' histories to keep in memory on the job tracker
 default[:hadoop][:max_job_histories_in_mem]          = 100
 
+# how many tasks to run on a child jvm before killing it
+default[:hadoop][:reuse_jvm_times]                   = 25
+
 #
 # Tune cluster settings for size of instance
 #
