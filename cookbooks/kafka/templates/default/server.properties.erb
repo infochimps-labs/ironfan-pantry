@@ -101,22 +101,26 @@ log.default.flush.scheduler.interval.ms=<%= @kafka[:log_flush_scheduler_time_int
 # from the end of the log.
 
 # The minimum age of a log file to be eligible for deletion
-log.retention.hours=<%= @kafka[:log_retention_hours] %>
+# Use Splunk/logrotate to handle log retention
+# log.retention.hours=<%= @kafka[:log_retention_hours] %>
 
 # A size-based retention policy for logs. Segments are pruned from the log as long as the remaining
 # segments don't drop below log.retention.size.
-<% if @kafka[:log_retention_size].nil? %>
+# Use Splunk/logrotate to handle log retention
+# <% if @kafka[:log_retention_size].nil? %>
 #log.retention.size=-1
-<% else %>
-log.retention.size=<%= @kafka[:log_retention_size].to_i %>
-<% end %>
+# <% else %>
+# log.retention.size=<%= @kafka[:log_retention_size].to_i %>
+# <% end %>
 
 # The maximum size of a log segment file. When this size is reached a new log segment will be created.
-log.file.size=536870912
+# Use Splunk/logrotate to handle log retention
+# log.file.size=536870912
 
 # The interval at which log segments are checked to see if they can be deleted according
 # to the retention policies
-log.cleanup.interval.mins=1
+# Use Splunk/logrotate to handle log retention
+# log.cleanup.interval.mins=1
 
 ############################# Zookeeper #############################
 
