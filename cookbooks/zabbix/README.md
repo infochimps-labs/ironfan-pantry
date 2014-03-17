@@ -1,50 +1,37 @@
-# Zabbix Chef Cookbook
+# zabbix chef cookbook
 
-Installs/Configures Zabbix server, agent, database, and web frontend.
+Installs/Configures Zabbix server, client, & web frontend.
 
-* Cookbook source:   [http://github.com/infochimps-labs/ironfan-pantry](http://github.com/infochimps-labs/ironfan-pantry)
+* Cookbook source:   [http://github.com/infochimps-cookbooks/zabbix](http://github.com/infochimps-cookbooks/zabbix)
 * Ironfan tools: [http://github.com/infochimps-labs/ironfan](http://github.com/infochimps-labs/ironfan)
 * Homebase (shows cookbook in use): [http://github.com/infochimps-labs/ironfan-homebase](http://github.com/infochimps-labs/ironfan-homebase)
 
 ## Overview
 
-This cookbook is supports Zabbix >= 2.0.0.
+This cookbook can install
 
-### Zabbix Server
+- Zabbix agent (zabbix::default)
+- Zabbix server (zabbix::server)
+- Zabbix web frontend (zabbix::web)
 
-The core of a Zabbix installation is the
-[https://www.zabbix.com/documentation/2.0/manual/concepts/server](Zabbix
-server), installed with the `zabbix::server` recipe.
+Default login password for zabbix frontend is admin / zabbix -- CHANGE IT !
 
-The server relies on a (SQL-like) database which can be created with
-the `zabbix::database` recipe.  Only MySQL is supported at present.
+### Customization:
 
-Since version 2.0.0, Zabbix also provides a
-[https://www.zabbix.com/documentation/2.0/manual/concepts/java](Java
-gateway) to allow for monitoring Java applications via JMX.  The
-`zabbix::server` recipe sets up the Java gateway automatically if the
-`node[:zabbix][:java_gateway][:install]` is true (it is by default).
+Agents only coummunicate with pre-defined servers in their
+configuration files.  Set node[:zabbix][:agent][:servers] in a role
+for these nodes in order to let the server talk to them.
 
-### Zabbix Agent
+The Zabbix frontend requires you to set node[:zabbix][:web][:fqdn] so
+the webserver knows which requests to respond to.
 
-A Zabbix agent running on each machine you want to monitor is required
-and set up by the `zabbix::agent` recipe.
+If you want to use beta release of zabbix you can change the branch
+attribute and the zabbix version example :
 
-### Zabbix PHP Frontend
+node[:zabbix][:server][:branch] = "ZABBIX%20Latest%20Development"
+node[:zabbix][:server][:version] = "1.9.6"
 
-Zabbix's PHP frontend is set up using the `zabbix::web` recipe.  The
-only supported web server is nginx.
-
-### Zabbix Database
-
-Zabbix requires an (SQL-like) database, installed with the
-`zabbix::database` recipe.  The only supported database is MySQL at
-the moment.
-
-This recipe also sets up a Zabbix API user on top of the insecure
-default user that comes with Zabbix.
-
-## Usage:
+### USAGE:
 
 In addition to the basic recipes that set up the agent, the server, or
 the web frontend, this cookbook contains LWRPs for Zabbix resources
@@ -191,7 +178,7 @@ Cookbook dependencies:
 
 ## Attributes
 
-* `[:zabbix][:home_dir]`              -  (default: "/usr/local/share/zabbix")
+* `[:zabbix][:home_dir]`              -  (default: "/opt/zabbix")
   - The base installation directory for Zabbix.
 * `[:zabbix][:host_groups]`           - 
   - Host groups for this node in Zabbix.

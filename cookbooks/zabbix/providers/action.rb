@@ -1,9 +1,6 @@
 include Chef::RubixConnection
 
 action :create do
-  log(zabbix_action.inspect) do
-    level :info
-  end
   zabbix_action.save if connected_to_zabbix? && zabbix_action
 end
 
@@ -18,7 +15,7 @@ def load_current_resource
   begin
     self.zabbix_action           = (Rubix::Action.find(:name => new_resource.name) || Rubix::Action.new(:name => new_resource.name))
     self.zabbix_action.event_source             = new_resource.event_source
-    self.zabbix_action.escalation_time          = new_resource.escalation_time
+    self.zabbix_action.escalation_time          = new_resource.escalation_time    
     self.zabbix_action.message_subject          = new_resource.message_subject
     self.zabbix_action.message_body             = new_resource.message_body
     self.zabbix_action.send_recovery_message    = new_resource.send_recovery_message
@@ -30,7 +27,6 @@ def load_current_resource
     self.zabbix_action.condition_operator       = new_resource.condition_operator
     if new_resource.operations && (!new_resource.operations.empty?)
       self.zabbix_action.operations = new_resource.operations.map do |operation|
-        operation = operation.dup
         case
         when operation.has_key?(:user_group_name)
           group = Rubix::UserGroup.find(:name => operation[:user_group_name])

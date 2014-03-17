@@ -16,6 +16,7 @@ def load_current_resource
     self.zabbix_users                 = new_resource.users.map { |username| Rubix::User.find(:username => username) }.compact
     self.zabbix_user_group            = (Rubix::UserGroup.find(:name => new_resource.name) || Rubix::UserGroup.new(:name => new_resource.name))
     self.zabbix_user_group.users      = self.zabbix_users
+    self.zabbix_user_group.api_access = new_resource.api_access
     self.zabbix_user_group.debug_mode = new_resource.debug_mode
     self.zabbix_user_group.gui_access = new_resource.gui_access
     self.zabbix_user_group.banned     = new_resource.banned

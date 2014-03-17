@@ -11,18 +11,20 @@ depends          "apache2"
 depends          "nginx"
 depends          "database", ">= 1.0.0"
 depends          "mysql", ">= 1.2.0"
+depends          "ufw", ">= 0.6.1"
 depends          "silverware"
-depends          "install_from", ">= 3.1.9"
 
 recipe           "zabbix::default",                    "Sets up Zabbix directory structure & user."
 recipe           "zabbix::agent_prebuild",             "Downloads, configures, & launches pre-built Zabbix agent"
 recipe           "zabbix::agent_source",               "Downloads, builds, configures, & launches Zabbix agent from source."
 recipe           "zabbix::agent",                      "Installs and launches Zabbix agent."
+recipe           "zabbix::firewall",                   "Configures firewall access between Zabbix server & agents."
 recipe           "zabbix::database_mysql",             "Configures Zabbix MySQL database."
 recipe           "zabbix::database",                   "Configures Zabbix database."
 recipe           "zabbix::server",                     "Installs and launches Zabbix server."
 recipe           "zabbix::server_source",              "Downloads, builds, configures, & launches Zabbix server from source."
 recipe           "zabbix::web",                        "Configures PHP-driven, reverse-proxied Zabbix web frontend."
+recipe           "zabbix::web_apache",                 "Configures PHP-driven, reverse-proxied Zabbix web frontend using Apache."
 recipe           "zabbix::web_nginx",                  "Configures PHP-driven, reverse-proxied Zabbix web frontend using nginx."
 
 %w[ debian ubuntu ].each do |os|
@@ -32,7 +34,7 @@ end
 attribute "zabbix/home_dir",
   :display_name          => "",
   :description           => "The base installation directory for Zabbix.",
-  :default               => "/usr/local/share/zabbix"
+  :default               => "/opt/zabbix"
 
 attribute "zabbix/host_groups",
   :display_name          => "",
@@ -58,7 +60,7 @@ attribute "zabbix/agent/configure_options",
   :display_name          => "",
   :description           => "Options passed to ./configure script when building agent.",
   :type                  => "array",
-  :default               => ["--with-libcurl"]
+  :default               => ["--prefix=/opt/zabbix", "--with-libcurl"]
 
 attribute "zabbix/agent/branch",
   :display_name          => "",
@@ -119,7 +121,7 @@ attribute "zabbix/server/configure_options",
   :display_name          => "",
   :description           => "Options passed to the ./configure script when building the Zabbix server.",
   :type                  => "array",
-  :default               =>  ["--with-libcurl","--with-net-snmp","--with-mysql","--enable-java" ]
+  :default               => ["--prefix=/opt/zabbix", "--with-libcurl", "--with-net-snmp", "--with-mysql "]
 
 attribute "zabbix/server/log_dir",
   :display_name          => "",
