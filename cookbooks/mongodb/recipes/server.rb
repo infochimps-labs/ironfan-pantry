@@ -19,35 +19,32 @@
 # limitations under the License.
 #
 
-include_recipe 'mongodb'
 include_recipe 'volumes'
-include_recipe 'runit'
-
-#
-# Directories
-#
 
 volume_dirs('mongodb.data') do
   type          :local unless node[:mongodb][:server][:persistent]
   selects       :single
-  mode          "0700"
+  mode          "0770"
 end
+
+include_recipe 'mongodb::install_from_package'
 
 #
 # Create service
 #
+template "/etc/mongodb.conf" do
+  source        "mongodb.conf.erb"
+  backup        false
+  mode          "0644"
+end
 
-kill_old_service('mongodb')
-
-runit_service "mongodb_server" do
-  run_state     node[:mongodb][:server][:run_state]
-  options       Mash.new(:service_name => 'server').merge(node[:mongodb]).merge(node[:mongodb][:server])
+service 'mongodb' do
+  action :restart
 end
 
 #
 # Announcments
 # 
-
 announce(:mongodb, :server, {
            :logs  => { :server => node[:mongodb][:log_path] },
            :ports => {
