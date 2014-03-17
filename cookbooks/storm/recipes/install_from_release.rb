@@ -17,6 +17,7 @@ install_from_release(:jzmq) do
   version       "2.1.0"
   autoconf_opts [ "&& sed -i 's/classdist_noinst.stamp/classnoinst.stamp/g' src/Makefile" ]
   action        [ :configure_with_autogen, :install_with_make ]
+  environment('JAVA_HOME' => node[:java][:java_home]) if node[:java][:java_home]
 end
 
 # STORM
@@ -32,18 +33,4 @@ install_from_release(:storm) do
   has_binaries  [ 'bin/storm' ]
 end
 
-standard_dirs 'storm' do
-  directories [:log_dir, :conf_dir, :pid_dir, :data_dir]
-end
-
-# Remove the storm/logs dir and symlink it to our :log_dir
-directory File.join(node[:storm][:home_dir], 'logs') do
-  recursive true
-  action :delete
-end
-
-# ln -s /var/log/storm /usr/local/share/storm/logs
-link File.join(node[:storm][:home_dir], 'logs') do
-  to node[:storm][:log_dir]
-  owner node[:storm][:user]
-end
+include_recipe 'storm::install_common'
