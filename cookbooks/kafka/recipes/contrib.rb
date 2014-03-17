@@ -65,3 +65,9 @@ contrib_apps.each do |app_name|
   end
 end
 
+if node[:kafka][:ftp_loader][:test_site][:use]
+  set_ftp_loader do
+    thenode node[:kafka][:ftp_loader][:test_site]
+  end
+end
+

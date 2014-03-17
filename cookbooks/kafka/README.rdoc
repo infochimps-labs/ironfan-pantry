@@ -28,3 +28,7 @@ Installs kafka 0.7.0
 = USAGE:
 
 * kafka - Install a Kafka broker.
+
+= FTP Loaders
+
+Require LFTP and S3CMD

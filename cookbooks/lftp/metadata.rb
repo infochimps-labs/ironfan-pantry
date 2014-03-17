@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 maintainer "Benedikt Böhm"
 maintainer_email "bb@xnull.de"
 license          "Apache 2.0"
