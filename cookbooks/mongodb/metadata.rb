@@ -8,7 +8,8 @@ description      "MongoDB is a scalable, high-performance, open source NoSQL dat
 
 depends          "runit"
 depends          "volumes"
-depends		 "install_from"
+depends		       "install_from"
+depends          "cloud_utils"
 
 recipe           "mongodb::server",                    "MongoDB server"
 recipe           "mongodb::install_from_package",      "Install MongoDB from package"
@@ -19,26 +20,26 @@ end
 
 # Package information
 attribute "mongodb/version",
-  :display_name 	 => "", 
-  :description 		 => "", 
+  :display_name 	 => "",
+  :description 		 => "",
   :default  	       	 => "2.2.1"
 
-attribute "mongodb/i686/release_file_md5", 
+attribute "mongodb/i686/release_file_md5",
   :display_name          => "",
   :description           => "",
   :default               => "21153b201cad912c273d754b02eba19b"
 
-attribute "mongodb/i686/release_url", 
+attribute "mongodb/i686/release_url",
   :display_name          => "",
   :description           => "",
   :default               => "http://fastdl.mongodb.org/linux/mongodb-linux-i686-2.2.1.tgz"
 
-attribute "mongodb/x86_64/release_file_md5", 
+attribute "mongodb/x86_64/release_file_md5",
   :display_name          => "",
   :description           => "",
   :default               => "6b2cce94194113ebfe2a14bdb84ccd7e"
 
-attribute "mongodb/x86_64/release_url", 
+attribute "mongodb/x86_64/release_url",
   :display_name          => "",
   :description           => "",
   :default               => "http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-2.2.1.tgz"
@@ -49,17 +50,17 @@ attribute "mongodb/user",
   :description           => "",
   :default               => "mongodb"
 
-attribute "users/mongodb/uid", 
+attribute "users/mongodb/uid",
   :display_name          => "",
   :description           => "",
   :default               => "5001"
 
-attribute "groups/mongodb/gid", 
+attribute "groups/mongodb/gid",
   :display_name          => "",
   :description           => "",
   :default               => "5001"
 
-# Directories 
+# Directories
 attribute "mongodb/home_dir",
   :display_name          => "",
   :description           => "",
