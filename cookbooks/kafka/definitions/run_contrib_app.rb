@@ -5,7 +5,6 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
   group_id                   = params[:group_id]  || node[:kafka][:contrib][:app][:group_id]
   group_id_str               = "#{app_name}-group-#{group_id}"
   hadoop_home                = node[:hadoop][:home_dir]
-  hadoop_jobtracker_host     = discover(:hadoop, :jobtracker) ? "ip-#{discover(:hadoop, :jobtracker).private_ip.gsub('.', '-')}.ec2.internal" : "localhost"
   kafka                      = discover_all(:kafka, :server)
   kafka_port                 = node[:kafka][:port]
   kafka_home                 = params[:kafka_home] || node[:kafka][:home_dir]
@@ -26,8 +25,19 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
     source                   "#{app_type}.properties.erb"
     action                   :create
 
+    def hadoop_hdfs_host
+      if discover(:hadoop, :jobtracker)
+        host = "ip-#{discover(:hadoop, :jobtracker).private_ip.gsub('.', '-')}.ec2.internal"
+      elsif discover(:hadoop, :namenode)
+        host = discover(:hadoop, :namenode).private_ip
+      else
+        host = "localhost"
+      end
+      host
+    end
+
     variables({
-      hadoop_jobtracker_host: hadoop_jobtracker_host,
+      hadoop_hdfs_host:       hadoop_hdfs_host,
       hashed_options:         hashed_options,
       kafka:                  kafka,
       kafka_port:             kafka_port,
