@@ -6,7 +6,7 @@ end
 
 vayacondios = discover(:vayacondios, :server)
 
-Chef::Log.warn "This is the vayacondios you have discovered: #{vayacondios.private_ip}"
+Chef::Log.warn "This is the vayacondios you have discovered: #{vayacondios ? vayacondios.private_ip : nil}"
 
 Chef::Log.warn("No Vayacondios organization is set for this node (node[:vayacondios][:organization]).") unless node[:vayacondios][:organization]
 
