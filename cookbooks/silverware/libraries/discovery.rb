@@ -126,9 +126,9 @@ module Ironfan
       realm ||= node[:cluster_name]
     end
 
-    # 
+    #
     # FIXME: Deprecated realm declarations, remove in 4.0
-    # 
+    #
     def old_tagged_realm(tag, sys, subsys)
       case tag
         when :discover_in; old_discovery_realm(sys, subsys)
@@ -142,6 +142,7 @@ module Ironfan
         Chef::Log.warn "DEPRECATED: using node[:discovers][#{qualifier}] is deprecated, and will be removed in silverware v4.0. Please switch your calls to use node[#{qualifier}][:discover_in] instead."
         realm   = (node[:discovers][sys][subsys] rescue nil) unless subsys.nil?
         realm ||= (node[:discovers][sys] rescue nil) if (node[:discovers][sys].kind_of? String rescue false)
+        realm ||= node[:realm_name]
         realm ||= node[:cluster_name]
       end
     end
@@ -152,6 +153,7 @@ module Ironfan
         Chef::Log.warn "DEPRECATED: using node[#{qualifier}][:announce_as] is deprecated, and will be removed in silverware v4.0. Please switch your calls to use node[#{qualifier}][:announce_in] instead."
         realm   = node[sys][subsys][:announce_as] rescue nil
         realm ||= node[sys][:announce_as] rescue nil
+        realm ||= node[:realm_name]
         realm ||= node[:cluster_name] rescue nil
       end
     end
