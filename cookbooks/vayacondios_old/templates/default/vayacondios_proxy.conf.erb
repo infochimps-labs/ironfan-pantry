@@ -1,0 +1,16 @@
+server {
+  listen        <%= @vayacondios_old[:auth_port] %>;
+
+  location /  {
+    proxy_pass http://<%= node[:ipaddress] %>:<%= @vayacondios_old[:server][:port] %>;
+    proxy_redirect off;
+
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header Host $http_host;
+
+    auth_basic "vayacondios_old";
+    auth_basic_user_file <%= @vayacondios_old[:password_file] %>;
+  }
+
+}
