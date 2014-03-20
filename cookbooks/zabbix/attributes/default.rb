@@ -47,7 +47,7 @@ default[:zabbix][:web][:fqdn]           = ""
 default[:zabbix][:web][:bind_ip]        = nil
 default[:zabbix][:web][:port]           = 9101
 default[:zabbix][:web][:log_dir]        = '/var/log/zabbix_web'
-default[:zabbix][:web][:install_method] = 'apache'
+default[:zabbix][:web][:install_method] = 'nginx'
 default[:zabbix][:web][:timezone]       = 'Europe/London' # UTC
 
 # API
