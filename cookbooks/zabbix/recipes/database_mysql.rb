@@ -2,9 +2,9 @@
 # Cookbook Name::       zabbix
 # Description::         Configures Zabbix MySQL database.
 # Recipe::              database_mysql
-# Author::              Nacer Laradji (<nacer.laradji@gmail.com>)
+# Author::              Dhruv Bansal (<dhruv@infochimps.com>), Nacer Laradji (<nacer.laradji@gmail.com>)
 #
-# Copyright 2011, Efactures
+# Copyright 2012-2013, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,147 +19,179 @@
 # limitations under the License.
 #
 
-include_recipe 'database'
+# Shared connection information for connecting to the MySQL database.
+root_connection = {
+  host:     node.zabbix.database.host,
+  username: node.zabbix.database.root_user,
+  password: node.zabbix.database.root_password
+}
 
-# Establish root MySQL connection
-root_mysql_conn    = {:host => node.zabbix.database.host, :username => node.zabbix.database.root_user, :password => node.zabbix.database.root_password}
-base_mysql_command = "/usr/bin/mysql -h #{node.zabbix.database.host} -u #{node.zabbix.database.root_user} #{node.zabbix.database.name} -p#{node.zabbix.database.root_password}"
+#
+# == Setup ==
+#
+# Resources here are themselves idempotent.
+#
 
-# Ensure we have the mysql gem available at *compile* time.
+#
+# Installing Zabbix requires populating the database using schema &
+# data files distributed with Zabbix.  I'd like to be able to do this
+# without needing the MySQL command line client (`mysql`) but I
+# haven't figured out a reasonable way yet.
+#
+# This recipe is usually run on the "Zabbix server" box so it's not
+# unreasonable to want the MySQL command line client available anyway,
+# for debugging purposes when logged in.
+# 
+include_recipe "mysql::client"
+retries = 0
 begin
   require 'mysql'
-rescue LoadError
-  case node[:platform]
-  when 'ubuntu', 'debian'
-    include_recipe 'apt'
-    execute("apt-get update").run_action(:run)
-    package(node[:zabbix][:database][:debian_package]) {action :nothing }.run_action(:install)
-  when 'centos'
+rescue Gem::LoadError, LoadError => e
+  case node.platform
+  when 'debian', 'ubuntu'
+    package("libmysqlclient-dev") { action :nothing }.run_action(:install)
+  when 'centos', 'redhat'
     package("mysql-devel") {action :nothing }.run_action(:install)
-  else
-    Chef::Log.warn "No native MySQL client support for OS #{node[:platform]}"
   end
-  gem_package("mysql") { action :nothing }.run_action(:install)
+  gem_package('mysql') { action :nothing }.run_action(:install)
   Gem.clear_paths
   require 'mysql'
-end
-
-# Only execute if database is missing...
-begin
-  mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
-rescue Mysql::Error => e
-  Chef::Log.error(e.message)
-  mysql_connection = nil
-end
-  
-if mysql_connection && mysql_connection.list_dbs.include?(node.zabbix.database.name) == false
-
-  # Create Zabbix database
-  mysql_database node.zabbix.database.name do
-    connection root_mysql_conn
-    action     :create
-    notifies   :run,    "execute[zabbix_populate_schema]",          :immediately
-    notifies   :run,    "execute[zabbix_populate_data]",            :immediately
-    notifies   :run,    "execute[zabbix_populate_image]",           :immediately
-    notifies   :run,    "execute[zabbix_clean_db]",                 :immediately
-    notifies   :create, "template[/etc/zabbix/zabbix_server.conf]", :immediately
-  end
-
-  # Create Zabbix database user
-  mysql_database_user node.zabbix.database.user do
-    connection root_mysql_conn
-    password   node.zabbix.database.password
-    action     :create
-  end
-
-  # Grant Zabbix user to connect from *this* node.  We do this even if
-  # the database already exists to handle the situation in which this
-  # node's IP changes (e.g. - during stop/start).
-  mysql_client_address = case node.zabbix.database.host
-                         when 'localhost'; 'localhost';
-                         else ; node.fqdn
-                         end
-  
-  mysql_database_user node.zabbix.database.user do
-    connection    root_mysql_conn
-    password      node.zabbix.database.password
-    host          mysql_client_address     # connections only allowed from *this* node
-    database_name node.zabbix.database.name
-    privileges    [:select,:update,:insert,:create,:drop,:delete]
-    action        :grant
-  end
-  
-  # Populate Zabbix database
-  populate_command = "#{base_mysql_command} < /opt/zabbix-#{node.zabbix.server.version}"
-  execute "zabbix_populate_schema" do
-    command "#{populate_command}/create/schema/mysql.sql"
-    action :nothing
-  end
-  execute "zabbix_populate_data" do
-    command "#{populate_command}/create/data/data.sql"
-    action :nothing
-  end
-  execute "zabbix_populate_image" do
-    command "#{populate_command}/create/data/images_mysql.sql"
-    action :nothing
-  end
-
-  # Clean Zabbix database
-  # 
-  # - get rid of the default admin user
-  # - get rid of all the default hosts and templates
-  execute "zabbix_clean_db" do
-    command "#{base_mysql_command} -e 'DELETE FROM users WHERE `alias`=\"admin\"; DELETE FROM hosts;'"
-    action :nothing
+  retries += 1
+  if retries > 1
+    Chef::Log.error("Could not install Ruby 'mysql' gem at compile time")
+  else
+    retry
   end
 end
 
-# Sets up the Zabbix database for downstream access by other LWRP
-# pairs.  This block will
+install_from_release('zabbix') do
+  action        :configure
+  release_url   node.zabbix.release_url
+  version       node.zabbix.server.version
+  not_if        { File.exist?(node.zabbix.home_dir) }
+end
+
 #
-# - create a Zabbix admin user
-# - an "API access" group
-# - put the "Admin" user in the group
+# == Installation ==
 #
-# The created admin user will be used by other LWRP resources in this
-# cookbook.
-ruby_block "zabbix_ensure_super_admin_user_with_api_access" do
-  block do
-    username   = node.zabbix.api.username
-    first_name = 'Zabbix'
-    last_name  = 'Administrator'
-    md5        = Digest::MD5.hexdigest(node.zabbix.api.password)
-    rows       = 200
-    type       = 3
-    grp_name   = node.zabbix.api.user_group
-    api_access = 1
+# If the configured MySQL database (`node[:zabbix][:database][:name]`)
+# already exists, then none of the resources in this section should
+# execute.
+#
+# Only if the database is missing will any of the following resources
+# run.  In this case, the order will be
+#
+#   1) mysql_database[create_zabbix_database]
+#   2) bash[load_zabbix_with_default_data]
+#   3) mysql_database[remove_zabbix_default_hosts_and_templates] -- DISABLED FOR ZABBIX 2.0 PENDING FIX!
+#   
 
-    mysql_connection = Mysql.new(node.zabbix.database.host,node.zabbix.database.root_user,node.zabbix.database.root_password)
-    mysql_connection.query(%Q{USE #{node.zabbix.database.name}})
 
-    existing_users = mysql_connection.query(%Q{SELECT userid FROM users WHERE `alias`="#{username}"})
-    if existing_users.num_rows == 0
-      mysql_connection.query(%Q{INSERT INTO users (alias, name, surname, passwd, rows_per_page, type) VALUES ("#{username}", "#{first_name}", "#{last_name}", "#{md5}", #{rows}, #{type})})
-      userid = mysql_connection.query(%Q{SELECT userid FROM users WHERE `alias`="#{username}"}).fetch_row.first.to_i
-    else
-      userid = existing_users.fetch_row.first.to_i
-      mysql_connection.query(%Q{UPDATE users SET `alias`="#{username}", name="#{first_name}", surname="#{last_name}", passwd="#{md5}", rows_per_page=#{rows}, type=#{type} WHERE userid="#{userid}"})
-    end
+#
+# If the database is actually created, this resource will have changed
+# state, and will fire notify the bash 'load_zabbix_with_default_data'
+# to run.
+# 
+mysql_database "create_zabbix_database" do
+  database_name node.zabbix.database.name
+  connection    root_connection
+  action        :create
+  notifies      :run, "bash[load_zabbix_with_default_data]", :immediately
+end
 
-    existing_groups = mysql_connection.query(%Q{SELECT usrgrpid FROM usrgrp WHERE name="#{grp_name}"})
-    if existing_groups.num_rows == 0
-      mysql_connection.query(%Q{INSERT INTO usrgrp (name, api_access) VALUES ("#{grp_name}", #{api_access})})
-      usrgrpid = mysql_connection.query(%Q{SELECT usrgrpid FROM usrgrp WHERE name="#{grp_name}"}).fetch_row.first.to_i
-    else
-      usrgrpid = existing_groups.fetch_row.first.to_i
-      mysql_connection.query(%Q{UPDATE usrgrp SET name="#{grp_name}", api_access=#{api_access} WHERE usrgrpid=#{usrgrpid}})
-    end
+#
+# This resource should *not* execute on every chef-client run so it is
+# marked with action :nothing and notified to run by the
+# 'create_zabbix_database' resource upon a change of state.
+# 
+bash "load_zabbix_with_default_data" do
+  cwd      File.join(node.zabbix.home_dir, 'database', node.zabbix.database.install_method)
+  code     "cat {schema,images,data}.sql | mysql -h #{root_connection[:host]} -u #{root_connection[:username]} --password=#{root_connection[:password]} #{node.zabbix.database.name}"
+  action   :nothing
 
-    existing_join = mysql_connection.query(%Q{SELECT id FROM users_groups WHERE usrgrpid=#{usrgrpid} AND userid=#{userid}})
-    if existing_join.num_rows == 0
-      mysql_connection.query(%Q{INSERT INTO users_groups (usrgrpid, userid) VALUES (#{usrgrpid}, #{userid})})
-    end
+  # FIXME -- this query is broken in Zabbix 2.0 databases so we won't force it to run at the moment
+  # notifies :query, "mysql_database[remove_zabbix_default_hosts_and_templates]", :immediately
+end
 
-  end
-  notifies :restart, "service[zabbix_server]"
+#
+# This resource should *not* run on every chef-client run.  It is
+# triggered to run by the bash 'load_zabbix_with_default_data'
+# resource, which populates the MySQL database with content, some of
+# which we want to remove here.
+#
+# FIXME -- Zabbix 2.0 adds table constraints which make the blanket
+# delete statement here not work.
+# 
+mysql_database "remove_zabbix_default_hosts_and_templates" do
+  connection    root_connection
+  database_name node.zabbix.database.name
+  sql           'DELETE FROM hosts;' # maybe also delete default Actions?
+  action        :nothing
+end
+
+#
+# == Maintenance ==
+#
+# Resources in this section should execute on every chef-client run.
+# Briefly:
+#
+#  1) Create/update the MySQL user used by Zabbix server and web
+#     applications to connect to the MySQL database.
+#
+#  2) Create/update the default Zabbix admin user.  This not only
+#     closes a security hole by changing the username and password of
+#     the Zabbix admin user bundled with Zabbix, but also ensures a
+#     Zabbix admin user with known credentials that can be used when
+#     talking to the Zabbix API directly (through Rubix).
+#
+
+#
+# Create/update the MySQL user that the Zabbix server and web
+# application will login as.  We perform actions on every chef client
+# run because, upon a re-cap in which the IP changed, we want to make
+# sure that add MySQL GRANT statements for the new IP.
+# 
+host_user_connects_from = case node.zabbix.database.host
+when 'localhost'; 'localhost';
+else ; node.fqdn
+end
+mysql_database_user node.zabbix.database.user do
+  connection    root_connection
+  host          host_user_connects_from
+  password      node.zabbix.database.password
+  database_name node.zabbix.database.name
+  privileges    [:select,:update,:insert,:create,:drop,:delete]
+  action        [:create, :grant]
+end
+
+# Create/update the Zabbix admin user.  This closes a security hole by
+# changing the default user's (`userid=1`) username & password, but
+# also provides a Zabbix API user for other resources in this cookbook
+# (`zabbix_host`, &c.) to utilize.
+mysql_database "ensure_zabbix_api_user" do
+  connection    root_connection
+  database_name node.zabbix.database.name
+  sql           <<SQL
+    INSERT INTO `users` (
+        `userid`,`alias`,`name`,`surname`,`passwd`,
+        `url`,`autologin`,`autologout`,`lang`,`refresh`,`type`,`theme`,`rows_per_page`
+      ) VALUES
+      (
+        '1','#{node.zabbix.api.username}','#{node.zabbix.api.first_name}','#{node.zabbix.api.last_name}','#{Digest::MD5.hexdigest(node.zabbix.api.password)}',
+        '#{node.zabbix.api.url}','#{node.zabbix.api.autologin}','#{node.zabbix.api.autologout}','#{node.zabbix.api.lang}','#{node.zabbix.api.refresh}','#{node.zabbix.api.type}','#{node.zabbix.api.theme}','#{node.zabbix.api.rows}'
+      ) ON DUPLICATE KEY UPDATE
+        `alias`='#{node.zabbix.api.username}',
+        `name`='#{node.zabbix.api.first_name}',
+        `surname`='#{node.zabbix.api.last_name}',
+        `passwd`='#{Digest::MD5.hexdigest(node.zabbix.api.password)}',
+        `url`='#{node.zabbix.api.url}',
+        `autologin`='#{node.zabbix.api.autologin}',
+        `autologout`='#{node.zabbix.api.autologout}',
+        `lang`='#{node.zabbix.api.lang}',
+        `refresh`='#{node.zabbix.api.refresh}',
+        `type`='#{node.zabbix.api.type}',
+        `theme`='#{node.zabbix.api.theme}',
+        `rows_per_page`='#{node.zabbix.api.rows}';
+SQL
+  action        :query
 end
