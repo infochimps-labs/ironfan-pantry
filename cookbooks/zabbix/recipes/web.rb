@@ -31,7 +31,7 @@ else
 end
 
 standard_dirs('zabbix.web') do
-  directories :log_dir
+  directories :log_dir, :tmp_dir
 end
 
 install_from_release('zabbix') do
@@ -47,17 +47,46 @@ bash "chown_zabbix_web" do
   code "chown -R #{node.zabbix.web.user} #{node.zabbix.web.home_dir}"
 end
 
-template File.join(node.zabbix.web.home_dir, 'conf', 'zabbix.conf.php') do
-  source    'zabbix.conf.php.erb'
-  owner     node.zabbix.web.user
-  mode      '0400'
-  action    :create
-  notifies  :restart, "service[zabbix_web]", :delayed
+logs    = {}
+ports   = {}
+daemons = {}
+
+node[:zabbix][:web][:num_daemons].times do |i|
+  
+  service_name = "zabbix_web_#{i}"
+  aspect  = service_name.to_sym
+  socket  = File.join(node[:zabbix][:web][:tmp_dir], "php-#{i}.sock")
+  log_dir = File.join(node[:zabbix][:web][:log_dir], i.to_s)
+
+  directory log_dir do
+    owner  node[:zabbix][:web][:user]
+    group  node[:zabbix][:web][:group]
+    mode   '0775'
+    action :create
+  end
+
+  runit_service service_name do
+    template_name "zabbix_web"
+    options({
+      log_dir: log_dir,
+      socket:  socket,
+    })
+  end
+
+  logs[aspect]  = { path: log_dir }
+  daemons[aspect] = {
+    service: service_name,
+    name:    'php-cgi',
+    user:    node[:zabbix][:web][:user],
+    cmd:     "php-#{i}.*zabbix",
+  }
 end
 
 case node.zabbix.web.install_method
 when 'nginx'
   include_recipe "zabbix::web_#{node.zabbix.web.install_method}"
+  ports[:nginx] = { port: node[:zabbix][:web][:port], protocol: 'http' }
+  logs[:nginx]  = { path: File.join(node[:zabbix][:web][:log_dir], 'nginx.*') }
 else
   warn "Invalid install method '#{node.zabbix.web.install_method}'.  Only 'nginx' is supported for Zabbix web."
 end
@@ -67,5 +96,23 @@ template File.join(node.zabbix.conf_dir, "php.ini") do
   owner    node.zabbix.web.user
   mode     '0400'
   action   :create
-  notifies :restart, "service[zabbix_web]", :delayed
+  node[:zabbix][:web][:num_daemons].times do |i|
+    notifies :restart, "service[zabbix_web_#{i}]", :delayed
+  end
 end
+
+template File.join(node.zabbix.web.home_dir, 'conf', 'zabbix.conf.php') do
+  source    'zabbix.conf.php.erb'
+  owner     node.zabbix.web.user
+  mode      '0400'
+  action    :create
+  node[:zabbix][:web][:num_daemons].times do |i|
+    notifies  :restart, "service[zabbix_web_#{i}]", :delayed
+  end
+end
+
+announce(:zabbix, :web, {
+  logs:    logs,
+  ports:   ports,
+  daemons: daemons,
+})
