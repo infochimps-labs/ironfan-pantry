@@ -50,6 +50,26 @@ template "/etc/init.d/zabbix_server" do
   notifies  :restart, "service[zabbix_server]", :delayed
 end
 
+case node.platform_family
+when 'debian' then
+  conf_path = "/etc/sysctl.d/60-zabbix-memory.conf"
+  bash "Reload system control settings for Zabbix" do
+    user   "root"
+    code   "sysctl -p #{conf_path}"
+    action :nothing
+  end
+  template conf_path do
+    source   "zabbix-memory.conf.erb"
+    mode     "0644"
+    action   :create
+    notifies :run, "bash[Reload system control settings for Zabbix]", :immediately
+  end
+else
+  # FIXME -- haven't tried this on other platform
+  # families yet...
+  Chef::Log.error("Do not know how to increase shared memory limits on platform #{node.platform_family}.  Zabbix server may not start properly")
+end
+                  
 service "zabbix_server" do
   supports :start => true, :stop => true, :restart => true
   action [ :start, :enable ]

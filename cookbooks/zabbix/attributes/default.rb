@@ -36,6 +36,14 @@ default[:zabbix][:server][:ipmi][:pingers]  = 1
 
 default[:zabbix][:server][:snmp][:trapper]  = false
 
+default[:zabbix][:server][:cache][:configuration]  = '64M'
+default[:zabbix][:server][:cache][:history]        = '64M'
+default[:zabbix][:server][:cache][:trend]          = '64M'
+default[:zabbix][:server][:cache][:history_text]   = '64M'
+
+default[:zabbix][:server][:memory][:shared_all]   = 536870912 # 512 MB total across caches
+default[:zabbix][:server][:memory][:shared_max]   = 134217728 # up to 128 MB per cache
+
 
 # Java Gateway
 default[:zabbix][:java_gateway][:install] = true
@@ -81,12 +89,14 @@ end
 
 default[:zabbix][:web][:fqdn]           = ""
 default[:zabbix][:web][:bind_ip]        = nil
-default[:zabbix][:web][:port]           = 9101
+default[:zabbix][:web][:port]           = 80
 default[:zabbix][:web][:log_dir]        = '/var/log/zabbix_web'
+default[:zabbix][:web][:tmp_dir]        = '/var/run/zabbix_web'
 default[:zabbix][:web][:home_dir]       = File.join(zabbix_home_dir, 'frontends', 'php')
 default[:zabbix][:web][:install_method] = 'nginx'
 default[:zabbix][:web][:timezone]       = 'Europe/London' # UTC
 default[:zabbix][:web][:user]           = 'www-data'      # should match user for nginx/apache
+default[:zabbix][:web][:num_daemons]    = 1
 
 # API
 default[:zabbix][:api][:path]       = 'api_jsonrpc.php'
