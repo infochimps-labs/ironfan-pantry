@@ -2,9 +2,9 @@
 # Cookbook Name::       zabbix
 # Description::         Downloads, builds, configures, & launches Zabbix agent from source.
 # Recipe::              agent_source
-# Author::              Nacer Laradji (<nacer.laradji@gmail.com>)
+# Author::              Dhruv Bansal (<dhruv@infochimps.com>), Nacer Laradji (<nacer.laradji@gmail.com>)
 #
-# Copyright 2011, Efactures
+# Copyright 2012-2013, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,65 +21,19 @@
 
 case node[:platform]
 when "ubuntu","debian"
-  # install some dependencies
   %w{ fping libcurl3 libiksemel-dev libiksemel3 libsnmp-dev libiksemel-utils libcurl4-openssl-dev }.each do |pck|
     package "#{pck}"
   end
-when "centos"
+when "centos", "redhat"
   # do nothing special?
 else
-  log "No #{node.platform} support yet"
+  warn "No #{node.platform} support yet for building Zabbix agent from source"
 end
 
-directory "/opt/zabbix-agent-src" do
-  action :create
-end
-
-# Download zabbix source code
-remote_file "/opt/zabbix-#{node.zabbix.agent.version}-agent.tar.gz" do
-  source "http://freefr.dl.sourceforge.net/project/zabbix/#{node.zabbix.agent.branch}/#{node.zabbix.agent.version}/zabbix-#{node.zabbix.agent.version}.tar.gz"
-  mode "0644"
-  action :create
-  not_if { File.exists?(self.path) }
-end
-
-# installation of zabbix bin
-script "install_zabbix_agent" do
-  interpreter "bash"
-  user "root"
-  cwd "/opt"
-  notifies :restart, "service[zabbix_agentd]"
-  code <<-EOH
-  tar xvfz zabbix-#{node.zabbix.agent.version}-agent.tar.gz -C /opt/zabbix-agent-src/
-  (cd zabbix-agent-src/zabbix-#{node.zabbix.agent.version} && ./configure --enable-agent #{node.zabbix.agent.configure_options.join(" ")})
-  (cd zabbix-agent-src/zabbix-#{node.zabbix.agent.version} && make install)
-  EOH
-  not_if { File.exists?("/opt/zabbix-agent-src/zabbix-#{node.zabbix.agent.version}") }
-end
-
-case node.platform
-when 'debian','ubuntu'
-  init_template = "zabbix_agentd.init.erb"
-when 'centos'
-  init_template = "zabbix_agentd.init.centos.erb"
-else
-  log("No init.d for #{node.platform}, trying the Debian-style") { level :warn }
-  init_template = "zabbix_agentd.init.erb"
-end
-template "/etc/init.d/zabbix_agentd" do
-  source init_template
-  owner "root"
-  group "root"
-  mode "754"
-end
-
-# Define zabbix_agentd service
-service "zabbix_agentd" do
-  supports :status => true, :start => true, :stop => true
-  case node.platform
-  when 'centos'
-    action [ :start ]
-  else
-    action [ :start, :enable ]
-  end
+install_from_release('zabbix') do
+  action        [:configure_with_autoconf, :install_with_make]
+  release_url   node.zabbix.release_url
+  version       node.zabbix.agent.version
+  autoconf_opts ['--enable-agent'].concat(node.zabbix.agent.configure_options)
+  not_if        { File.exist?('/usr/local/bin/zabbix_agentd') }
 end

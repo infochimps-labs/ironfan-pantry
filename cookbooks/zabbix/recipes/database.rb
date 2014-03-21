@@ -4,7 +4,7 @@
 # Recipe::              database
 # Author::              Dhruv Bansal (<dhruv@infochimps.com>)
 #
-# Copyright 2012, Infochimps
+# Copyright 2012-2013, Infochimps
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,10 @@
 # limitations under the License.
 #
 
-include_recipe 'database'
+case node.zabbix.database.install_method
+when 'mysql'
+  include_recipe "zabbix::database_#{node.zabbix.database.install_method}"
+else
+  warn "Invalid method '#{node.zabbix.database.install_method}'.  Only the 'mysql' install method is currently supported for Zabbix database."
+end
 
-include_recipe "zabbix::database_#{node.zabbix.database.install_method}"
