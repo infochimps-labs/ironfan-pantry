@@ -1,0 +1,6 @@
+# Zabbix server uses shared memory.  To increase the default amount of                                                                                                                       
+# shared memory made available by the OS we have to set these kernel                                                                                                                         
+# parameters.  Then the Zabbix server's configuration file can be set                                                                                                                        
+# to use more shared memory.                                                                                                                                                                 
+kernel.shmall=<%= node.zabbix.server.memory.shared_all %>
+kernel.shmmax=<%= node.zabbix.server.memory.shared_max %>
