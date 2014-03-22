@@ -71,3 +71,12 @@ if node[:kafka][:ftp_loader][:test_site][:use]
   end
 end
 
+node[:kafka][:ftp_loader][:sites].each do |site|
+  if site[:use]
+    set_ftp_loader do
+      thenode site
+    end
+  end
+end
+
+

@@ -32,3 +32,42 @@ Installs kafka 0.7.0
 = FTP Loaders
 
 Require LFTP and S3CMD
+
+* Example Usage: 
+ facet_role.override_attributes({
+        kafka:
+        {
+          ftp_loader:
+          {
+            test_site:
+            {
+              use: false,
+              name: 'test_ftp',
+              input_directory: '/mnt/testftp/input',
+              output_directory: '/mnt/testftp/output',
+              meta_directory: '/mnt/testftp/meta'
+            },
+            sites:
+            [
+              {
+                use: true,
+                name: 'ftp_loader',
+                ftp_protocol: 'ftp',
+                ftp_host: '54.84.127.204',
+                ftp_user: 'test',
+                ftp_password: 'Te5t',
+                ftp_path: 'incoming/testftp',
+                input_directory: 'testdata/input',
+                output_directory: 'testdata/output',
+                s3_bucket: 'ftp_testing',
+                meta_directory: '/testdata/meta',
+                meta_s3_bucket: 'ftp_testing_meta',
+                config_file: '/usr/local/share/kafka-contrib/current/scripts/ftp2s3.yaml',
+                log_file: '/var/log/ftp_loader.log',
+                interval_minutes: '1',
+              }
+            ]
+          }
+        }
+      })
+
