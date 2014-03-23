@@ -4,6 +4,7 @@ end
 
 git_private_repo "vayacondios_github" do
   action :ssh_wrapper
+  private_keys_contents node[:git_keys]
 end
 
 shared_env = {
