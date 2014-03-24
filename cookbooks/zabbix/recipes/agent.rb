@@ -39,7 +39,7 @@ template(File.join(node[:zabbix][:conf_dir], "zabbix_agentd.conf")) do
   group     node[:zabbix][:group]
   mode      "640"
   notifies  :restart, "service[zabbix_agentd]", :delayed
-  variables :server_ips => zabbix_servers.map(&:private_ip)
+  variables :server_ips => zabbix_servers.map(&:private_ip).uniq
 end
 
 # We'd like to use runit to manage the zabbix_agentd process but it
