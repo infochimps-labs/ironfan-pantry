@@ -5,7 +5,7 @@ daemon_user "vayacondios.server"
 standard_dirs "vayacondios.server" do
   # do *not* include home_dir as it is actually a symlink that will
   # be created by the install_from_git recipe below
-  directories :deploy_root, :log_dir, :conf_dir
+  directories :deploy_root, :conf_dir
 end
 include_recipe("vayacondios::install_from_git")
 
