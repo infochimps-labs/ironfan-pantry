@@ -49,4 +49,9 @@ end
 
 link '/var/log/zookeeper' do
   to node[:zookeeper][:log_dir]
+
+  # FIXME: This is a bit of a hack. We're seeing a collision here
+  # possibly caused by pig/hadoop living on the same machine. For now,
+  # this should resolve that issue.
+  not_if { ::File.exists? '/var/log/zookeeper' }
 end
