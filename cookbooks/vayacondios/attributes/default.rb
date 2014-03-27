@@ -1,5 +1,5 @@
 default[:vayacondios][:git_url]          = "https://github.com/infochimps-labs/vayacondios.git"
-default[:vayacondios][:git_version]      = 'stable'
+default[:vayacondios][:git_version]      = 'release_5'
 default[:vayacondios][:deploy_strategy]  = :deploy
 
 default[:vayacondios][:organization] = nil
