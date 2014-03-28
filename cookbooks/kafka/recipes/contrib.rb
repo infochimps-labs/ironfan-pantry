@@ -65,16 +65,12 @@ contrib_apps.each do |app_name|
   end
 end
 
-if node[:kafka][:ftp_loader][:test_site][:use]
-  set_ftp_loader do
-    thenode node[:kafka][:ftp_loader][:test_site]
-  end
-end
-
-node[:kafka][:ftp_loader][:sites].each do |site|
+node[:kafka][:ftp_loader][:sites].each do |name, site|
   if site[:use]
     set_ftp_loader do
-      thenode site
+      thenode         Mash.new(site.merge(name: name))
+      command         node[:kafka][:ftp_loader][:command] 
+      code_directory  node[:kafka][:ftp_loader][:code_dir] 
     end
   end
 end
