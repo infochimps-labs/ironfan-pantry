@@ -82,26 +82,10 @@ default[:kafka][:server][:run_state] = :start
 default[:kafka][:ftp_loader][:sites] = []
 
 default[:kafka][:ftp_loader][:code_dir] = '/usr/local/share/kafka-contrib/current/'
+default[:kafka][:ftp_loader][:conf_dir] = '/usr/local/share/kafka-contrib/shared/config/'
 default[:kafka][:ftp_loader][:scripts_directory] = '/usr/local/share/kafka-contrib/current/scripts'
-default[:kafka][:ftp_loader][:command] = 'bundle exec ruby scripts/ftp2s3.rb'
+default[:kafka][:ftp_loader][:command] = "bundle exec ruby #{default[:kafka][:ftp_loader][:scripts_directory]}/ftp2s3.rb"
 default[:kafka][:ftp_loader][:user] = 'root'
-
-
-default[:kafka][:ftp_loader][:test_site][:use] = false
-default[:kafka][:ftp_loader][:test_site][:name] = 'ftp_loader'
-default[:kafka][:ftp_loader][:test_site][:ftp_protocol] = 'ftp'
-default[:kafka][:ftp_loader][:test_site][:ftp_host] = '54.84.243.156'
-default[:kafka][:ftp_loader][:test_site][:ftp_user] = 'test'
-default[:kafka][:ftp_loader][:test_site][:ftp_password] = 'Te5t'
-default[:kafka][:ftp_loader][:test_site][:ftp_path] = 'incoming/testftp'
-default[:kafka][:ftp_loader][:test_site][:input_directory] = 'testdata/input'
-default[:kafka][:ftp_loader][:test_site][:output_directory] = 'testdata/output'
-default[:kafka][:ftp_loader][:test_site][:s3_bucket] = 'ftp_testing'
-default[:kafka][:ftp_loader][:test_site][:meta_directory] = '/testdata/meta'
-default[:kafka][:ftp_loader][:test_site][:meta_s3_bucket] = 'ftp_testing_meta'
-default[:kafka][:ftp_loader][:test_site][:config_file] = '/usr/local/share/kafka-contrib/current/scripts/ftp2s3.yaml'
-default[:kafka][:ftp_loader][:test_site][:log_file] = '/var/log/ftp_loader.log'
-default[:kafka][:ftp_loader][:test_site][:interval_minutes] = '1'
 
 
 

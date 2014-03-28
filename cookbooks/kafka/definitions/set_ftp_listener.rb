@@ -1,56 +1,54 @@
 define :set_ftp_loader, thenode: nil, code_directory: '/usr/local/share/kafka-contrib/current/', command: 'bundle exec ruby scripts/ftp2s3.rb' do
 
   thenode = params[:thenode]
+  conf_dir = node[:kafka][:ftp_loader][:conf_dir]
+  config_file = File.join(conf_dir, "#{thenode[:name]}.yaml")
+  unix_user = 'root'
+  ftp_loader_path = '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin'
 
-  template thenode[:config_file] do
+  directory conf_dir do
+    recursive true
+  end
+  
+  template config_file do
     source "ftp2s3.yaml.erb"
     owner "root"
     mode "0644"
     variables({:config => thenode})
   end
 
-
-
-  paths = thenode[:input_directory].split("/").reject(&:empty?)
-  exploded = paths.each_with_index.map{|x,i| "/" + paths[0..i].join("/"); }
-  exploded.each do |path|
-    directory path do
-      owner  "root"
-      group  "root"
-      mode   0666
-      action :create
-    end
+  directory thenode[:input_directory] do
+    owner unix_user
+    recursive true
+    mode 0700
   end
 
-
-  paths = thenode[:output_directory].split("/").reject(&:empty?)
-  exploded = paths.each_with_index.map{|x,i| "/" + paths[0..i].join("/"); }
-  exploded.each do |path|
-    directory path do
-      owner  "root"
-      group  "root"
-      mode   0666
-      action :create
-    end
+  directory thenode[:output_directory] do
+    owner unix_user
+    recursive true
+    mode 0700
   end
 
+  directory thenode[:meta_directory] do
+    owner unix_user
+    recursive true
+    mode 0700
+  end
 
-  paths = thenode[:meta_directory].split("/").reject(&:empty?)
-  exploded = paths.each_with_index.map{|x,i| "/" + paths[0..i].join("/"); }
-  exploded.each do |path|
-    directory path do
-      owner  "root"
-      group  "root"
-      mode   0666
-      action :create
-    end
+  file thenode[:log_file] do
+    owner unix_user
+    action :touch
+    mode 0644
   end
 
   cron 'FTP Loader' do
-    minute thenode[:interval_minutes]
-    user thenode[:user]
+    minute '*/' + thenode[:interval_minutes]
+    user unix_user
 
-    command "cd #{params[:code_directory]} && #{params[:command]} #{thenode[:config_file]} >> #{thenode[:log_file]}"
+    # This doesn't appear to work. not sure what I'm doing wrong... -- josh
+    path ftp_loader_path
+
+    command "PATH=#{ftp_loader_path} bash -l -c 'cd #{params[:code_directory]} && PATH=#{ftp_loader_path} #{params[:command]} #{config_file} 2>&1 | PATH=#{ftp_loader_path} cat >> #{thenode[:log_file]}'"
   end
 
 
