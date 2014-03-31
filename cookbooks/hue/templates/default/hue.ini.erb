@@ -420,10 +420,10 @@
   hive_conf_dir=<%= @hive[:conf_dir] %>
 
   # Timeout in seconds for thrift calls to beeswax service
-  ## beeswax_server_conn_timeout=120
+  beeswax_server_conn_timeout=<%= @svc_timeout %>
 
   # Timeout in seconds for thrift calls to the hive metastore
-  ## metastore_conn_timeout=10
+  metastore_conn_timeout=<%= @meta_timeout %>
 
   # Maximum Java heapsize (in megabytes) used by Beeswax Server.
   # Note that the setting of HADOOP_HEAPSIZE in $HADOOP_CONF_DIR/hadoop-env.sh

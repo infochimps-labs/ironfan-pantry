@@ -241,6 +241,8 @@ default[:hadoop][:hue][:beeswax][:fqdn]        = nil
 default[:hadoop][:hue][:beeswax][:port]        = 8002
 default[:hadoop][:hue][:beeswax][:meta_port]   = 8003
 default[:hadoop][:hue][:beeswax][:heap_size]   = 2048
+default[:hadoop][:hue][:beeswax][:svc_timeout] = 120
+default[:hadoop][:hue][:beeswax][:meta_timeout]= 10
 
 default[:hadoop][:hue][:smtp][:host]           = nil
 default[:hadoop][:hue][:smtp][:port]           = nil
