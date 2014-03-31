@@ -36,7 +36,7 @@
 <% if node[:hadoop][:emit_final_parameters] -%>
 <property> <name>mapred.child.ulimit</name>                       <value><%= @hadoop[:java_child_ulimit] %></value>        <final>true</final></property>
 <% end -%>
-<property> <name>mapred.job.reuse.jvm.num.tasks</name>            <value>-1</value></property>
+<property> <name>mapred.job.reuse.jvm.num.tasks</name>            <value><%= @hadoop[:reuse_jvm_times] %></value></property>
 
 <% if node[:hadoop][:emit_final_parameters] -%>
 <!-- communication -->
