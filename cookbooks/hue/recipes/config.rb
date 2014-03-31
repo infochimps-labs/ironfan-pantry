@@ -69,7 +69,9 @@ impala     = discover(:impala, :server)
 
 template File.join(node[:hue][:conf_dir], 'hue.ini') do
   mode     "0644"
-  variables(:hue => node[:hue], :hadoop => node[:hadoop], :hive => node[:hive], secret_key: secret_key, namenode: namenode, jobtracker: jobtracker, :fqdn => node[:route53][:fqdn], :impala => impala)
+  variables(:hue => node[:hue], :hadoop => node[:hadoop], :hive => node[:hive], secret_key: secret_key, namenode: namenode, jobtracker: jobtracker, :fqdn => node[:route53][:fqdn], :impala => impala,
+            :svc_timeout => node[:hadoop][:beeswax][:svc_timeout],
+            :meta_timeout => node[:hadoop][:beeswax][:meta_timeout])
   source   "hue.ini.erb"
   notifies :restart, 'service[hue]', :delayed
 end

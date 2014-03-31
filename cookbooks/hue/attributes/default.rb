@@ -34,6 +34,8 @@ default[:hue][:beeswax][:fqdn]        = nil
 default[:hue][:beeswax][:port]        = 8002
 default[:hue][:beeswax][:meta_port]   = 8003
 default[:hue][:beeswax][:heap_size]   = 2048
+default[:hue][:beeswax][:svc_timeout] = 120
+default[:hue][:beeswax][:meta_timeout]= 10
 
 default[:hue][:smtp][:host]           = nil
 default[:hue][:smtp][:port]           = nil
