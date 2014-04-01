@@ -40,7 +40,7 @@ module Ironfan
 
     # The local-only ip address for the given server
     def private_hostname_of(server)
-      server[:fqdn]
+      server[:cloud][:local_hostname] || server[:fqdn] rescue server[:fqdn]
     end
 
     # The globally-accessable ip address for the given server
