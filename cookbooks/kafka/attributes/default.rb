@@ -51,7 +51,7 @@ default[:tuning][:ulimit]['kafka']                  = { :nofile => { :both => 32
 #
 default[:kafka][:contrib][:deploy][:root]           = '/usr/local/share/kafka-contrib'
 default[:kafka][:contrib][:deploy][:repo]           = 'git@github.com:infochimps/kafka-contrib.git'
-default[:kafka][:contrib][:deploy][:branch]         = 'master'
+default[:kafka][:contrib][:deploy][:branch]         = 'release_5'
 default[:kafka][:contrib][:log_dir]                 = '/var/log/kafka-contrib'
 #
 # Kafka Contrib default attributes
