@@ -16,13 +16,13 @@ default[:hue][:conf_dir]              = '/etc/hue/conf'
 default[:hue][:conf_base_dir]         = '/etc/hue'
 default[:hue][:pid_dir]               = '/var/run/hue'
 
+default[:hue][:host]                  = 'localhost'
 default[:hue][:port]                  = 9000
 default[:hue][:time_zone]             = 'UTC'
 
 default[:hue][:ssl][:key]             = nil
 default[:hue][:ssl][:certificate]     = nil
 
-default[:hue][:mysql][:host]          = 'localhost'
 default[:hue][:mysql][:port]          = 3306
 default[:hue][:mysql][:username]      = 'hue'
 default[:hue][:mysql][:password]      = nil
