@@ -20,7 +20,8 @@
 #
 
 include_recipe 'zookeeper'
+include_recipe 'hadoop::add_cloudera_repo'
 
-package 'hadoop-zookeeper' do
+package 'zookeeper' do
   version            node[:zookeeper][:version]
 end
