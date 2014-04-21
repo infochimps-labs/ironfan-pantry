@@ -22,18 +22,18 @@ Tested on Ubuntu 9.10 on EC2 only. YMMV on other platforms.
 
 ==Cookbooks:
 
-Requires Opscode's runit and java cookbooks.  
+Requires Opscode's runit and java cookbooks.
 
 = ATTRIBUTES:
 
-It's a good idea to change the cluster_name attribute to something 
+It's a good idea to change the cluster_name attribute to something
 meaningful, like "production".
 
-Production deployments should also increase the java_heap_size_max and fd_ulimit 
+Production deployments should also increase the java_heap_size_max and fd_ulimit
 attributes.
 
-To use the s3 gateway, set the s3_gateway_bucket attribute to the name of an 
-existing bucket. You'll also need to add aws credentials to the aws databag 
+To use the s3 gateway, set the s3_gateway_bucket attribute to the name of an
+existing bucket. You'll also need to add aws credentials to the aws databag
 (see below)
 
 = USAGE:
@@ -44,13 +44,13 @@ This cookbook makes a few assumptions about where files live:
 /var/lib/elasticsearch: elasticsearch runtime files
 /var/log/elasticsearch: elasticsearch log directory
 
-Use elasticsearch::autoconf to automatically discover nodes in the cluster. Use 
+Use elasticsearch::autoconf to automatically discover nodes in the cluster. Use
 elasticsearch for a more static deployment.
 
-Both options will configure ElasticSearch and start the ElasticSearch runit 
+Both options will configure ElasticSearch and start the ElasticSearch runit
 service.
 
-To use the s3 gateway, add your s3 credentials to a databag item with id "main" 
+To use the s3 gateway, add your s3 credentials to a databag item with id "main"
 in the "aws" databag. The schema of this item is:
 {
   "aws_access_key_id":
@@ -78,7 +78,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-## Recipes 
+## Recipes
 
 * `client`                   - Client
 * `config`                   - Finalizes the config, writes out the config files
@@ -106,14 +106,14 @@ Cookbook dependencies:
 
 ## Attributes
 
-* `[:elasticsearch][:version]`        -  (default: "0.18.5")
+* `[:elasticsearch][:version]`        -  (default: "1.1.1")
 * `[:elasticsearch][:realm]`        -  (default: cluster name)
 * `[:elasticsearch][:data_dir]`      -  (default: nil)
 * `[:elasticsearch][:scratch_dir]`     -  (default: nil)
 * `[:elasticsearch][:java_home]`      -  (default: "/usr/lib/jvm/java-6-sun/jre")
 * `[:elasticsearch][:git_repo]`       -  (default: "https://github.com/elasticsearch/elasticsearch.git")
 * `[:elasticsearch][:java_heap_size_max]` -  (default: "1000")
-* `[:elasticsearch][:ulimit_mlock]`   - 
+* `[:elasticsearch][:ulimit_mlock]`   -
 * `[:elasticsearch][:default_replicas]` -  (default: "1")
 * `[:elasticsearch][:default_shards]` -  (default: "6")
 * `[:elasticsearch][:flush_threshold]` -  (default: "5000")
@@ -124,7 +124,7 @@ Cookbook dependencies:
 * `[:elasticsearch][:refresh_interval]` -  (default: "1s")
 * `[:elasticsearch][:snapshot_interval]` -  (default: "-1")
 * `[:elasticsearch][:snapshot_on_close]` -  (default: "false")
-* `[:elasticsearch][:seeds]`          - 
+* `[:elasticsearch][:seeds]`          -
 * `[:elasticsearch][:recovery_after_nodes]` -  (default: "2")
 * `[:elasticsearch][:recovery_after_time]` -  (default: "5m")
 * `[:elasticsearch][:expected_nodes]` -  (default: "2")
@@ -132,7 +132,7 @@ Cookbook dependencies:
 * `[:elasticsearch][:fd_ping_timeout]` -  (default: "60s")
 * `[:elasticsearch][:fd_ping_retries]` -  (default: "6")
 * `[:elasticsearch][:jmx_dash_port]`  -  (default: "9400-9500")
-* `[:elasticsearch][:release_url_checksum]` - 
+* `[:elasticsearch][:release_url_checksum]` -
 * `[:elasticsearch][:home_dir]`       -  (default: "/usr/local/share/elasticsearch")
 * `[:elasticsearch][:conf_dir]`       -  (default: "/etc/elasticsearch")
 * `[:elasticsearch][:log_dir]`        -  (default: "/var/log/elasticsearch")
@@ -140,7 +140,7 @@ Cookbook dependencies:
 * `[:elasticsearch][:pid_dir]`        -  (default: "/var/run/elasticsearch")
 * `[:elasticsearch][:user]`           -  (default: "elasticsearch")
 * `[:elasticsearch][:release_url]`    -  (default: "https://github.com/downloads/elasticsearch/elasticsearch/elasticsearch-:version:.tar.gz")
-* `[:elasticsearch][:plugins]`        - 
+* `[:elasticsearch][:plugins]`        -
 * `[:elasticsearch][:http_ports]`     -  (default: "9200-9300")
 * `[:elasticsearch][:api_port]`       -  (default: "9300")
 * `[:elasticsearch][:proxy_port]`     -  (default: "8200")
@@ -154,7 +154,7 @@ Cookbook dependencies:
 * `[:elasticsearch][:server][:run_state]` -  (default: "stop")
 * `[:users][:elasticsearch][:uid]`    -  (default: "61021")
 * `[:groups][:elasticsearch][:gid]`   -  (default: "61021")
-* `[:tuning][:ulimit][:@elasticsearch]` - 
+* `[:tuning][:ulimit][:@elasticsearch]` -
 
 ## License and Author
 
