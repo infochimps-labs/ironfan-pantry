@@ -20,7 +20,15 @@
 
 require 'webrick/httpauth/htpasswd'
 
-node[:vayacondios][:password_file] = File.join(node[:vayacondios][:conf_dir], "basicauth.passwd")
+node.default[:vayacondios][:password_file] = File.join(node[:vayacondios][:conf_dir], "basicauth.passwd")
+
+# ensure proper permissions
+file node[:vayacondios][:password_file] do
+  owner node[:nginx][:user]
+  group node[:nginx][:user]
+  mode 0600
+  action :touch
+end
 
 ruby_block "create vayacondios basic_auth file" do
   block do
@@ -32,14 +40,6 @@ ruby_block "create vayacondios basic_auth file" do
   end
 end
 
-# FIXME: nginx should be run after this recipe, but we need to ensure
-# that the nginx directory exists in order to place a template
-# there.
-directory node[:nginx][:dir] do
-  mode 0755
-  action :create
-end
-
 template File.join(node[:nginx][:dir], 'conf.d', 'vayacondios_proxy.conf') do
   source        "vayacondios_proxy.conf.erb"
   owner         node[:vayacondios][:user]
@@ -48,12 +48,4 @@ template File.join(node[:nginx][:dir], 'conf.d', 'vayacondios_proxy.conf') do
   variables     ({
     :vayacondios      => node[:vayacondios],
   })
-end
-
-# ensure proper permissions
-file node[:vayacondios][:password_file] do
-  owner node[:nginx][:user]
-  group node[:nginx][:user]
-  mode 0600
-  action :touch
 end

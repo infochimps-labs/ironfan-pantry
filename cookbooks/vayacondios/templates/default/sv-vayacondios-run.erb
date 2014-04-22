@@ -11,7 +11,11 @@ cd <%= node[:vayacondios][:home_dir] %>
 exec chpst -u <%= node[:vayacondios][:user] %> \
     bundle exec "vcd-server <%= '--verbose' if node[:vayacondios][:server][:verbose] %> \
     --environment <%= node[:vayacondios][:server][:environment] %> \
+    <%- if @options[:port] %>
+    --port <%= @options[:port] %> \
+    <%- else %>
     --socket <%= @options[:socket] %> \
+    <%- end %>
     --stdout \
     --database.driver mongo \
     --database.host <%= @options[:host] %> \
