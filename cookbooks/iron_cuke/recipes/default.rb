@@ -30,6 +30,9 @@ file "#{node['iron_cuke']['conf_dir']}/announces.json" do
   content({"#{node.name}" => node[:announces].to_hash }.to_json)
 end
 
+package "libqtwebkit-dev"
+package "xvfb"
+
 execute "bundle install --without development test docs support" do
   cwd node['iron_cuke']['home_dir']
 end
