@@ -28,12 +28,15 @@ mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ "$away_dir"
 
 # mkdir $away_dir/sshd_keys
 # mv /etc/ssh/ssh_{host_dsa,host_rsa,host}_{key,key.pub} "$away_dir/sshd_keys"
-
+rm -f /etc/ssh/ssh_host_*
 
 # See
 # * [How To Share and Use Public AMIs in A Secure Manner](https://aws.amazon.com/articles/0155828273219400)
 # # [Public AMI Publishing: Hardening and Clean-up Requirements](https://aws.amazon.com/articles/9001172542712674)
 # * [Sharing AMIs Safely](http://docs.amazonwebservices.com/AWSEC2/latest/UserGuide/AESDG-chapter-sharingamis.html)
+
+echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nClear udev's mac-based reservation for eth0"
+rm -f /etc/udev/rules.d/70-persistent-net.rules
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nCommandline history files:"
 find /root/.*history /home/*/.*history
