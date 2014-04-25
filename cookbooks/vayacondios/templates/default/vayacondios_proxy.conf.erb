@@ -1,5 +1,5 @@
 server {
-  listen        <%= @vayacondios[:auth_port] %>;
+  listen        <%= @vayacondios[:server][:auth_port] %>;
 
   location /  {
     proxy_pass http://<%= node[:ipaddress] %>:<%= @vayacondios[:server][:port] %>;

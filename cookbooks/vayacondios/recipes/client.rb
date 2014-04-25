@@ -15,6 +15,6 @@ template File.join(node[:vayacondios][:client][:conf_dir], 'vayacondios.yml') do
   mode      '0644'
   variables(
     host: vayacondios && vayacondios.private_ip,
-    port: vayacondios && vayacondios.ports[:nginx][:port],
+    port: vayacondios && vayacondios.ports[:http][:port],
   )
 end
