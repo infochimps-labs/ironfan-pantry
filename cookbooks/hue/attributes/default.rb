@@ -23,6 +23,7 @@ default[:hue][:time_zone]             = 'UTC'
 default[:hue][:ssl][:key]             = nil
 default[:hue][:ssl][:certificate]     = nil
 
+default[:hue][:mysql][:host]          = 'localhost'
 default[:hue][:mysql][:port]          = 3306
 default[:hue][:mysql][:username]      = 'hue'
 default[:hue][:mysql][:password]      = nil
