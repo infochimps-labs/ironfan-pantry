@@ -44,7 +44,7 @@ node[:elasticsearch][:plugins].each do |plugin|
   bash "install #{plugin_hsh[:name]} plugin for elasticsearch" do
     user          "root"
     cwd           "#{node[:elasticsearch][:home_dir]}"
-    code          "./bin/plugin -install #{plugin_hsh[:slug]}"
+    code          "./bin/plugin --install #{plugin_hsh[:slug]}"
     not_if{ plugin_hsh[:dir] && File.exist?("#{node[:elasticsearch][:home_dir]}/plugins/#{plugin_hsh[:dir]}")  }
   end
 end
