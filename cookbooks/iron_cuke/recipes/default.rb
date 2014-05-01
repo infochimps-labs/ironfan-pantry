@@ -23,7 +23,7 @@ end
 
 git node['iron_cuke']['home_dir'] do
   repository node['iron_cuke']['git_repo']
-  reference "master"
+  reference node['iron_cuke']['git_branch']
 end
 
 file "#{node['iron_cuke']['conf_dir']}/announces.json" do
