@@ -19,7 +19,7 @@
 # limitations under the License.
 #
 
-include_recipe 'cloud_utils::srp_apt_repo'
+include_recipe 'cloud_utils::srp_repo'
 
 package 'elasticsearch' do
   options '--force-yes' # Needed for non-GPG chimps repository
