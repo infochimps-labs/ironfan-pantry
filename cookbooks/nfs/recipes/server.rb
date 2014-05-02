@@ -11,17 +11,13 @@
 
 case node.platform
 when 'centos'
-  service_name = 'nfs'
+  service_names = ['rpcbind', 'nfs']
 when 'mac_os_x'
   # no package needed
-  service_name = false # no service needed
+  service_names = [] # no service needed
 when 'ubuntu', 'debian'
-  service_name = 'nfs-kernel-server'
+  service_names = ['nfs-kernel-server']
   package        "nfs-kernel-server"
-end
-
-if (not File.exists?("/etc/init.d/#{service_name}")) && (service_name)
-  Chef::Log.warn "\n\n****\nYou may have to restart the machine after #{service_name} is installed\n****\n"
 end
 
 if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
@@ -44,7 +40,7 @@ if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
            }
          })
 
-  if service_name
+  service_names.each do |service_name|
     service service_name do
       action [ :enable, :start ]
       running true
@@ -57,7 +53,9 @@ if node[:nfs][:exports] && (not node[:nfs][:exports].empty?)
     owner       node[:users]['root'][:primary_user]
     group       node[:users]['root'][:primary_group]
     mode        "0644"
-    notifies    :restart, resources(:service => service_name) if service_name
+    service_names.each do |service_name|
+      notifies    :restart, resources(:service => service_name) if service_name
+    end
   end
 
 else
