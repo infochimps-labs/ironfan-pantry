@@ -9,7 +9,7 @@
 # e.g., if the parent directory isn't mutable by the mongodb user.
 
 dbpath = <%= @node[:mongodb][:data_dir] %>
-logpath = <%= @node[:mongodb][:log_dir] %>/mongodb.log
+logpath = <%= @log_path %>
 pidfilepath = <%= @node[:mongodb][:pid_dir] %>/mongodb.pid
 port = <%= @node[:mongodb][:server][:mongod_port] %>
 

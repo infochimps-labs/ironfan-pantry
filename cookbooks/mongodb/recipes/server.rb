@@ -29,16 +29,20 @@ end
 
 include_recipe 'mongodb::install_from_package'
 
+hilarious_base_name = platform_family?('rhel') ? 'mongod' : 'mongodb'
+log_path = "/var/log/#{hilarious_base_name}/#{hilarious_base_name}.log"
+
 #
 # Create service
 #
-template "/etc/mongodb.conf" do
+template "/etc/#{hilarious_base_name}.conf" do
   source        "mongodb.conf.erb"
+  variables     ({ :log_path => log_path })
   backup        false
   mode          "0644"
 end
 
-service 'mongodb' do
+service hilarious_base_name do
   action :restart
 end
 
@@ -46,14 +50,14 @@ end
 # Announcments
 # 
 announce(:mongodb, :server, {
-           :logs  => { :server => node[:mongodb][:log_path] },
+           :logs  => { :server => hilarious_base_name },
            :ports => {
              :http => { :port => node[:mongodb][:server][:mongod_port], :protocol => 'http' },
            },
            :daemons => {
              :mongod => {
                :name => 'mongod',
-               :user => node[:mongodb][:user],
+               :user => hilarious_base_name,
                :cmd  => 'mongod'
              }
            }
