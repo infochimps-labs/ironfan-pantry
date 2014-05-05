@@ -30,7 +30,7 @@ announce(:impala, :server, {
            :logs => { :server => node[:impala][:server][:log_dir] + '/current' },
            :daemons => {
              :server => {
-               :name => 'java',
+               :name => 'impalad',
                :user => node[:impala][:user],
                :cmd  => 'impalad'
              }
