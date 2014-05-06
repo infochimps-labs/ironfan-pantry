@@ -44,7 +44,7 @@ module Ironfan
     dsl_attr(:port_num,  :kind_of => String)
     dsl_attr(:addrs,     :kind_of => Array)
 
-    ALLOWED_FLAVORS = [ :ssh, :ntp, :ldap, :smtp, :ftp, :http, :pop, :nntp, :imap, :tcp, :https, :telnet ]
+    ALLOWED_FLAVORS = [ :ssh, :ntp, :ldap, :smtp, :ftp, :http, :pop, :nntp, :imap, :tcp, :https, :telnet ] unless defined?
     def self.allowed_flavors() ALLOWED_FLAVORS ; end
 
     def self.harvest(run_context, component)
@@ -62,7 +62,7 @@ module Ironfan
     dsl_attr(:flavor,    :kind_of => Symbol, :coerce => :to_sym)
     dsl_attr(:url,       :kind_of => String)
 
-    ALLOWED_FLAVORS = [ :http, :jmx ]
+    ALLOWED_FLAVORS = [ :http, :jmx ] unless defined?
     def self.allowed_flavors() ALLOWED_FLAVORS ; end
 
     def self.harvest(run_context, component)
@@ -85,7 +85,7 @@ module Ironfan
     dsl_attr(:flavor,    :kind_of => Symbol, :coerce => :to_sym)
     dsl_attr(:dirs,      :kind_of => Array)
 
-    ALLOWED_FLAVORS = [ :http, :log4j, :rails ]
+    ALLOWED_FLAVORS = [ :http, :log4j, :rails ] unless defined?
 
     def self.harvest(run_context, component)
       attr_matches(component, /^log_dir(s?)$/) do |key, val, match|
@@ -105,7 +105,7 @@ module Ironfan
     dsl_attr(:flavor,    :kind_of => Symbol, :coerce => :to_sym)
     dsl_attr(:dirs,      :kind_of => Array)
 
-    ALLOWED_FLAVORS = [ :home, :conf, :log, :tmp, :pid, :data, :lib, :journal, ]
+    ALLOWED_FLAVORS = [ :home, :conf, :log, :tmp, :pid, :data, :lib, :journal, ] unless defined?
     def self.allowed_flavors() ALLOWED_FLAVORS ; end
 
     def self.harvest(run_context, component)
@@ -131,7 +131,7 @@ module Ironfan
     dsl_attr(:flavor,    :kind_of => Symbol, :coerce => :to_sym)
     dsl_attr(:files,     :kind_of => Array)
 
-    ALLOWED_FLAVORS = [:jars, :confs, :libs]
+    ALLOWED_FLAVORS = [:jars, :confs, :libs] unless defined?
     def self.allowed_flavors() ALLOWED_FLAVORS ; end
 
     def lint

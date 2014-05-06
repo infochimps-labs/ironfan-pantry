@@ -106,7 +106,7 @@ Cookbook dependencies:
 
 ## Attributes
 
-* `[:elasticsearch][:version]`        -  (default: "0.18.5")
+* `[:elasticsearch][:version]`        -  (default: "1.1.1")
 * `[:elasticsearch][:realm]`        -  (default: cluster name)
 * `[:elasticsearch][:data_dir]`      -  (default: nil)
 * `[:elasticsearch][:scratch_dir]`     -  (default: nil)

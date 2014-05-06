@@ -19,9 +19,10 @@
 # limitations under the License.
 #
 
-#
-# This tries to have interlocks out the wazoo. Still: caveat coquus
-#
+# mkfs.xfs requires a -f option to be passed in when formatting over
+# an existing file system.
+mkfs_options = { "xfs" => "-f" }
+
 
 volumes(node).each do |vol_name, vol|
   Chef::Log.info(vol.inspect)
@@ -29,13 +30,15 @@ volumes(node).each do |vol_name, vol|
 
   if not vol.ready_to_format? then Chef::Log.info("Skipping format of volume #{vol_name}: not formattable (#{vol.inspect})") ; next ; end
 
-  f = bash "Format #{vol_name} as #{vol.fstype}" do
-    code        "mkfs -t #{vol.fstype} #{vol.device}"
-    action      :nothing
+
+  format_filesystem = execute "/sbin/mkfs -t #{vol.fstype} #{mkfs_options[vol.fstype].to_s} #{vol.device} -L #{vol.name}" do
+    not_if "eval $(blkid -o export #{vol.device}); test $TYPE = '#{vol.fstype}'"
+    action  :nothing
   end
-  f.run_action(:run)
+
+  format_filesystem.run_action(:run)
   
-  # don't resize again
+  # don't even think about formatting again
   vol.formatted!
 
 end

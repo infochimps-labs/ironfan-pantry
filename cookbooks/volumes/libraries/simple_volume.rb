@@ -29,13 +29,16 @@ module Silverware
     # if device_type is :label or :uuid, we have to assume it's ready.
     def attached?
       return true if (device_type.to_s != 'device')
-      !!( device && File.exists?(device) )
+
+      # Use ohai's discovery of block devices to see if our device is present
+      devname = device.split('/').last 
+      return true if node['block_device'][devname] rescue false
     end
 
     # True if the volume is mounted
     def mounted?
       return true if self[:mounted] or node[:volumes][name][:mounted]
-      !!( attached? && mount_point && File.exists?(mount_point) && current[:mount] == mount_point )
+      !!( attached? && mount_point && current[:mount] == mount_point )
     end
 
     # true if the volume is meant to be mounted
@@ -55,7 +58,7 @@ module Silverware
     end
 
     def ready_to_format?
-      !!( formattable? && attached? && (not mounted?) && (`file -s #{device}`.chomp =~ /\bdata\b/) )
+      !!( formattable? && attached? && (not mounted?) )
     end
 
     def in_raid?
@@ -76,27 +79,12 @@ module Silverware
     # group to set as volume group -- default is platform-appropriate root-equivalent
     def group()  self['group'] || node[:users]['root'][:primary_group] ; end
 
-    # Use `file -s` to identify volume type: ohai doesn't seem to want to do so.
+    # Return the fstype as best we know it. 
     def fstype
       return self['fstype'] if has_key?('fstype')
-      Chef::Log.debug([
-          self['fstype'], current[:fstype],
-          File.exists?(device) && `file -s '#{device}'`.chomp,
-          self,
-        ].inspect)
-      return current[:fstype] if current[:fstype]
-      return unless File.exists?(device)
-      dev_type_str = `file -s '#{device}'`.chomp
-      case
-      when dev_type_str =~ /SGI XFS/           then self['fstype'] = 'xfs'
-      when dev_type_str =~ /Linux.*(ext[2-4])/ then self['fstype'] = $1
-      else
-        raise "Can't determine filesystem type of #{device} -- set it explicitly in node[:volumes]"
-      end
-      self['fstype']
     end
 
-    # note that ohai repors :fs_type not :fstype
+    # note that ohai reports :fs_type not :fstype
     def current
       return {} unless device && node[:filesystem] && node[:filesystem][ device ]
       curr = Mash.new(node[:filesystem][ device ].to_hash)
@@ -135,7 +123,6 @@ module Silverware
         pre, dev, num = /(\/dev\/xvd)(\w)(\d*)/.match(new_device_name)[1..3]
         new_device_name = pre + (dev.ord + 4).chr + num
       end
-      return unless (Dir[device].empty?) && (not Dir[new_device_name].empty?)
       self['device'] = new_device_name
     end
   end

@@ -23,12 +23,15 @@ end
 
 git node['iron_cuke']['home_dir'] do
   repository node['iron_cuke']['git_repo']
-  reference "master"
+  reference node['iron_cuke']['git_branch']
 end
 
 file "#{node['iron_cuke']['conf_dir']}/announces.json" do
   content({"#{node.name}" => node[:announces].to_hash }.to_json)
 end
+
+package "libqtwebkit-dev"
+package "xvfb"
 
 execute "bundle install --without development test docs support" do
   cwd node['iron_cuke']['home_dir']

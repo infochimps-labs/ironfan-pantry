@@ -43,11 +43,11 @@ standard_dirs('hue') do
 end
 
 
-# Hive log storage on a single scratch dir
-volume_dirs('hive.log') do
+# Hue log storage on a single scratch dir
+volume_dirs('hue.log') do
   type          :local
   selects       :single
-  path          'hadoop/log/hive'
+  path          'hadoop/log/hue'
   group         'hadoop'
   mode          "0777"
 end

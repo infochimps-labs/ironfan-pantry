@@ -8,7 +8,7 @@ description      "Installs/Configures Vayacondios"
 
 recipe           "vayacondios::default",  "Installs Vayacondios API server."
 
-%w[nginx silverware git].each do |cb|
+%w[silverware git].each do |cb|
   depends cb
 end
 

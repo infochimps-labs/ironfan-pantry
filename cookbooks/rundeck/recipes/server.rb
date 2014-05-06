@@ -23,7 +23,7 @@ announce(:rundeck, :server, {
       :protocol => (node[:rundeck][:use_ssl] ? 'https'                     : 'http'                        ),
       :port     => (node[:rundeck][:use_ssl] ? node[:rundeck][:ssl][:port] : node[:rundeck][:server][:port])
     },
-    :chef_rundeck => { :protocol => 'http', :port => node[:rundeck][:chef_rundeck][:port] }
+    # :chef_rundeck => { :protocol => 'http', :port => node[:rundeck][:chef_rundeck][:port] }
   },
   :logs    => {
     :server       => node[:rundeck][:log_dir],

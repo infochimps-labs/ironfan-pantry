@@ -31,7 +31,7 @@ announce(:impala, :state_store, {
            :logs => { :state_store => node[:impala][:state_store][:log_dir] + '/current' },
            :daemons => {
              :state_store => {
-               :name => 'java',
+               :name => 'statestored',
                :user => node[:impala][:user],
                :cmd  => 'statestored'
              }
