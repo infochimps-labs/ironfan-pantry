@@ -17,24 +17,73 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'chef/mixin/shell_out'
+include Chef::Mixin::ShellOut
+
+def whyrun_supported?
+  true
+end
+
 def parse_app_dir_name url
   file_name = url.split('/')[-1]
   # funky logic to parse oracle's non-standard naming convention
   # for jdk1.6
   if file_name =~ /^(jre|jdk).*$/
     major_num = file_name.scan(/\d/)[0]
-    update_num = file_name.scan(/\d+/)[1]
+    update_token = file_name.scan(/u(\d+)/)[0]
+    update_num = update_token ? update_token[0] : "0"
     # pad a single digit number with a zero
     if update_num.length < 2
       update_num = "0" + update_num
     end
     package_name = file_name.scan(/[a-z]+/)[0]
-    app_dir_name = "#{package_name}1.#{major_num}.0_#{update_num}"
+    if update_num == "00"
+      app_dir_name = "#{package_name}1.#{major_num}.0"
+    else
+      app_dir_name = "#{package_name}1.#{major_num}.0_#{update_num}"
+    end
   else
-    app_dir_name = file_name.split(/(.tar.gz|.zip)/)[0]
+    app_dir_name = file_name.split(/(.tgz|.tar.gz|.zip)/)[0]
     app_dir_name = app_dir_name.split("-bin")[0]
   end
   [app_dir_name, file_name]
+end
+
+def oracle_downloaded?(download_path, new_resource)
+  if ::File.exists? download_path
+    require 'digest'
+    if new_resource.checksum =~ /^[0-9a-f]{32}$/
+      downloaded_sha =  Digest::MD5.file(download_path).hexdigest
+      downloaded_sha == new_resource.md5 
+    else
+      downloaded_sha =  Digest::SHA256.file(download_path).hexdigest
+      downloaded_sha == new_resource.checksum
+    end
+  else
+    return false
+  end
+end
+
+def download_direct_from_oracle(tarball_name, new_resource)
+  download_path = "#{Chef::Config[:file_cache_path]}/#{tarball_name}"
+  cookie = "oraclelicense=accept-securebackup-cookie"
+  if node['java']['oracle']['accept_oracle_download_terms']
+    # install the curl package
+    p = package "curl" do
+      action :nothing
+    end
+    # no converge_by block since the package provider will take care of this run_action
+    p.run_action(:install)
+    description = "download oracle tarball straight from the server"
+    converge_by(description) do
+       Chef::Log.debug "downloading oracle tarball straight from the source"
+       cmd = shell_out!(
+                                  %Q[ curl --create-dirs -L --cookie "#{cookie}" #{new_resource.url} -o #{download_path} ]
+                               )
+    end
+  else
+    Chef::Application.fatal!("You must set the attribute node['java']['oracle']['accept_oracle_download_terms'] to true if you want to download directly from the oracle site!")
+  end
 end
 
 action :install do
@@ -45,7 +94,7 @@ action :install do
   unless new_resource.default
     Chef::Log.debug("processing alternate jdk")
     app_dir = app_dir  + "_alt"
-    app_home = app_dir
+    app_home = new_resource.app_home + "_alt"
   else
     app_home = new_resource.app_home
   end
@@ -55,84 +104,111 @@ action :install do
     require 'fileutils'
 
     unless ::File.exists?(app_root)
-      FileUtils.mkdir app_root, :mode => new_resource.app_home_mode
-      FileUtils.chown new_resource.owner, new_resource.owner, app_root
-    end
-
-    r = remote_file "#{Chef::Config[:file_cache_path]}/#{tarball_name}" do
-      source new_resource.url
-      checksum new_resource.checksum
-      mode 0755
-      action :nothing
-    end
-    r.run_action(:create_if_missing)
-
-    require 'tmpdir'
-
-    tmpdir = Dir.mktmpdir
-    case tarball_name
-    when /^.*\.bin/
-      cmd = Chef::ShellOut.new(
-                               %Q[ cd "#{tmpdir}";
-                                   cp "#{Chef::Config[:file_cache_path]}/#{tarball_name}" . ;
-                                   bash ./#{tarball_name} -noregister
-                                 ] ).run_command
-      unless cmd.exitstatus == 0
-        Chef::Application.fatal!("Failed to extract file #{tarball_name}!")
-      end
-    when /^.*\.zip/
-      cmd = Chef::ShellOut.new(
-                         %Q[ unzip "#{Chef::Config[:file_cache_path]}/#{tarball_name}" -d "#{tmpdir}" ]
-                               ).run_command
-      unless cmd.exitstatus == 0
-        Chef::Application.fatal!("Failed to extract file #{tarball_name}!")
-      end
-    when /^.*\.tar.gz/
-      cmd = Chef::ShellOut.new(
-                         %Q[ tar xvzf "#{Chef::Config[:file_cache_path]}/#{tarball_name}" -C "#{tmpdir}" ]
-                               ).run_command
-      unless cmd.exitstatus == 0
-        Chef::Application.fatal!("Failed to extract file #{tarball_name}!")
+      description = "create dir #{app_root} and change owner to #{new_resource.owner}"
+      converge_by(description) do
+          FileUtils.mkdir app_root, :mode => new_resource.app_home_mode
+          FileUtils.chown new_resource.owner, new_resource.owner, app_root
       end
     end
 
-    cmd = Chef::ShellOut.new(
-                       %Q[ mv "#{tmpdir}/#{app_dir_name}" "#{app_dir}" ]
-                             ).run_command
-    unless cmd.exitstatus == 0
-        Chef::Application.fatal!(%Q[ Command \' mv "#{tmpdir}/#{app_dir_name}" "#{app_dir}" \' failed ])
+    if new_resource.url =~ /^http:\/\/download.oracle.com.*$/
+      download_path = "#{Chef::Config[:file_cache_path]}/#{tarball_name}"
+      if  oracle_downloaded?(download_path, new_resource)
+        Chef::Log.debug("oracle tarball already downloaded, not downloading again")
+      else
+        download_direct_from_oracle tarball_name, new_resource
       end
-    FileUtils.rm_r tmpdir
+    else
+      Chef::Log.debug("downloading tarball from an unofficial repository")
+      r = remote_file "#{Chef::Config[:file_cache_path]}/#{tarball_name}" do
+        source new_resource.url
+        checksum new_resource.checksum
+        mode 0755
+        action :nothing
+      end
+      #no converge by on run_action remote_file takes care of it.
+      r.run_action(:create_if_missing)
+    end
+
+    description = "extract compressed data into Chef file cache path and
+                    move extracted data to #{app_dir}"
+    converge_by(description) do
+       case tarball_name
+       when /^.*\.bin/
+         cmd = shell_out(
+                                  %Q[ cd "#{Chef::Config[:file_cache_path]}";
+                                      bash ./#{tarball_name} -noregister
+                                    ] )
+         unless cmd.exitstatus == 0
+           Chef::Application.fatal!("Failed to extract file #{tarball_name}!")
+         end
+       when /^.*\.zip/
+         cmd = shell_out(
+                            %Q[ unzip "#{Chef::Config[:file_cache_path]}/#{tarball_name}" -d "#{Chef::Config[:file_cache_path]}" ]
+                                  )
+         unless cmd.exitstatus == 0
+           Chef::Application.fatal!("Failed to extract file #{tarball_name}!")
+         end
+       when /^.*\.(tar.gz|tgz)/
+         cmd = shell_out(
+                            %Q[ tar xvzf "#{Chef::Config[:file_cache_path]}/#{tarball_name}" -C "#{Chef::Config[:file_cache_path]}" ]
+                                  )
+         unless cmd.exitstatus == 0
+           Chef::Application.fatal!("Failed to extract file #{tarball_name}!")
+         end
+       end
+
+       cmd = shell_out(
+                          %Q[ mv "#{Chef::Config[:file_cache_path]}/#{app_dir_name}" "#{app_dir}" ]
+                                )
+       unless cmd.exitstatus == 0
+           Chef::Application.fatal!(%Q[ Command \' mv "#{Chef::Config[:file_cache_path]}/#{app_dir_name}" "#{app_dir}" \' failed ])
+         end
+     end
+     new_resource.updated_by_last_action(true)
+  end
+
+  #set up .jinfo file for update-java-alternatives
+  java_name =  app_home.split('/')[-1]
+  jinfo_file = "#{app_root}/.#{java_name}.jinfo"
+  if platform_family?("debian") && !::File.exists?(jinfo_file)
+    description = "Add #{jinfo_file} for debian"
+    converge_by(description) do
+      Chef::Log.debug "Adding #{jinfo_file} for debian"
+      template jinfo_file do
+        cookbook "java"
+        source "oracle.jinfo.erb"
+        variables(
+          :priority => new_resource.alternatives_priority,
+          :bin_cmds => new_resource.bin_cmds,
+          :name => java_name,
+          :app_dir => app_home
+        )
+        action :create
+      end
+    end
     new_resource.updated_by_last_action(true)
   end
 
+  #link app_home to app_dir
+  Chef::Log.debug "app_home is #{app_home} and app_dir is #{app_dir}"
+  current_link = ::File.symlink?(app_home) ? ::File.readlink(app_home) : nil
+  if current_link != app_dir
+    description = "Symlink #{app_dir} to #{app_home}"
+    converge_by(description) do
+       Chef::Log.debug "Symlinking #{app_dir} to #{app_home}"
+       FileUtils.rm_f app_home
+       FileUtils.ln_sf app_dir, app_home
+    end
+  end
+
   #update-alternatives
-  if new_resource.default
-    Chef::Log.debug "app_home is #{app_home} and app_dir is #{app_dir}"
-    current_link = ::File.symlink?(app_home) ? ::File.readlink(app_home) : nil
-    if current_link != app_dir
-      Chef::Log.debug "symlinking #{app_dir} to #{app_home}"
-      FileUtils.rm_f app_home
-      FileUtils.ln_sf app_dir, app_home
-    end
-    if new_resource.bin_cmds
-      new_resource.bin_cmds.each do |cmd|
-        if ::File.exists? "/usr/bin/#{cmd}"
-          current_bin_link = ::File.readlink("/usr/bin/#{cmd}")
-        else
-          current_bin_link = false
-        end
-        should_be_link = "#{app_home}/bin/#{cmd}"
-        if current_bin_link != should_be_link
-          cmd_string = %Q{ update-alternatives --install /usr/bin/#{cmd} #{cmd} #{app_home}/bin/#{cmd} 1;
-                           update-alternatives --set                     #{cmd} #{app_home}/bin/#{cmd}    }
-          cmd = Chef::ShellOut.new(cmd_string).run_command
-          unless cmd.exitstatus == 0
-            Chef::Application.fatal!("update alternatives failed:\n#{cmd_string}")
-          end
-        end
-      end
-    end
+  java_alternatives 'set-java-alternatives' do
+    java_location app_home
+    bin_cmds new_resource.bin_cmds
+    priority new_resource.alternatives_priority
+    default new_resource.default
+    action :set
   end
 end
 
@@ -141,17 +217,25 @@ action :remove do
   app_root = new_resource.app_home.split('/')[0..-2].join('/')
   app_dir = app_root + '/' + app_dir_name
 
+  unless new_resource.default
+    Chef::Log.debug("processing alternate jdk")
+    app_dir = app_dir + "_alt"
+    app_home = new_resource.app_home + "_alt"
+  else
+    app_home = new_resource.app_home
+  end
+
   if ::File.exists?(app_dir)
-    new_resource.bin_cmds.each do |cmd|
-      cmd = execute "update_alternatives" do
-        command "update-alternatives --remove #{cmd} #{app_dir} "
-        returns [0,2]
-        action :nothing
-      end
-      cmd.run_action(:run)
+    java_alternatives 'unset-java-alternatives' do
+      java_location app_home
+      bin_cmds new_resource.bin_cmds
+      action :unset
     end
-    Chef::Log.info "Removing #{new_resource.name} at #{app_dir}"
-    FileUtils.rm_rf app_dir
+    description = "remove #{new_resource.name} at #{app_dir}"
+    converge_by(description) do
+       Chef::Log.info "Removing #{new_resource.name} at #{app_dir}"
+       FileUtils.rm_rf app_dir
+    end
     new_resource.updated_by_last_action(true)
   end
 end

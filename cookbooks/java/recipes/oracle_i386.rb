@@ -17,32 +17,49 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-java_home = node['java']["java_home"]
+unless node.recipe?('java::default')
+  Chef::Log.warn("Using java::default instead is recommended.")
 
-case node['java']['jdk_version']
-when "6"
-  tarball_url = node['java']['jdk']['6']['i586']['url']
-  tarball_checksum = node['java']['jdk']['6']['i586']['checksum']
-when "7"
-  tarball_url = node['java']['jdk']['7']['i586']['url']
-  tarball_checksum = node['java']['jdk']['7']['i586']['checksum']
-end
-
-ruby_block  "set-env-java-home" do
-  block do
-    ENV["JAVA_HOME"] = java_home
+# Even if this recipe is included by itself, a safety check is nice...
+  if node['java']['java_home'].nil? or node['java']['java_home'].empty?
+    include_recipe "java::set_attributes_from_version"
   end
 end
 
+java_home = node['java']["java_home"]
+
+case node['java']['jdk_version'].to_s
+when "6"
+  tarball_url = node['java']['jdk']['6']['i586']['url']
+  tarball_checksum = node['java']['jdk']['6']['i586']['checksum']
+  bin_cmds = node['java']['jdk']['6']['bin_cmds']
+when "7"
+  tarball_url = node['java']['jdk']['7']['i586']['url']
+  tarball_checksum = node['java']['jdk']['7']['i586']['checksum']
+  bin_cmds = node['java']['jdk']['7']['bin_cmds']
+when "8"
+  tarball_url = node['java']['jdk']['8']['i586']['url']
+  tarball_checksum = node['java']['jdk']['8']['i586']['checksum']
+  bin_cmds = node['java']['jdk']['8']['bin_cmds']
+end
+
+include_recipe "java::set_java_home"
+
 yum_package "glibc" do
   arch "i686"
-#  provider Chef::Provider::Package::Yum
+  only_if { platform_family?( "rhel", "fedora" ) }
 end
 
 java_ark "jdk-alt" do
   url tarball_url
+  default node['java']['set_default']
   checksum tarball_checksum
   app_home java_home
-  default false
+  bin_cmds bin_cmds
   action :install
+  default false
+end
+
+if node['java']['set_default'] and platform_family?('debian')
+  include_recipe 'java::default_java_symlink'
 end

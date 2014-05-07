@@ -1,9 +1,8 @@
-#
-# Author:: Seth Chisamore (<schisamo@opscode.com>)
+# Author:: Joshua Timberman (<joshua@opscode.com>)
 # Cookbook Name:: java
-# Recipe:: default
+# Recipe:: set_java_home
 #
-# Copyright 2008-2011, Opscode, Inc.
+# Copyright 2013, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,11 +15,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-if node['java']['jdk_version'].to_i == 8 and node['java']['install_flavor'] != 'oracle'
-  Chef::Application.fatal!("JDK 8 is currently only provided with the Oracle JDK")
+ruby_block  "set-env-java-home" do
+  block do
+    ENV["JAVA_HOME"] = node['java']['java_home']
+  end
+  not_if { ENV["JAVA_HOME"] == node['java']['java_home'] }
 end
 
-include_recipe "java::set_attributes_from_version"
-include_recipe "java::#{node['java']['install_flavor']}"
+directory "/etc/profile.d" do
+  mode 00755
+end
+
+file "/etc/profile.d/jdk.sh" do
+  content "export JAVA_HOME=#{node['java']['java_home']}"
+  mode 00755
+end
