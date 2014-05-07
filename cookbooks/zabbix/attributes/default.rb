@@ -7,7 +7,7 @@ zabbix_home_dir = '/usr/local/share/zabbix'
 default[:zabbix][:home_dir]    = zabbix_home_dir
 default[:zabbix][:pid_dir]     = '/var/run/zabbix'
 default[:zabbix][:conf_dir]    = '/etc/zabbix'
-default[:zabbix][:release_url] = "http://sourceforge.net/projects/zabbix/files/ZABBIX%20Latest%20Stable/:version:/zabbix-:version:.tar.gz"
+default[:zabbix][:release_url] = "http://artifacts.chimpy.us.s3.amazonaws.com/tarballs/zabbix-:version:.tar.gz"
 
 default[:zabbix][:user]             = "zabbix"
 default[:zabbix][:group]            = "zabbix"
