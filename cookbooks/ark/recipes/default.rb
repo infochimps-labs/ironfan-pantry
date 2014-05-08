@@ -1,8 +1,9 @@
 #
-# Cookbook Name:: ant
+# Cookbook Name:: ark
 # Recipe:: default
 #
-# Copyright 2010-2012, Opscode, Inc.
+# Author:: Bryan W. Berry <bryan.berry@gmail.com>
+# Copyright 2012, Bryan W. Berry
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,4 +18,6 @@
 # limitations under the License.
 #
 
-include_recipe "ant::install_#{node['ant']['install_method']}"
+Array(node['ark']['package_dependencies']).each do |pkg|
+  package pkg
+end
