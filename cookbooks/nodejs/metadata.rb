@@ -1,37 +1,22 @@
-maintainer       "Nathaniel Eliot - Infochimps, Inc"
-maintainer_email "coders@infochimps.com"
+maintainer       "Promet Solutions"
+maintainer_email "marius@promethost.com"
 license          "Apache 2.0"
-long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          IO.read(File.join(File.dirname(__FILE__), 'VERSION'))
-
 description      "Installs/Configures nodejs"
+long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
+version          "1.3.0"
+name             "nodejs"
+provides         "nodejs"
 
-depends          "python"
-depends          "build-essential"
+recipe "nodejs", "Installs Node.JS based on the default installation method"
+recipe "nodejs::install_from_source", "Installs Node.JS from source"
+recipe "nodejs::install_from_binary", "Installs Node.JS from official binaries"
+recipe "nodejs::install_from_package", "Installs Node.JS from packages"
+recipe "nodejs::npm", "Installs npm from source - a package manager for node"
 
-recipe           "nodejs::compile",                    "Compile"
-recipe           "nodejs::default",                    "Base configuration for nodejs"
-
-%w[ debian ubuntu ].each do |os|
-  supports os
+%w{ apt yum build-essential }.each do |c|
+  depends c
 end
 
-attribute "nodejs/git_repo",
-  :display_name          => "",
-  :description           => "",
-  :default               => "https://github.com/joyent/node.git"
-
-attribute "nodejs/jobs",
-  :display_name          => "",
-  :description           => "",
-  :default               => "2"
-
-attribute "nodejs/install_dir",
-  :display_name          => "",
-  :description           => "",
-  :default               => "/usr/src/nodejs"
-
-attribute "nodejs/bin_path",
-  :display_name          => "",
-  :description           => "",
-  :default               => "/usr/local/bin/node"
+%w{ debian ubuntu centos redhat smartos }.each do |os|
+    supports os
+end
