@@ -4,4 +4,8 @@
 #
 # Copyright 2013, Infochimps, Inc.
 
-execute("apt-get update"){ action :nothing }.run_action(:run)
+if platform_family? "debian" then
+  execute("apt-get update") do 
+    action :nothing 
+  end.run_action(:run)
+end
