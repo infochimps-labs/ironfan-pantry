@@ -5,18 +5,6 @@ Sets up iptables to use a script to maintain firewall rules. However
 this cookbook may be deprecated or heavily modified in favor of the
 general firewall cookbook, see __Roadmap__.
 
-Changes
-=======
-
-### v0.10.0:
-
-* [COOK-641] - be able to save output on rhel-family
-* [COOK-655] - use a template from other cookbooks
-
-### v0.9.3:
-
-* Current public release.
-
 Roadmap
 -------
 
@@ -71,7 +59,7 @@ template:
     -A FWR -p tcp -m tcp --dport 80 -j ACCEPT
 
 This would go in the cookbook,
-`httpd/templates/default/port_http.erb`. Then to use it in
+`httpd/templates/default/http.erb`. Then to use it in
 `recipe[httpd]`:
 
     iptables_rule "http"

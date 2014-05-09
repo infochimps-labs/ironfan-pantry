@@ -1,8 +1,10 @@
 #
-# Cookbook Name:: apt
-# Resource:: preference
+# Cookbook Name::       install_from_package
+# Description::         Installs nginx package from repository
+# Recipe::              install_from_package
+# Author::              Brandon Bell - Infochimps, Inc
 #
-# Copyright 2010-2013, Opscode, Inc.
+# Copyright 2009, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,16 +19,6 @@
 # limitations under the License.
 #
 
-actions :add, :remove
-default_action :add if defined?(default_action) # Chef > 10.8
+include_recipe 'yum::epel' if platform?('centos', 'redhat')
+package 'nginx'
 
-# Needed for Chef versions < 0.10.10
-def initialize(*args)
-  super
-  @action = :add
-end
-
-attribute :package_name, :kind_of => String, :name_attribute => true
-attribute :glob, :kind_of => String
-attribute :pin, :kind_of => String
-attribute :pin_priority, :kind_of => String

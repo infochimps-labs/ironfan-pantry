@@ -1,8 +1,8 @@
 #
-# Cookbook Name:: apt
-# Resource:: preference
+# Cookbook Name:: iptables
+# Recipe:: default
 #
-# Copyright 2010-2013, Opscode, Inc.
+# Copyright 2008-2009, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,16 +17,8 @@
 # limitations under the License.
 #
 
-actions :add, :remove
-default_action :add if defined?(default_action) # Chef > 10.8
-
-# Needed for Chef versions < 0.10.10
-def initialize(*args)
-  super
-  @action = :add
+package "iptables" 
+service "iptables" do
+      action [ :disable, :stop ]
+      supports :status => true, :start => true, :stop => true, :restart => true
 end
-
-attribute :package_name, :kind_of => String, :name_attribute => true
-attribute :glob, :kind_of => String
-attribute :pin, :kind_of => String
-attribute :pin_priority, :kind_of => String

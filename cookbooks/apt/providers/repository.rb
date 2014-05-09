@@ -17,6 +17,8 @@
 # limitations under the License.
 #
 
+use_inline_resources if defined?(use_inline_resources)
+
 def whyrun_supported?
   true
 end
@@ -25,22 +27,26 @@ end
 def install_key_from_keyserver(key, keyserver)
   execute "install-key #{key}" do
     if !node['apt']['key_proxy'].empty?
-      command "apt-key adv --keyserver-options http-proxy=#{node['apt']['key_proxy']} --keyserver #{keyserver} --recv #{key}"
+      command "apt-key adv --keyserver-options http-proxy=#{node['apt']['key_proxy']} --keyserver hkp://#{keyserver}:80 --recv #{key}"
     else
       command "apt-key adv --keyserver #{keyserver} --recv #{key}"
     end
     action :run
-    not_if "apt-key list | grep #{key}"
+    not_if do
+      extract_fingerprints_from_cmd('apt-key finger').any? do |fingerprint|
+        fingerprint.end_with?(key.upcase)
+      end
+    end
   end
 end
 
 # run command and extract gpg ids
-def extract_gpg_ids_from_cmd(cmd)
+def extract_fingerprints_from_cmd(cmd)
   so = Mixlib::ShellOut.new(cmd)
   so.run_command
-  so.stdout.split(/\n/).collect do |t|
-    if z = t.match(/^pub\s+\d+\w\/([0-9A-F]{8})/)
-      z[1]
+  so.stdout.split(/\n/).map do |t|
+    if z = t.match(/^ +Key fingerprint = ([0-9A-F ]+)/)
+      z[1].split.join
     end
   end.compact
 end
@@ -68,64 +74,70 @@ def install_key_from_uri(uri)
     command "apt-key add #{cached_keyfile}"
     action :run
     not_if do
-      installed_ids = extract_gpg_ids_from_cmd("apt-key finger")
-      key_ids = extract_gpg_ids_from_cmd("gpg --with-fingerprint #{cached_keyfile}")
-      (installed_ids & key_ids).sort == key_ids.sort
+      installed_keys = extract_fingerprints_from_cmd('apt-key finger')
+      proposed_keys = extract_fingerprints_from_cmd("gpg --with-fingerprint #{cached_keyfile}")
+      (installed_keys & proposed_keys).sort == proposed_keys.sort
     end
   end
 end
 
 # build repo file contents
-def build_repo(uri, distribution, components, arch, add_deb_src)
+def build_repo(uri, distribution, components, trusted, arch, add_deb_src)
   components = components.join(' ') if components.respond_to?(:join)
+  repo_options = []
+  repo_options << "arch=#{arch}" if arch
+  repo_options << 'trusted=yes' if trusted
+  repo_options = '[' + repo_options.join(' ') + ']' unless repo_options.empty?
   repo_info = "#{uri} #{distribution} #{components}\n"
-  repo_info = "[arch=#{arch}] #{repo_info}" if arch
+  repo_info = "#{repo_options} #{repo_info}" unless repo_options.empty?
   repo =  "deb     #{repo_info}"
   repo << "deb-src #{repo_info}" if add_deb_src
   repo
 end
 
 action :add do
-  new_resource.updated_by_last_action(false)
-  @repo_file = nil
-
-  recipe_eval do
-    # add key
-    if new_resource.keyserver && new_resource.key
-      install_key_from_keyserver(new_resource.key, new_resource.keyserver)
-    elsif new_resource.key
-      install_key_from_uri(new_resource.key)
-    end
-
-    file "/var/lib/apt/periodic/update-success-stamp" do
-      action :nothing
-    end
-
-    execute "apt-get update" do
-      ignore_failure true
-      action :nothing
-    end
-
-    # build repo file
-    repository = build_repo(new_resource.uri,
-                            new_resource.distribution,
-                            new_resource.components,
-                            new_resource.arch,
-                            new_resource.deb_src)
-
-    @repo_file = file "/etc/apt/sources.list.d/#{new_resource.name}.list" do
-      owner "root"
-      group "root"
-      mode 00644
-      content repository
-      action :create
-      notifies :delete, "file[/var/lib/apt/periodic/update-success-stamp]", :immediately
-      notifies :run, "execute[apt-get update]", :immediately if new_resource.cache_rebuild
-    end
+  # add key
+  if new_resource.keyserver && new_resource.key
+    install_key_from_keyserver(new_resource.key, new_resource.keyserver)
+  elsif new_resource.key
+    install_key_from_uri(new_resource.key)
   end
 
-  raise RuntimeError, "The repository file to create is nil, cannot continue." if @repo_file.nil?
-  new_resource.updated_by_last_action(@repo_file.updated?)
+  file '/var/lib/apt/periodic/update-success-stamp' do
+    action :nothing
+  end
+
+  execute 'apt-cache gencaches' do
+    ignore_failure true
+    action :nothing
+  end
+
+  execute 'apt-get update' do
+    command "apt-get update -o Dir::Etc::sourcelist='sources.list.d/#{new_resource.name}.list' -o Dir::Etc::sourceparts='-' -o APT::Get::List-Cleanup='0'"
+    ignore_failure true
+    action :nothing
+    notifies :run, 'execute[apt-cache gencaches]', :immediately
+  end
+
+  # build repo file
+  repository = build_repo(
+    new_resource.uri,
+    new_resource.distribution,
+    new_resource.components,
+    new_resource.trusted,
+    new_resource.arch,
+    new_resource.deb_src
+    )
+
+  file "/etc/apt/sources.list.d/#{new_resource.name}.list" do
+    owner 'root'
+    group 'root'
+    mode 00644
+    content repository
+    action :create
+    notifies :delete, 'file[/var/lib/apt/periodic/update-success-stamp]', :immediately
+    notifies :run, 'execute[apt-get update]', :immediately if new_resource.cache_rebuild
+  end
 end
 
 action :remove do
