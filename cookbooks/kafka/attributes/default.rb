@@ -1,6 +1,6 @@
 # Install
 default[:kafka][:package_name]                      = 'kafka'
-default[:kafka][:version]                           = '0.7.1-incubating'
+default[:kafka][:version]                           = '0.8.1.1'
 default[:kafka][:release_url]                       = "http://artifacts.chimpy.us.s3.amazonaws.com/tarballs/kafka-:version:-src.tgz"
 
 default[:kafka][:user]                              = 'kafka'
@@ -71,10 +71,6 @@ default[:kafka][:contrib][:http_basic_auth]         = false
 # actually a sensible default? As an alternative to a global default,
 # defaults could be set for each runner here.
 default[:kafka][:contrib][:default_app_user] = 'root'
-
-# This must be placed in the kafka install directory for the hadoop
-# consumer to function correctly.
-default[:kafka][:hadoop_jar] = 'https://s3.amazonaws.com/artifacts.chimpy.us/jars/hadoop-core-0.20.2-cdh3u2.jar'
 
 default[:kafka][:server][:run_state] = :start
 

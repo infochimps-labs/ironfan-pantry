@@ -3,15 +3,15 @@
 
 # A group of consumers will use this ID in Zookeeper to work together
 <% if !@group_id.nil? && !@group_id.empty? %>
-groupid=<%= @group_id %>
+group.id=<%= @group_id %>
 <% else %>
-# groupid=Missing from Chef options
+# group.id=Missing from Chef options
 <% end %>
 
 # Zookeeper connection string
 <% if @zookeeper.nil? || @zookeeper.empty? %>
 # Chef unable to discover zookeeper, defaulting to localhost
-zk.connect=localhost:2181
+zookeeper.connect=localhost:2181
 <% else %>
-zk.connect=<%= @zookeeper %>
+zookeeper.connect=<%= @zookeeper %>
 <% end %>
