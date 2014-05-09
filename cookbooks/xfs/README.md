@@ -6,7 +6,7 @@ Installs packages for working with XFS filesystems.
 Requirements
 ====
 
-Tested on Ubuntu 10.04, CentOS 5.5 and Scientific Linux 6.0.
+Tested on Ubuntu 10.04, CentOS 5.5, Amazon Linux and Scientific Linux 6.0.
 
 Should work on any Debian or Red Hat family Linux distributions that
 have the xfs packages in a default repository.

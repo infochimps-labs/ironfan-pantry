@@ -85,7 +85,7 @@ default[:package_set][:gems] = { }
 case node.platform
 when 'centos', 'redhat'
   default[:package_set][:pkgs][:base]     = %w[ tree git zip openssl wget curl runit libxslt-devel ]
-  default[:package_set][:pkgs][:dev]      = %w[ elinks w3m ctags-etags emacs-nox  ]
+  default[:package_set][:pkgs][:dev]      = %w[ elinks w3m ctags-etags emacs-nox zsh thrift ]
   default[:package_set][:pkgs][:sysadmin] = %w[ tree chkconfig dstat sysstat nmap ]
   default[:package_set][:pkgs][:text]     = %w[ libidn-devel libxml2-devel libxslt-devel tidy ]
   default[:package_set][:pkgs][:python]   = %w[ python-devel python-setuptools python-simplejson ]
