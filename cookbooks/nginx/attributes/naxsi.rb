@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: nginx
-# Recipe:: default
+# Attributes:: naxsi
 #
-# Author:: AJ Christensen <aj@junglist.gen.nz>
+# Author:: Artiom Lunev (<artiom.lunev@gmail.com>)
 #
-# Copyright 2008-2013, Opscode, Inc.
+# Copyright 2012-2013, Artiom Lunev
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +19,6 @@
 # limitations under the License.
 #
 
-include_recipe "nginx::#{node['nginx']['install_method']}"
-
-service 'nginx' do
-  supports :status => true, :restart => true, :reload => true
-  action   :start
-end
+default['nginx']['naxsi']['version']  = '0.49'
+default['nginx']['naxsi']['url']      = "http://naxsi.googlecode.com/files/naxsi-core-#{node['nginx']['naxsi']['version']}.tgz"
+default['nginx']['naxsi']['checksum'] = 'bb0b63713d5a9446401d5acd1ef0882b9c2a0fc506502bbd88bc4663d273e9c7'

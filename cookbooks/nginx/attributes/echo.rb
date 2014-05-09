@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: nginx
-# Recipe:: default
+# Attributes:: echo
 #
-# Author:: AJ Christensen <aj@junglist.gen.nz>
+# Author:: Danial Pearce (<github@tigris.id.au>)
 #
-# Copyright 2008-2013, Opscode, Inc.
+# Copyright 2013, Danial Pearce
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +19,6 @@
 # limitations under the License.
 #
 
-include_recipe "nginx::#{node['nginx']['install_method']}"
-
-service 'nginx' do
-  supports :status => true, :restart => true, :reload => true
-  action   :start
-end
+default['nginx']['echo']['version']        = '0.40'
+default['nginx']['echo']['url']            = "https://github.com/agentzh/echo-nginx-module/tarball/v#{node['nginx']['echo']['version']}"
+default['nginx']['echo']['checksum']       = '26ae7f7381d52d6aa5021dfc39a1862fd081d580166343f671d0920ed239ab41'

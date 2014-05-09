@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: nginx
-# Recipe:: default
+# Attributes:: headers_more
 #
-# Author:: AJ Christensen <aj@junglist.gen.nz>
+# Author:: Lucas Jandrew (<ljandrew@riotgames.com>)
 #
-# Copyright 2008-2013, Opscode, Inc.
+# Copyright 2012-2013, Riot Games
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +19,5 @@
 # limitations under the License.
 #
 
-include_recipe "nginx::#{node['nginx']['install_method']}"
-
-service 'nginx' do
-  supports :status => true, :restart => true, :reload => true
-  action   :start
-end
+default['nginx']['headers_more']['source_url']      = 'https://github.com/agentzh/headers-more-nginx-module/tarball/v0.19'
+default['nginx']['headers_more']['source_checksum'] = '7e45d5cbe4ed6865b3bce4fcb6c05f13a52a315702335bcedf68691ad41d8294'

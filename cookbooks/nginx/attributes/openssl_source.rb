@@ -1,10 +1,10 @@
 #
 # Cookbook Name:: nginx
-# Recipe:: default
+# Attributes:: openssl_source
 #
-# Author:: AJ Christensen <aj@junglist.gen.nz>
+# Author:: David Radcliffe (<radcliffe.david@gmail.com>)
 #
-# Copyright 2008-2013, Opscode, Inc.
+# Copyright 2013, David Radcliffe
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,9 +19,5 @@
 # limitations under the License.
 #
 
-include_recipe "nginx::#{node['nginx']['install_method']}"
-
-service 'nginx' do
-  supports :status => true, :restart => true, :reload => true
-  action   :start
-end
+default['nginx']['openssl_source']['version']  = '1.0.1g'
+default['nginx']['openssl_source']['url']      = "http://www.openssl.org/source/openssl-#{node['nginx']['openssl_source']['version']}.tar.gz"

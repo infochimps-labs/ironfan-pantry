@@ -1,10 +1,10 @@
 #
-# Cookbook Name::       install_from_package
-# Description::         Installs nginx package from repository
-# Recipe::              install_from_package
-# Author::              Brandon Bell - Infochimps, Inc
+# Cookbook Name:: nginx
+# Recipe:: commons
 #
-# Copyright 2009, Opscode, Inc.
+# Author:: AJ Christensen <aj@junglist.gen.nz>
+#
+# Copyright 2008-2013, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,6 @@
 # limitations under the License.
 #
 
-include_recipe 'yum::epel' if platform?('centos', 'redhat')
-package 'nginx'
-
+include_recipe 'nginx::commons_dir'
+include_recipe 'nginx::commons_script'
+include_recipe 'nginx::commons_conf'
