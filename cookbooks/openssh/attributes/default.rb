@@ -24,7 +24,7 @@
 default['openssh']['package_name'] = case node['platform_family']
                                      when 'rhel', 'fedora'
                                        %w[openssh-clients openssh]
-                                     when 'arch', 'suse'
+                                     when 'arch', 'suse', 'gentoo'
                                        %w[openssh]
                                      when 'freebsd'
                                        %w[]
@@ -33,7 +33,7 @@ default['openssh']['package_name'] = case node['platform_family']
                                      end
 
 default['openssh']['service_name'] = case node['platform_family']
-                                     when 'rhel', 'fedora', 'suse', 'freebsd'
+                                     when 'rhel', 'fedora', 'suse', 'freebsd', 'gentoo'
                                        'sshd'
                                      else
                                        'ssh'
@@ -102,7 +102,7 @@ default['openssh']['client']['host'] = '*'
 # default['openssh']['server']['max_sessions'] = '10'
 # default['openssh']['server']['r_s_a_authentication'] = 'yes'
 # default['openssh']['server']['pubkey_authentication'] = 'yes'
-default['openssh']['server']['authorized_keys_file'] = '%h/.ssh/authorized_keys'
+# default['openssh']['server']['authorized_keys_file'] = '%h/.ssh/authorized_keys'
 # default['openssh']['server']['rhosts_r_s_a_authentication'] = 'no'
 # default['openssh']['server']['host_based_authentication'] = 'no'
 # default['openssh']['server']['ignore_user_known_hosts'] = 'no'
