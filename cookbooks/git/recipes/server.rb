@@ -2,7 +2,7 @@
 # Cookbook Name:: git
 # Recipe:: server
 #
-# Copyright 2009-2014, Chef Software, Inc.
+# Copyright 2009, Opscode, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,41 +16,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-return "#{node['platform']} is not supported by the #{cookbook_name}::#{recipe_name} recipe" if node['platform'] == 'windows'
+include_recipe "git"
 
-include_recipe 'git'
-
-directory node['git']['server']['base_path'] do
-  owner 'root'
-  group 'root'
-  mode '0755'
+directory "/srv/git" do
+  owner "root"
+  group "root"
+  mode 0755
 end
 
-case node['platform_family']
-when 'debian'
-  package 'xinetd'
-when 'rhel'
-  package 'git-daemon'
+case node[:platform]
+when "debian", "ubuntu"
+  include_recipe "runit"
+  runit_service "git-daemon"
 else
-  log 'Platform requires setting up a git daemon service script.'
-  log "Hint: /usr/bin/git daemon --export-all --user=nobody --group=daemon --base-path=#{node['git']['server']['base_path']}"
-  return
-end
-
-template '/etc/xinetd.d/git' do
-  backup false
-  source 'git-xinetd.d.erb'
-  owner 'root'
-  group 'root'
-  mode '0644'
-  variables(
-    :git_daemon_binary => value_for_platform_family(
-      'debian' => '/usr/lib/git-core/git-daemon',
-      'rhel' => '/usr/libexec/git-core/git-daemon'
-      )
-    )
-end
-
-service 'xinetd' do
-  action [:enable, :restart]
+  log "Platform requires setting up a git daemon service script."
+  log "Hint: /usr/bin/git daemon --export-all --user=nobody --group=daemon --base-path=/srv/git"
 end
