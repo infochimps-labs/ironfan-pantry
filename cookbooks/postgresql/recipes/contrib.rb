@@ -17,8 +17,26 @@
 
 include_recipe "postgresql::server"
 
+# Install the PostgreSQL contrib package(s) from the distribution,
+# as specified by the node attributes.
 node['postgresql']['contrib']['packages'].each do |pg_pack|
 
   package pg_pack
 
+end
+
+# Install PostgreSQL contrib extentions into the template1 database,
+# as specified by the node attributes.
+if (node['postgresql']['contrib'].attribute?('extensions'))
+  node['postgresql']['contrib']['extensions'].each do |pg_ext|
+    bash "install-#{pg_ext}-extension" do
+      user 'postgres'
+      code <<-EOH
+        echo 'CREATE EXTENSION IF NOT EXISTS "#{pg_ext}";' | psql -d template1
+      EOH
+      action :run
+      ::Chef::Resource.send(:include, Opscode::PostgresqlHelpers)
+      not_if {extension_installed?(pg_ext)}
+    end
+  end
 end
