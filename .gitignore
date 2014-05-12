@@ -41,6 +41,9 @@ pkg
 .vendor
 .bundle
 Gemfile.lock
+.buildpath
+.rbenv-gemsets
+.ruby-version
 
 ## PROJECT::SPECIFIC
 

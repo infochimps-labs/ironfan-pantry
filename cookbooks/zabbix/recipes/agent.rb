@@ -67,6 +67,6 @@ announce(:zabbix, :agent, {
       monitor:  false
     }
   },
-  daemons:  { agent:  'zabbix_agentd' }
+  daemons:  { agent:  { service: 'zabbix_agentd' } }
 })
 

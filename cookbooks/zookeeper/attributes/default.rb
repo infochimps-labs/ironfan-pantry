@@ -28,7 +28,7 @@ default[:groups   ]['zookeeper'][:gid]       = 305
 # Install
 #
 default[:zookeeper][:exported_jars]          = [ ::File.join(node[:zookeeper][:home_dir], 'zookeeper.jar'), ]
-default[:zookeeper][:version]                = '3.4.5'
+default[:zookeeper][:version]                = '3.4.5*'
 default[:zookeeper][:release_url]            = ':apache_mirror:/zookeeper/zookeeper-:version:/zookeeper-:version:.tar.gz'
 
 #
