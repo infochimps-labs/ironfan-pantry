@@ -30,8 +30,12 @@ file "#{node['iron_cuke']['conf_dir']}/announces.json" do
   content({"#{node.name}" => node[:announces].to_hash }.to_json)
 end
 
-package "libqtwebkit-dev"
-package "xvfb"
+if platform_family?('rhel')
+  package "xorg-x11-server-Xvfb"
+elsif platform_family?('debian')
+  package "libqtwebkit-dev"
+  package "xvfb"
+end
 
 execute "bundle install --without development test docs support" do
   cwd node['iron_cuke']['home_dir']
