@@ -19,10 +19,10 @@
 . /etc/init.d/functions
 
 RETVAL=0
-PIDFILE=<%= node.zabbix.pid_dir %>/$NAME.pid
+PIDFILE=<%= node.zabbix.pid_dir %>/zabbix_agentd.pid
 
 prog=zabbix_agentd
-exec=/usr/local/bin/$prog
+exec=/usr/sbin/$prog
 lockfile=/var/lock/subsys/$prog
 
 # Source config
@@ -36,7 +36,7 @@ start() {
         umask 077
 
         echo -n $"Starting zabbix agent: "
-        daemon --pidfile="$PIDFILE" $exec -- -c <%= node.zabbix.conf_dir %>/zabbix_agentd.conf
+        daemon --pidfile="$PIDFILE" $exec -c <%= node.zabbix.conf_dir %>/zabbix_agentd.conf
         RETVAL=$?
         echo
         [ $RETVAL -eq 0 ] && touch $lockfile

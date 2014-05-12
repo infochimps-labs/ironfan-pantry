@@ -26,7 +26,7 @@ standard_dirs('zabbix.agent') do
 end
 
 case node.zabbix.agent.install_method
-when 'source', 'prebuild'
+when 'source', 'prebuild', 'package'
   include_recipe "zabbix::agent_#{node.zabbix.agent.install_method}"
 else
   warn "Invalid install method '#{node.zabbix.agent.install_method}'.  Only 'source' and 'prebuild' are supported for Zabbix agent."
