@@ -65,7 +65,11 @@ default[:zabbix][:agent][:port]                   = 10050
 default[:zabbix][:agent][:servers]                = []
 default[:zabbix][:agent][:configure_options]      = ["--with-libcurl"]
 default[:zabbix][:agent][:version]                = "2.0.4"
+if platform_family?('rhel')
+default[:zabbix][:agent][:install_method]         = "package"
+else
 default[:zabbix][:agent][:install_method]         = "prebuild"
+end
 default[:zabbix][:agent][:log_dir]                = '/var/log/zabbix_agent'
 default[:zabbix][:agent][:create_host]            = true
 default[:zabbix][:agent][:unmonitor_on_shutdown]  = false
