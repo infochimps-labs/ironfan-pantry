@@ -85,6 +85,9 @@ default['bind']['zonesource'] = nil
 
 ## Used by the customdns/nsupdate recipes
 default['bind']['discover_dns_server'] = true
+default['bind']['server_cluster'] = nil
+default['bind']['register_private_ip'] = false
+
 # If discover_dns_server is false, configure static values here
 default['bind']['dns_server'] = nil
 default['bind']['search_domain'] = nil

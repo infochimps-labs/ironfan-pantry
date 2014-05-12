@@ -29,6 +29,7 @@ module Silverware
     # if device_type is :label or :uuid, we have to assume it's ready.
     def attached?
       return true if (device_type.to_s != 'device')
+      return false unless device
 
       # Use ohai's discovery of block devices to see if our device is present
       devname = device.split('/').last 
