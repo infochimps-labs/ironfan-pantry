@@ -19,6 +19,6 @@
 # limitations under the License.
 #
 
-include_recipe 'yum::epel' if platform?('centos', 'redhat')
+include_recipe 'yum-epel' if platform?('centos', 'redhat')
 package 'nginx'
 

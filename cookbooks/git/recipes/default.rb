@@ -22,7 +22,7 @@ when "debian", "ubuntu"
 when "centos","redhat","scientific","fedora"
   case node[:platform_version].to_i
   when 5
-    include_recipe "yum::epel"
+    include_recipe "yum-epel"
   end
   package "git"
 else
