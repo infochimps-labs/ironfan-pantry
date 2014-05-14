@@ -1,5 +1,5 @@
 include_recipe 'rundeck::default'
-include_recipe 'rundeck::install_server_from_deb'
+include_recipe 'rundeck::install_from_package'
 include_recipe 'rundeck::sshdir' # after deb install
 include_recipe 'rundeck::install_chef-rundeck'
 include_recipe 'rundeck::integration_with_chef-rundeck'
