@@ -40,3 +40,8 @@ node['ant']['libraries'].each do |library, library_url|
     url library_url
   end
 end
+
+link "/usr/bin/ant" do
+  to "/usr/local/ant/bin/ant"
+  action :create
+end
