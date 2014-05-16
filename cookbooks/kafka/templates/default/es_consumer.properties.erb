@@ -18,3 +18,6 @@ group.id=<%= @group_id %>
 es.consumer.client.type=<%= @hashed_options[:client_type] || 'NODE' %>
 es.consumer.transport.hosts=<%= @hashed_options[:es_transport_hosts] || 'localhost:9300' %>
 es.consumer.transport.cluster_name=<%= @hashed_options[:es_cluster_name] %>
+
+# Kafka 0.8 defaults to largest for migration purpose
+auto.offset.reset=smallest
