@@ -26,7 +26,7 @@
 include_recipe 'bind::tsigkey'
 
 if node['bind']['discover_dns_server']
-  bind = discover(:bind,:server)
+  bind = discover(:bind,:server, node[:bind][:server_cluster])
   dns_server=bind.info['info']['addr']
   search_domain=bind.info['info']['search_domain']
 else
@@ -37,7 +37,10 @@ end
 node_name=node['node_name'].gsub('_','-')
 ttl=node['bind']['ttl']
 public_ipv4=node['cloud']['public_ipv4']
-command = "(echo 'server #{dns_server}'; echo 'zone #{search_domain}'; echo 'update add #{node_name}.#{search_domain} #{ttl} A #{public_ipv4}'; echo 'send') | nsupdate -k /etc/bind/rndc.key"
+local_ipv4=node['cloud']['local_ipv4']
+
+ip_address = node['bind']['register_private_ip'] ? local_ipv4 : public_ipv4
+command = "(echo 'server #{dns_server}'; echo 'zone #{search_domain}'; echo 'update delete #{node_name}.#{search_domain} A'; echo 'update add #{node_name}.#{search_domain} #{ttl} A #{ip_address}'; echo 'send') | nsupdate -k /etc/bind/rndc.key"
 # Chef::Log.info "command is #{command}"
 
 execute command do

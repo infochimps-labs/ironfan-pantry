@@ -25,7 +25,7 @@
 # forward queries to itself.
 
 if node['bind']['discover_dns_server']
-  bind = discover(:bind,:server)
+  bind = discover(:bind,:server, node[:bind][:server_cluster])
   dns_server=bind.info['info']['addr']
   search_domain=bind.info['info']['search_domain']
 else
