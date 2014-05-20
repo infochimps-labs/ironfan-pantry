@@ -120,10 +120,7 @@ all_zones.each do |zone|
   hosts = search(:node, "name:*")
   
   zonefile = "db.#{zone}"
-  # /var/lib/bind is hard-coded because that's where
-  # AppArmor will allow dynamically-updated zone/journal
-  # files to be written
-  template File.join('/var/lib/bind',zonefile) do
+  template File.join("#{node['bind']['vardir']}",zonefile) do
     owner node['bind']['user']
     group node['bind']['group']
     mode 0644

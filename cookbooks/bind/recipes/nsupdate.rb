@@ -40,7 +40,7 @@ public_ipv4=node['cloud']['public_ipv4']
 local_ipv4=node['cloud']['local_ipv4']
 
 ip_address = node['bind']['register_private_ip'] ? local_ipv4 : public_ipv4
-command = "(echo 'server #{dns_server}'; echo 'zone #{search_domain}'; echo 'update delete #{node_name}.#{search_domain} A'; echo 'update add #{node_name}.#{search_domain} #{ttl} A #{ip_address}'; echo 'send') | nsupdate -k /etc/bind/rndc.key"
+command = "(echo 'server #{dns_server}'; echo 'zone #{search_domain}'; echo 'update delete #{node_name}.#{search_domain} A'; echo 'update add #{node_name}.#{search_domain} #{ttl} A #{ip_address}'; echo 'send') | nsupdate -k #{node['bind']['sysconfdir']}/rndc.key"
 # Chef::Log.info "command is #{command}"
 
 execute command do

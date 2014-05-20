@@ -5,7 +5,7 @@ directory node['bind']['sysconfdir'] do
   mode 0750
 end
 
-template '/etc/bind/rndc.key' do
+template "#{node['bind']['sysconfdir']}/rndc.key" do
   source 'rndc.key.erb'
   owner 'root'
   group 'root'
