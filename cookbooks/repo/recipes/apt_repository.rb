@@ -19,25 +19,29 @@
 # limitations under the License.
 #
 
-include_recipe 'apt'
+if platform_family? "debian" then
 
-# apt_repository "cloudera" do
-#   uri "#{node[:repo][:uri]}/apt"
-#   distribution 'maverick-cdh3u2'
-#   components ["contrib"]
-#   key "#{node[:repo][:key_uri]}"
-# end
+  include_recipe 'apt'
 
-apt_repository "#{node['lsb']['codename']}" do
-  uri "#{node[:repo][:uri]}/apt"
-  distribution "#{node['lsb']['codename']}"
-  components ["main"]
-  key "#{node[:repo][:key_uri]}"
-end
+  # apt_repository "cloudera" do
+  #   uri "#{node[:repo][:uri]}/apt"
+  #   distribution 'maverick-cdh3u2'
+  #   components ["contrib"]
+  #   key "#{node[:repo][:key_uri]}"
+  # end
+  
+  apt_repository "#{node['lsb']['codename']}" do
+    uri "#{node[:repo][:uri]}/apt"
+    distribution "#{node['lsb']['codename']}"
+    components ["main"]
+    key "#{node[:repo][:key_uri]}"
+  end
+  
+  apt_repository "webupd8-#{node['lsb']['codename']}" do
+    uri "#{node[:repo][:uri]}/apt"
+    distribution "webupd8-#{node['lsb']['codename']}"
+    components ["main"]
+    key "#{node[:repo][:key_uri]}"
+  end
 
-apt_repository "webupd8-#{node['lsb']['codename']}" do
-  uri "#{node[:repo][:uri]}/apt"
-  distribution "webupd8-#{node['lsb']['codename']}"
-  components ["main"]
-  key "#{node[:repo][:key_uri]}"
 end

@@ -17,29 +17,13 @@
 # limitations under the License.
 #
 
-case node['platform']
-when "ubuntu","debian"
-  %w{build-essential binutils-doc}.each do |pkg|
-    package pkg do
-      action :install
-    end
-  end
-when "centos","redhat","fedora"
-  %w{gcc gcc-c++ kernel-devel make}.each do |pkg|
-    package pkg do
-      action :install
-    end
-  end
-end
-
-package "autoconf" do
-  action :install
-end
-
-package "flex" do
-  action :install
-end
-
-package "bison" do
-  action :install
+begin
+  include_recipe "build-essential::_#{node['platform_family']}"
+rescue Chef::Exceptions::RecipeNotFound
+  Chef::Log.warn <<-EOH
+A build-essential recipe does not exist for '#{node['platform_family']}'. This
+means the build-essential cookbook does not have support for the
+#{node['platform_family']} family. If you are not compiling gems with native
+extensions or building packages from source, this will likely not affect you.
+EOH
 end

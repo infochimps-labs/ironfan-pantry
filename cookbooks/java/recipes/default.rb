@@ -18,12 +18,9 @@
 # limitations under the License.
 #
 
-include_recipe "java::#{node['java']['install_flavor']}"
-
-# Purge the deprecated Sun Java packages if remove_deprecated_packages is true
-%w[sun-java6-jdk sun-java6-bin sun-java6-jre].each do |pkg|
-  package pkg do
-    action :purge
-    only_if { node['java']['remove_deprecated_packages'] }
-  end
+if node['java']['jdk_version'].to_i == 8 and node['java']['install_flavor'] != 'oracle'
+  Chef::Application.fatal!("JDK 8 is currently only provided with the Oracle JDK")
 end
+
+include_recipe "java::set_attributes_from_version"
+include_recipe "java::#{node['java']['install_flavor']}"

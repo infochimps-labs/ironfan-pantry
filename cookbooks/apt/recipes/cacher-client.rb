@@ -19,41 +19,46 @@
 
 #remove Acquire::http::Proxy lines from /etc/apt/apt.conf since we use 01proxy
 #these are leftover from preseed installs
-execute 'Remove proxy from /etc/apt/apt.conf' do
-  command "sed --in-place '/^Acquire::http::Proxy/d' /etc/apt/apt.conf"
-  only_if "grep Acquire::http::Proxy /etc/apt/apt.conf"
-end
 
-servers = []
-if node['apt'] && node['apt']['cacher_ipaddress']
-  cacher = Chef::Node.new
-  cacher.name(node['apt']['cacher_ipaddress'])
-  cacher.ipaddress(node['apt']['cacher_ipaddress'])
-  servers << cacher
-end
+if platform_family? "debian" then
 
-unless Chef::Config[:solo]
-  query = 'recipes:apt\:\:cacher-ng'
-  query += " AND chef_environment:#{node.chef_environment}" if node['apt']['cacher-client']['restrict_environment']
-  Chef::Log.debug("apt::cacher-client searching for '#{query}'")
-  servers += search(:node, query)
-end
-
-if servers.length > 0
-  Chef::Log.info("apt-cacher-ng server found on #{servers[0]}.")
-  template '/etc/apt/apt.conf.d/01proxy' do
-    source '01proxy.erb'
-    owner 'root'
-    group 'root'
-    mode 00644
-    variables(
-      :proxy => servers[0]['ipaddress'],
-      :port => node['apt']['cacher_port']
-      )
-  end.run_action(:create)
-else
-  Chef::Log.info('No apt-cacher-ng server found.')
-  file '/etc/apt/apt.conf.d/01proxy' do
-    action :delete
+  execute 'Remove proxy from /etc/apt/apt.conf' do
+    command "sed --in-place '/^Acquire::http::Proxy/d' /etc/apt/apt.conf"
+    only_if "grep Acquire::http::Proxy /etc/apt/apt.conf"
   end
+  
+  servers = []
+  if node['apt'] && node['apt']['cacher_ipaddress']
+    cacher = Chef::Node.new
+    cacher.name(node['apt']['cacher_ipaddress'])
+    cacher.ipaddress(node['apt']['cacher_ipaddress'])
+    servers << cacher
+  end
+  
+  unless Chef::Config[:solo]
+    query = 'recipes:apt\:\:cacher-ng'
+    query += " AND chef_environment:#{node.chef_environment}" if node['apt']['cacher-client']['restrict_environment']
+    Chef::Log.debug("apt::cacher-client searching for '#{query}'")
+    servers += search(:node, query)
+  end
+  
+  if servers.length > 0
+    Chef::Log.info("apt-cacher-ng server found on #{servers[0]}.")
+    template '/etc/apt/apt.conf.d/01proxy' do
+      source '01proxy.erb'
+      owner 'root'
+      group 'root'
+      mode 00644
+      variables(
+                :proxy => servers[0]['ipaddress'],
+                :port => node['apt']['cacher_port']
+                )
+    end.run_action(:create)
+  else
+    Chef::Log.info('No apt-cacher-ng server found.')
+    file '/etc/apt/apt.conf.d/01proxy' do
+      action :delete
+    end
+  end
+
 end

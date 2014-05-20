@@ -19,10 +19,24 @@
 # limitations under the License.
 #
 
-include_recipe 'cloud_utils::srp_apt_repo'
+include_recipe 'cloud_utils::srp_repo'
 
-package 'elasticsearch' do
-  options '--force-yes' # Needed for non-GPG chimps repository
-  version node[:elasticsearch][:version]
+case node[:platform]
+when 'centos'
+
+  minor_version = node[:elasticsearch][:version].scan(/^\d+\.\d+/).first
+
+  yum_repository 'elasticsearch' do
+    action    :add
+    baseurl   "http://packages.elasticsearch.org/elasticsearch/#{minor_version}/centos"
+    keyurl    'http://packages.elasticsearch.org/GPG-KEY-elasticsearch'
+  end
+
+  package 'elasticsearch'
+
+else
+  package 'elasticsearch' do
+    options '--force-yes' # Needed for non-GPG chimps repository
+    version node[:elasticsearch][:version]
+  end
 end
-

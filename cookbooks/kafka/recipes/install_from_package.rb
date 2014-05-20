@@ -1,4 +1,4 @@
-include_recipe 'cloud_utils::srp_apt_repo'
+include_recipe 'cloud_utils::srp_repo'
 
 daemon_user 'kafka'
 

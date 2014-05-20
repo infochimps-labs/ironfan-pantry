@@ -14,6 +14,7 @@ depends          "tuning"
 depends          "silverware"
 depends          "install_from"
 depends          "cloud_utils"
+depends          "yum"
 
 recipe           "elasticsearch::client",              "Client"
 recipe           "elasticsearch::default",             "Base configuration for elasticsearch"

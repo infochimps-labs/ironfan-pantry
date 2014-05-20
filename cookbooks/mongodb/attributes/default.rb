@@ -5,19 +5,25 @@
 default[:mongodb][:data_dir]                        = nil       # set by volume_dirs
 default[:mongodb][:home_dir]                        = "/usr/lib/mongodb"
 default[:mongodb][:conf_dir]                        = "/etc/mongodb"
-default[:mongodb][:log_dir]                         = "/var/log/mongodb"
-default[:mongodb][:log_path]                        = ::File.join(default[:mongodb][:log_dir],"mongodb.log")
+# default[:mongodb][:log_dir]                         = "/var/log/mongodb"
+# default[:mongodb][:log_path]                        = ::File.join(default[:mongodb][:log_dir],"mongodb.log")
 default[:mongodb][:pid_dir]                         = "/var/run/mongodb"
 default[:mongodb][:journal_dir]                     = "/var/lib/mongodb/journal"
 
 #
 # User
 #
-
-default[:mongodb][:user]                            = 'mongodb'
-default[:mongodb][:group]                           = 'mongodb'
-default[:users]['mongodb'][:uid]                    = 362
-default[:groups]['mongodb'][:gid]                   = 362
+if platform_family?('debian')
+  default[:mongodb][:user]                            = 'mongodb'
+  default[:mongodb][:group]                           = 'mongodb'
+  default[:users]['mongodb'][:uid]                    = 362
+  default[:groups]['mongodb'][:gid]                   = 362
+elsif platform_family?('rhel')
+  default[:mongodb][:user]                             = 'mongod'
+  default[:mongodb][:group]                            = 'mongod'
+  default[:users]['mongod'][:uid]                     = 362
+  default[:groups]['mongod'][:gid]                    = 362
+end
 
 #
 # Install

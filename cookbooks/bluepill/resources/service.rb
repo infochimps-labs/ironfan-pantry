@@ -17,7 +17,8 @@
 # limitations under the License.
 #
 
-actions :start, :stop, :enable, :disable, :load, :restart
+actions :start, :stop, :enable, :disable, :load, :restart, :reload
+default_action :start
 
 attribute :service_name, :name_attribute => true
 attribute :enabled, :default => false
