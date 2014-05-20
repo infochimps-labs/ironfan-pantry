@@ -28,6 +28,14 @@ case "$1" in
 	echo "Stopping $DESC: $NAME"
 	start-stop-daemon --oknodo --stop  --pidfile $PID \
 		--exec $DAEMON
+	
+	$0 status
+        while [[ $? -ne 1 ]]
+        do
+            echo "waiting for zabbix_agentd to terminate"
+            sleep 5
+            $0 status
+        done
 	;;
   restart|force-reload)
 	#
@@ -35,16 +43,8 @@ case "$1" in
 	#	option to the "reload" entry above. If not, "force-reload" is
 	#	just the same as "restart".
 	#
-#	echo -n "Restarting $DESC: zabbix_agent"
 	$0 stop
-	sleep 5
 	$0 start
-#	start-stop-daemon --stop --quiet --pidfile \
-#		/tmp/$NAME.pid --user zabbix --exec $DAEMON
-#	sleep 1
-#	start-stop-daemon --start --quiet --pidfile \
-#		/tmp/$NAME.pid --user zabbix --exec $DAEMON
-#	echo "$NAME."
 	;;
   status)
                 if [ -f "$PID" ]; then
