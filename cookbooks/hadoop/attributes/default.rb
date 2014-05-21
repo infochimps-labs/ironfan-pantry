@@ -19,6 +19,7 @@ default[:hadoop][:balancer    ][:run_state]  = :stop
 # note however that cloudera is very conservative to update its distro support
 default[:apt][:cloudera][:force_distro] = nil # 'maverick'
 
+default[:hadoop][:dfs_permissions] = true
 
 #
 # These are handled by volumes, which imprints them on the node.
