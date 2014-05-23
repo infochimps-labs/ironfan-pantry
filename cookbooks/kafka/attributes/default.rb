@@ -1,6 +1,6 @@
 # Install
 default[:kafka][:package_name]                      = 'kafka'
-default[:kafka][:version]                           = '0.8.1.1'
+default[:kafka][:version]                           = '0.8.1.1-1'
 default[:kafka][:release_url]                       = "http://artifacts.chimpy.us.s3.amazonaws.com/tarballs/kafka-:version:-src.tgz"
 
 default[:kafka][:user]                              = 'kafka'
