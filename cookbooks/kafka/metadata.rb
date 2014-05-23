@@ -25,7 +25,7 @@ end
 attribute "kafka/version",
   :display_name => "Kafka version",
   :description => "The version of Kafka to pull and use",
-  :default => "0.7.1-incubating"
+  :default => "0.8.1.1"
 
 attribute "kafka/home_dir",
   :display_name => "Kafka home directory",
