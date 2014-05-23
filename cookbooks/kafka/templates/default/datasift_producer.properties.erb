@@ -13,7 +13,7 @@ vayacondios.port=<%= @vayacondios_port %>
 # Zookeeper connection string
 <% if @zookeeper.nil? || @zookeeper.empty? %>
 # Chef unable to discover zookeeper, defaulting to localhost
-zk.connect=localhost:2181
+zookeeper.connect=localhost:2181
 <% else %>
-zk.connect=<%= @zookeeper %>
+zookeeper.connect=<%= @zookeeper %>
 <% end %>
