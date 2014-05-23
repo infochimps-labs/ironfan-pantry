@@ -7,7 +7,7 @@ nimbus.host: "<%= @nimbus.private_ip %>"
 <% end %>
 
 storm.local.dir: "<%= @data_dir %>"
-storm.local.hostname: "<%= node.name.gsub(/[^a-zA-Z0-9\-]/, '-')  %>.<%= node.route53.zone %>"
+storm.local.hostname: "<%= node.fqdn %>"
 
 supervisor.slots.ports:
 <% @ports.each do |port| %>
