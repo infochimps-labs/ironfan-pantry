@@ -25,7 +25,8 @@ mv /var/chef /etc/chef/*.json /etc/chef/*.pem /etc/chef/*~ "$away_dir"
 # Also, with it gone the machine is unreachable if you log out.
 # mv /home/ubuntu/.ssh/authorized_keys "$away_dir/ubuntu-authorized_keys"
 # mv        /root/.ssh/authorized_keys "$away_dir/root-authorized_keys"
-rm /home/user/.ssh/authorized_keys
+rm -f /home/user/.ssh/authorized_keys
+rm -f /home/ec2-user/.ssh/authorized_keys
 
 # mkdir $away_dir/sshd_keys
 # mv /etc/ssh/ssh_{host_dsa,host_rsa,host}_{key,key.pub} "$away_dir/sshd_keys"
