@@ -2,7 +2,7 @@
 # Zookeeper connection string
 <% if @zookeeper.nil? || @zookeeper.empty? %>
 # Chef unable to discover zookeeper, defaulting to localhost
-zookeeper.connect=localhost:2181
+zk.connect=localhost:2181
 <% else %>
-zookeeper.connect=<%= @zookeeper %>
+zk.connect=<%= @zookeeper %>
 <% end %>

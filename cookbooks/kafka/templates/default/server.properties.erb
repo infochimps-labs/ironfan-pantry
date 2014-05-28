@@ -20,7 +20,7 @@
 ############################# Server Basics #############################
 
 # The id of the broker. This must be set to a unique integer for each broker.
-broker.id=<%= @kafka[:broker_id] %>
+brokerid=<%= @kafka[:broker_id] %>
 
 # Hostname the broker will advertise to consumers. If not set, kafka will use the value returned
 # from InetAddress.getLocalHost().  If there are multiple interfaces getLocalHost
@@ -28,7 +28,7 @@ broker.id=<%= @kafka[:broker_id] %>
 <% if @kafka[:broker_host_name].nil? || @kafka[:broker_host_name].empty? %>
 #hostname
 <% else %>
-host.name=<%= @kafka[:broker_host_name] %>
+hostname=<%= @kafka[:broker_host_name] %>
 <% end %>
 
 ############################# Socket Server Settings #############################
@@ -45,13 +45,13 @@ num.threads=<%= @kafka[:threads] %>
 <% end %>
 
 # The send buffer (SO_SNDBUF) used by the socket server
-socket.send.buffer.bytes=1048576
+socket.send.buffer=1048576
 
 # The receive buffer (SO_RCVBUF) used by the socket server
-socket.receive.buffer.bytes=1048576
+socket.receive.buffer=1048576
 
 # The maximum size of a request that the socket server will accept (protection against OOM)
-socket.request.max.bytes=104857600
+max.socket.request.bytes=104857600
 
 
 ############################# Log Basics #############################
@@ -82,16 +82,16 @@ topic.partition.count.map=<%= @kafka[:topic_partition_count_map].map{|tp,pt| [tp
 # every N messages (or both). This can be done globally and overridden on a per-topic basis.
 
 # The number of messages to accept before forcing a flush of data to disk
-log.flush.interval.messages=<%= @kafka[:log_flush_interval] %>
+log.flush.interval=<%= @kafka[:log_flush_interval] %>
 
 # The maximum amount of time a message can sit in a log before we force a flush
-log.flush.interval.ms=<%= @kafka[:log_flush_time_interval] %>
+log.default.flush.interval.ms=<%= @kafka[:log_flush_time_interval] %>
 
 # Per-topic overrides for log.default.flush.interval.ms
 #topic.flush.intervals.ms=topic1:1000, topic2:3000
 
 # The interval (in ms) at which logs are checked to see if they need to be flushed to disk.
-log.flush.scheduler.interval.ms=<%= @kafka[:log_flush_scheduler_time_interval] %>
+log.default.flush.scheduler.interval.ms=<%= @kafka[:log_flush_scheduler_time_interval] %>
 
 ############################# Log Retention Policy #############################
 
@@ -124,21 +124,17 @@ log.flush.scheduler.interval.ms=<%= @kafka[:log_flush_scheduler_time_interval] %
 
 ############################# Zookeeper #############################
 
+# Enable connecting to zookeeper
+enable.zookeeper=<%= @zookeeper_pairs.empty? ? false : true %>
+
 # Zk connection string (see zk docs for details).
 # This is a comma separated host:port pairs, each corresponding to a zk
 # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002".
 # You can also append an optional chroot string to the urls to specify the
 # root directory for all kafka znodes.
 <% unless @zookeeper_pairs.nil? || @zookeeper_pairs.empty? %>
-zookeeper.connect=<%= @zookeeper_pairs %>
+zk.connect=<%= @zookeeper_pairs %>
 <% end %>
 
 # Timeout in ms for connecting to zookeeper
-zookeeper.connection.timeout.ms=1000000
-
-# Syncing the logs will happen automatically whenever the server is stopped other than by a hard kill,
-# but the controlled leadership migration requires using a special setting
-controlled.shutdown.enable=true
-
-# Automatic partition leadship rebalancing
-auto.leader.rebalance.enable=true
+zk.connectiontimeout.ms=1000000

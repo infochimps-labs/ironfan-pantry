@@ -3,11 +3,11 @@
 # zk connection string
 # comma separated host:port pairs, each corresponding to a zk
 # server. e.g. "127.0.0.1:3000,127.0.0.1:3001,127.0.0.1:3002"
-input.zookeeper.connect=<%= @hashed_options[:input_zookeeper] || @zookeeper %>
-output.zookeeper.connect=<%= @hashed_options[:output_zookeeper] || @zookeeper %>
+input.zk.connect=<%= @hashed_options[:input_zookeeper] || @zookeeper %>
+output.zk.connect=<%= @hashed_options[:output_zookeeper] || @zookeeper %>
 
 # timeout in ms for connecting to zookeeper
-zk.connection.timeout.ms=6000
+zk.connectiontimeout.ms=6000
 
 # consumer group id
-group.id=<%= @group_id %>
+groupid=<%= @group_id %>

@@ -2,6 +2,23 @@ standard_dirs 'kafka' do
   directories [:home_dir, :log_dir, :conf_dir, :pid_dir]
 end
 
+# Hadoop is quite picky about versions when communicating with the job
+# tracker. We must use cdh3u2. So, first remove the old hadoop-core
+# jar...
+file File.join(node[:kafka][:home_dir], 'contrib/hadoop-consumer/lib_managed/scala_2.8.0/compile/hadoop-core-0.20.2.jar') do
+  action :delete
+
+end
+
+if not node[:kafka][:hadoop_jar].nil? and node[:kafka][:hadoop_jar]
+  # Then replace it with the new one.
+  remote_file File.join(node[:kafka][:home_dir], 'contrib/hadoop-consumer/lib_managed/scala_2.8.0/compile/hadoop-core.jar') do
+    source node[:kafka][:hadoop_jar]
+    action :create
+    mode '0644'
+  end
+end
+
 # sets node[:kafka][:journal_dir]
 volume_dirs('kafka.journal') do
   type          :persistent

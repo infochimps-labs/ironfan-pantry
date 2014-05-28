@@ -7,22 +7,31 @@
 
 base_dir=<%= node[:kafka][:home_dir] %>
 
-dirs=(
-    'core/build/libs'
-    'core/build/dependant-libs-2.8.0'
-    'lib'
-    'perf/build/libs'
-    'contrib/hadoop-producer/lib'
-    'contrib/hadoop-producer/build/libs'
-    'contrib/build/libs'
-    'clients/build/libs')
-
-for sub_dir in "${dirs[@]}";
+for file in $base_dir/project/boot/scala-2.8.0/lib/*.jar;
 do
-    for file in $base_dir/$sub_dir/*.jar
-    do
-	CLASSPATH=$CLASSPATH:$file
-    done
+  CLASSPATH=$CLASSPATH:$file
+done
+
+for file in $base_dir/core/target/scala_2.8.0/*.jar;
+do
+  CLASSPATH=$CLASSPATH:$file
+done
+
+for file in $base_dir/core/lib/*.jar;
+do
+  CLASSPATH=$CLASSPATH:$file
+done
+
+for file in $base_dir/perf/target/scala_2.8.0/kafka*.jar;
+do
+  CLASSPATH=$CLASSPATH:$file
+done
+
+for file in $base_dir/core/lib_managed/scala_2.8.0/compile/*.jar;
+do
+  if [ ${file##*/} != "sbt-launch.jar" ]; then
+    CLASSPATH=$CLASSPATH:$file
+  fi
 done
 
 JMX_PORT=<%= node[:kafka][:jmx_port] %>
