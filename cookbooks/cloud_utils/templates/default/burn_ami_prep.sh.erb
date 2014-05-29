@@ -10,7 +10,8 @@ echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nAdd mlocate (for updatedb, belo
 yum --assumeyes install mlocate
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nyum upgrade/cleanup:\n"
-yum --assumeyes upgrade
+# Exclude kernel so that the next boot will still use our custom initramfs (which grows the root partition)
+yum --assumeyes upgrade --exclude kernel
 yum clean all
 
 echo -e `date +'%Y-%m-%d~%H%M'` "\n\n**********\nupdatedb so you can find files:\n"
