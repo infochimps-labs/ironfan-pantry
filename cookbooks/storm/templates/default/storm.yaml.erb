@@ -1,32 +1,38 @@
 storm.zookeeper.servers:
-<% @zookeepers.each do |zk| %>
-    - "<%= zk.private_ip %>"
-<% end %>
-<%- unless @nimbus.nil? %>
-nimbus.host: "<%= @nimbus.private_ip %>"
+<% @storm[:zookeepers].each do |zk| %>
+  - "<%= zk.private_ip %>"
 <% end %>
 
-storm.local.dir: "<%= @data_dir %>"
+<%- unless @storm[:nimbus].nil? %>
+nimbus.host: "<%= @storm[:nimbus].private_ip %>"
+
+<%- end %>
+storm.local.dir: "<%= @storm[:data_dir] %>"
+
 storm.local.hostname: "<%= node.fqdn %>"
 
 supervisor.slots.ports:
-<% @ports.each do |port| %>
-    - <%= port %>
+<% @storm[:worker][:processes].times.map{ |i| @storm[:worker][:start_port] + i }.each do |port| %>
+  - <%= port %>
 <% end %>
 
+<%- if node[:platform] == 'centos' %>
+java.library.path: "/usr/local/lib:/opt/local/lib:/usr/lib:/usr/lib64"
+<%- end %>
+
 # Production worker_jvm options: verbose GC logging with rotation, expands heap size
-# to <%=@node[:storm][:worker_jvm][:Xmx]%> and new-gen to <%=@node[:storm][:worker_jvm][:NewSize]%>, uses concurrent-mark-and-sweep for old-gen
+# to <%= @storm[:worker_jvm][:Xmx] %> and new-gen to <%= @storm[:worker_jvm][:NewSize] %>, uses concurrent-mark-and-sweep for old-gen
 # See : https://github.com/nathanmarz/storm/pull/632
 
 worker.childopts: >-
      -Djava.net.preferIPv4Stack=true
-     -Xmx<%=@node[:storm][:worker_jvm][:Xmx]%>
-     -Xms<%=@node[:storm][:worker_jvm][:Xms]%>
-     -Xss<%=@node[:storm][:worker_jvm][:Xss]%>
-     -XX:MaxPermSize=<%=@node[:storm][:worker_jvm][:MaxPermSize]%>
-     -XX:PermSize=<%=@node[:storm][:worker_jvm][:PermSize]%>
-     -XX:NewSize=<%=@node[:storm][:worker_jvm][:NewSize]%>
-     -XX:MaxNewSize=<%=@node[:storm][:worker_jvm][:MaxNewSize]%>
+     -Xmx<%=             @storm[:worker_jvm][:Xmx]         %>
+     -Xms<%=             @storm[:worker_jvm][:Xms]         %>
+     -Xss<%=             @storm[:worker_jvm][:Xss]         %>
+     -XX:MaxPermSize=<%= @storm[:worker_jvm][:MaxPermSize] %>
+     -XX:PermSize=<%=    @storm[:worker_jvm][:PermSize]    %>
+     -XX:NewSize=<%=     @storm[:worker_jvm][:NewSize]     %>
+     -XX:MaxNewSize=<%=  @storm[:worker_jvm][:MaxNewSize]  %>
      -XX:MaxTenuringThreshold=1 -XX:SurvivorRatio=6 -XX:+AggressiveOpts -XX:+UseCompressedOops
      -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSParallelRemarkEnabled
      -XX:CMSInitiatingOccupancyFraction=75 -XX:+UseCMSInitiatingOccupancyOnly

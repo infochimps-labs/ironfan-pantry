@@ -1,6 +1,3 @@
-include_recipe 'storm'
-include_recipe 'runit'
-
 daemon_user 'storm.ui'
 
 standard_dirs 'storm.ui' do
@@ -13,13 +10,15 @@ runit_service 'storm_ui' do
 end
 
 announce(:storm, :ui, {
-  :logs => { :storm => node[:storm][:log_path_ui] },
-  :daemons => {
+  logs: {
+    storm: node[:storm][:log_path_ui]
+  },
+  daemons: {
     # FIXME: Zabbix can't tell Nimbus process from the UI process
-    :storm_ui => {
-      :name => 'java',
-      :user => node[:storm][:user],
-      :cmd  => 'backtype.storm.ui.core'
+    storm_ui: {
+      name: 'java',
+      user: node[:storm][:user],
+      cmd:  'backtype.storm.ui.core'
     }
   }
 })

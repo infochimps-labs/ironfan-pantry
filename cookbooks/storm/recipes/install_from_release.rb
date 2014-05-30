@@ -1,12 +1,3 @@
-#
-# Cookbook Name::       storm
-# Description::         Install From Release
-# Recipe::              install_from_release
-# Author::              Logan Lowell, Infochimps
-#
-# Copyright 2012 Infochimps
-#
-
 include_recipe 'install_from'
 
 # JZMQ
@@ -29,8 +20,8 @@ install_from_release(:storm) do
   home_dir      node[:storm][:home_dir]
   version       node[:storm][:version]
   checksum      node[:storm][:checksum]
-  action        [ :install ]
-  has_binaries  [ 'bin/storm' ]
+  action        :install
+  has_binaries  ['bin/storm']
 end
 
-include_recipe 'storm::install_common'
+include_recipe 'storm::directories'
