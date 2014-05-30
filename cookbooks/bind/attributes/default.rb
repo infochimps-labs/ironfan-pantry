@@ -30,7 +30,7 @@ default['bind']['group'] = "named"
 default['bind']['allow_solo_search'] = false
 
 # Set platform/version specific directories and settings
-if node['platform_family'] == "rhel" and node['platform_version'].to_i == 5
+if node['platform_family'] == "rhel" and node['platform_version'].to_i > 4
   default['bind']['conf_file'] = "/etc/named.conf"
 elsif node['platform_family'] == "debian"
   default['bind']['packages'] = %w{ bind9 bind9utils }

@@ -1,0 +1,59 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:          customdns
+# Required-Start:    
+# Required-Stop:     
+# Should-Start:      $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      
+# Short-Description: configures an existing in-cluster DNS server
+# Description:       We'd like to use a custom DNS server, and
+#                    override the one configured by DHCP.
+### END INIT INFO
+
+set -e
+
+. /etc/default/customdns
+
+IFACE_PROG=ifcfg-eth0
+NETWORK_PATH='/etc/sysconfig/network-scripts/'
+
+case "$1" in
+  start)
+        /bin/sed -i s/PEERDNS=no/PEERDNS=yes/ $NETWORK_PATH$IFACE_PROG
+        /bin/sed -i -n /$OLD_DNS/\!p $NETWORK_PATH$IFACE_PROG
+        /bin/sed -i -n /$DNS_SERVER/\!p $NETWORK_PATH$IFACE_PROG  
+        (echo DNS1=$DNS_SERVER;
+            echo DNS2=$OLD_DNS) >> $NETWORK_PATH$IFACE_PROG
+        /sbin/service network restart
+        /bin/sed -i s/PEERDNS=yes/PEERDNS=no/ $NETWORK_PATH$IFACE_PROG
+
+        exit $?
+        ;;
+  stop)
+        /bin/sed -i s/PEERDNS=no/PEERDNS=yes/ $NETWORK_PATH$IFACE_PROG
+        /bin/sed -i -n /$DNS_SERVER/\!p $NETWORK_PATH$IFACE_PROG
+        /bin/sed -i -n /$OLD_DNS/\!p $NETWORK_PATH$IFACE_PROG
+        echo DNS1=$OLD_DNS >> $NETWORK_PATH$IFACE_PROG
+        /sbin/service network restart
+        /bin/sed -i s/PEERDNS=yes/PEERDNS=no/ $NETWORK_PATH$IFACE_PROG
+
+        exit $?
+        ;;
+
+  status)
+        if grep $DNS_SERVER /etc/resolv.conf >/dev/null; then
+            echo "Custom DNS resolution is in place"
+	    exit 0
+        else
+            echo "no custom DNS resolution configured"
+	    exit 3
+        fi
+        ;;
+  *)
+        echo "Usage: /etc/init.d/customdns {start|stop|status}"
+        exit 1
+esac
+
+exit 0

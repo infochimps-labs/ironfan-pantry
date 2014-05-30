@@ -4,6 +4,11 @@
 include "<%= "#{node['bind']['sysconfdir']}/#{file}" %>";
 <% end -%>
 
+controls {
+         inet 127.0.0.1 allow { localhost; }
+         keys { rndc-key; };
+};
+
 <% @zones.uniq.each do |zone| -%>
 zone "<%= zone %>" in {
   type <%= node['bind']['zonetype'] %>;

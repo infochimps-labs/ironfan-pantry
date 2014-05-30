@@ -16,8 +16,6 @@
 
 # This recipe installs an init script called customdns.  The script
 # configures basic DNS settings which override the DNS provided by DHCP.
-# This recipe uses the Debian resolvconf system, and is only expected
-# to work on Debian-derived distributions.
 
 # If you're using the customdns recipe to forward DNS requests to a
 # bind server configured with the 'server' recipe, be careful not to
@@ -25,14 +23,24 @@
 # forward queries to itself.
 
 if node['bind']['discover_dns_server']
-  bind = discover(:bind,:server, node[:bind][:server_cluster])
+  bind = discover(:bind,:server)
   dns_server=bind.info['info']['addr']
-  search_domain=bind.info['info']['search_domain']
+  search_domain=bind.info['info']['search_domain'] ? bind.info['info']['search_domain'] : ""
 else
   dns_server = node['bind']['dns_server']
   search_domain = node['bind']['search_domain']
 end
 
+old_dns = ''
+resolv = File.readlines('/etc/resolv.conf').map{ |line| line.chomp }
+# This will return the last nameserver entry in the file
+resolv.each do |entry|
+  if entry =~ /nameserver (\S+)/
+    old_dns = $1
+  end
+end
+
+Chef::Log.info("Variables #{dns_server}, #{search_domain}, #{old_dns}")
 template '/etc/default/customdns' do
   source 'customdns.default.erb'
   owner 'root'
@@ -40,11 +48,24 @@ template '/etc/default/customdns' do
   mode 0644
   variables(
     :dns_server => dns_server,
-    :search_domain => search_domain
+    :search_domain => search_domain,
+    :old_dns => old_dns
   )
 end
 
+cookbook_file '/etc/dhclient-enter-hooks' do
+  owner 'root'
+  group 'root'
+  mode 0755
+  only_if { platform_family?('rhel') }
+end
+
 template '/etc/init.d/customdns' do
+  if platform_family?('rhel')
+    source 'customdns.rhel.erb'
+  elsif platform_family?('debian')
+    source 'customdns.erb'
+  end
   owner 'root'
   group 'root'
   mode 0755

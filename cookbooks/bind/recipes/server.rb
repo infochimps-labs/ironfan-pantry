@@ -95,6 +95,11 @@ all_zones = node['bind']['zones']['attribute'] + node['bind']['zones']['databag'
 
 # Render a template with all our global BIND options and ACLs
 template node['bind']['options_file'] do
+  if node['platform_family'] == "rhel"
+      source  "named.options.rhel.erb"
+  else
+      source  "named.options.erb"
+  end  
   owner node['bind']['user']
   group node['bind']['group']
   mode  "0644"
@@ -118,7 +123,7 @@ end
 all_zones.each do |zone|
 
   hosts = search(:node, "name:*")
-  
+
   zonefile = "db.#{zone}"
   template File.join("#{node['bind']['vardir']}",zonefile) do
     owner node['bind']['user']
