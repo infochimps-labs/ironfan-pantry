@@ -6,5 +6,6 @@ gem 'rake'
 gem 'version'
 
 group :test, :development do
+  gem 'rspec','2.14'
   gem 'chefspec', '~> 3'
 end
