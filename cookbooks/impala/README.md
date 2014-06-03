@@ -21,8 +21,6 @@ Supports platforms: debian and ubuntu
 Cookbook dependencies:
 
 * java
-* hadoop_cluster
-
 
 ## Attributes
 

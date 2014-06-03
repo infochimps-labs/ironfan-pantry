@@ -2,7 +2,7 @@
 # Cookbook Name::       impala
 # Description::         Base configuration for impala
 # Recipe::              default
-# Author::              Philip (flip) Kromer - Infochimps, Inc
+# Author::              Travis Dempsey
 #
 # Copyright 2009, Opscode, Inc.
 #
@@ -18,12 +18,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-include_recipe 'volumes'
+if node[:hadoop][:distribution][:provider] == 'cloudera'
+  yum_repository 'cdh-impala' do
+    description  "Cloudera's Distribution for Imapala"
+    baseurl      'http://archive.cloudera.com/impala/redhat/6/x86_64/impala/1/'
+    keyurl       'http://archive.cloudera.com/impala/redhat/6/x86_64/impala/RPM-GPG-KEY-cloudera'
+    action       :add
+  end
+else
+  raise "Hadoop provider #{node[:hadoop][:distribution][:provider].inspect} cannot install Impala at this time, only Cloudera distributions!"
+end
 
 daemon_user 'impala'
 
-standard_dirs('impala') do
-  directories   :conf_dir
+group 'hadoop' do
+  gid     node[:groups]['hadoop'][:gid]
+  action  [:create, :manage]
+  append  true
+  members ['impala']
 end
+
+standard_dirs('impala') do
+  directories :conf_dir
+end
+
+package 'impala'
+
+# Impala log storage on a single scratch dir
+volume_dirs('impala.log') do
+  type    :local
+  selects :single
+  path    'impala/log'
+  owner   node[:impala][:user]
+  group   node[:impala][:group]
+  mode    '0777'
+end
+
+directory('/var/log/impala') do
+  action    :delete
+  recursive true
+  not_if    'test -L /var/log/impala'
+end
+link('/var/log/impala'){ to node[:impala][:log_dir] }
 

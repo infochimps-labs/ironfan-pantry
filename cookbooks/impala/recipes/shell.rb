@@ -1,2 +1,1 @@
-package("impala")
-package("impala-shell")
+package 'impala-shell'

@@ -4,7 +4,7 @@
 exec 2>&1
 
 if [ -f "<%= node[:impala][:conf_dir] %>/impala-env.sh" ] ; then
-  . "<%= node[:impala][:conf_dir] %>/impala-env.sh"
+  source "<%= node[:impala][:conf_dir] %>/impala-env.sh"
 fi
 
 SLEEP_TIME=5
@@ -14,10 +14,9 @@ DAEMON="statestored"
 DESC="Impala State Store Server"
 EXEC_PATH="/usr/bin/statestored"
 SVC_USER="impala"
-DAEMON_FLAGS="${IMPALA_STATE_STORE_ARGS}"
+DAEMON_FLAGS="${IMPALA_CATALOG_ARGS}"
 CONF_DIR="/etc/impala/conf"
 PIDFILE="/var/run/impala/statestored-impala.pid"
-
 
 ulimit -H -n 65535
 ulimit -S -n 65535

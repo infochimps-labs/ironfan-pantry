@@ -5,8 +5,6 @@
 #
 # Created by Chef -- changes will be overwritten
 #
-
-
 ENABLE_CORE_DUMPS=false
 
 # LIBHDFS_OPTS=-Djava.library.path=/usr/lib/impala/lib
@@ -24,17 +22,18 @@ ENABLE_CORE_DUMPS=false
 . /etc/default/hadoop
 
 # Autodetect JAVA_HOME if not defined
-if [ -e /usr/libexec/bigtop-detect-javahome ]; then
-  . /usr/libexec/bigtop-detect-javahome
-elif [ -e /usr/lib/bigtop-utils/bigtop-detect-javahome ]; then
-  . /usr/lib/bigtop-utils/bigtop-detect-javahome
-fi
+# if [ -e /usr/libexec/bigtop-detect-javahome ]; then
+#   . /usr/libexec/bigtop-detect-javahome
+# elif [ -e /usr/lib/bigtop-utils/bigtop-detect-javahome ]; then
+#   . /usr/lib/bigtop-utils/bigtop-detect-javahome
+# fi
 
+export JAVA_HOME=<%= node[:java][:java_home] %>
 
 SLEEP_TIME=5
 
 if [ -f /etc/default/impala ] ; then
-  . /etc/default/impala
+  source /etc/default/impala
 fi
 
 export SLEEP_TIME
