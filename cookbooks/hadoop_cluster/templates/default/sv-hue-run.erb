@@ -1,5 +1,0 @@
-#!/bin/bash
-
-exec 2>&1
-cd <%= @node[:hadoop][:hue][:home_dir] %>
-exec <%= @node[:hadoop][:hue][:home_dir] %>/build/env/bin/supervisor --log-dir <%= node[:hadoop][:log_dir] %>/hue
