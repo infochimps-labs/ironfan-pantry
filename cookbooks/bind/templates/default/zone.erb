@@ -11,6 +11,7 @@ $ORIGIN <%= @zone %>.
                          3h ; minimum
                )
 @       IN NS     <%= node['node_name'].gsub('_','-') %>
+<%= node['hostname'].gsub('_','-') %>  IN A  <%= node['cloud']['public_ipv4'] %>
 <% @hosts.each do |host| -%>
 <%   if host['node_name'] && host['cloud'] && host['cloud']['public_ipv4'] && !host['cloud']['public_ipv4'].empty? -%>
 <%= host['node_name'].gsub('_','-') %>  IN A  <%= host['cloud']['public_ipv4'] %>

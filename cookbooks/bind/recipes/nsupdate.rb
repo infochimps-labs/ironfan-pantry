@@ -26,9 +26,10 @@
 include_recipe 'bind::tsigkey'
 
 if node['bind']['discover_dns_server']
-  bind = discover(:bind,:server, node[:bind][:server_cluster])
+  bind = discover(:bind,:server)
   dns_server=bind.info['info']['addr']
-  search_domain=bind.info['info']['search_domain']
+  search_domain=bind.info['info']['search_domain'] ? bind.info['info']['search_domain'] : ""
+  #search_domain=bind.info['info']['search_domain']
 else
   dns_server = node['bind']['dns_server']
   search_domain = node['bind']['search_domain']
@@ -39,9 +40,14 @@ ttl=node['bind']['ttl']
 public_ipv4=node['cloud']['public_ipv4']
 local_ipv4=node['cloud']['local_ipv4']
 
+Chef::Log.info("node_name=#{node_name}, ttl=#{ttl}")
+Chef::Log.info("public_ipv4=#{public_ipv4}, local_ipv4=#{local_ipv4}")
+Chef::Log.info("register_private_ip=#{node['bind']['register_private_ip']}")
 ip_address = node['bind']['register_private_ip'] ? local_ipv4 : public_ipv4
+keydir = `ls "#{node['bind']['sysconfdir']}"`
+Chef::Log.info(keydir)
 command = "(echo 'server #{dns_server}'; echo 'zone #{search_domain}'; echo 'update delete #{node_name}.#{search_domain} A'; echo 'update add #{node_name}.#{search_domain} #{ttl} A #{ip_address}'; echo 'send') | nsupdate -k #{node['bind']['sysconfdir']}/rndc.key"
-# Chef::Log.info "command is #{command}"
+Chef::Log.info "command is #{command}"
 
 execute command do
   # Can fail if server is internal bind server that's not up yet,
