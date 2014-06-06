@@ -9,13 +9,9 @@
 # (no license specified)
 #
 
-case node.platform
-when 'centos'
+if platform_family? "rhel"
   service_names = ['rpcbind', 'nfs']
-when 'mac_os_x'
-  # no package needed
-  service_names = [] # no service needed
-when 'ubuntu', 'debian'
+elsif platform_family? "debian"
   service_names = ['nfs-kernel-server']
   package        "nfs-kernel-server"
 end
