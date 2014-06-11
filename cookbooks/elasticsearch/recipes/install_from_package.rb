@@ -21,8 +21,8 @@
 
 include_recipe 'cloud_utils::srp_repo'
 
-case node[:platform]
-when 'centos'
+case node[:platform_family]
+when 'rhel'
 
   minor_version = node[:elasticsearch][:version].scan(/^\d+\.\d+/).first
 
