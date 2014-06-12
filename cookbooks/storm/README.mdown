@@ -4,7 +4,7 @@ Storm is a distributed and fault-tolerant realtime computation library that supp
 
 # Requirements
 
-* ZeroMQ 2.1.7 - Note that you should not install version 2.1.10, as that version has some serious bugs that can cause strange issues for a Storm cluster. In some rare cases, users have reported an "IllegalArgumentException" bubbling up from the ZeroMQ code when using 2.1.7 – in these cases downgrading to 2.1.4 fixed the problem.
+* ZeroMQ 2.1.7 - Note that you should not install version 2.1.10, as that version has some serious bugs that can cause strange issues for a Storm cluster. In some rare cases, users have reported an "IllegalArgumentException" bubbling up from the ZeroMQ code when using 2.1.7 in these cases downgrading to 2.1.4 fixed the problem.
 * JZMQ
 * Java 6
 * Python 2.6.6
