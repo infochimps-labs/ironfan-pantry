@@ -8,7 +8,7 @@ end
 
 # Iterate over ever component with a log aspect...
 components_with(:logs).each do |component|
-  
+
   # ... and over each log aspect for the component...
   component.logs.each_pair do |aspect_name, aspect_props|
     # Now we figure out the paths to the actual log files that will
@@ -17,7 +17,7 @@ components_with(:logs).each do |component|
 
     # Skip if we need to
     next if aspect_props[:logrotate] == false || aspect_props[:ignore] == true
-    
+
     given_path = aspect_props[:path]
     case
     when aspect_props[:glob]
@@ -47,10 +47,11 @@ components_with(:logs).each do |component|
     options.each_pair do |name, value|
       # Ignore the non-logrotate options we've jammed into the Hash...
       next unless node.log_integration.logrotate.native_options.include?(name.to_s)
-      
+
       # Ignore any keys with value of nil
       next if value.nil?
 
+      next if name == 'delaycompress' && value == false
       # Let helper format the actual option text
       line = (logrotate_option(name, value) || logrotate_option(name, value.to_s))
       formatted_options << line if line
