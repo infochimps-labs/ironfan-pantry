@@ -15,9 +15,6 @@ components_with(:logs).each do |component|
     # need to be rotated by lograted for this aspect.
     aspect_props = { :path => aspect_props } unless aspect_props.is_a?(Hash)
 
-    # Skip if we need to
-    next if aspect_props[:logrotate] == false || aspect_props[:ignore] == true
-
     given_path = aspect_props[:path]
     case
     when aspect_props[:glob]
