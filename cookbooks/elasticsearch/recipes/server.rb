@@ -87,16 +87,16 @@ if node[:elasticsearch][:is_httpnode]
 end
 
 announce(:elasticsearch, :server, {
-           :logs  => { :elasticsearch => node[:elasticsearch][:log_path] },
-           :ports => ports,
-           :daemons => {
-             :java => {
-               :name => 'java',
-               :user => node[:elasticsearch][:user],
-               :cmd  => 'elasticsearch'
-             }
-           }
-         })
+  logs: { elasticsearch: node[:elasticsearch][:log_dir] },
+  ports: ports,
+  daemons: {
+    java: {
+      name: 'java',
+      user: node[:elasticsearch][:user],
+      cmd:  'elasticsearch'
+    }
+  }
+})
 
 # JMX should listen on the public interface
 # node.set[:elasticsearch][:jmx_dash_addr] = public_ip_of(node)

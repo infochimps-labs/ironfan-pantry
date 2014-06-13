@@ -51,16 +51,15 @@ end
 # Announcments
 # 
 announce(:mongodb, :server, {
-           :logs  => { :server => base_name },
-           :ports => {
-             :http => { :port => node[:mongodb][:server][:mongod_port], :protocol => 'http' },
-           },
-           :daemons => {
-             :mongod => {
-               :name => 'mongod',
-               :user => base_name,
-               :cmd  => 'mongod'
-             }
-           }
-         }) 
-
+  logs:    { server: File.dirname(log_path) },
+  ports:   {
+    http: { port: node[:mongodb][:server][:mongod_port], protocol: 'http' },
+  },
+  daemons: {
+    mongod: {
+      name: 'mongod',
+      user: base_name,
+      cmd:  'mongod'
+    }
+  }
+})
