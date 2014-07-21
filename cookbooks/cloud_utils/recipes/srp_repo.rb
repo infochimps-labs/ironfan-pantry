@@ -10,7 +10,8 @@ if platform_family?('debian')
     end
 elsif platform_family?('rhel')
       yum_repository "srp-rhel" do
-        name "infochimps-#{environment}"
+        name "srp-rhel"
+        gpgcheck false
         url "https://s3.amazonaws.com/srp-rhel.chimpy.us/#{environment}/"
         # key "RPM-GPG-KEY-chimps"
         action :add
