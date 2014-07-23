@@ -16,4 +16,5 @@ elsif platform_family?('rhel')
         # key "RPM-GPG-KEY-chimps"
         action :add
       end
+      Chef::Config[:yum_timeout] = 2400 # set yum timeout to 40 mins while we're in here
 end
