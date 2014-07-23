@@ -1,1 +1,1 @@
-default[:cloud_utils][:srp][:environment] = 'release_7'
+default[:cloud_utils][:srp][:environment] = 'release_6.1'
