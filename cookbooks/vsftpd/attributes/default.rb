@@ -150,7 +150,7 @@ default[:vsftpd][:chroot_users] = []
 # This option is only relevant if the option chroot_list_enable is enabled.
 # If the option chroot_local_user is enabled, then the list file becomes a list
 # of users to NOT place in a chroot() jail.
-default[:vsftpd][:chroot_list_file] = File.join(vsftpd_conf_dir, "chroot_list.conf")
+default[:vsftpd][:chroot_list_file] = File.join(vsftpd_conf_dir, "chroot.list")
 
 
 
