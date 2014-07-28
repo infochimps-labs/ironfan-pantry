@@ -1,4 +1,10 @@
-package "libpam-pwdfile"
+case node[:platform]
+when "debian", "ubuntu"
+  package "libpam-pwdfile"
+when "centos", "redhat"
+  package "passwd"
+end
+
 package "openssl"
 
 template "/etc/pam.d/vsftpd" do
