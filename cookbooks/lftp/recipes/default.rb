@@ -8,6 +8,8 @@ when "debian", "ubuntu"
 when "mac_os_x"
   package "lftp"
 
+when 'centos', 'redhat'
+  package 'lftp'
 end
 
 directory "#{node[:homedir]}/.lftp" do
