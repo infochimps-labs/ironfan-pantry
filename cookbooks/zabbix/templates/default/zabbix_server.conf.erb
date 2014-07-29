@@ -276,6 +276,7 @@ StartSNMPTrapper=<%= node.zabbix.server.snmp.trapper ? '1' : '0' %>
 # Range: 128K-1G
 # Default:
 # CacheSize=8M
+CacheSize=<%= node.zabbix.server.cache.configuration %>
 
 ### Option: CacheUpdateFrequency
 #	How often Zabbix will perform update of configuration cache, in seconds.
@@ -301,6 +302,7 @@ StartSNMPTrapper=<%= node.zabbix.server.snmp.trapper ? '1' : '0' %>
 # Range: 128K-1G
 # Default:
 # HistoryCacheSize=8M
+HistoryCacheSize=<%= node.zabbix.server.cache.history %>
 
 ### Option: TrendCacheSize
 #	Size of trend cache, in bytes.
@@ -310,6 +312,7 @@ StartSNMPTrapper=<%= node.zabbix.server.snmp.trapper ? '1' : '0' %>
 # Range: 128K-1G
 # Default:
 # TrendCacheSize=4M
+TrendCacheSize=<%= node.zabbix.server.cache.trend %>
 
 ### Option: HistoryTextCacheSize
 #	Size of text history cache, in bytes.
@@ -319,6 +322,7 @@ StartSNMPTrapper=<%= node.zabbix.server.snmp.trapper ? '1' : '0' %>
 # Range: 128K-1G
 # Default:
 # HistoryTextCacheSize=16M
+HistoryTextCacheSize=<%= node.zabbix.server.cache.history_text %>
 
 ### Option: NodeNoEvents
 #	If set to '1' local events won't be sent to master node.

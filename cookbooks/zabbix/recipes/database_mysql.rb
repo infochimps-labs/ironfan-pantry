@@ -153,7 +153,8 @@ end
 # 
 host_user_connects_from = case node.zabbix.database.host
 when 'localhost'; 'localhost';
-else ; node.fqdn
+#else ; node.
+else ; node.ipaddress
 end
 mysql_database_user node.zabbix.database.user do
   connection    root_connection
