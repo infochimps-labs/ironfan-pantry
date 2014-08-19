@@ -41,7 +41,7 @@ define :set_ftp_loader, thenode: nil, code_directory: '/usr/local/share/kafka-co
     mode 0644
   end
 
-  cron 'FTP Loader' do
+  cron "FTP Loader #{thenode[:name]}" do
     minute '*/' + thenode[:interval_minutes]
     user unix_user
 
