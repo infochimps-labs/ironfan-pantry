@@ -51,6 +51,5 @@ define :set_ftp_loader, thenode: nil, code_directory: '/usr/local/share/kafka-co
     command "PATH=#{ftp_loader_path} bash -l -c 'cd #{params[:code_directory]} && PATH=#{ftp_loader_path} #{params[:command]} #{config_file} 2>&1 | PATH=#{ftp_loader_path} cat >> #{thenode[:log_file]}'"
   end
 
-
-
+  announce(:ftp, :listener, logs: { main: thenode[:log_file] })
 end
