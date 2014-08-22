@@ -7,8 +7,7 @@
 :ftp_path:         '<%= @config[:ftp_path] %>'
 :input_directory:  '<%= @config[:input_directory] %>'
 :output_directory: '<%= @config[:output_directory] %>'
-:split_files:      true
+:split_files:      <%= @config[:split_files] %>
 :s3_bucket:        '<%= @config[:s3_bucket] %>'
-:meta_directory:   '<%= @config[:meta_directory] %>'
-:meta_s3_bucket:   '<%= @config[:meta_s3_bucket] %>'
+:metadata:         <%= @config[:metadata] %>
 
