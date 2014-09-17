@@ -57,7 +57,7 @@ define :run_contrib_app, app_type: nil, options: nil, daemon_count: nil, group_i
 
   log_monitor_info           = {}
   daemon_monitor_info        = {}
-  daemons                    = params[:daemon_count] || node[:kafka][:contrib][:app][:daemon_count] || 0
+  daemons                    = params[:daemon_count] || node[:kafka][:contrib][:app][:daemon_count] || 1
   
   daemons.times do |index|
     app_name_with_index      = "#{app_name}-#{index}"
